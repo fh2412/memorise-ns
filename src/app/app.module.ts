@@ -11,6 +11,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BlankComponent } from './mocks/blank/blank.component';
 import { NavbarModule } from './components/navbar/navbar.module';
 
+import { MainNavComponent } from './components/mainnav/mainnav.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -23,7 +25,7 @@ import { NavbarModule } from './components/navbar/navbar.module';
     AngularFireAuthModule,
     NoopAnimationsModule,
     HttpClientModule, 
-
+    MainNavComponent,
     NavbarModule
   ],
   providers: [],

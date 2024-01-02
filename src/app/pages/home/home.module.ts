@@ -4,6 +4,8 @@ import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { NavbarModule } from '../../components/navbar/navbar.module';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { UserInformationComponent } from '../../components/user-information/user-information.component';
+import { MatCardModule } from '@angular/material/card';
 
 const routes: Routes = [
   {
@@ -15,12 +17,14 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    LogoutButtonComponent
+    LogoutButtonComponent,
+    UserInformationComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    NavbarModule
+    NavbarModule,
+    MatCardModule,
   ]
 })
 export class HomeModule { }

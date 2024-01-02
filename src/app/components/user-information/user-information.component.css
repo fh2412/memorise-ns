@@ -1,0 +1,30 @@
+.user-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 300px; /* Adjust width as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .profile-picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .user-details {
+    text-align: center;
+  }
+  
+  /* Adjust styles (colors, fonts, etc.) according to your application's design */
+  

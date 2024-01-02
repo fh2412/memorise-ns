@@ -1,0 +1,20 @@
+<mat-card class="user-card" *ngIf="user">
+  <h2>User Information</h2>
+  <!-- Profile Picture -->
+  <div class="profile-picture">
+    <img src="https://i0.gmx.at/image/046/37240046,pd=1,f=sdata43/keanu-reeves.jpg">
+  </div>
+  
+   <!-- User Information -->
+  <div class="user-details">
+    <h3>Name: {{ user.name || 'Not provided' }}</h3>
+    <p>Age: {{ user.age || 'Not provided' }}</p>
+    <p>Gender: {{ user.gender || 'Not provided' }}</p>
+    <p>Location: {{ user.location || 'Not provided' }}</p>
+
+    <button *ngIf="showEditForm" mat-raised-button color="primary" (click)="openEditForm()">
+      Edit Information
+    </button>
+  </div>
+</mat-card>
+  

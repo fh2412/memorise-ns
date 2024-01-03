@@ -19,3 +19,7 @@
   .spacer {
     flex: 1; /* Flexible space to push the button to the right */
   }
+
+  .marginR{
+    margin-left: 15px;
+  }

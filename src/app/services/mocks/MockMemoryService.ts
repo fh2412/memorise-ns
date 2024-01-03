@@ -24,6 +24,15 @@ export class MockMemoryService {
       friends: 'Friend 3, Friend 4',
       description: 'This is the second memory'
     },
+    {
+      id: 3,
+      title: 'Third Memory',
+      image_url: 'https://via.placeholder.com/150',
+      location: 'Sample Location 3',
+      date: '2023-02-02',
+      friends: 'Friend 3, Friend 4',
+      description: 'This is the 3 memory'
+    },
     // Add more mock memory objects as needed
   ];
 

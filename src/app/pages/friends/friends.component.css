@@ -5,21 +5,19 @@
   
   /* Style for the sticky sidebar */
   .sticky-sidebar {
-    width: 20%; /* 1/4 of the screen */
-    position: fixed;
+    width: 25%; /* 1/4 of the screen */
+    position: sticky;
     top: 0; /* Stick to the top */
-    bottom: 0;
     height: 100vh; /* Full height of the viewport */
+    background-color: #ff0000; /* Example background color for the sidebar */
     /* Additional styles for the sidebar */
-    margin-top: 70px;
-    margin-left: 20px;
   }
   
   /* Style for the main content area */
   .main-content {
     flex: 1; /* Take remaining space */
     padding: 20px; /* Example padding */
-    background-color: #e0e0e0; /* Example background color for the main content */
-    margin-left: 20%; /* Adjust to match the width of the fixed sidebar */
+    background-color: #0000ff; /* Example background color for the main content */
     /* Additional styles for the main content */
   }
+  

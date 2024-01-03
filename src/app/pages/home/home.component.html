@@ -1,9 +1,17 @@
-<app-user-information></app-user-information>
-<div *ngIf="currentUser">
+<!--<div *ngIf="currentUser">
     <p>Welcome, {{ currentUser.displayName || currentUser.email }}</p>
     <p>Email: {{ currentUser.email }}</p>
-    <!-- Display other user information as needed -->
 </div>
 <div>
-    <app-momorypreview></app-momorypreview>
+</div>-->
+
+
+
+<div class="wrapper">
+    <div class="sticky-sidebar">
+        <app-user-information></app-user-information>
+    </div>
+    <div class="main-content">
+        <app-momorypreview></app-momorypreview>
+    </div>
 </div>

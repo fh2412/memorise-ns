@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { RouterModule, RouterOutlet, Routes } from '@angular/router';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
-import { UserInformationComponent } from '../../components/user-information/user-information.component';
 import { MatCardModule } from '@angular/material/card';
 import { MainNavComponent } from './mainnav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -21,7 +20,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     LogoutButtonComponent,
-    UserInformationComponent,
   ],
   imports: [
     CommonModule,

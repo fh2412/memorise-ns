@@ -5,6 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { UserInformationComponent } from '../../components/user-information/user-information.component';
 import { MatCardModule } from '@angular/material/card';
 import { MomorypreviewComponent } from '../../components/momorypreview/momorypreview.component';
+import { StatsComponent } from '../../components/stats/stats.component';
 
 const routes: Routes = [
   {
@@ -17,7 +18,8 @@ const routes: Routes = [
   declarations: [
     HomeComponent,
     UserInformationComponent,
-    MomorypreviewComponent
+    MomorypreviewComponent,
+    StatsComponent
   ],
   imports: [
     CommonModule,

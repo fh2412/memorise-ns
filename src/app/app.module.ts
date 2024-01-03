@@ -9,14 +9,21 @@ import { AppComponent } from './app.component';
 import { environment } from '../environments/environment.development';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BlankComponent } from './mocks/blank/blank.component';
-import { NavbarModule } from './components/navbar/navbar.module';
 
 import { MainNavComponent } from './components/mainnav/mainnav.component';
+import { LogoutButtonComponent } from './components/logout-button/logout-button.component';
+
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
     AppComponent,
     BlankComponent,
+    LogoutButtonComponent,
+    MainNavComponent,
   ],
   imports: [
     BrowserModule,
@@ -24,9 +31,11 @@ import { MainNavComponent } from './components/mainnav/mainnav.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     NoopAnimationsModule,
-    HttpClientModule, 
-    MainNavComponent,
-    NavbarModule
+    HttpClientModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatListModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
-import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { UserInformationComponent } from '../../components/user-information/user-information.component';
 import { MatCardModule } from '@angular/material/card';
+import { MomorypreviewComponent } from '../../components/momorypreview/momorypreview.component';
 
 const routes: Routes = [
   {
@@ -16,8 +16,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    LogoutButtonComponent,
-    UserInformationComponent
+    UserInformationComponent,
+    MomorypreviewComponent
   ],
   imports: [
     CommonModule,

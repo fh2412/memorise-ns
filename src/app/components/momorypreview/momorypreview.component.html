@@ -1,0 +1,17 @@
+<h1>Your memories</h1>
+<mat-card class="memory-card" *ngFor="let memory of memories">
+    <!-- Title Picture -->
+    <div class="title-picture">
+      <img [src]="memory.image_url || 'https://via.placeholder.com/150'" alt="memory Image">
+    </div>
+  
+    <!-- memory Details -->
+    <div class="memory-details">
+      <h3>{{ memory.title || 'memory Title' }}</h3>
+      <p><strong>Location:</strong> {{ memory.location || 'Location' }}</p>
+      <p><strong>Date:</strong> {{ memory.date || 'Date' }}</p>
+      <p><strong>Shared with:</strong> {{ memory.friends || 'No shared friends' }}</p>
+      <p *ngIf="memory.description"><strong>Description:</strong> {{ memory.description }}</p>
+    </div>
+</mat-card>
+  

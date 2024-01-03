@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 // import { UserService } from '../../services/userService';
 import { MockUserService } from '../../services/mocks/MockUserService';
-import {MatCardModule} from '@angular/material/card';
 
 
 @Component({

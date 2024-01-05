@@ -6,6 +6,7 @@ import { UserInformationComponent } from '../../components/user-information/user
 import { MatCardModule } from '@angular/material/card';
 import { MomorypreviewComponent } from '../../components/momorypreview/momorypreview.component';
 import { StatsComponent } from '../../components/stats/stats.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 const routes: Routes = [
   {
@@ -25,6 +26,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     MatCardModule,
+    MatFormFieldModule
   ]
 })
 export class HomeModule { }

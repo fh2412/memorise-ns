@@ -17,6 +17,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -24,6 +28,7 @@ import { MatListModule } from '@angular/material/list';
     BlankComponent,
     LogoutButtonComponent,
     MainNavComponent,
+    EditUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +40,10 @@ import { MatListModule } from '@angular/material/list';
     MatSidenavModule,
     MatIconModule,
     MatToolbarModule,
-    MatListModule
+    MatListModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

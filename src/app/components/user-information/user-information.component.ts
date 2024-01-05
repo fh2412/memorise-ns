@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-// import { MockUserService } from '../../services/mocks/MockUserService';
+import { MatDialog } from '@angular/material/dialog';
+import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class UserInformationComponent implements OnInit {
   currentUser: any;
   showEditForm = true;
 
-  constructor(private userService: UserService, private afAuth: AngularFireAuth) {}
+  constructor(private userService: UserService, private afAuth: AngularFireAuth,  public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.getUserInfo();
@@ -34,10 +35,16 @@ export class UserInformationComponent implements OnInit {
     });
   }
 
-  openEditForm(): void {
-    // Implement logic to open the edit form
-    // This might involve routing to another component or opening a dialog/modal
-    // You can use Angular Material Dialog for this purpose
-    // Example: this.dialog.open(EditFormComponent);
+  openEditDialog(): void {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '400px', // Adjust the width as needed
+      data: {name: this.currentUser.name, email: this.currentUser.email},
+    });
+
+    // Subscribe to afterClosed event to handle any actions after the dialog closes
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed', result);
+      this.currentUser = result;
+    });
   }
 }

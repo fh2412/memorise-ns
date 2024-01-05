@@ -1,0 +1,11 @@
+<h2 mat-dialog-title>Update User Data</h2>
+<mat-dialog-content class="mat-typography">
+  <h3>Email:</h3>
+    <mat-form-field>
+      <input matInput [(ngModel)]="userdata.email">
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Cancel</button>
+  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Update</button>
+</mat-dialog-actions>

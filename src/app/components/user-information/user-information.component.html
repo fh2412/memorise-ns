@@ -12,7 +12,7 @@
     <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
     <p>Location: {{ userdb.location || 'Not provided' }}</p>
 
-    <button *ngIf="showEditForm" mat-raised-button color="primary" (click)="openEditForm()">
+    <button *ngIf="showEditForm" mat-raised-button color="primary" (click)="openEditDialog()">
       Edit Information
     </button>
   </div>

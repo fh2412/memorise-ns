@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 // import { MockUserService } from '../../services/mocks/MockUserService';
 
 
@@ -9,26 +10,28 @@ import { UserService } from '../../services/userService';
   styleUrls: ['./user-information.component.css']
 })
 export class UserInformationComponent implements OnInit {
-  user: any;
+  userdb: any;
+  currentUser: any;
   showEditForm = true;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService, private afAuth: AngularFireAuth) {}
 
   ngOnInit(): void {
-    console.log('ngOnInit() was called');
     this.getUserInfo();
   }
 
   getUserInfo(): void {
-    this.userService.getUserByEmail('user2@example.com').subscribe(
-      (data) => {
-        this.user = data;
-        console.log("data:", data);
-      },
-      (error: any) => {
-        console.error('Error fetching user data:', error);
-      }
-    );
+    this.afAuth.authState.subscribe(user => {
+        this.currentUser = user;
+        this.userService.getUserByEmail(this.currentUser.email).subscribe(
+          (data) => {
+            this.userdb = data;
+          },
+          (error: any) => {
+            console.error('Error fetching user data:', error);
+          }
+        );
+    });
   }
 
   openEditForm(): void {

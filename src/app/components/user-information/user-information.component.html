@@ -1,4 +1,4 @@
-<mat-card class="user-card" *ngIf="user">
+<mat-card class="user-card" *ngIf="userdb">
   <h2>User Information</h2>
   <!-- Profile Picture -->
   <div class="profile-picture">
@@ -7,10 +7,10 @@
   
    <!-- User Information -->
   <div class="user-details">
-    <h3>Name: {{ user.name || 'Not provided' }}</h3>
-    <p>Age: {{ user.age || 'Not provided' }}</p>
-    <p>Gender: {{ user.gender || 'Not provided' }}</p>
-    <p>Location: {{ user.location || 'Not provided' }}</p>
+    <h3>Name: {{ userdb.name || 'Not provided' }}</h3>
+    <p>Age: {{ userdb.age || 'Not provided' }}</p>
+    <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
+    <p>Location: {{ userdb.location || 'Not provided' }}</p>
 
     <button *ngIf="showEditForm" mat-raised-button color="primary" (click)="openEditForm()">
       Edit Information

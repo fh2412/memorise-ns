@@ -15,7 +15,7 @@ ngOnInit() {
   this.afAuth.authState.subscribe(user => {
     if (user) {
       // User is signed in.
-      console.log(user);
+      console.log(user.email);
       // You can access user details like user.email, user.displayName, etc.
       this.currentUser = user;
     } else {

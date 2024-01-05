@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-// import { UserService } from '../../services/userService';
-import { MockUserService } from '../../services/mocks/MockUserService';
+import { UserService } from '../../services/userService';
+// import { MockUserService } from '../../services/mocks/MockUserService';
 
 
 @Component({
@@ -9,23 +9,21 @@ import { MockUserService } from '../../services/mocks/MockUserService';
   styleUrls: ['./user-information.component.css']
 })
 export class UserInformationComponent implements OnInit {
-  user: any; // Define your user data structure here
-  showEditForm = false;
+  user: any;
+  showEditForm = true;
 
-  constructor(private userService: MockUserService) {}
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
+    console.log('ngOnInit() was called');
     this.getUserInfo();
   }
 
   getUserInfo(): void {
-    this.userService.getUser().subscribe(
-      (userData: any) => {
-        this.user = userData;
-        // Check if any of the user information is missing
-        if (!userData.name || !userData.age || !userData.gender || !userData.location) {
-          this.showEditForm = true;
-        }
+    this.userService.getUserByEmail('user2@example.com').subscribe(
+      (data) => {
+        this.user = data;
+        console.log("data:", data);
       },
       (error: any) => {
         console.error('Error fetching user data:', error);

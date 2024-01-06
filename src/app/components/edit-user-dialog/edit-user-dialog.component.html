@@ -1,23 +1,30 @@
 <h2 mat-dialog-title>Update User Data</h2>
 <form [formGroup]="userForm" (ngSubmit)="saveChanges()">
   <mat-dialog-content class="dialog-content">
-    <mat-form-field class="form-field">
+    <mat-form-field appearance="fill" class="full-width">
       <mat-label>Name</mat-label>
       <input matInput placeholder="Max Muster" formControlName="name">
     </mat-form-field>
-    <mat-form-field class="form-field">
+    <br>
+    <mat-form-field class="full-width">
       <mat-label>Bio</mat-label>
-      <input matInput placeholder="My Bio" formControlName="bio">
+      <textarea matInput placeholder="My Bio" formControlName="bio"></textarea>
     </mat-form-field>
-    <mat-form-field class="form-field">
+    <br>
+    <mat-form-field class="full-width">
       <mat-label>Birthday</mat-label>
       <input matInput placeholder="24/12/2002" formControlName="dob">
     </mat-form-field>
-    <mat-form-field class="form-field">
+    <br>
+    <mat-form-field class="full-width">
       <mat-label>Gender</mat-label>
-      <input matInput placeholder="Male" formControlName="gender">
+      <mat-select formControlName="gender">
+        <mat-option value="Male">Male</mat-option>
+        <mat-option value="Female">Female</mat-option>
+      </mat-select>
     </mat-form-field>
-    <mat-form-field class="form-field">
+    <br>
+    <mat-form-field class="full-width">
       <mat-label>Country</mat-label>
       <input matInput placeholder="Austria" formControlName="location">
     </mat-form-field>

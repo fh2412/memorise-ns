@@ -14,6 +14,7 @@ export interface DialogData {
   // Component metadata
   selector: 'edit-user-dialog',
   templateUrl: 'edit-user-dialog.component.html',
+  styleUrls: ['edit-user-dialog.component.css']
 })
 export class EditUserDialogComponent {
   @Output() updateUserData = new EventEmitter<any>();
@@ -34,5 +35,6 @@ export class EditUserDialogComponent {
     const updatedUserData = this.userForm.value;
     this.updateUserData.emit(updatedUserData);
     this.dialogRef.close();
+    window.location.reload();
   }
 }

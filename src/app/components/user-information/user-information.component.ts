@@ -43,8 +43,16 @@ export class UserInformationComponent implements OnInit {
     // Subscribe to afterClosed event to handle any actions after the dialog closes
     dialogRef.componentInstance.updateUserData.subscribe((result: any) => {
       if (result) {
-        console.log('Updated User Data:', result);
-        // Perform actions with the updated user data
+        console.log(result);
+        this.userService.updateUser(this.userdb.user_id, result).subscribe(
+          (response) => {
+            console.log('User updated successfully:', response);
+          },
+          (error) => {
+            console.error('Error updating user:', error);
+            // Handle error scenarios if needed
+          }
+        );
       }
     });
   }

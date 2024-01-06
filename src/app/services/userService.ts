@@ -18,4 +18,9 @@ export class UserService {
   getUserByEmail(email: string) {
     return this.http.get<any>(`${this.apiUrl}/email/${email}`);
   }
+
+  updateUser(userId: string, userData: any): Observable<any> {
+    const url = `${this.apiUrl}/${userId}`;
+    return this.http.put<any>(url, userData);
+  }
 }

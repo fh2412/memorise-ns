@@ -38,13 +38,14 @@ export class UserInformationComponent implements OnInit {
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '400px', // Adjust the width as needed
-      data: {name: this.currentUser.name, email: this.currentUser.email},
+      data: {name: this.userdb.name, email: this.userdb.email, dob: this.userdb.formatted_dob, gender: this.userdb.gender, country: this.userdb.location},
     });
-
     // Subscribe to afterClosed event to handle any actions after the dialog closes
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
-      this.currentUser = result;
+    dialogRef.componentInstance.updateUserData.subscribe((result: any) => {
+      if (result) {
+        console.log('Updated User Data:', result);
+        // Perform actions with the updated user data
+      }
     });
   }
 }

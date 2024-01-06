@@ -1,9 +1,13 @@
-import { Component, Inject } from '@angular/core';
+import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface DialogData {
   name: string;
-  email: string;
+  bio: string;
+  dob: string;
+  gender: string;
+  country: string;
 }
 
 @Component({
@@ -12,16 +16,23 @@ export interface DialogData {
   templateUrl: 'edit-user-dialog.component.html',
 })
 export class EditUserDialogComponent {
+  @Output() updateUserData = new EventEmitter<any>();
+  userForm: FormGroup;
+
   constructor(public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public userdata: DialogData,) {}
+    @Inject(MAT_DIALOG_DATA) public userdata: DialogData, private fb: FormBuilder) {
+      this.userForm = this.fb.group({
+        name: userdata.name,
+        bio: userdata.bio,
+        dob: userdata.dob,
+        gender: userdata.gender,
+        location: userdata.country,
+      });
+    }
 
   saveChanges() {
-    // Save changes logic, for example, update the user's data
-    // You may want to call a service to update the user information
-    // For example:
-    // this.userService.updateUser(this.user).subscribe(() => {
-    //   this.dialogRef.close();
-    // });
-    this.dialogRef.close(); // Close the dialog after saving
+    const updatedUserData = this.userForm.value;
+    this.updateUserData.emit(updatedUserData);
+    this.dialogRef.close();
   }
 }

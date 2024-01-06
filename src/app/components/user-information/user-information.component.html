@@ -8,9 +8,9 @@
    <!-- User Information -->
   <div class="user-details">
     <h3>Name: {{ userdb.name || 'Not provided' }}</h3>
-    <p>Age: {{ userdb.age || 'Not provided' }}</p>
+    <p>DOB: {{ userdb.formatted_dob || 'Not provided' }}</p>
     <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
-    <p>Location: {{ userdb.location || 'Not provided' }}</p>
+    <p>Country: {{ userdb.location || 'Not provided' }}</p>
 
     <button *ngIf="showEditForm" mat-raised-button color="primary" (click)="openEditDialog()">
       Edit Information

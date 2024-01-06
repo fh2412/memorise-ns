@@ -1,11 +1,29 @@
 <h2 mat-dialog-title>Update User Data</h2>
-<mat-dialog-content class="mat-typography">
-  <h3>Email:</h3>
-    <mat-form-field>
-      <input matInput [(ngModel)]="userdata.email">
+<form [formGroup]="userForm" (ngSubmit)="saveChanges()">
+  <mat-dialog-content class="dialog-content">
+    <mat-form-field class="form-field">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Max Muster" formControlName="name">
     </mat-form-field>
-</mat-dialog-content>
-<mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-button [mat-dialog-close]="true" cdkFocusInitial>Update</button>
-</mat-dialog-actions>
+    <mat-form-field class="form-field">
+      <mat-label>Bio</mat-label>
+      <input matInput placeholder="My Bio" formControlName="bio">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Birthday</mat-label>
+      <input matInput placeholder="24/12/2002" formControlName="dob">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Gender</mat-label>
+      <input matInput placeholder="Male" formControlName="gender">
+    </mat-form-field>
+    <mat-form-field class="form-field">
+      <mat-label>Country</mat-label>
+      <input matInput placeholder="Austria" formControlName="location">
+    </mat-form-field>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button cdkFocusInitial type="submit">Update</button>
+  </mat-dialog-actions>
+</form>

@@ -1,0 +1,19 @@
+/* Styles for the dialog content */
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Spacing between form fields and button */
+    padding: 20px;
+  }
+  
+  /* Styles for form fields */
+  .form-field {
+    width: 100%;
+  }
+  
+  /* Styles for the password button */
+  .password-button {
+    width: fit-content; /* Adjust width to content */
+    align-self: flex-start; /* Align button to the start */
+  }
+  

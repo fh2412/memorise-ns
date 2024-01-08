@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MockMemoryService } from '../../services/mocks/MockMemoryService';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -8,9 +9,10 @@ import { MockMemoryService } from '../../services/mocks/MockMemoryService';
   styleUrl: './momorypreview.component.css'
 })
 export class MomorypreviewComponent {
+
   memories: any[] = [];; // Define your memory data structure here
 
-  constructor(private memoryService: MockMemoryService) {}
+  constructor(private memoryService: MockMemoryService, private router: Router) {}
 
   ngOnInit(): void {
     this.getmemoryInfo();
@@ -32,6 +34,10 @@ export class MomorypreviewComponent {
     // This might involve routing to another component or opening a dialog/modal
     // You can use Angular Material Dialog for this purpose
     // Example: this.dialog.open(EditFormComponent);
+  }
+
+  openMemory(memory: any) {
+    this.router.navigate(['/memory', memory.id]);
   }
 
 }

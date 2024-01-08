@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class MemoryService {
-  private apiUrl = 'https://your-api-url.com'; // Replace with your API endpoint
+  private apiUrl = 'http://localhost:3000/api'; // Replace with your API endpoint
 
   constructor(private http: HttpClient) {}
 
-  getMemory(): Observable<any> {
+  getMemory(memory_id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/memory`); // Adjust the endpoint according to your API
+    return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}`); // Adjust the endpoint according to your API
   }
 
   updateMemory(memoryData: any): Observable<any> {

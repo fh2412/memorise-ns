@@ -1,5 +1,5 @@
 <h1>Your memories</h1>
-<mat-card class="memory-card" *ngFor="let memory of memories">
+<mat-card class="memory-card" *ngFor="let memory of memories" (click)="openMemory(memory)">
     <!-- Title Picture -->
     <div class="title-picture">
       <img [src]="memory.image_url || 'https://via.placeholder.com/150'" alt="memory Image">

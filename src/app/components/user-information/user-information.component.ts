@@ -3,6 +3,7 @@ import { UserService } from '../../services/userService';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MatDialog } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
+import { ChangePasswordDialogComponent } from '../change-password-dialog/change-password-dialog.component';
 
 
 @Component({
@@ -54,6 +55,18 @@ export class UserInformationComponent implements OnInit {
             // Handle error scenarios if needed
           }
         );
+      }
+    });
+  }
+  openPassowrdChangeDialog(): void {
+    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
+      width: '40%', // Adjust the width as needed
+      data: {oldpw: 'test'},
+    });
+    // Subscribe to afterClosed event to handle any actions after the dialog closes
+    dialogRef.componentInstance.updateUserPassword.subscribe((result: any) => {
+      if (result) {
+        console.log(result);
       }
     });
   }

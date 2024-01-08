@@ -5,12 +5,16 @@ import { authGuard } from './auth.guard';
 const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule)
+    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
   },
   {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
     canActivate: [authGuard]
+  },
+  {
+    path: 'memory/:id',
+    loadChildren: () => import('./pages/memory-detail/memory-detail.module').then(m => m.MemoryModule),
   },
   {
     path: 'friends',

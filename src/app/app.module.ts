@@ -24,6 +24,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select'; 
+import { ChangePasswordDialogComponent } from './components/change-password-dialog/change-password-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import {MatSelectModule} from '@angular/material/select';
     BlankComponent,
     LogoutButtonComponent,
     MainNavComponent,
-    EditUserDialogComponent
+    EditUserDialogComponent,
+    ChangePasswordDialogComponent,
   ],
   imports: [
     BrowserModule,

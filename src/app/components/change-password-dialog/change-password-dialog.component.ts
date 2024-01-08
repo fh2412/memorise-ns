@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -9,7 +9,10 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
   styleUrls: ['./change-password-dialog.component.css']
 })
 export class ChangePasswordDialogComponent implements OnInit {
+  @Output() updateUserPassword = new EventEmitter<any>();
   changePasswordForm: FormGroup;
+  currentUser: any;
+
 
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
@@ -21,27 +24,38 @@ export class ChangePasswordDialogComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.afAuth.authState.subscribe(user => {
+      if (user) {
+        this.currentUser = user;
+      } else {
+        this.currentUser = null;
+      }
+    });  
+  }
 
   changePassword() {
-    if (this.changePasswordForm.valid) {
-      const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
-      const newPassword = this.changePasswordForm.get('newPassword')?.value;
+    const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
+    const newPassword = this.changePasswordForm.get('newPassword')?.value;
+    console.log(this.currentUser.email, newPassword);
 
-      // Firebase Authentication: Implement change password logic
-      const user = this.afAuth.currentUser;
-      if (user) {
-        user.updatePassword(newPassword)
+    this.currentUser.reauthenticateWithCredential(this.currentUser.email, currentPassword)
+      .then(() => {
+        this.currentUser.updatePassword(newPassword)
           .then(() => {
-            // Password updated successfully
-            this.dialogRef.close();
+            console.log('Password updated successfully');
+            // Password updated successfully, handle success
           })
           .catch((error: any) => {
-            // Handle password update error
-            console.error('Password update error:', error);
+            console.error('Error updating password:', error);
+            // Handle error updating password
           });
-      }
-    }
+      })
+      .catch((error: any) => {
+        console.error('Error reauthenticating user:', error);
+        // Handle error reauthenticating user
+      });
+      this.dialogRef.close();
   }
 
   closeDialog() {

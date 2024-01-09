@@ -6,6 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
+  private loggedInUserId: string | null = null;
+
+  setLoggedInUserId(userId: string): void {
+    this.loggedInUserId = userId;
+    console.log("loggedinUser set to:", this.loggedInUserId);
+  }
+  getLoggedInUserId(): string | null {
+    return this.loggedInUserId;
+  }
+  
   private apiUrl = 'http://localhost:3000/api/users'; // Replace with your API endpoint
 
   constructor(private http: HttpClient) {}

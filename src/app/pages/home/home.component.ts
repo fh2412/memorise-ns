@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AngularFireAuth} from '@angular/fire/compat/auth';
 import { UserService } from '../../services/userService';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { UserService } from '../../services/userService';
 export class HomeComponent {
   currentUser: any;
   userdb: any;
-  constructor(private afAuth: AngularFireAuth, private userService: UserService) {}
+  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router) {}
 
 ngOnInit() {
   this.setUserId();
@@ -32,5 +33,9 @@ setUserId(): void {
       }
     );
   });
+}
+
+addMemory() {
+  this.router.navigate(['/newmemory']);
 }
 }

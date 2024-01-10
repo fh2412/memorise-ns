@@ -15,6 +15,12 @@ const routes: Routes = [
   {
     path: 'memory/:id',
     loadChildren: () => import('./pages/memory-detail/memory-detail.module').then(m => m.MemoryModule),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'newmemory',
+    loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
+    canActivate: [authGuard]
   },
   {
     path: 'friends',

@@ -12,10 +12,10 @@
     <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
     <p>Country: {{ userdb.location || 'Not provided' }}</p>
 
-    <button *ngIf="showEditForm" mat-raised-button color="primary" (click)="openEditDialog()">
+    <button *ngIf="showEditForm" mat-stroked-button color="primary" (click)="openEditDialog()">
       Edit Information
     </button>
-    <button mat-raised-button color="primary" (click)="openPassowrdChangeDialog()">
+    <button mat-stroked-button color="primary" (click)="openPassowrdChangeDialog()">
       Change Password
     </button>
   </div>

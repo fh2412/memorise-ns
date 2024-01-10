@@ -23,3 +23,10 @@
     margin-left: 20%; /* Adjust to match the width of the fixed sidebar */
     /* Additional styles for the main content */
   }
+
+  .fixed-fab {
+    position: fixed; /* Position the button absolutely */
+    bottom: 20px; /* Adjust the bottom distance */
+    right: 20px; /* Adjust the right distance */
+    z-index: 1; /* Ensure it's above other elements */
+  }

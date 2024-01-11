@@ -4,6 +4,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MatDialog } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 import { ChangePasswordDialogComponent } from '../change-password-dialog/change-password-dialog.component';
+import { FileUploadService } from '../../services/file-upload.service';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class UserInformationComponent implements OnInit {
   currentUser: any;
   showEditForm = true;
 
-  constructor(private userService: UserService, private afAuth: AngularFireAuth,  public dialog: MatDialog) {}
+  constructor(private userService: UserService, private afAuth: AngularFireAuth,  public dialog: MatDialog, private fileUploadService: FileUploadService) {}
 
   ngOnInit(): void {
     this.getUserInfo();
@@ -69,5 +70,37 @@ export class UserInformationComponent implements OnInit {
         console.log(result);
       }
     });
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      // Usage in a component or service
+      this.fileUploadService.uploadProfilePicture(this.userdb.user_id, file).subscribe(
+        (uploadProgress: number | undefined) => {
+          console.log(`Upload Progress: ${uploadProgress}%`);
+        },
+        error => {
+          console.error('Error uploading profile picture:', error);
+        },
+        async () => {
+          const downloadURL = await this.fileUploadService.getProfilePictureUrl(this.userdb.user_id);
+          console.log('Profile picture uploaded successfully. URL:', downloadURL);
+          
+          // Now, save the downloadURL in your database
+          this.saveProfilePicUrlInDatabase(this.userdb.user_id, downloadURL);
+        }
+      );
+    }
+  }
+
+  saveProfilePicUrlInDatabase(userId: string, profilePicUrl: string): void {
+    // Assuming you have a user service to handle database operations
+    this.userService.updateUserProfilePic(userId, profilePicUrl)
+      .subscribe(
+        () => console.log('Profile picture URL saved in the database.'),
+        error => console.error('Error saving profile picture URL in the database:', error)
+      );
   }
 }

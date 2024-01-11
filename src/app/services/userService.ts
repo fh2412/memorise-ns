@@ -33,4 +33,11 @@ export class UserService {
     const url = `${this.apiUrl}/${userId}`;
     return this.http.put<any>(url, userData);
   }
+
+  updateUserProfilePic(userId: string, profilePicUrl: string) {
+    const url = `${this.apiUrl}/profilepic/${userId}`;
+    const body = { profilepic: profilePicUrl };
+
+    return this.http.put(url, body);
+  }
 }

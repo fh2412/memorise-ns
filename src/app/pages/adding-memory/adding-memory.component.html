@@ -1,28 +1,28 @@
   <mat-stepper linear #stepper>
     <mat-step [stepControl]="memoryDetailsForm">
       <form [formGroup]="memoryDetailsForm">
-        <ng-template matStepLabel>Fill out your name</ng-template>
-          <mat-form-field>
+        <ng-template matStepLabel>Details to your Memory</ng-template>
+          <mat-form-field appearance="outline">
             <mat-label>Title</mat-label>
             <input matInput placeholder="Title" name="title" formControlName="detailsCtrl" required>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field appearance="outline">
             <textarea matInput placeholder="Description" name="description"></textarea>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field appearance="outline">
             <input matInput [matDatepicker]="datepicker" placeholder="Date" name="date">
             <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
             <mat-datepicker #datepicker></mat-datepicker>
           </mat-form-field>
         
-          <mat-form-field>
+          <mat-form-field appearance="outline">
             <input matInput placeholder="Friends Attended With" name="friends">
             <button mat-icon-button (click)="openAddFriendsDialog()">
               <mat-icon>group_add</mat-icon>
             </button>
           </mat-form-field>
         
-          <mat-form-field>
+          <mat-form-field appearance="outline">
             <input matInput placeholder="Location" name="location">
           </mat-form-field>
         <div>
@@ -30,9 +30,9 @@
         </div>
       </form>
     </mat-step>
-    <mat-step [stepControl]="memoryPicturesForm" label="Fill out your address">
+    <mat-step [stepControl]="memoryPicturesForm" label="Upload Photos and Videos">
       <form [formGroup]="memoryPicturesForm">
-        <button mat-flat-button color="primary" (click)="uploadMedia()">Add Photos</button>
+        <app-image-upload></app-image-upload>
         <div>
           <button mat-button matStepperPrevious>Back</button>
           <button mat-button matStepperNext>Next</button>

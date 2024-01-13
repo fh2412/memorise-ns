@@ -102,5 +102,6 @@ export class UserInformationComponent implements OnInit {
         () => console.log('Profile picture URL saved in the database.'),
         error => console.error('Error saving profile picture URL in the database:', error)
       );
+    location.reload();
   }
 }

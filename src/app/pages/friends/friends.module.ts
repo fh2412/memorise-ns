@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { FriendsComponent } from './friends.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FriendPreviewComponent } from '../../friend-preview/friend-preview.component';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 const routes: Routes = [
   {
@@ -14,11 +18,16 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     FriendsComponent,
+    FriendPreviewComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
     MatCardModule,
+    MatFormFieldModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule
   ]
 })
 export class FriendsModule { }

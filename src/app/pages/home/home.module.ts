@@ -30,7 +30,7 @@ const routes: Routes = [
     MatCardModule,
     MatFormFieldModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
   ]
 })
 export class HomeModule { }

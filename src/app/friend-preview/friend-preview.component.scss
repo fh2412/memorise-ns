@@ -1,0 +1,45 @@
+/* friend-suggestion.component.css */
+  .profile-row {
+    display: flex;
+    align-items: center;
+    img {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 15px;
+    }
+    .desc {
+        color: rgba(0, 0, 0, 0.5);
+    }
+    button {
+      margin-left: 50px;
+      height: 45px;
+      width: 140px;
+    }
+  }
+
+
+  .request-button {
+    padding: 5px 10px; /* Padding for the button */
+    border-radius: 5px; /* Add some rounded corners */
+    cursor: pointer; /* Show pointer cursor on hover */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+    font-family: Arial, sans-serif; /* Custom font family */
+    display: flex; /* Enable flex layout */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    font-weight: bold; /* Make the text bold */
+  }
+  
+  /* Styles for the icon inside the button */
+  .request-icon {
+    margin-right: 5px; /* Add spacing between the icon and text */
+    font-size: 20px; /* Adjust icon size */
+    margin-top: 4px; /* Move the icon 2px lower */
+  }
+  
+  /* Hover effect */
+  .request-button:hover {
+    background-color: rgba(0, 0, 0, 0.05); /* Darken the background color on hover */
+  }

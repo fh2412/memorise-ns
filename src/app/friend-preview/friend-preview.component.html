@@ -1,0 +1,12 @@
+<div class="profile-row">
+    <img src="/assets/img/1.png">
+  
+    <div>
+        <b>Name</b><br><span class="desc">gender, age</span>
+    </div>
+    <button mat-stroked-button color="primary" class="request-button" (click)="requestFriend()" [disabled]="requested">
+        <mat-icon class="logout-icon">person_add</mat-icon>
+        {{ requested ? 'Requested' : 'Request' }}
+    </button>
+</div>
+  

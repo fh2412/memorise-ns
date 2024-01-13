@@ -1,9 +1,24 @@
-<div class="wrapper">
-    <div class="sticky-sidebar">
-      <p>just a test</p>
-    </div>
-    <div class="main-content">
-      <!-- Collection of cards or content -->
-    </div>
+<!-- friends.component.html -->
+
+<div class="friends-container">
+  <!-- Left side: Search Bar -->
+  <div class="search-bar">
+    <!-- Your search bar content goes here, you can use Angular Material components like mat-input
+    <mat-form-field>
+      <input matInput placeholder="Search for friends">
+    </mat-form-field> -->
+  </div>
+
+  <!-- Right side: Suggestions Card -->
+  <div class="suggestions-card">
+    <!-- Your card content goes here, you can use Angular Material card components -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Suggestions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-friend-preview></app-friend-preview>
+      </mat-card-content>
+    </mat-card>
+  </div>
 </div>
-  

@@ -1,8 +1,12 @@
 <mat-card class="user-card" *ngIf="userdb">
   <h2>User Information</h2>
   <!-- Profile Picture -->
-  <div class="profile-picture">
-    <img src="https://i0.gmx.at/image/046/37240046,pd=1,f=sdata43/keanu-reeves.jpg">
+  <div class="profile-picture-container">
+    <label for="fileInput" class="image-label">
+      <img src="https://i0.gmx.at/image/046/37240046,pd=1,f=sdata43/keanu-reeves.jpg" alt="Profile Picture" class="profile-picture">
+      <mat-icon class="change-icon">add_a_photo</mat-icon>
+    </label>
+    <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer" (change)="onFileChange($event)" />
   </div>
   
    <!-- User Information -->
@@ -18,7 +22,6 @@
     <button mat-stroked-button color="primary" (click)="openPassowrdChangeDialog()">
       Change Password
     </button>
-    <input type="file" accept="image/*" (change)="onFileChange($event)" />
   </div>
 </mat-card>
   

@@ -10,7 +10,7 @@ import { FileUploadService } from '../../services/file-upload.service';
 @Component({
   selector: 'app-user-information',
   templateUrl: './user-information.component.html',
-  styleUrls: ['./user-information.component.css']
+  styleUrls: ['./user-information.component.scss']
 })
 export class UserInformationComponent implements OnInit {
   userdb: any;

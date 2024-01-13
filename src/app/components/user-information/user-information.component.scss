@@ -1,0 +1,66 @@
+.user-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 300px; /* Adjust width as needed */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+  }
+
+  .user-details {
+    text-align: center;
+  }
+  
+  /* Adjust styles (colors, fonts, etc.) according to your application's design */
+// Container styles
+.profile-picture-container {
+  position: relative;
+  width: 150px; // Adjust the width as needed
+  height: 150px; // Adjust the height as needed
+  cursor: pointer;
+
+  // Profile picture styles
+  .profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Ensure the image covers the container without stretching
+    border-radius: 50%; // Make the image round
+    transition: filter 0.3s ease; // Add transition for smooth effect
+
+    // Hover effect
+    &:hover {
+      filter: grayscale(100%);
+      + .change-icon {
+        color: black; // Change color on hover
+        opacity: 1; // Make the icon fully visible on hover
+      }
+    }
+  }
+
+  // Change icon styles
+  .change-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: transparent; // Hide the text by default
+    font-size: 20px; // Adjust the font size as needed
+    opacity: 0; // Initially hide the icon
+    transition: color 0.3s ease, opacity 0.3s ease; // Add transitions for smooth effect
+
+    // Hover effect for the icon
+    .profile-picture-container:hover & {
+      filter: grayscale(100%);
+      opacity: 1; // Make the icon fully visible on hover
+    }
+  }
+  .image-label {
+    cursor: pointer; // Set the cursor to pointer
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+

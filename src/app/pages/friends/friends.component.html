@@ -3,10 +3,20 @@
 <div class="friends-container">
   <!-- Left side: Search Bar -->
   <div class="search-bar">
-    <!-- Your search bar content goes here, you can use Angular Material components like mat-input
-    <mat-form-field>
-      <input matInput placeholder="Search for friends">
-    </mat-form-field> -->
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Your Friends</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-friend-preview [buttonText]="'Remove'" [requestedText]="'Undo'" [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-preview>
+        <mat-divider></mat-divider>
+        <app-friend-preview></app-friend-preview>
+        <mat-divider></mat-divider>
+        <app-friend-preview></app-friend-preview>
+        <mat-divider></mat-divider>
+        <app-friend-preview></app-friend-preview>
+      </mat-card-content>
+    </mat-card>
   </div>
 
   <!-- Right side: Suggestions Card -->
@@ -17,7 +27,7 @@
         <mat-card-title>Suggestions</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <app-friend-preview></app-friend-preview>
+        <app-friend-preview [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-preview>
         <mat-divider></mat-divider>
         <app-friend-preview></app-friend-preview>
         <mat-divider></mat-divider>

@@ -4,9 +4,9 @@
     <div>
         <b>Name</b><br><span class="desc">gender, age</span>
     </div>
-    <button mat-stroked-button color="primary" class="request-button" (click)="requestFriend()" [disabled]="requested">
-        <mat-icon class="logout-icon">person_add</mat-icon>
-        {{ requested ? 'Requested' : 'Request' }}
+    <button mat-stroked-button [color]="buttonColor" class="request-button" (click)="requestFriend()" [ngClass]="{'enabled' : requested, 'disabled': !requested}">
+        <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
+        {{ requested ? requestedText : buttonText }}
     </button>
 </div>
   

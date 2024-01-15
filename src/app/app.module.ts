@@ -17,14 +17,15 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
-import { EditUserDialogComponent } from './components/edit-user-dialog/edit-user-dialog.component';
+import { EditUserDialogComponent } from './components/_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select'; 
-import { ChangePasswordDialogComponent } from './components/change-password-dialog/change-password-dialog.component';
+import { ChangePasswordDialogComponent } from './components/_dialogs/change-password-dialog/change-password-dialog.component';
+import { SeeAllFirendsDialogComponent } from './components/_dialogs/see-all-friends-dialog/see-all-firends-dialog.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { ChangePasswordDialogComponent } from './components/change-password-dial
     MainNavComponent,
     EditUserDialogComponent,
     ChangePasswordDialogComponent,
+    SeeAllFirendsDialogComponent,
   ],
   imports: [
     BrowserModule,

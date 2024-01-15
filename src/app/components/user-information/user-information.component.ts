@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { MatDialog } from '@angular/material/dialog';
-import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
-import { ChangePasswordDialogComponent } from '../change-password-dialog/change-password-dialog.component';
+import { EditUserDialogComponent } from '../_dialogs/edit-user-dialog/edit-user-dialog.component';
+import { ChangePasswordDialogComponent } from '../_dialogs/change-password-dialog/change-password-dialog.component';
 import { FileUploadService } from '../../services/file-upload.service';
 
 

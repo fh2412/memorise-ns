@@ -3,6 +3,9 @@
 .friends-container {
   display: flex;
   justify-content: space-between;
+  mat-card {
+    align-items: center;
+  }
 }
 
 .search-bar,

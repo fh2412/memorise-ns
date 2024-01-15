@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ChangePasswordDialogComponent } from '../change-password-dialog/change-password-dialog.component';
+import { ChangePasswordDialogComponent } from '../_dialogs/change-password-dialog/change-password-dialog.component';
 
 @Component({
   selector: 'app-change-password-button',

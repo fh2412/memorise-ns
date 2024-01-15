@@ -11,6 +11,7 @@ export class FriendPreviewComponent {
   @Input() requestedText: string = 'Requested';
   @Input() buttonColor: string = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
   @Input() buttonIcon: string = 'person_add'; // Use MatButton icon options
+  @Input() friend: any;
 
   requestFriend() {
     this.requested = !this.requested;

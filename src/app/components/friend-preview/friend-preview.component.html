@@ -1,8 +1,7 @@
 <div class="profile-row">
-    <img src="/assets/img/1.png">
-  
-    <div>
-        <b>Name</b><br><span class="desc">gender, age</span>
+    <img src="/assets/img/1.png"> 
+    <div class="text">
+        <b>{{friend.name}}</b><br><span class="desc">{{friend.dob}}, {{friend.gender}}</span>
     </div>
     <button mat-stroked-button [color]="buttonColor" class="request-button" (click)="requestFriend()" [ngClass]="{'enabled' : requested, 'disabled': !requested}">
         <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>

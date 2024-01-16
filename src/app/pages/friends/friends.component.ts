@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { FriendsService } from '../../services/friends.service';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-friends',
@@ -8,21 +10,41 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class FriendsComponent implements OnInit{
   friends: any[] = []; // Replace any with the actual type of your friends
+  friendSuggestions: any[] = [];
+  loggedInUserId: string | any;
 
-  constructor(private dialog: MatDialog) {}
+
+  constructor(private dialog: MatDialog, private friendsService: FriendsService, private userService: UserService) {}
 
   ngOnInit(): void {
-    // Fetch or set the list of friends
-    // Example:
-    this.friends = [
-      { name: 'Friend 1', dob: '1990-01-01', gender: 'Male' },
-      { name: 'Friend 2', dob: '1995-05-05', gender: 'Female' },
-      { name: 'Friend 3', dob: '1995-05-05', gender: 'Female' },
-      { name: 'Friend 4', dob: '1995-05-05', gender: 'Male' },
-      { name: 'Friend 5', dob: '1995-05-05', gender: 'Male' },
-      { name: 'Friend 6', dob: '1995-05-05', gender: 'Female' },
-    ];
+    this.getUserData();
   }
+
+  private async getUserData(){
+    // Fetch or set the list of friends
+    this.loggedInUserId = this.userService.getLoggedInUserId();
+    // Fetch user friends
+    this.friendsService.getUserFriends(this.loggedInUserId).subscribe(
+      (friends) => {
+        this.friends = friends;
+      },
+      (error) => {
+        console.error('Error fetching user friends:', error);
+      }
+    );
+
+    // Fetch friend suggestions
+    
+    this.friendsService.getFriendSuggestions(this.loggedInUserId).subscribe(
+      (suggestions) => {
+        this.friendSuggestions = suggestions;
+      },
+      (error) => {
+        console.error('Error fetching friend suggestions:', error);
+      }
+    );
+  }
+
 
   openSeeAllDialog(): void {
     //const dialogRef = this.dialog.open(SeeAllDialogComponent, {

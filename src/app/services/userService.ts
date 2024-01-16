@@ -7,13 +7,16 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
   private loggedInUserId: string | null = null;
+  private storageKey = 'loggedInUserId';
 
   setLoggedInUserId(userId: string): void {
     this.loggedInUserId = userId;
+    localStorage.setItem(this.storageKey, JSON.stringify(userId));
     console.log("loggedinUser set to:", this.loggedInUserId);
   }
   getLoggedInUserId(): string | null {
-    return this.loggedInUserId;
+    const storedValue = localStorage.getItem(this.storageKey);
+    return storedValue ? JSON.parse(storedValue) : null;
   }
   
   private apiUrl = 'http://localhost:3000/api/users'; // Replace with your API endpoint

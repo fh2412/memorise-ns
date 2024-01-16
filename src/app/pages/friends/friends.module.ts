@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
+import {MatTabsModule} from '@angular/material/tabs'; 
 
 const routes: Routes = [
   {
@@ -31,7 +32,8 @@ const routes: Routes = [
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
-    MatListModule
+    MatListModule,
+    MatTabsModule
   ]
 })
 export class FriendsModule { }

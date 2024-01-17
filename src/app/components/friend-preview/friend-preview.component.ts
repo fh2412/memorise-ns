@@ -57,7 +57,7 @@ export class FriendPreviewComponent {
     );
   }
 
-  sendFriendRequest(senderId: string, receiverId: string) {
+  sendFriendRequest(receiverId: string, senderId: string) {
     this.friendshipService.sendFriendRequest(senderId, receiverId).subscribe(
       response => {
         console.log('Friend request sent successfully', response);

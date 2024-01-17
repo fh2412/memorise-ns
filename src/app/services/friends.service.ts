@@ -13,28 +13,23 @@ export class FriendsService {
   constructor(private http: HttpClient) {}
 
   getUserFriends(userId: string): Observable<any[]> {
-    // Implement the logic to fetch user friends
-    // Use HttpClient to make a GET request to your backend
     return this.http.get<any[]>(`${this.apiUrl}/${userId}`);
   }
 
   getPendingFriends(userId: string): Observable<any[]> {
-    // Implement the logic to fetch user friends
-    // Use HttpClient to make a GET request to your backend
     return this.http.get<any[]>(`${this.apiUrl}/pending/${userId}`);
   }
 
   getIngoingFriends(userId: string): Observable<any[]> {
-    // Implement the logic to fetch user friends
-    // Use HttpClient to make a GET request to your backend
     return this.http.get<any[]>(`${this.apiUrl}/ingoing/${userId}`);
   }
 
   getFriendSuggestions(userId: string): Observable<any[]> {
-    // Implement the logic to fetch friend suggestions
-    // Use HttpClient to make a GET request to your backend
     return this.http.get<any[]>(`${this.apiUrl}/friend-suggestions/${userId}`);
   }
 
-  // Add more methods as needed (e.g., send friend request, accept/reject friend request)
+  acceptFriendRequest(userId1: string, userId2: string): Observable<any> {
+    const url = `${this.apiUrl}/accept_request/${userId1}/${userId2}`;
+    return this.http.put(url, {});
+  }
 }

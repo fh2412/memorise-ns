@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { FriendsService } from '../../services/friends.service';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-friend-preview',
@@ -12,9 +14,26 @@ export class FriendPreviewComponent {
   @Input() buttonColor: string = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
   @Input() buttonIcon: string = 'person_add'; // Use MatButton icon options
   @Input() friend: any;
+  loggedInUserId: any;
 
-  requestFriend(friend: any, methode: string) {
-    console.log(friend, methode);
+  constructor(private friendshipService: FriendsService, private userService: UserService) {}
+
+  async requestFriend(friend: any, methode: string) {
+    this.loggedInUserId = await this.userService.getLoggedInUserId();
+    if(methode == "Accept"){
+      this.acceptFriendRequest(friend.user_id, this.loggedInUserId);
+    }
     this.requested = !this.requested;
+  }
+
+  acceptFriendRequest(userId1: string, userId2: string) {
+    this.friendshipService.acceptFriendRequest(userId1, userId2).subscribe(
+      response => {
+        console.log('Friend request accepted successfully', response);
+      },
+      error => {
+        console.error('Error accepting friend request', error);
+      }
+    );
   }
 }

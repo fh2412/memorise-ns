@@ -38,4 +38,10 @@ export class FriendsService {
     return this.http.delete(url);
   }
   
+  sendFriendRequest(senderId: string, receiverId: string): Observable<any> {
+    const url = `${this.apiUrl}/send_request`;
+    const body = { senderId, receiverId };
+    return this.http.post(url, body);
+  }
+  
 }

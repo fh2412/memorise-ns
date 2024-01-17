@@ -29,6 +29,9 @@ export class FriendPreviewComponent {
     if(methode == "Request" && req == true){
       this.removeFriend(friend.user_id, this.loggedInUserId);
     }
+    if(methode == "Request" && req == false){
+      this.sendFriendRequest(friend.user_id, this.loggedInUserId);
+    }
     this.requested = !this.requested;
   }
 
@@ -50,6 +53,17 @@ export class FriendPreviewComponent {
       },
       error => {
         console.error('Error removing friend', error);
+      }
+    );
+  }
+
+  sendFriendRequest(senderId: string, receiverId: string) {
+    this.friendshipService.sendFriendRequest(senderId, receiverId).subscribe(
+      response => {
+        console.log('Friend request sent successfully', response);
+      },
+      error => {
+        console.error('Error sending friend request', error);
       }
     );
   }

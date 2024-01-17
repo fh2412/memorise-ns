@@ -18,12 +18,15 @@ export class FriendPreviewComponent {
 
   constructor(private friendshipService: FriendsService, private userService: UserService) {}
 
-  async requestFriend(friend: any, methode: string) {
+  async requestFriend(friend: any, methode: string, req: boolean) {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if(methode == "Accept"){
       this.acceptFriendRequest(friend.user_id, this.loggedInUserId);
     }
     if(methode == "Remove"){
+      this.removeFriend(friend.user_id, this.loggedInUserId);
+    }
+    if(methode == "Request" && req == true){
       this.removeFriend(friend.user_id, this.loggedInUserId);
     }
     this.requested = !this.requested;

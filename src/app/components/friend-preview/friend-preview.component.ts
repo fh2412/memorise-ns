@@ -23,6 +23,9 @@ export class FriendPreviewComponent {
     if(methode == "Accept"){
       this.acceptFriendRequest(friend.user_id, this.loggedInUserId);
     }
+    if(methode == "Remove"){
+      this.removeFriend(friend.user_id, this.loggedInUserId);
+    }
     this.requested = !this.requested;
   }
 
@@ -33,6 +36,17 @@ export class FriendPreviewComponent {
       },
       error => {
         console.error('Error accepting friend request', error);
+      }
+    );
+  }
+
+  removeFriend(userId1: string, userId2: string) {
+    this.friendshipService.removeFriend(userId1, userId2).subscribe(
+      response => {
+        console.log('Friend removed successfully', response);
+      },
+      error => {
+        console.error('Error removing friend', error);
       }
     );
   }

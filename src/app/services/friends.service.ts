@@ -32,4 +32,10 @@ export class FriendsService {
     const url = `${this.apiUrl}/accept_request/${userId1}/${userId2}`;
     return this.http.put(url, {});
   }
+
+  removeFriend(userId1: string, userId2: string): Observable<any> {
+    const url = `${this.apiUrl}/remove_friend/${userId1}/${userId2}`;
+    return this.http.delete(url);
+  }
+  
 }

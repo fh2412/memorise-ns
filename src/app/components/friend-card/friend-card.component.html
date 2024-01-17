@@ -1,0 +1,19 @@
+<mat-card>
+    <mat-card-header>
+      <mat-card-title>{{title}}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content *ngIf="friends.length > 0; else noFriends">
+      <!-- friends-list.component.html -->
+      <mat-list>
+        <ng-container *ngFor="let friend of friends.slice(0, 5); let last = last">
+          <app-friend-preview [friend]="friend" [requested]="requested" [buttonText]="buttonText" [requestedText]="requestedText" [buttonColor]="buttonColor" [buttonIcon]="buttonIcon"></app-friend-preview>
+          <mat-divider *ngIf="!last"></mat-divider>
+        </ng-container>
+      </mat-list>
+      <button mat-raised-button color="primary" *ngIf="friends.length > 5" (click)="openSeeAllDialog()">See All</button>
+    </mat-card-content>
+    <ng-template #noFriends>
+      <!-- Display "No friends" text when there are no friends -->
+      <p>You got no {{title}} :)</p>
+    </ng-template>
+  </mat-card>

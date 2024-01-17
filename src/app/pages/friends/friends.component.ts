@@ -8,11 +8,13 @@ import { UserService } from '../../services/userService';
   templateUrl: './friends.component.html',
   styleUrl: './friends.component.scss'
 })
+
 export class FriendsComponent implements OnInit{
   friends: any[] = []; // Replace any with the actual type of your friends
   friendSuggestions: any[] = [];
+  pendingFriends: any[] = [];
+  ingoingFriends: any[] = [];
   loggedInUserId: string | any;
-
 
   constructor(private dialog: MatDialog, private friendsService: FriendsService, private userService: UserService) {}
 
@@ -34,13 +36,30 @@ export class FriendsComponent implements OnInit{
     );
 
     // Fetch friend suggestions
-    
     this.friendsService.getFriendSuggestions(this.loggedInUserId).subscribe(
       (suggestions) => {
         this.friendSuggestions = suggestions;
       },
       (error) => {
         console.error('Error fetching friend suggestions:', error);
+      }
+    );
+
+    this.friendsService.getPendingFriends(this.loggedInUserId).subscribe(
+      (friends) => {
+        this.pendingFriends = friends;
+      },
+      (error) => {
+        console.error('Error fetching user friends:', error);
+      }
+    );
+
+    this.friendsService.getIngoingFriends(this.loggedInUserId).subscribe(
+      (friends) => {
+        this.ingoingFriends = friends;
+      },
+      (error) => {
+        console.error('Error fetching user friends:', error);
       }
     );
   }

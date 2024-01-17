@@ -18,6 +18,18 @@ export class FriendsService {
     return this.http.get<any[]>(`${this.apiUrl}/${userId}`);
   }
 
+  getPendingFriends(userId: string): Observable<any[]> {
+    // Implement the logic to fetch user friends
+    // Use HttpClient to make a GET request to your backend
+    return this.http.get<any[]>(`${this.apiUrl}/pending/${userId}`);
+  }
+
+  getIngoingFriends(userId: string): Observable<any[]> {
+    // Implement the logic to fetch user friends
+    // Use HttpClient to make a GET request to your backend
+    return this.http.get<any[]>(`${this.apiUrl}/ingoing/${userId}`);
+  }
+
   getFriendSuggestions(userId: string): Observable<any[]> {
     // Implement the logic to fetch friend suggestions
     // Use HttpClient to make a GET request to your backend

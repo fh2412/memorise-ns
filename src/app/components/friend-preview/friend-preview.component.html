@@ -3,7 +3,7 @@
     <div class="text">
         <b>{{friend.name || "name"}}</b><br><span class="desc">{{friend.dob || "dob"}}, {{friend.gender || "gender"}}</span>
     </div>
-    <button mat-stroked-button [color]="buttonColor" class="request-button" (click)="requestFriend()" [ngClass]="{'enabled' : requested, 'disabled': !requested}">
+    <button mat-stroked-button [color]="buttonColor" class="request-button" (click)="requestFriend(friend, buttonText)" [ngClass]="{'enabled' : requested, 'disabled': !requested}">
         <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
         {{ requested ? requestedText : buttonText }}
     </button>

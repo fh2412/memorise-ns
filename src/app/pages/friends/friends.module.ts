@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import {MatTabsModule} from '@angular/material/tabs'; 
+import { FriendCardComponent } from '../../components/friend-card/friend-card.component';
 
 const routes: Routes = [
   {
@@ -21,7 +22,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     FriendsComponent,
-    FriendPreviewComponent
+    FriendPreviewComponent,
+    FriendCardComponent
   ],
   imports: [
     CommonModule,

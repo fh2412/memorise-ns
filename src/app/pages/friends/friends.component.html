@@ -42,6 +42,14 @@
     </div>
   </mat-tab>
   <mat-tab label="Pending/Requested">
-
+    <div class="friends-container">
+      <!-- Left side: Search Bar -->
+      <div class="search-bar" *ngIf="pendingFriends">
+        <app-friend-card [friends]="pendingFriends" [title]="'Pending Requests'" [requested]='true' [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-card>
+      </div>
+      <div class="suggestions-card" *ngIf="ingoingFriends">
+        <app-friend-card [friends]="ingoingFriends" [title]="'Ingoing Requests'" [buttonText]="'Accept'" [requestedText]="'Accepted'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-card>
+      </div>
+    </div>
   </mat-tab>
 </mat-tab-group>

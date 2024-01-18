@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
 
 @Component({
   selector: 'app-adding-memory',
@@ -23,8 +24,14 @@ export class AddingMemoryComponent {
     // Implement media upload logic here
     console.log('Media upload method called');
   }
-  openAddFriendsDialog(): void {
-    // Logic to open dialog for adding friends
-    // Use MatDialog to open a dialog for selecting friends
+  openAddFriendDialog() {
+    const dialogRef = this.dialog.open(MemoryAddFriendDialogComponent, {
+      width: '400px', // Adjust the width as needed
+    });
+
+    // You can subscribe to the afterClosed event to perform actions when the dialog is closed
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+    });
   }
 }

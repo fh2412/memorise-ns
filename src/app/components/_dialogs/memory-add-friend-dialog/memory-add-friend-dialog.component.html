@@ -1,0 +1,34 @@
+<mat-form-field class="example-full-width">
+  <mat-label>Search</mat-label>
+  <input matInput [formControl]="search">
+</mat-form-field>
+
+<mat-selection-list #friends (selectionChange)="selectionChange($event.options[0])">
+  <mat-list-option *ngFor="let friend of $search|async" [value]="friend"
+    [selected]="friendsControl.value &&friendsControl.value?.indexOf(friend)>=0">
+    {{friend}}
+  </mat-list-option>
+</mat-selection-list>
+
+<p>
+  Choosen Friends: {{friendsControl.value?.length}}
+  {{friendsControl.value|json}}
+</p>
+<mat-chip-grid #chipGrid aria-label="Enter fruits">
+  @for (friend of friendsControl.value; track friend) {
+    <mat-chip-row>
+      {{friend}}
+      <button matChipRemove [attr.aria-label]="'remove ' + friend">
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip-row>
+  }
+</mat-chip-grid>
+
+<!-- Copyright 2019 Google LLC. All Rights Reserved.
+    Use of this source code is governed by an MIT-style license that
+    can be found in the LICENSE file at http://angular.io/license -->
+<div class="buttons">
+  <button mat-button (click)="closeDialog()">Close</button>
+  <button mat-button (click)="saveDialog()">Save</button>
+</div>

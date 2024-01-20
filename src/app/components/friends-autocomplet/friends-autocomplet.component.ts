@@ -16,7 +16,7 @@ import { UserService } from '../../services/userService';
 })
 export class FriendsAutocompletComponent {
   allfriends: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];
-  separatorKeysCodes: number[] = [ENTER, COMMA];
+  separatorKeysCodes: number[] = [];
   friendCtrl = new FormControl('');
   filteredfriends: Observable<string[]> | undefined;
   friends: string[] = [];
@@ -52,23 +52,12 @@ export class FriendsAutocompletComponent {
   }
   
   async ngOnInit() {
-    console.log("constructor");
     await this.getFriends();
   }
   
   constructor(private friendsService: FriendsService, private userService: UserService) {
     this.ngOnInit();
   }
-
-  /*constructor(private friendsService: FriendsService, private userService: UserService) {
-    console.log("constructpr");
-    this.getFriends();
-    console.log(this.allfriends);
-    this.filteredfriends = this.friendCtrl.valueChanges.pipe(
-      startWith(null),
-      map((friend: string | null) => (friend ? this._filter(friend) : this.allfriends.slice())),
-    );
-  }*/
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
@@ -103,6 +92,6 @@ export class FriendsAutocompletComponent {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allfriends.filter(friend => friend.toLowerCase().includes(filterValue));
+    return this.allfriends.filter((friend) => friend.toLowerCase().includes(filterValue));
   }
 }

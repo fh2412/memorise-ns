@@ -37,7 +37,11 @@ export class FriendsAutocompletComponent {
           // Move the logic that depends on this.allfriends here
           this.filteredfriends = this.friendCtrl.valueChanges.pipe(
             startWith(null),
-            map((friend: string | null) => (friend ? this._filter(friend) : this.allfriends.slice())),
+            map((friend: string | null) => {
+              const filterValue = friend ? friend.toLowerCase() : '';
+              return this.allfriends
+                .filter((f) => f.toLowerCase().includes(filterValue) && !this.friends.includes(f));
+            })
           );
   
           console.log("Friends fetched:", this.allfriends);
@@ -87,11 +91,5 @@ export class FriendsAutocompletComponent {
     this.friends.push(event.option.viewValue);
     this.friendInput.nativeElement.value = '';
     this.friendCtrl.setValue(null);
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    return this.allfriends.filter((friend) => friend.toLowerCase().includes(filterValue));
   }
 }

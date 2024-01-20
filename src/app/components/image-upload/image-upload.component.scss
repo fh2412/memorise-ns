@@ -1,0 +1,22 @@
+.preview {
+  max-width: 300px; 
+  height: auto; 
+  margin: 5px; 
+}
+
+.button-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.image-show {
+  width: 100%;
+  background-color: red;
+}
+
+.upload-button{
+  margin-left: 0px;
+}
+  

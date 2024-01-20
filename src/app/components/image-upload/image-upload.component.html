@@ -1,34 +1,37 @@
-<div *ngFor="let progressInfo of progressInfos" class="mb-2">
+<div *ngFor="let progressInfo of progressInfos">
     <span>{{ progressInfo.fileName }}</span>
     <mat-progress-bar
       mode="determinate"
       [value]="progressInfo.value"
       class="mb-2"
     ></mat-progress-bar>
-  </div>
+</div>
   
-  <div class="row">
-    <div class="col-8">
-      <label class="mat-button">
+  <div class="button-div">
+    <div>
+      <button mat-raised-button color="primary" (click)="fileInput.click()">
+        <mat-icon>folder</mat-icon>
+        <span>Select Files</span>
         <input
+          #fileInput
           type="file"
           accept="image/*"
           multiple
           (change)="selectFiles($event)"
           style="display: none"
         />
-        Select Files
-      </label>
+      </button>    
     </div>
   
-    <div class="col-4">
+    <div class="upload-button">
       <button
         mat-raised-button
         color="primary"
         [disabled]="!selectedFiles"
         (click)="uploadFiles()"
       >
-        Upload
+      <mat-icon>file_upload</mat-icon>
+      <span>Upload</span>
       </button>
     </div>
   </div>
@@ -37,19 +40,9 @@
     <img *ngFor="let preview of previews" [src]="preview" class="preview" />
   </div>
   
-  <div *ngIf="message.length" class="mat-alert my-3">
+  <div *ngIf="message.length" class="image-show">
     <ul *ngFor="let msg of message; let i = index">
       <li>{{ msg }}</li>
     </ul>
   </div>
-  
-  <mat-card class="mt-3">
-    <mat-card-header>List of Images</mat-card-header>
-    <mat-list>
-      <mat-list-item *ngFor="let image of imageInfos | async">
-        <p><a [href]="image.url" target="_blank">{{ image.name }}</a></p>
-        <img mat-list-avatar [src]="image.url" alt="{{ image.name }}" height="80px" />
-      </mat-list-item>
-    </mat-list>
-  </mat-card>
   

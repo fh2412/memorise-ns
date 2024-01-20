@@ -5,9 +5,14 @@ h1 {
     margin-bottom: 20px;
   }
   
-  form {
+  .details-form {
     max-width: 400px;
     margin: 0 auto;
+  }
+  .images-form {
+    max-width: 75%;
+    margin: 0 auto;
+    background-color: rgba(0, 0, 0, 0.1);
   }
   
   mat-form-field {
@@ -18,4 +23,3 @@ h1 {
   button {
     margin-top: 15px;
   }
-  

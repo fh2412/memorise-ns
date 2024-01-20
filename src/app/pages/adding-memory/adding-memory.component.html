@@ -1,6 +1,6 @@
   <mat-stepper linear #stepper>
     <mat-step [stepControl]="memoryDetailsForm">
-      <form [formGroup]="memoryDetailsForm">
+      <form [formGroup]="memoryDetailsForm" class="details-form">
         <ng-template matStepLabel>Details to your Memory</ng-template>
           <mat-form-field appearance="outline">
             <mat-label>Title</mat-label>
@@ -31,7 +31,7 @@
       </form>
     </mat-step>
     <mat-step [stepControl]="memoryPicturesForm" label="Upload Photos and Videos">
-      <form [formGroup]="memoryPicturesForm">
+      <form [formGroup]="memoryPicturesForm" class="images-form">
         <app-image-upload></app-image-upload>
         <div>
           <button mat-button matStepperPrevious>Back</button>

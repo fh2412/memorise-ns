@@ -23,7 +23,7 @@ const routes: Routes = [
   declarations: [
     FriendsComponent,
     FriendPreviewComponent,
-    FriendCardComponent
+    FriendCardComponent,
   ],
   imports: [
     CommonModule,
@@ -35,7 +35,7 @@ const routes: Routes = [
     MatIconModule,
     MatDividerModule,
     MatListModule,
-    MatTabsModule
+    MatTabsModule,
   ]
 })
 export class FriendsModule { }

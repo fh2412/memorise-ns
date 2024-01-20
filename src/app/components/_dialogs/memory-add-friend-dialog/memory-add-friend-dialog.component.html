@@ -18,16 +18,13 @@
   @for (friend of friendsControl.value; track friend) {
     <mat-chip-row>
       {{friend}}
-      <button matChipRemove [attr.aria-label]="'remove ' + friend">
+      <button matChipRemove [attr.aria-label]="'remove ' + friend" (click)="removeFriend(friend)">
         <mat-icon>cancel</mat-icon>
       </button>
     </mat-chip-row>
   }
 </mat-chip-grid>
 
-<!-- Copyright 2019 Google LLC. All Rights Reserved.
-    Use of this source code is governed by an MIT-style license that
-    can be found in the LICENSE file at http://angular.io/license -->
 <div class="buttons">
   <button mat-button (click)="closeDialog()">Close</button>
   <button mat-button (click)="saveDialog()">Save</button>

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { AddingMemoryComponent } from './adding-memory.component';
@@ -17,6 +17,8 @@ import { MatListModule } from '@angular/material/list';
 import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
+import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 const routes: Routes = [
   {
     path: '',
@@ -29,6 +31,7 @@ const routes: Routes = [
     AddingMemoryComponent,
     ImageUploadComponent,
     MemoryAddFriendDialogComponent,
+    FriendsAutocompletComponent
   ],
   imports: [
     CommonModule,
@@ -46,7 +49,9 @@ const routes: Routes = [
     MatListModule,
     MatDialogModule,
     FormsModule,
-    MatChipsModule
+    MatChipsModule,
+    MatAutocompleteModule,
+    AsyncPipe,
   ]
 })
 export class AddingMemoryModule {}

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
+import { MemoryService } from '../../services/memory.service';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-adding-memory',
@@ -9,16 +11,30 @@ import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory
   styleUrl: './adding-memory.component.css'
 })
 export class AddingMemoryComponent {  
-  memoryDetailsForm = this.formBuilder.group({
-    detailsCtrl: ['', Validators.required],
-  });
-  memoryPicturesForm = this.formBuilder.group({
-    firstCtrl: ['', Validators.required],
-  });
-
-  constructor(private formBuilder: FormBuilder, public dialog: MatDialog) {}
-
-
+  //memoryDetailsForm = this.formBuilder.group({
+  //  detailsCtrl: ['', Validators.required],
+  //});
+  //memoryPicturesForm = this.formBuilder.group({
+  //  firstCtrl: ['', Validators.required],
+  //});
+  memoryForm: FormGroup;
+  userId: string | null | undefined;
+  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService) {
+    this.memoryForm = this.formBuilder.group({
+      creator_id: [this.userId], // replace with actual creator ID
+      title: ['', Validators.required],
+      description: [''],
+      firestore_bucket_url: [''],
+      location_id: ['456'], // replace with actual location ID
+      memory_date: [''], // replace with actual date
+    });
+  }
+  async ngOnInit() {
+    await this.userService.userId$.subscribe((userId) => {
+      this.userId = userId;
+    });
+    this.memoryForm.patchValue({ creator_id: this.userId });
+  }
   uploadMedia(): void {
     // Placeholder method for media upload
     // Implement media upload logic here
@@ -33,5 +49,25 @@ export class AddingMemoryComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
+  }
+
+  createMemory() {
+    if (this.memoryForm.valid) {
+      const memoryData = this.memoryForm.value;
+      console.log(memoryData);
+      /*this.memoryService.createMemory(memoryData).subscribe(
+        (response) => {
+          console.log('Memory created successfully:', response);
+          // Handle success (e.g., show a success message to the user)
+        },
+        (error) => {
+          console.error('Error creating memory:', error);
+          // Handle error (e.g., show an error message to the user)
+        }
+      );*/
+    } else {
+      // Handle form validation errors if needed
+      console.error('Form is not valid. Please fill in all required fields.');
+    }
   }
 }

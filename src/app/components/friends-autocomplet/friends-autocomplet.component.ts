@@ -43,8 +43,6 @@ export class FriendsAutocompletComponent {
                 .filter((f) => f.toLowerCase().includes(filterValue) && !this.friends.includes(f));
             })
           );
-  
-          console.log("Friends fetched:", this.allfriends);
         },
         (error) => {
           console.error('Error fetching user friends:', error);

@@ -24,4 +24,8 @@ export class MemoryService {
     // Implement the logic to update user data in your backend API
     return this.http.put<any>(`${this.apiUrl}/memory`, memoryData); // Adjust the endpoint and request payload
   }
+
+  createMemory(memoryData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/memories/createMemory`, memoryData);
+  }
 }

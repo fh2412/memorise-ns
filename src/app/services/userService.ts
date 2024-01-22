@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +8,12 @@ import { Observable } from 'rxjs';
 export class UserService {
   private loggedInUserId: string | null = null;
   private storageKey = 'loggedInUserId';
+  private userIdSource = new BehaviorSubject<string | null>(null);
+  userId$ = this.userIdSource.asObservable();
 
   setLoggedInUserId(userId: string): void {
     this.loggedInUserId = userId;
+    this.userIdSource.next(userId);
     localStorage.setItem(this.storageKey, JSON.stringify(userId));
     console.log("loggedinUser set to:", this.loggedInUserId);
   }

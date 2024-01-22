@@ -1,16 +1,16 @@
   <mat-stepper linear #stepper>
-    <mat-step [stepControl]="memoryDetailsForm">
-      <form [formGroup]="memoryDetailsForm" class="details-form">
+    <mat-step [stepControl]="memoryForm">
+      <form [formGroup]="memoryForm" class="details-form">
         <ng-template matStepLabel>Details to your Memory</ng-template>
           <mat-form-field appearance="outline">
             <mat-label>Title</mat-label>
-            <input matInput placeholder="Title" name="title" formControlName="detailsCtrl" required>
+            <input matInput placeholder="Title" name="title" formControlName="title" required>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <textarea matInput placeholder="Description" name="description"></textarea>
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
           </mat-form-field>
           <mat-form-field appearance="outline">
-            <input matInput [matDatepicker]="datepicker" placeholder="Date" name="date">
+            <input matInput [matDatepicker]="datepicker" placeholder="Date" formControlName="memory_date">
             <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
             <mat-datepicker #datepicker></mat-datepicker>
           </mat-form-field>
@@ -23,19 +23,19 @@
           </mat-form-field>-->
           <app-friends-autocomplet></app-friends-autocomplet>
           <mat-form-field appearance="outline">
-            <input matInput placeholder="Location" name="location">
+            <input matInput placeholder="Location" name="location" [disabled]="true">
           </mat-form-field>
         <div>
           <button mat-button matStepperNext>Next</button>
         </div>
       </form>
     </mat-step>
-    <mat-step [stepControl]="memoryPicturesForm" label="Upload Photos and Videos">
-      <form [formGroup]="memoryPicturesForm" class="images-form">
+    <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
+      <form [formGroup]="memoryForm" class="images-form">
         <app-image-upload></app-image-upload>
         <div>
           <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
+          <button mat-button (click)="createMemory()">Submit</button>
         </div>
       </form>
     </mat-step>

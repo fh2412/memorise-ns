@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileUploadService } from '../../services/file-upload.service';
+import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-image-upload',
@@ -9,6 +11,7 @@ import { FileUploadService } from '../../services/file-upload.service';
   styleUrls: ['./image-upload.component.scss']
 })
 export class ImageUploadComponent implements OnInit {
+  @Input() userId: any;
   selectedFiles?: FileList;
   progressInfos: any[] = [];
   message: string[] = [];
@@ -16,7 +19,7 @@ export class ImageUploadComponent implements OnInit {
   previews: string[] = [];
   imageInfos?: Observable<any>;
 
-  constructor(private uploadService: FileUploadService) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog) { }
 
 
   selectFiles(event: any): void {
@@ -52,7 +55,8 @@ export class ImageUploadComponent implements OnInit {
   }
 
   upload(idx: number, file: File): void {
-    this.progressInfos[idx] = { value: 0, fileName: file.name };
+    this.openUploadDialog();
+    /*this.progressInfos[idx] = { value: 0, fileName: file.name };
   
     if (file) {
       this.uploadService.upload(file).subscribe({
@@ -70,12 +74,27 @@ export class ImageUploadComponent implements OnInit {
           const msg = 'Could not upload the file: ' + file.name;
           this.message.push(msg);
         }});
-    }
+    }*/
   }
   
   
   ngOnInit(): void {
     this.imageInfos = this.uploadService.getFiles();
+  }
+
+  openUploadDialog() {
+    const filesArray: File[] = Array.from(this.selectedFiles || []);
+    const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
+      width: '300px',
+      disableClose: true, // Prevent closing the dialog by clicking outside
+      data: { userId: this.userId, files: filesArray },
+    });
+
+    // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
+    dialogRef.afterClosed().subscribe((result) => {
+      console.log('Dialog closed with result:', result);
+      // Handle any actions after the dialog is closed
+    });
   }
   
 }

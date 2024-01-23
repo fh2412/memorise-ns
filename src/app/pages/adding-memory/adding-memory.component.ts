@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
 import { MemoryService } from '../../services/memory.service';
 import { UserService } from '../../services/userService';
 
@@ -11,12 +10,7 @@ import { UserService } from '../../services/userService';
   styleUrl: './adding-memory.component.css'
 })
 export class AddingMemoryComponent {  
-  //memoryDetailsForm = this.formBuilder.group({
-  //  detailsCtrl: ['', Validators.required],
-  //});
-  //memoryPicturesForm = this.formBuilder.group({
-  //  firstCtrl: ['', Validators.required],
-  //});
+
   memoryForm: FormGroup;
   userId: string | null | undefined;
   constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService) {
@@ -40,7 +34,7 @@ export class AddingMemoryComponent {
     // Implement media upload logic here
     console.log('Media upload method called');
   }
-  openAddFriendDialog() {
+  /*openAddFriendDialog() {
     const dialogRef = this.dialog.open(MemoryAddFriendDialogComponent, {
       width: '400px', // Adjust the width as needed
     });
@@ -49,7 +43,7 @@ export class AddingMemoryComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed');
     });
-  }
+  }*/
 
   createMemory() {
     if (this.memoryForm.valid) {

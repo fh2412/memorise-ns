@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, forkJoin, map } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask  } from '@angular/fire/compat/storage';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class FileUploadService {
 
   private baseUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient, private storage: AngularFireStorage) { }
+  constructor(private http: HttpClient, private storage: AngularFireStorage) {}
 
   upload(file: File): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
@@ -44,4 +44,48 @@ export class FileUploadService {
 
     return ref.getDownloadURL().toPromise();
   }
+
+  /*uploadMemoryPictures(memoryId: string, files: File[]): Observable<number[]> {
+    const uploadTasks: AngularFireUploadTask[] = [];
+    const progressObservables: Observable<number>[] = [];
+
+    // Upload each file
+    files.forEach((file, index) => {
+      const path = `memories/${memoryId}/picture_${index + 1}.jpg`; // adjust the path as needed
+      const ref = this.storage.ref(path);
+      const task: AngularFireUploadTask = ref.put(file);
+      
+      uploadTasks.push(task);
+      progressObservables.push(task.percentageChanges());
+    });
+
+    // Combine progress observables using forkJoin
+    const combinedProgress$ = forkJoin(progressObservables);
+
+    // Return the combined progress observable
+    return combinedProgress$;
+  }*/
+  uploadMemoryPictures(memoryId: string, files: File[]): Observable<number[]> {
+    const uploadTasks: AngularFireUploadTask[] = [];
+    const progressObservables: Observable<number | undefined>[] = [];
+
+    // Upload each file
+    files.forEach((file, index) => {
+      const path = `memories/${memoryId}/picture_${index + 1}.jpg`; // adjust the path as needed
+      const ref = this.storage.ref(path);
+      const task: AngularFireUploadTask = ref.put(file);
+
+      uploadTasks.push(task);
+      progressObservables.push(task.percentageChanges().pipe(map(value => value || 0)));
+    });
+
+    // Combine progress observables using forkJoin and map to transform the array
+    const combinedProgress$: Observable<number[]> = forkJoin(progressObservables).pipe(
+      map(values => values as number[])
+    );
+
+    // Return the combined progress observable
+    return combinedProgress$;
+  }
 }
+

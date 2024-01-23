@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploadService } from '../../../services/file-upload.service';
 
 @Component({
@@ -12,7 +12,8 @@ export class UploadProgressDialogComponent implements OnInit {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { userId: string; files: File[] },
-    private storageService: FileUploadService
+    private storageService: FileUploadService,
+    private dialogRef: MatDialogRef<UploadProgressDialogComponent> // Inject MatDialogRef
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.files.length).fill(0);
@@ -23,6 +24,7 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
   uploadFiles() {
+    console.log(this.data.userId, this.data.files);
     this.storageService.uploadMemoryPictures(this.data.userId, this.data.files).subscribe(
       (progress: number[]) => {
         this.progress = progress;
@@ -33,7 +35,7 @@ export class UploadProgressDialogComponent implements OnInit {
       },
       () => {
         console.log('Upload completed successfully');
-        // Handle completion, e.g., close the dialog or show a success message
+        this.dialogRef.close();
       }
     );
   }

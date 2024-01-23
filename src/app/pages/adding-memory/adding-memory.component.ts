@@ -29,11 +29,6 @@ export class AddingMemoryComponent {
     });
     this.memoryForm.patchValue({ creator_id: this.userId });
   }
-  uploadMedia(): void {
-    // Placeholder method for media upload
-    // Implement media upload logic here
-    console.log('Media upload method called');
-  }
   /*openAddFriendDialog() {
     const dialogRef = this.dialog.open(MemoryAddFriendDialogComponent, {
       width: '400px', // Adjust the width as needed
@@ -45,23 +40,4 @@ export class AddingMemoryComponent {
     });
   }*/
 
-  createMemory() {
-    if (this.memoryForm.valid) {
-      const memoryData = this.memoryForm.value;
-      console.log(memoryData);
-      /*this.memoryService.createMemory(memoryData).subscribe(
-        (response) => {
-          console.log('Memory created successfully:', response);
-          // Handle success (e.g., show a success message to the user)
-        },
-        (error) => {
-          console.error('Error creating memory:', error);
-          // Handle error (e.g., show an error message to the user)
-        }
-      );*/
-    } else {
-      // Handle form validation errors if needed
-      console.error('Form is not valid. Please fill in all required fields.');
-    }
-  }
 }

@@ -12,6 +12,8 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class ImageUploadComponent implements OnInit {
   @Input() userId: any;
+  @Input() memoryData: any;
+
   selectedFiles?: FileList;
   progressInfos: any[] = [];
   message: string[] = [];
@@ -56,25 +58,6 @@ export class ImageUploadComponent implements OnInit {
 
   upload(idx: number, file: File): void {
     this.openUploadDialog();
-    /*this.progressInfos[idx] = { value: 0, fileName: file.name };
-  
-    if (file) {
-      this.uploadService.upload(file).subscribe({
-        next: (event: any) => {
-          if (event.type === HttpEventType.UploadProgress) {
-            this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
-          } else if (event instanceof HttpResponse) {
-            const msg = 'Uploaded the file successfully: ' + file.name;
-            this.message.push(msg);
-            this.imageInfos = this.uploadService.getFiles();
-          }
-        },
-        error: (err: any) => {
-          this.progressInfos[idx].value = 0;
-          const msg = 'Could not upload the file: ' + file.name;
-          this.message.push(msg);
-        }});
-    }*/
   }
   
   
@@ -94,9 +77,31 @@ export class ImageUploadComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Dialog closed with result:', result);
       // Handle any actions after the dialog is closed
+      if(true/*if result is successful*/ ) {
+        this.createMemory();
+      }
     });
   }
   
+  createMemory() {
+    if (this.memoryData.valid) {
+      const memoryData = this.memoryData.value;
+      console.log(memoryData);
+      /*this.memoryService.createMemory(memoryData).subscribe(
+        (response) => {
+          console.log('Memory created successfully:', response);
+          // Handle success (e.g., show a success message to the user)
+        },
+        (error) => {
+          console.error('Error creating memory:', error);
+          // Handle error (e.g., show an error message to the user)
+        }
+      );*/
+    } else {
+      // Handle form validation errors if needed
+      console.error('Form is not valid. Please fill in all required fields.');
+    }
+  }
 }
 
 

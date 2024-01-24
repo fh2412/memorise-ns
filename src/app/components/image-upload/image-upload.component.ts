@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { FileUploadService } from '../../services/file-upload.service';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-image-upload',
@@ -14,6 +14,7 @@ import { MemoryService } from '../../services/memory.service';
 export class ImageUploadComponent implements OnInit {
   @Input() userId: any;
   @Input() memoryData: any;
+  @Input() friends: any;
 
   selectedFiles?: FileList;
   progressInfos: any[] = [];
@@ -22,7 +23,7 @@ export class ImageUploadComponent implements OnInit {
   previews: string[] = [];
   imageInfos?: Observable<any>;
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService, private router: Router,) { }
 
 
   selectFiles(event: any): void {
@@ -86,7 +87,6 @@ export class ImageUploadComponent implements OnInit {
     if (this.memoryData.valid) {
       const memoryData = this.memoryData.value;
       memoryData.firestore_bucket_url = result;
-      console.log(memoryData);
       this.memoryService.createMemory(memoryData).subscribe(
         (response) => {
           console.log('Memory created successfully:', response);
@@ -101,6 +101,7 @@ export class ImageUploadComponent implements OnInit {
       // Handle form validation errors if needed
       console.error('Form is not valid. Please fill in all required fields.');
     }
+    this.router.navigate(['/home']);
   }
 }
 

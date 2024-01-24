@@ -29,6 +29,11 @@ export class AddingMemoryComponent {
     });
     this.memoryForm.patchValue({ creator_id: this.userId });
   }
+
+  onSelectedValuesChange(selectedValues: any[]) {
+    // Do something with the selected values
+    console.log(selectedValues);
+  }
   /*openAddFriendDialog() {
     const dialogRef = this.dialog.open(MemoryAddFriendDialogComponent, {
       width: '400px', // Adjust the width as needed

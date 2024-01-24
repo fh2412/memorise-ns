@@ -1,5 +1,5 @@
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
-import {Component, ElementRef, Input, ViewChild, inject} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject} from '@angular/core';
 import {FormControl } from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';
 import {MatChipInputEvent} from '@angular/material/chips';
@@ -20,6 +20,7 @@ export class FriendsAutocompletComponent {
   friendCtrl = new FormControl('');
   filteredfriends: Observable<string[]> | undefined;
   friends: string[] = [];
+  @Output() selectedValuesChange: EventEmitter<any[]> = new EventEmitter<any[]>();
 
   @ViewChild('friendInput') friendInput: ElementRef<HTMLInputElement> | any;
 
@@ -83,11 +84,13 @@ export class FriendsAutocompletComponent {
 
       this.announcer.announce(`Removed ${friend}`);
     }
+    this.selectedValuesChange.emit(this.friends);
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.friends.push(event.option.viewValue);
     this.friendInput.nativeElement.value = '';
     this.friendCtrl.setValue(null);
+    this.selectedValuesChange.emit(this.friends);
   }
 }

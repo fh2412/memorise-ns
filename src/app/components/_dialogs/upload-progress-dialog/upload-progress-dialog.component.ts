@@ -24,8 +24,8 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
   uploadFiles() {
-    console.log(this.data.userId, this.data.files);
-    this.storageService.uploadMemoryPictures(this.data.userId, this.data.files).subscribe(
+    const googleStorageUrl = this.data.userId.toString() + Date.now().toString();
+    this.storageService.uploadMemoryPictures(googleStorageUrl, this.data.files).subscribe(
       (progress: number[]) => {
         this.progress = progress;
       },
@@ -35,7 +35,7 @@ export class UploadProgressDialogComponent implements OnInit {
       },
       () => {
         console.log('Upload completed successfully');
-        this.dialogRef.close();
+        this.dialogRef.close(googleStorageUrl);
       }
     );
   }

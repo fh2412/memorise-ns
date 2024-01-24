@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable, forkJoin, map } from 'rxjs';
+import { Observable, catchError, forkJoin, map, of } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask  } from '@angular/fire/compat/storage';
 
 @Injectable({
@@ -45,26 +45,6 @@ export class FileUploadService {
     return ref.getDownloadURL().toPromise();
   }
 
-  /*uploadMemoryPictures(memoryId: string, files: File[]): Observable<number[]> {
-    const uploadTasks: AngularFireUploadTask[] = [];
-    const progressObservables: Observable<number>[] = [];
-
-    // Upload each file
-    files.forEach((file, index) => {
-      const path = `memories/${memoryId}/picture_${index + 1}.jpg`; // adjust the path as needed
-      const ref = this.storage.ref(path);
-      const task: AngularFireUploadTask = ref.put(file);
-      
-      uploadTasks.push(task);
-      progressObservables.push(task.percentageChanges());
-    });
-
-    // Combine progress observables using forkJoin
-    const combinedProgress$ = forkJoin(progressObservables);
-
-    // Return the combined progress observable
-    return combinedProgress$;
-  }*/
   uploadMemoryPictures(memoryId: string, files: File[]): Observable<number[]> {
     const uploadTasks: AngularFireUploadTask[] = [];
     const progressObservables: Observable<number | undefined>[] = [];

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { FileUploadService } from '../../services/file-upload.service';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MemoryService } from '../../services/memory.service';
 
 @Component({
   selector: 'app-image-upload',
@@ -21,7 +22,7 @@ export class ImageUploadComponent implements OnInit {
   previews: string[] = [];
   imageInfos?: Observable<any>;
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService) { }
 
 
   selectFiles(event: any): void {
@@ -77,17 +78,16 @@ export class ImageUploadComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Dialog closed with result:', result);
       // Handle any actions after the dialog is closed
-      if(true/*if result is successful*/ ) {
-        this.createMemory();
-      }
+      this.createMemory(result);
     });
   }
   
-  createMemory() {
+  createMemory(result: string) {
     if (this.memoryData.valid) {
       const memoryData = this.memoryData.value;
+      memoryData.firestore_bucket_url = result;
       console.log(memoryData);
-      /*this.memoryService.createMemory(memoryData).subscribe(
+      this.memoryService.createMemory(memoryData).subscribe(
         (response) => {
           console.log('Memory created successfully:', response);
           // Handle success (e.g., show a success message to the user)
@@ -96,7 +96,7 @@ export class ImageUploadComponent implements OnInit {
           console.error('Error creating memory:', error);
           // Handle error (e.g., show an error message to the user)
         }
-      );*/
+      );
     } else {
       // Handle form validation errors if needed
       console.error('Form is not valid. Please fill in all required fields.');

@@ -28,4 +28,8 @@ export class MemoryService {
   createMemory(memoryData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/memories/createMemory`, memoryData);
   }
+
+  addFriendToMemory(friendData: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/memories/addFriendsToMemory`, friendData);
+  }
 }

@@ -33,7 +33,7 @@ export class FriendsAutocompletComponent {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
       this.friendsService.getUserFriends(this.loggedInUserId).subscribe(
         (friends) => {
-          this.allfriends = friends.map(item => item.name);
+          this.allfriends = friends.map(item => `${item.name} (${item.email})`);
           
           // Move the logic that depends on this.allfriends here
           this.filteredfriends = this.friendCtrl.valueChanges.pipe(

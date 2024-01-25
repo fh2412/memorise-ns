@@ -5,6 +5,7 @@ import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialo
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { Router } from '@angular/router';
+import { response } from 'express';
 
 @Component({
   selector: 'app-image-upload',
@@ -15,6 +16,8 @@ export class ImageUploadComponent implements OnInit {
   @Input() userId: any;
   @Input() memoryData: any;
   @Input() friends: any;
+  @Input() emails: any;
+
 
   selectedFiles?: FileList;
   progressInfos: any[] = [];
@@ -52,13 +55,11 @@ export class ImageUploadComponent implements OnInit {
     this.message = [];
   
     if (this.selectedFiles) {
-      for (let i = 0; i < this.selectedFiles.length; i++) {
-        this.upload(i, this.selectedFiles[i]);
-      }
+      this.upload();
     }
   }
 
-  upload(idx: number, file: File): void {
+  upload(): void {
     this.openUploadDialog();
   }
   
@@ -87,22 +88,38 @@ export class ImageUploadComponent implements OnInit {
     if (this.memoryData.valid) {
       const memoryData = this.memoryData.value;
       memoryData.firestore_bucket_url = result;
+  
       this.memoryService.createMemory(memoryData).subscribe(
-        (response) => {
-          console.log('Memory created successfully:', response);
-          // Handle success (e.g., show a success message to the user)
+        (response: { message: string, memoryId: any }) => {
+          console.log('Memory created successfully:', response.memoryId[0]?.insertId);
+          
+          const friendData = { emails: this.emails, memoryId: response.memoryId[0]?.insertId };
+  
+          this.memoryService.addFriendToMemory(friendData).subscribe(
+            (friendResponse) => {
+              console.log('Friend added to memory successfully:', friendResponse);
+              // Handle success (e.g., show a success message to the user)
+            },
+            (friendError) => {
+              console.error('Error adding friend to memory:', friendError);
+              // Handle error (e.g., show an error message to the user)
+            }
+          );
         },
         (error) => {
           console.error('Error creating memory:', error);
           // Handle error (e.g., show an error message to the user)
         }
       );
+  
     } else {
       // Handle form validation errors if needed
       console.error('Form is not valid. Please fill in all required fields.');
     }
+  
     this.router.navigate(['/home']);
   }
+  
 }
 
 

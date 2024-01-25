@@ -13,6 +13,7 @@ export class AddingMemoryComponent {
 
   memoryForm: FormGroup;
   userId: string | null | undefined;
+  emailArray: any;
   constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService) {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId], // replace with actual creator ID
@@ -30,9 +31,11 @@ export class AddingMemoryComponent {
     this.memoryForm.patchValue({ creator_id: this.userId });
   }
 
-  onSelectedValuesChange(selectedValues: any[]) {
+  onSelectedValuesChange(selectedValues: string[]) {
     // Do something with the selected values
-    console.log(selectedValues);
+    
+    this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
+    console.log(this.emailArray);
   }
   /*openAddFriendDialog() {
     const dialogRef = this.dialog.open(MemoryAddFriendDialogComponent, {

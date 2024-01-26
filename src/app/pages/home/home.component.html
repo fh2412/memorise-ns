@@ -13,7 +13,17 @@
         <app-stats></app-stats>
     </div>
     <div class="main-content">
-        <app-momorypreview></app-momorypreview>
+        <h1>Your Memories</h1>
+        <!-- parent.component.html -->
+        <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
+            <mat-grid-tile *ngFor="let item of pagedData">
+                <app-memory-card [cardData]="item" class="test"></app-memory-card>
+            </mat-grid-tile>
+        </mat-grid-list>
+
+        <mat-paginator [length]="data.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
+            (page)="onPageChange($event)"></mat-paginator>
+
         <button mat-fab color="primary" class="fixed-fab" (click)="addMemory()">
             <mat-icon>add</mat-icon>
         </button>

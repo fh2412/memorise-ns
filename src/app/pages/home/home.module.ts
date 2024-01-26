@@ -9,6 +9,9 @@ import { StatsComponent } from '../../components/stats/stats.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { MemoryCardComponent } from '../../memory-card/memory-card.component';
 
 const routes: Routes = [
   {
@@ -22,7 +25,8 @@ const routes: Routes = [
     HomeComponent,
     UserInformationComponent,
     MomorypreviewComponent,
-    StatsComponent
+    StatsComponent,
+    MemoryCardComponent
   ],
   imports: [
     CommonModule,
@@ -31,6 +35,8 @@ const routes: Routes = [
     MatFormFieldModule,
     MatIconModule,
     MatButtonModule,
+    MatGridListModule,
+    MatPaginatorModule
   ]
 })
 export class HomeModule { }

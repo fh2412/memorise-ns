@@ -26,7 +26,12 @@
 
   .fixed-fab {
     position: fixed; /* Position the button absolutely */
-    bottom: 20px; /* Adjust the bottom distance */
-    right: 20px; /* Adjust the right distance */
+    top: 80px; /* Adjust the bottom distance */
+    right: 30px; /* Adjust the right distance */
     z-index: 1; /* Ensure it's above other elements */
+  }
+  
+  .test {
+    height: 100%;
+    width: 100%;
   }

@@ -1,0 +1,45 @@
+// card.component.scss
+.card {
+  margin: 0;   // Eliminate margin
+  padding: 0;  // Eliminate padding
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+  .image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    .background-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; // Ensure the image covers the entire container
+    }
+  }
+
+  .text-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.7); // Semi-transparent white background
+    color: #333; // Text color
+    border-bottom-left-radius: 8px;
+
+    h3 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    p {
+      margin: 8px 0 0;
+      font-size: 1rem;
+    }
+  }
+}

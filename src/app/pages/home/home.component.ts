@@ -17,14 +17,6 @@ export class HomeComponent {
   data = [
     { title: 'Card 1', description: 'Description 1', imageUrl: this.iamge },
     { title: 'Card 2', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 3', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 4', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 5', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 6', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 7', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 8', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 9', description: 'Description 2', imageUrl: this.iamge },
-    { title: 'Card 10', description: 'Description 2', imageUrl: this.iamge },
   ];
 
   pageSize = 9; // Number of items per page
@@ -32,7 +24,6 @@ export class HomeComponent {
   pagedData: any[] = [];
 
   constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService) {
-    this.loadData();
   }
 
   onPageChange(event: any) {
@@ -40,34 +31,59 @@ export class HomeComponent {
     this.loadData();
   }
 
-  private loadData() {
+  private async loadData() {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.pagedData = this.data.slice(startIndex, endIndex);
   }
 
-  ngOnInit() {
-    this.setUserId();
+  async ngOnInit() {
+    await this.setUserId();
+    console.log(this.data);
+    await this.getCreatedMemories();
+    console.log(this.data);
+    this.loadData();
   }
 
-  setUserId(): void {
-    this.afAuth.authState.subscribe(user => {
-      this.currentUser = user;
-      this.userService.getUserByEmail(this.currentUser.email).subscribe(
-        (data) => {
-          this.userdb = data;
-          if (this.userdb) {
-            this.userService.setLoggedInUserId(this.userdb.user_id);
+  async setUserId(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.afAuth.authState.subscribe(user => {
+        this.currentUser = user;
+        this.userService.getUserByEmail(this.currentUser.email).subscribe(
+          (data) => {
+            this.userdb = data;
+            if (this.userdb) {
+              this.userService.setLoggedInUserId(this.userdb.user_id);
+            }
+            resolve();  // Resolve the Promise when the operation is complete
+          },
+          (error: any) => {
+            console.error('Error fetching user data:', error);
+            reject(error);  // Reject the Promise if there is an error
           }
-        },
-        (error: any) => {
-          console.error('Error fetching user data:', error);
-        }
-      );
+        );
+      });
     });
   }
+  
 
   addMemory() {
     this.router.navigate(['/newmemory']);
   }
+
+  async getCreatedMemories(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.memoryService.getCreatedMemory(this.userdb.user_id).subscribe(
+        (data) => {
+          this.data = data;
+          resolve();  // Resolve the Promise when the operation is complete
+        },
+        (error: any) => {
+          console.error('Error fetching createdMemory data:', error);
+          reject(error);  // Reject the Promise if there is an error
+        }
+      );
+    });
+  }
+  
 }

@@ -94,17 +94,18 @@ export class ImageUploadComponent implements OnInit {
           console.log('Memory created successfully:', response.memoryId[0]?.insertId);
           
           const friendData = { emails: this.emails, memoryId: response.memoryId[0]?.insertId };
-  
-          this.memoryService.addFriendToMemory(friendData).subscribe(
-            (friendResponse) => {
-              console.log('Friend added to memory successfully:', friendResponse);
-              // Handle success (e.g., show a success message to the user)
-            },
-            (friendError) => {
-              console.error('Error adding friend to memory:', friendError);
-              // Handle error (e.g., show an error message to the user)
-            }
-          );
+          if(friendData){
+            this.memoryService.addFriendToMemory(friendData).subscribe(
+              (friendResponse) => {
+                console.log('Friend added to memory successfully:', friendResponse);
+                // Handle success (e.g., show a success message to the user)
+              },
+              (friendError) => {
+                console.error('Error adding friend to memory:', friendError);
+                // Handle error (e.g., show an error message to the user)
+              }
+            );
+          }
         },
         (error) => {
           console.error('Error creating memory:', error);

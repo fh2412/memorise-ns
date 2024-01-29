@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploadService } from '../../../services/file-upload.service';
+import { MemoryService } from '../../../services/memory.service';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -9,10 +10,14 @@ import { FileUploadService } from '../../../services/file-upload.service';
 })
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
+  downloadURL: string | undefined;
+  googleStorageUrl: string = "";
+
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; files: File[] },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; files: File[]; memoryData: any; emails: any;},
     private storageService: FileUploadService,
+    private memoryService: MemoryService,
     private dialogRef: MatDialogRef<UploadProgressDialogComponent> // Inject MatDialogRef
   ) {
     // Initialize progress array with zeros
@@ -24,8 +29,8 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
   uploadFiles() {
-    const googleStorageUrl = this.data.userId.toString() + Date.now().toString();
-    this.storageService.uploadMemoryPictures(googleStorageUrl, this.data.files).subscribe(
+    this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
+    this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files).subscribe(
       (progress: number[]) => {
         this.progress = progress;
       },
@@ -33,10 +38,49 @@ export class UploadProgressDialogComponent implements OnInit {
         console.error('Error uploading pictures:', error);
         // Handle error, e.g., close the dialog or show an error message
       },
-      () => {
-        console.log('Upload completed successfully');
-        this.dialogRef.close(googleStorageUrl);
+      async () => {
+        this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
+        console.log("downloadUtl1:", this.downloadURL);
+        this.dialogRef.close(this.googleStorageUrl);
+        this.createMemory();
       }
     );
+  }
+
+  createMemory() {
+    if (this.data.memoryData.valid) {
+      const memoryData = this.data.memoryData.value;
+      memoryData.firestore_bucket_url = this.googleStorageUrl;
+      memoryData.title_pic = this.downloadURL;
+      console.log("downloadUtl2:", memoryData.title_pic);
+  
+      this.memoryService.createMemory(memoryData).subscribe(
+        (response: { message: string, memoryId: any }) => {
+          console.log('Memory created successfully:', response.memoryId[0]?.insertId);
+          
+          const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
+          if(this.data.emails){
+            this.memoryService.addFriendToMemory(friendData).subscribe(
+              (friendResponse) => {
+                console.log('Friend added to memory successfully:', friendResponse);
+                // Handle success (e.g., show a success message to the user)
+              },
+              (friendError) => {
+                console.error('Error adding friend to memory:', friendError);
+                // Handle error (e.g., show an error message to the user)
+              }
+            );
+          }
+        },
+        (error) => {
+          console.error('Error creating memory:', error);
+          // Handle error (e.g., show an error message to the user)
+        }
+      );
+  
+    } else {
+      // Handle form validation errors if needed
+      console.error('Form is not valid. Please fill in all required fields.');
+    }
   }
 }

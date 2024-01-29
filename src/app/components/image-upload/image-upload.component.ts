@@ -25,6 +25,7 @@ export class ImageUploadComponent implements OnInit {
 
   previews: string[] = [];
   imageInfos?: Observable<any>;
+  downloadURL: string | undefined;
 
   constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService, private router: Router,) { }
 
@@ -55,12 +56,8 @@ export class ImageUploadComponent implements OnInit {
     this.message = [];
   
     if (this.selectedFiles) {
-      this.upload();
+      this.openUploadDialog();
     }
-  }
-
-  upload(): void {
-    this.openUploadDialog();
   }
   
   
@@ -73,14 +70,14 @@ export class ImageUploadComponent implements OnInit {
     const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
       width: '300px',
       disableClose: true, // Prevent closing the dialog by clicking outside
-      data: { userId: this.userId, files: filesArray },
+      data: { userId: this.userId, files: filesArray, memoryData: this.memoryData, emails: this.emails },
     });
 
     // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Dialog closed with result:', result);
-      // Handle any actions after the dialog is closed
-      this.createMemory(result);
+      this.router.navigate(['/home']);
+      //this.createMemory(result);
     });
   }
   
@@ -88,6 +85,7 @@ export class ImageUploadComponent implements OnInit {
     if (this.memoryData.valid) {
       const memoryData = this.memoryData.value;
       memoryData.firestore_bucket_url = result;
+      memoryData.title_pic = this.downloadURL;
   
       this.memoryService.createMemory(memoryData).subscribe(
         (response: { message: string, memoryId: any }) => {

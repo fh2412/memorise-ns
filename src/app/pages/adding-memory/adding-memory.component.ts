@@ -21,7 +21,8 @@ export class AddingMemoryComponent {
       description: [''],
       firestore_bucket_url: [''],
       location_id: ['456'], // replace with actual location ID
-      memory_date: [''], // replace with actual date
+      memory_date: [''],
+      title_pic: [''],
     });
   }
   async ngOnInit() {

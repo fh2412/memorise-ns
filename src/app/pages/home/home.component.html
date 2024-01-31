@@ -10,14 +10,16 @@
 <div class="wrapper">
     <div class="sticky-sidebar">
         <app-user-information></app-user-information>
-        <app-stats></app-stats>
+        <ng-container *ngIf="this.userdb && this.userdb.user_id">
+            <app-stats [userid]="this.userdb.user_id"></app-stats>
+        </ng-container>    
     </div>
     <div class="main-content">
         <h1>Your Memories</h1>
         <!-- parent.component.html -->
         <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
             <mat-grid-tile *ngFor="let item of pagedData">
-                <app-memory-card [cardData]="item" class="test"></app-memory-card>
+                <app-memory-card [cardData]="item" class="test" (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
             </mat-grid-tile>
         </mat-grid-list>
 

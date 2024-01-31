@@ -14,12 +14,8 @@ export class AppComponent {
   ngOnInit() {
     this.afAuth.authState.subscribe(user => {
       if (user) {
-        // User is signed in.
-        console.log(user);
-        // You can access user details like user.email, user.displayName, etc.
         this.loggedIn = true;
       } else {
-        // No user is signed in.
         this.loggedIn = false;
       }
     });

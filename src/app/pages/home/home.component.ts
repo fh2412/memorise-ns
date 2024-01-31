@@ -11,6 +11,7 @@ import { MemoryService } from '../../services/memory.service';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
+
   currentUser: any;
   userdb: any;
   iamge = "https://images.freeimages.com/images/large-previews/996/easter-1399885.jpg";
@@ -39,9 +40,7 @@ export class HomeComponent {
 
   async ngOnInit() {
     await this.setUserId();
-    console.log(this.data);
     await this.getCreatedMemories();
-    console.log(this.data);
     this.loadData();
   }
 
@@ -69,6 +68,10 @@ export class HomeComponent {
 
   addMemory() {
     this.router.navigate(['/newmemory']);
+  }
+
+  openDetaildMemorie(memoryid: string) {
+    this.router.navigate(['memory/', memoryid]);
   }
 
   async getCreatedMemories(): Promise<void> {

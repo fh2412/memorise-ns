@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { ChangePasswordDialogComponent } from '../_dialogs/change-password-dialog/change-password-dialog.component';
 import { FileUploadService } from '../../services/file-upload.service';
+import { MemorystatsService } from '../../services/memorystats.service';
 
 
 @Component({
@@ -17,7 +18,10 @@ export class UserInformationComponent implements OnInit {
   currentUser: any;
   showEditForm = true;
 
-  constructor(private userService: UserService, private afAuth: AngularFireAuth,  public dialog: MatDialog, private fileUploadService: FileUploadService) {}
+  constructor(private userService: UserService, 
+    private afAuth: AngularFireAuth,  
+    public dialog: MatDialog, 
+    private fileUploadService: FileUploadService, ) {}
 
   ngOnInit(): void {
     this.getUserInfo();

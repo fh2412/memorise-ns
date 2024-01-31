@@ -24,7 +24,6 @@ export class MemoryService {
   getMemoryTitlePictureUrl(memoryId: string): Promise<string> {
     const path = `memories/${memoryId}/picture_1.jpg`; // adjust the path as needed
     const ref = this.storage.ref(path);
-    console.log("path:", path);
     return ref.getDownloadURL().toPromise();
   }
 

@@ -62,7 +62,6 @@ export class MemoryAddFriendDialogComponent implements OnInit{
     this.dialogRef.close();
   }
   saveDialog() {
-    console.log(this.friendsControl.value)
     this.dialogRef.close();
   }
 }

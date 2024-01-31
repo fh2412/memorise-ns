@@ -40,7 +40,6 @@ export class UploadProgressDialogComponent implements OnInit {
       },
       async () => {
         this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
-        console.log("downloadUtl1:", this.downloadURL);
         this.dialogRef.close(this.googleStorageUrl);
         this.createMemory();
       }
@@ -52,11 +51,9 @@ export class UploadProgressDialogComponent implements OnInit {
       const memoryData = this.data.memoryData.value;
       memoryData.firestore_bucket_url = this.googleStorageUrl;
       memoryData.title_pic = this.downloadURL;
-      console.log("downloadUtl2:", memoryData.title_pic);
   
       this.memoryService.createMemory(memoryData).subscribe(
         (response: { message: string, memoryId: any }) => {
-          console.log('Memory created successfully:', response.memoryId[0]?.insertId);
           
           const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
           if(this.data.emails){

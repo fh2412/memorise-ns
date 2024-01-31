@@ -29,16 +29,31 @@ export class MemoryDetailComponent {
     const memoryObs = this.memoryService.getMemory(this.memoryID);
     const friendsObs = this.memoryService.getMemorysFriends(this.memoryID, this.loggedInUserId);
   
-    forkJoin([memoryObs, friendsObs]).subscribe(
-      ([memoryData, friendsData]) => {
+    memoryObs.subscribe(
+      (memoryData) => {
         this.memorydb = memoryData;
-        this.memorydbFriends = friendsData;
-        console.log("memorydb:", this.memorydb);
-        console.log("memorydbFriends:", this.memorydbFriends);
       },
       (error: any) => {
         console.error('Error fetching memory data:', error);
       }
     );
+  
+    friendsObs.subscribe(
+      (friendsData) => {
+        if (friendsData.length === 0) {
+          // Set a default value when there are no friends
+          this.memorydbFriends = 'There are no friends added to the memory yet!';
+        } else {
+          this.memorydbFriends = friendsData;
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching friends data:', error);
+        // Set an error message or handle the error as needed
+        this.memorydbFriends = 'Error fetching friends data';
+      }
+    );
   }
+  
+  
 }

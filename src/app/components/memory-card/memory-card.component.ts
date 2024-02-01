@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { MemoryService } from '../services/memory.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-memory-card',
@@ -10,12 +10,10 @@ export class MemoryCardComponent {
   @Input() cardData: any; // Assuming cardData is an object with properties like title and description
   titleUrl: any;
   
-  constructor(private memoryService: MemoryService) {}
+  constructor(private router: Router) {}
 
-  /*ngOnInit() {
-    this.getTitlePic;
+  editMemory(event: Event) {
+    this.router.navigate(['/editmemory']);
+    event.stopPropagation(); // Stop the event from propagating to the card click
   }
-  async getTitlePic(): Promise<void>{
-    this.titleUrl = await this.memoryService.getMemoryTitlePictureUrl(this.cardData.image_url);
-  }*/
 }

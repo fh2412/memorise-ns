@@ -5,5 +5,8 @@
     <div class="text-container">
       <h3>{{ cardData.title }}</h3>
       <p>{{ cardData.memory_date }}</p>
-    </div>
+      <button mat-icon-button color="primary" aria-label="Example icon button with a home icon" class="edit-button" (click)="editMemory($event)">
+        <mat-icon>edit</mat-icon>
+      </button> 
+    </div>   
 </mat-card>

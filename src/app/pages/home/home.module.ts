@@ -11,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import { MemoryCardComponent } from '../../memory-card/memory-card.component';
+import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
 
 const routes: Routes = [
   {

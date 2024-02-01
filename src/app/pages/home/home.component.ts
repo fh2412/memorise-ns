@@ -14,11 +14,7 @@ export class HomeComponent {
 
   currentUser: any;
   userdb: any;
-  iamge = "https://images.freeimages.com/images/large-previews/996/easter-1399885.jpg";
-  data = [
-    { title: 'Card 1', description: 'Description 1', imageUrl: this.iamge },
-    { title: 'Card 2', description: 'Description 2', imageUrl: this.iamge },
-  ];
+  data = [];
 
   pageSize = 9; // Number of items per page
   pageIndex = 0; // Current page index

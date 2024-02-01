@@ -13,7 +13,7 @@ export class MemoryCardComponent {
   constructor(private router: Router) {}
 
   editMemory(event: Event) {
-    this.router.navigate(['/editmemory']);
+    this.router.navigate(['/editmemory', this.cardData.memory_id]);
     event.stopPropagation(); // Stop the event from propagating to the card click
   }
 }

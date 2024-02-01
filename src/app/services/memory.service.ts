@@ -44,4 +44,9 @@ export class MemoryService {
   addFriendToMemory(friendData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/memories/addFriendsToMemory`, friendData);
   }
+
+  deleteMemoryAndFriends(memoryId: string): Observable<any> {
+    const url = `${this.apiUrl}/memories/${memoryId}`;
+    return this.http.delete(url);
+  }
 }

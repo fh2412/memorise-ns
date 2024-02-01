@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/userService';
-import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-memory-detail',

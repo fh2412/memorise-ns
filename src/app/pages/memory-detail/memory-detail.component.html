@@ -1,7 +1,58 @@
-<p>memory-detail works!</p>
+<!--<p>memory-detail works!</p>
 <div class="user-details" *ngIf="memorydb && memorydbFriends">
   <h3>memory_id: {{ memorydb.memory_id || 'Not provided' }}</h3>
   <p>user_id: {{ memorydb.user_id || 'Not provided' }}</p>
   <p>Text: {{ memorydb.text || 'Not provided' }}</p>
   <p>Country: {{ memorydb.image_url || 'Not provided' }}</p>
-</div>
+</div>-->
+<!-- memory-detail.component.html -->
+
+<mat-grid-list cols="3" rowHeight="2:1" *ngIf="memorydb && memorydbFriends">
+  <!-- First Row -->
+  <mat-grid-tile colspan="2" rowspan="1">
+    <div class="memory-color">
+      <h2 class="title">{{ memorydb.title || 'Not provided' }}</h2>
+      <p>{{ memorydb.text || 'Not provided' }}</p>
+    </div>
+  </mat-grid-tile>
+
+  <mat-grid-tile colspan="1" rowspan="1">
+    <div class="memory-color">
+      <span class="sub-title">Friends:</span>
+    </div>
+  </mat-grid-tile>
+
+  <!-- Second Row -->
+  <mat-grid-tile colspan="2" rowspan="2">
+    <div class="memory-color">
+      <span class="sub-title">Memory Photos:</span>
+    </div>
+  </mat-grid-tile>
+
+  <mat-grid-tile colspan="1" rowspan="2">
+    <div class="memory-color">
+      <span class="sub-title">Date:</span>
+      <div class="calender">
+        <mat-calendar [selected]="selectedDate" [startAt]="selectedDate"></mat-calendar>
+      </div>
+    </div>
+  </mat-grid-tile>
+
+  <!-- Third Row -->
+  <mat-grid-tile colspan="2" rowspan="1">
+    <div class="memory-color">
+      <span class="sub-title">Additional Files:</span>
+    </div>
+  </mat-grid-tile>
+
+  <mat-grid-tile colspan="1" rowspan="1">
+    <div class="memory-color">
+      <span class="sub-title">Map:</span>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
+
+
+
+
+

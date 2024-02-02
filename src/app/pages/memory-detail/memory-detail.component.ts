@@ -2,17 +2,19 @@ import { Component } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/userService';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-memory-detail',
   templateUrl: './memory-detail.component.html',
-  styleUrl: './memory-detail.component.css'
+  styleUrl: './memory-detail.component.scss'
 })
 export class MemoryDetailComponent {
   memorydb: any;
   memoryID: any;
   loggedInUserId: string | any;
   memorydbFriends: any;
+  selectedDate = new Date(2024, 1, 1); // Set your specific date here
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService) {}
 
@@ -31,6 +33,7 @@ export class MemoryDetailComponent {
     memoryObs.subscribe(
       (memoryData) => {
         this.memorydb = memoryData;
+        this.selectedDate = new Date(this.memorydb.memory_date);
       },
       (error: any) => {
         console.error('Error fetching memory data:', error);

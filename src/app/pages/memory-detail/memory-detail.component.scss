@@ -1,0 +1,36 @@
+.memory-color {
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color: #000000, $alpha: 0.05);
+}
+
+mat-grid-list {
+    margin: 15px;
+}
+
+.title {
+    margin-left: 15px;
+    margin-top: 15px;
+    font-size: 40px;
+}
+
+.sub-title {
+    margin-left: 15px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+p {
+    margin-left: 15px;
+}
+
+mat-calendar {
+    margin: 0 20px 20px 20px;
+    width: 75%;
+}
+
+.calender {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -4,6 +4,9 @@ import { MemoryDetailComponent } from './memory-detail.component';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const routes: Routes = [
   {
@@ -20,7 +23,10 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     MatCardModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    MatGridListModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ]
 })
 export class MemoryModule { }

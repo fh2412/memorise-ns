@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { UserService } from '../../services/userService';
+import { MatDatepicker } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-adding-memory',
@@ -10,7 +11,12 @@ import { UserService } from '../../services/userService';
   styleUrl: './adding-memory.component.css'
 })
 export class AddingMemoryComponent {  
+  
+  @ViewChild('datepicker') datepicker: MatDatepicker<any> | undefined;
+  @ViewChild('rangePicker') rangePicker: MatDatepicker<any> | undefined;
 
+
+  isRangeSelected = false;
   memoryForm: FormGroup;
   userId: string | null | undefined;
   emailArray: any;
@@ -21,7 +27,8 @@ export class AddingMemoryComponent {
       description: [''],
       firestore_bucket_url: [''],
       location_id: ['456'], // replace with actual location ID
-      memory_date: [''],
+      memory_date: [null],
+      memory_date_range: [null],
       title_pic: [''],
     });
   }
@@ -33,20 +40,31 @@ export class AddingMemoryComponent {
   }
 
   onSelectedValuesChange(selectedValues: string[]) {
-    // Do something with the selected values
-    
     this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
     console.log(this.emailArray);
   }
-  /*openAddFriendDialog() {
-    const dialogRef = this.dialog.open(MemoryAddFriendDialogComponent, {
-      width: '400px', // Adjust the width as needed
-    });
 
-    // You can subscribe to the afterClosed event to perform actions when the dialog is closed
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-    });
-  }*/
+  toggleDateRange() {
+    this.isRangeSelected = !this.isRangeSelected;
 
+    if (this.isRangeSelected) {
+      if (this.isRangeSelected) {
+        const test = this.memoryForm.get('memory_date');
+        if (test) {
+          test.setValue(null)
+        }
+      if (this.datepicker) {
+        this.datepicker.close();
+      }
+    } else {
+      const memoryDateRangeControl = this.memoryForm.get('memory_date_range');
+      if (memoryDateRangeControl) {
+        memoryDateRangeControl.setValue({ start: null, end: null });
+      }
+      if (this.rangePicker) {
+        this.rangePicker.close();
+      }
+    }
+  }
+}
 }

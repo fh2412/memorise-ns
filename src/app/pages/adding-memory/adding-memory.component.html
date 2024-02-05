@@ -1,42 +1,46 @@
-  <mat-stepper linear #stepper>
-    <mat-step [stepControl]="memoryForm">
-      <form [formGroup]="memoryForm" class="details-form">
-        <ng-template matStepLabel>Details to your Memory</ng-template>
-          <mat-form-field appearance="outline">
-            <mat-label>Title</mat-label>
-            <input matInput placeholder="Title" name="title" formControlName="title" required>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <textarea matInput placeholder="Description" formControlName="description"></textarea>
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <input matInput [matDatepicker]="datepicker" placeholder="Date" formControlName="memory_date">
-            <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
-            <mat-datepicker #datepicker></mat-datepicker>
-          </mat-form-field>
-        
-          <!--<mat-form-field appearance="outline">
-            <input matInput placeholder="Friends Attended With" name="friends">
-            <button mat-icon-button (click)="openAddFriendDialog()">
-              <mat-icon>group_add</mat-icon>
-            </button>
-          </mat-form-field>-->
-          <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"></app-friends-autocomplet>
-          <mat-form-field appearance="outline">
-            <input matInput placeholder="Location" name="location" [disabled]="true">
-          </mat-form-field>
-        <div>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
-      <form [formGroup]="memoryForm" class="images-form">
-        <app-image-upload [userId]="userId" [memoryData]="memoryForm" [emails]="emailArray"></app-image-upload>
-        <div>
-          <button mat-button matStepperPrevious>Back</button>
-        </div>
-      </form>
-    </mat-step>
-  </mat-stepper>
-  
+<mat-stepper linear #stepper>
+  <mat-step [stepControl]="memoryForm">
+    <form [formGroup]="memoryForm" class="details-form">
+      <ng-template matStepLabel>Details to your Memory</ng-template>
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput placeholder="Title" name="title" formControlName="title" required>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+      </mat-form-field>
+
+      <mat-slide-toggle (change)="toggleDateRange()" [disabled]="true">Multi Day</mat-slide-toggle>
+      <mat-form-field appearance="outline">
+        <input *ngIf="!isRangeSelected" matInput [matDatepicker]="datepicker" placeholder="Date" formControlName="memory_date">
+        <mat-datepicker-toggle matSuffix [for]="datepicker" *ngIf="!isRangeSelected"></mat-datepicker-toggle>
+        <mat-datepicker #datepicker></mat-datepicker>
+      
+        <mat-date-range-input *ngIf="isRangeSelected" [formGroup]="memoryForm" [rangePicker]="rangePicker">
+          <input *ngIf="isRangeSelected" matStartDate formControlName="memory_date_range" placeholder="Start Date">
+          <input *ngIf="isRangeSelected" matEndDate formControlName="memory_date_range" placeholder="End Date">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="rangePicker" *ngIf="isRangeSelected"></mat-datepicker-toggle>
+        <mat-date-range-picker #rangePicker></mat-date-range-picker>
+      </mat-form-field>
+      
+      
+
+      <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"></app-friends-autocomplet>
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Location" name="location" [disabled]="true">
+      </mat-form-field>
+      <div>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
+    <form [formGroup]="memoryForm" class="images-form">
+      <app-image-upload [userId]="userId" [memoryData]="memoryForm" [emails]="emailArray"></app-image-upload>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+      </div>
+    </form>
+  </mat-step>
+</mat-stepper>

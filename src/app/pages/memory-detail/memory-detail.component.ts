@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/userService';
-import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-memory-detail',
@@ -15,6 +14,13 @@ export class MemoryDetailComponent {
   loggedInUserId: string | any;
   memorydbFriends: any;
   selectedDate = new Date(2024, 1, 1); // Set your specific date here
+  
+  images = [
+    'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
+    'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
+  ];
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService) {}
 

@@ -33,6 +33,14 @@
   <mat-grid-tile colspan="2" rowspan="2">
     <div class="memory-color">
       <span class="sub-title">Memory Photos:</span>
+      <div class="image-preview-container">
+        <mat-card *ngFor="let image of images.slice(0, 3)" class="image-preview">
+          <img [src]="image" alt="Image Preview">
+        </mat-card>
+        <div *ngIf="images.length > 3" class="additional-images">
+          +{{ images.length - 3 }} more
+        </div>
+      </div>       
     </div>
   </mat-grid-tile>
 

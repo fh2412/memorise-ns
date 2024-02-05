@@ -19,6 +19,13 @@
   <mat-grid-tile colspan="1" rowspan="1">
     <div class="memory-color">
       <span class="sub-title">Friends:</span>
+      <div *ngFor="let friend of memorydbFriends" class="profile-row">
+        <img src="/assets/img/1.png">
+        <div class="text">
+          <b>{{ friend.name || 'name' }}</b><br>
+          <span class="desc">{{ friend.dob || 'dob' }}, {{ friend.gender || 'gender' }}</span>
+        </div>
+      </div>
     </div>
   </mat-grid-tile>
 

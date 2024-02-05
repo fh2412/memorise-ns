@@ -26,7 +26,7 @@ const routes: Routes = [
     MatFormFieldModule,
     MatGridListModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
   ]
 })
 export class MemoryModule { }

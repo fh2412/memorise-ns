@@ -47,6 +47,7 @@ export class MemoryDetailComponent {
           this.memorydbFriends = 'There are no friends added to the memory yet!';
         } else {
           this.memorydbFriends = friendsData;
+          console.log(this.memorydbFriends);
         }
       },
       (error: any) => {

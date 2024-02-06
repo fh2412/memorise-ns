@@ -20,6 +20,12 @@ export class MemoryDetailComponent {
     'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
     'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
     'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
+    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
   ];
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService) {}

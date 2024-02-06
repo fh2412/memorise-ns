@@ -32,16 +32,20 @@
   <!-- Second Row -->
   <mat-grid-tile colspan="2" rowspan="2">
     <div class="memory-color">
-      <span class="sub-title">Memory Photos:</span>
-      <div class="image-preview-container">
-        <mat-card *ngFor="let image of images.slice(0, 3)" class="image-preview">
-          <img [src]="image" alt="Image Preview">
-        </mat-card>
-        <div *ngIf="images.length > 3" class="additional-images">
-          +{{ images.length - 3 }} more
-        </div>
-      </div>       
+      <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
+        <mat-grid-tile *ngFor="let image of images.slice(0, 8); let last = last">
+          <mat-card class="card">
+            <div *ngIf="!last || images.length < 7" class="image-container">
+              <img class="background-image" [src]="image">
+            </div> 
+            <div *ngIf="last && images.length > 7" class="additional-images">
+              +{{ images.length - 8 }} more
+            </div>
+          </mat-card>
+        </mat-grid-tile>
+      </mat-grid-list>
     </div>
+    
   </mat-grid-tile>
 
   <mat-grid-tile colspan="1" rowspan="2">

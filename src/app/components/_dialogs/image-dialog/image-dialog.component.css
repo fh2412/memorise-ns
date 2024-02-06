@@ -10,9 +10,21 @@ div {
     display: block;
   }
   
-  button {
+  .close {
     position: absolute;
     top: 10px;
+    right: 10px;
+  }
+
+  .left{
+    position: absolute;
+    top: 45%;
+    left: 10px;
+  }
+
+  .right{
+    position: absolute;
+    top: 45%;
     right: 10px;
   }
   

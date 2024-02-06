@@ -72,19 +72,16 @@ export class MemoryDetailComponent {
     );
   }
   
-  openImageDialog(imageSrc: string): void {
-    const img = new Image();
-    img.src = imageSrc;
-    img.onload = () => {
-      this.dialog.open(ImageDialogComponent, {
-        width: img.width + 'px',
-        height: img.height + 'px',
-        maxWidth: '80vw',
-        maxHeight: '80vw',
-        data: { imageSrc },
-      });
-    };
+  openImageDialog(imageSrc: string, index: number): void {
+    const dialogRef = this.dialog.open(ImageDialogComponent, {
+      width: 'auto',
+      height: 'auto',
+      maxWidth: '80vw',
+      data: { images: this.images, initialIndex: index },
+      panelClass: 'custom-dialog-container'
+    });
   }
+  
   
   
 }

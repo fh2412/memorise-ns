@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/userService';
+import { MatDialog } from '@angular/material/dialog';
+import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
 
 @Component({
   selector: 'app-memory-detail',
@@ -28,7 +30,7 @@ export class MemoryDetailComponent {
     'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
   ];
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService) {}
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -70,5 +72,12 @@ export class MemoryDetailComponent {
     );
   }
   
+  openImageDialog(imageSrc: string): void {
+    this.dialog.open(ImageDialogComponent, {
+      width: '80%',
+      data: { imageSrc },
+      panelClass: 'custom-dialog-container' // Add a custom class for styling if needed
+    });
+  }
   
 }

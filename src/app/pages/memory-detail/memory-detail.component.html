@@ -34,7 +34,7 @@
     <div class="memory-color">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
         <mat-grid-tile *ngFor="let image of images.slice(0, 8); let last = last">
-          <mat-card class="card">
+          <mat-card class="card" (click)="openImageDialog(image)">
             <div *ngIf="!last || images.length < 7" class="image-container">
               <img class="background-image" [src]="image">
             </div> 

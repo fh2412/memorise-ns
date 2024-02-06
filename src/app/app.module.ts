@@ -29,6 +29,7 @@ import { SeeAllFirendsDialogComponent } from './components/_dialogs/see-all-frie
 import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { EditmemoryComponent } from './pages/editmemory/editmemory.component';
+import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { EditmemoryComponent } from './pages/editmemory/editmemory.component';
     SeeAllFirendsDialogComponent,
     UploadProgressDialogComponent,
     EditmemoryComponent,
+    ImageDialogComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, Inject, OnInit, HostListener } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
@@ -28,5 +28,16 @@ export class ImageDialogComponent implements OnInit {
 
   onCloseClick(): void {
     this.dialogRef.close();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent): void {
+    if (event.key === 'ArrowLeft') {
+      this.onArrowClick('left');
+    } else if (event.key === 'ArrowRight') {
+      this.onArrowClick('right');
+    } else if (event.key === 'Escape') {
+      this.onCloseClick();
+    }
   }
 }

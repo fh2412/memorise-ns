@@ -73,11 +73,18 @@ export class MemoryDetailComponent {
   }
   
   openImageDialog(imageSrc: string): void {
-    this.dialog.open(ImageDialogComponent, {
-      width: '80%',
-      data: { imageSrc },
-      panelClass: 'custom-dialog-container' // Add a custom class for styling if needed
-    });
+    const img = new Image();
+    img.src = imageSrc;
+    img.onload = () => {
+      this.dialog.open(ImageDialogComponent, {
+        width: img.width + 'px',
+        height: img.height + 'px',
+        maxWidth: '80vw',
+        maxHeight: '80vw',
+        data: { imageSrc },
+      });
+    };
   }
+  
   
 }

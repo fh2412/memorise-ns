@@ -5,7 +5,7 @@ div {
   
   img {
     max-width: 100%;
-    max-height: 80vh; /* Adjust as needed */
+    max-height: 80vh;
     margin: auto;
     display: block;
   }

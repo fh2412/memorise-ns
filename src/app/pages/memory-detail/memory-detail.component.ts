@@ -4,6 +4,10 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
+import { finalize } from 'rxjs';
+import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import { AngularFireStorage } from '@angular/fire/compat/storage';
+
 
 @Component({
   selector: 'app-memory-detail',
@@ -17,20 +21,14 @@ export class MemoryDetailComponent {
   memorydbFriends: any;
   selectedDate = new Date(2024, 1, 1); // Set your specific date here
   
-  images = [
-    'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-    'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
-    'https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-    'https://hatrabbits.com/wp-content/uploads/2017/01/random.jpg',
-  ];
+  images: string[] = [];
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog) {}
+  uniqueID: string = "your-unique-id";
+  downloadURLs: any;
+  imagePaths: any;
+
+
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private storage: AngularFireStorage) {}
 
   ngOnInit(): void {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -48,6 +46,7 @@ export class MemoryDetailComponent {
       (memoryData) => {
         this.memorydb = memoryData;
         this.selectedDate = new Date(this.memorydb.memory_date);
+        this.getImages(this.memorydb.image_url);
       },
       (error: any) => {
         console.error('Error fetching memory data:', error);
@@ -82,6 +81,30 @@ export class MemoryDetailComponent {
     });
   }
   
-  
-  
+  getImages(imageid: any) {
+    const storage = getStorage();
+
+    // Create a reference under which you want to list
+    const listRef = ref(storage, `memories/${imageid}`);
+
+    // Find all the prefixes and items.
+    listAll(listRef)
+      .then((res) => {
+        res.prefixes.forEach((folderRef) => {
+          console.log(folderRef);
+        });
+        res.items.forEach((itemRef) => {
+          getDownloadURL(ref(storage, itemRef.fullPath))
+            .then((url) => {
+              this.images.push(url);
+            })
+            .catch((error) => {
+              // Handle any errors
+            });
+        });
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+      });
+  }
+
 }

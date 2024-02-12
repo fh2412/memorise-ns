@@ -3,11 +3,20 @@
         [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
         [mode]="(isHandset$ | async) ? 'over' : 'side'"
         [opened]="(isHandset$ | async) === false">
-      <mat-toolbar>Menu</mat-toolbar>
-      <mat-nav-list>
-        <a mat-list-item href="/home">my memories</a>
-        <a mat-list-item href="/friends">friends</a>
-        <a mat-list-item href="/activities">activities</a>
+      <mat-toolbar class="logo-container"><img src="/assets/img/M.png" alt="Logo"></mat-toolbar>
+      <mat-nav-list class="mat-nav-list">
+        <a mat-list-item href="/home">
+          <mat-icon color="accent">home</mat-icon> <!-- Material Icon for home -->
+          <span class="text">MEMORISE</span>
+        </a>
+        <a mat-list-item href="/friends">
+          <mat-icon color="accent">people</mat-icon> <!-- Material Icon for people/friends -->
+          <span class="text">FRIENDS</span>
+        </a>
+        <a mat-list-item href="/activities">
+          <mat-icon color="accent">event</mat-icon> <!-- Material Icon for activities/events -->
+          <span class="text">ACTIVITIES</span>
+        </a>
       </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content>

@@ -1,0 +1,53 @@
+.sidenav-container {
+    height: 100%;
+  }
+  
+  .sidenav {
+    width: 200px;
+  }
+  
+  .sidenav .mat-toolbar {
+    background: inherit;
+  }
+  
+  .mat-toolbar.mat-primary {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  
+  .spacer {
+    flex: 1; /* Flexible space to push the button to the right */
+  }
+
+
+.mat-nav-list {
+  mat-icon {
+    color: "accent";
+    margin-right: 8px; // Adjust the spacing between icon and text
+  }
+  a {
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+    font-weight: bold; /* Make the text bold */
+  }
+}
+
+.text {
+  font-weight: bold;
+  position: absolute;
+  margin-top: 3px;
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  max-width: 100%; // Ensure the image is responsive
+  max-height: 100%; // Ensure the image is responsive
+}
+
+

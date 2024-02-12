@@ -1,12 +1,22 @@
 
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
-// Plus imports for other components in your app.
+/*
 
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
+Color Palett:
+
+Deep Blue: #004080
+Vibrant Orange: #FFA500
+Forest Green: #228B22
+Golden Yellow: #FFD700
+Coral Pink: #FF6F61
+Sky Blue: #87CEEB
+Sunset Purple: #800080
+
+*/
+
+
+
+
+@use '@angular/material' as mat;
 @include mat.core();
 
 $deep-blue-palette: (

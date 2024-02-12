@@ -1,0 +1,75 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+$deep-blue-palette: (
+  50: #80a1c1,     // Lightest
+  100: #668db3,
+  200: #507fb0,
+  300: #3b71ac,
+  400: #2563a9,
+  500: #004080,     // Base color
+  600: #003773,
+  700: #002f66,
+  800: #002359,
+  900: #001b4d,     // Darkest
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+ )
+);
+
+$vibrant-orange-palette: (
+  50: #ffd480,     // Lightest
+  100: #ffcc66,
+  200: #ffb84d,
+  300: #ffa533,
+  400: #ff991a,
+  500: #FFA500,     // Base color
+  600: #e59400,
+  700: #cc8400,
+  800: #b27400,
+  900: #995400,     // Darkest
+  contrast: (
+    50: rgba(black, 0.87),      // Contrast for the lightest hue
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+  )
+);
+
+
+$memorise-ns-primary: mat.define-palette($deep-blue-palette);
+$memorise-ns-accent: mat.define-palette($vibrant-orange-palette);
+
+// The warn palette is optional (defaults to red).
+$memorise-ns-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$memorise-ns-theme: mat.define-light-theme((
+  color: (
+    primary: $memorise-ns-primary,
+    accent: $memorise-ns-accent,
+    warn: $memorise-ns-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($memorise-ns-theme);
+
+/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

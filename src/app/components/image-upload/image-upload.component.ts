@@ -86,6 +86,9 @@ export class ImageUploadComponent implements OnInit {
       const memoryData = this.memoryData.value;
       memoryData.firestore_bucket_url = result;
       memoryData.title_pic = this.downloadURL;
+      if(memoryData.memory_end_date==null){
+        memoryData.memory_end_date = memoryData.memory_date;
+      }
   
       this.memoryService.createMemory(memoryData).subscribe(
         (response: { message: string, memoryId: any }) => {

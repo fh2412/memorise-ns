@@ -10,17 +10,12 @@
         <textarea matInput placeholder="Description" formControlName="description"></textarea>
       </mat-form-field>
 
-      <mat-slide-toggle (change)="toggleDateRange()" [disabled]="true">Multi Day</mat-slide-toggle>
-      <mat-form-field appearance="outline">
-        <input *ngIf="!isRangeSelected" matInput [matDatepicker]="datepicker" placeholder="Date" formControlName="memory_date">
-        <mat-datepicker-toggle matSuffix [for]="datepicker" *ngIf="!isRangeSelected"></mat-datepicker-toggle>
-        <mat-datepicker #datepicker></mat-datepicker>
-      
-        <mat-date-range-input *ngIf="isRangeSelected" [formGroup]="memoryForm" [rangePicker]="rangePicker">
-          <input *ngIf="isRangeSelected" matStartDate formControlName="memory_date_range" placeholder="Start Date">
-          <input *ngIf="isRangeSelected" matEndDate formControlName="memory_date_range" placeholder="End Date">
+      <mat-form-field appearance="outline">      
+        <mat-date-range-input  [formGroup]="memoryForm" [rangePicker]="rangePicker">
+          <input matStartDate formControlName="memory_date" placeholder="Start Date">
+          <input matEndDate formControlName="memory_end_date" placeholder="End Date">
         </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="rangePicker" *ngIf="isRangeSelected"></mat-datepicker-toggle>
+        <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
         <mat-date-range-picker #rangePicker></mat-date-range-picker>
       </mat-form-field>
       

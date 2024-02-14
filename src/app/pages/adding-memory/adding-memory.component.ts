@@ -28,7 +28,7 @@ export class AddingMemoryComponent {
       firestore_bucket_url: [''],
       location_id: ['456'], // replace with actual location ID
       memory_date: [null],
-      memory_date_range: [null],
+      memory_end_date: [null],
       title_pic: [''],
     });
   }
@@ -43,28 +43,4 @@ export class AddingMemoryComponent {
     this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
     console.log(this.emailArray);
   }
-
-  toggleDateRange() {
-    this.isRangeSelected = !this.isRangeSelected;
-
-    if (this.isRangeSelected) {
-      if (this.isRangeSelected) {
-        const test = this.memoryForm.get('memory_date');
-        if (test) {
-          test.setValue(null)
-        }
-      if (this.datepicker) {
-        this.datepicker.close();
-      }
-    } else {
-      const memoryDateRangeControl = this.memoryForm.get('memory_date_range');
-      if (memoryDateRangeControl) {
-        memoryDateRangeControl.setValue({ start: null, end: null });
-      }
-      if (this.rangePicker) {
-        this.rangePicker.close();
-      }
-    }
-  }
-}
 }

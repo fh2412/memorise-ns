@@ -4,7 +4,7 @@
     </div>
     <div class="text-container">
       <h3>{{ cardData.title }}</h3>
-      <p>{{ cardData.memory_date }}</p>
+      <p>{{ formatDate(cardData.memory_date, cardData.memory_end_date) }}</p>
       <button mat-icon-button color="primary" aria-label="Example icon button with a home icon" class="edit-button" (click)="editMemory($event)">
         <mat-icon>edit</mat-icon>
       </button> 

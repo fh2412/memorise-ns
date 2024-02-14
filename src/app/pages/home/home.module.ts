@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { UserInformationComponent } from '../../components/user-information/user-information.component';
@@ -37,6 +37,7 @@ const routes: Routes = [
     MatButtonModule,
     MatGridListModule,
     MatPaginatorModule
-  ]
+  ],
+  providers: [DatePipe],
 })
 export class HomeModule { }

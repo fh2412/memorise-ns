@@ -19,22 +19,19 @@ export class MemoryCardComponent {
   }
 
   formatDate(date: string | undefined, end_date: string | undefined): string {
-    if (!date) {
+    if (!date || !end_date) {
       return 'N/A';
     }
     const parsedDate = new Date(date);
-    console.log(date, end_date);
-    if(date == end_date) {
-      return this.datePipe.transform(parsedDate, 'dd.MM.yyyy') || 'N/A';
+    const parsedEndDate = new Date(end_date);
+    var from = this.datePipe.transform(parsedDate, 'dd.MM.yyyy') || 'N/A';
+    var to = this.datePipe.transform(parsedEndDate, 'dd.MM.yyyy') || 'N/A';
+
+    if(from == to) {
+      return from
     }
-    else if(end_date){
-      const parsedEndDate = new Date(end_date);
-      var from = this.datePipe.transform(parsedDate, 'dd.MM.yyyy') || 'N/A';
-      var to = this.datePipe.transform(parsedEndDate, 'dd.MM.yyyy') || 'N/A';
+    else {
       return from + " - " + to
-    }
-    else{
-      return 'N/A';
     }
   }
 }

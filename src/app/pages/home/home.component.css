@@ -26,7 +26,7 @@
 
   .fixed-fab {
     position: fixed; /* Position the button absolutely */
-    top: 80px; /* Adjust the bottom distance */
+    top: 20px; /* Adjust the bottom distance */
     right: 30px; /* Adjust the right distance */
     z-index: 1; /* Ensure it's above other elements */
   }
@@ -39,3 +39,5 @@
   mat-paginator {
     margin-top: 15px;
   }
+
+  

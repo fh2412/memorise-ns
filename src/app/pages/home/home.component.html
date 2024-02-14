@@ -25,9 +25,11 @@
 
         <mat-paginator [length]="data.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
             (page)="onPageChange($event)"></mat-paginator>
-
-        <button mat-fab color="primary" class="fixed-fab" (click)="addMemory()">
-            <mat-icon>add</mat-icon>
+            
+        <button mat-raised-button color="accent" class="fixed-fab" (click)="addMemory()">
+            <mat-icon class="add-icon">add</mat-icon>
+            Create New
         </button>
+        
     </div>
 </div>

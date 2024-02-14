@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
-import { finalize } from 'rxjs';
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { DateRange } from '@angular/material/datepicker';
 
 
 @Component({
@@ -19,7 +19,10 @@ export class MemoryDetailComponent {
   memoryID: any;
   loggedInUserId: string | any;
   memorydbFriends: any;
-  selectedDate = new Date(2024, 1, 1); // Set your specific date here
+  selectedDate = new Date(2024, 1, 1);
+  endDate = new Date(2024, 1, 1);
+  dateRange: any;
+
   
   images: string[] = [];
 
@@ -46,6 +49,10 @@ export class MemoryDetailComponent {
       (memoryData) => {
         this.memorydb = memoryData;
         this.selectedDate = new Date(this.memorydb.memory_date);
+        this.endDate = new Date(this.memorydb.memory_end_date);
+        this.dateRange = new DateRange(this.selectedDate, this.endDate);
+
+        console.log(this.dateRange);
         this.getImages(this.memorydb.image_url);
       },
       (error: any) => {
@@ -105,6 +112,18 @@ export class MemoryDetailComponent {
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
+  }
+
+  private generateDateRange(start: Date, end: Date): Date[] {
+    const dateRange: Date[] = [];
+    let currentDate = new Date(start);
+
+    while (currentDate <= end) {
+      dateRange.push(new Date(currentDate));
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+
+    return dateRange;
   }
 
 }

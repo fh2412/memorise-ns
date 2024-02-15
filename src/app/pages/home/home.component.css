@@ -11,7 +11,7 @@
     bottom: 0;
     height: 100vh; /* Full height of the viewport */
     /* Additional styles for the sidebar */
-    margin-top: 70px;
+    margin-top: 20px;
     margin-left: 20px;
   }
   
@@ -19,14 +19,14 @@
   .main-content {
     flex: 1; /* Take remaining space */
     padding: 20px; /* Example padding */
+    padding-top: 40px;
     background-color: #e0e0e0; /* Example background color for the main content */
     margin-left: 20%; /* Adjust to match the width of the fixed sidebar */
-    /* Additional styles for the main content */
   }
 
   .fixed-fab {
     position: fixed; /* Position the button absolutely */
-    top: 20px; /* Adjust the bottom distance */
+    top: 40px; /* Adjust the bottom distance */
     right: 30px; /* Adjust the right distance */
     z-index: 1; /* Ensure it's above other elements */
   }
@@ -38,6 +38,11 @@
 
   mat-paginator {
     margin-top: 15px;
+  }
+
+  h1 {
+    font-size: 50px;
+    font-weight: bold;
   }
 
   

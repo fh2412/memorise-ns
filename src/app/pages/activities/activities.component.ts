@@ -51,17 +51,22 @@ export class ActivitiesComponent {
     }
   }
 
-  onMapClick(event: google.maps.MapMouseEvent): void {
-    console.log(event);
-  }
-
   markerOptions: google.maps.MarkerOptions = {draggable: false};
   markerPosition!: google.maps.LatLngLiteral;
   addMarker(event: google.maps.MapMouseEvent) {
     if(event.latLng){
       this.markerPosition=event.latLng.toJSON();
+      console.log(this.markerPosition);
     }
   }
+
+  async submitAddress() {
+    if(this.markerPosition) {
+      var fulladdress = await this.geocodingService.geocodeLatLng(this.markerPosition);
+      console.log(fulladdress.results[0]);
+    }
+  }
+
 
   findAddress() {
     if (!this.address || this.address.length === 0) {

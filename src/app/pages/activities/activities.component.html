@@ -4,7 +4,8 @@
 </div>
 
 <div>
-  <button mat-raised-button color="primary" class="fixed-fab" (click)="findAddress()" [disabled]="isWorking || !address.length">
+  <button mat-raised-button color="primary" class="fixed-fab" (click)="findAddress()"
+    [disabled]="isWorking || !address.length">
     <mat-icon class="add-icon">home</mat-icon>
     Find address
   </button>
@@ -33,5 +34,10 @@
         <map-info-window>{{ markerInfoContent }}</map-info-window>
       </google-map>
     </div>
+  </div>
+  <button (click)="submitAddress()">Get Address</button>
+
+  <div *ngIf="formattedAddress">
+    <p>Formatted Address: {{ formattedAddress }}</p>
   </div>
 </div>

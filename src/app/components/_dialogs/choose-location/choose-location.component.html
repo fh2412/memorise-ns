@@ -1,0 +1,8 @@
+<google-map [zoom]="mapZoom" [center]="mapCenter" [options]="mapOptions" (mapClick)="addMarker($event)">
+    <map-marker [position]="markerPosition" [options]="markerOptions" />
+</google-map>
+
+<button mat-raised-button color="primary" class="fixed-fab" (click)="submitAddress()">
+    <mat-icon class="add-icon">submit</mat-icon>
+    Sumbit Address
+</button>

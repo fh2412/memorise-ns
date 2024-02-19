@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
+import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ActivitiesComponent,
+    ChooseLocationComponent,
   ],
   imports: [
     CommonModule,

@@ -3,6 +3,8 @@ import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { GeocodingService } from '../../services/geocoding.service';
 import { GeocoderResponse } from '../../models/geocoder-response.model';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatDialog } from '@angular/material/dialog';
+import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 
 
 @Component({
@@ -11,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './activities.component.css'
 })
 export class ActivitiesComponent {
-  constructor( private geocodingService: GeocodingService) {}
+  constructor( private geocodingService: GeocodingService, public dialog: MatDialog) {}
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
@@ -111,5 +113,17 @@ export class ActivitiesComponent {
       .add(() => {
         this.geocoderWorking = false;
       });
+  }
+
+  openMapDialog(): void {
+    const dialogRef = this.dialog.open(ChooseLocationComponent, {
+      data: { mapCenter: this.mapCenter }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.mapCenter = result;
+      }
+    });
   }
 }

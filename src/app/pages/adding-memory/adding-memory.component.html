@@ -19,17 +19,38 @@
         <mat-date-range-picker #rangePicker></mat-date-range-picker>
       </mat-form-field>
       
-      
-
       <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"></app-friends-autocomplet>
-      <mat-form-field appearance="outline">
-        <input matInput placeholder="Location" name="location" [disabled]="true">
-      </mat-form-field>
       <div>
         <button mat-button matStepperNext>Next</button>
       </div>
     </form>
   </mat-step>
+
+  <mat-step [stepControl]="memoryForm" label="Location Details">
+    <form [formGroup]="memoryForm" class="details-form">
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Street" name="street" formControlName="l_street">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="City" name="city" formControlName="l_city">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <input matInput placeholder="Country" name="country" formControlName="l_country">
+      </mat-form-field>
+      <button mat-raised-button color="accent" class="fixed-fab">
+        <mat-icon class="add-icon">search</mat-icon>
+        Find Address on Map
+      </button>
+      <div>
+        <button mat-button matStepperPrevious>Back</button>
+        <button mat-button matStepperNext>Next</button>
+      </div>
+    </form>
+  </mat-step>
+
   <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
     <form [formGroup]="memoryForm" class="images-form">
       <app-image-upload [userId]="userId" [memoryData]="memoryForm" [emails]="emailArray"></app-image-upload>

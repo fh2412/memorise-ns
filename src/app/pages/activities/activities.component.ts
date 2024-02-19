@@ -4,15 +4,14 @@ import { GeocodingService } from '../../services/geocoding.service';
 import { GeocoderResponse } from '../../models/geocoder-response.model';
 import { HttpErrorResponse } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-activities',
   templateUrl: './activities.component.html',
   styleUrl: './activities.component.css'
 })
 export class ActivitiesComponent {
-  constructor(
-    private geocodingService: GeocodingService,
-  ) {}
+  constructor( private geocodingService: GeocodingService) {}
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
@@ -22,17 +21,18 @@ export class ActivitiesComponent {
   mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoomControl: true,
-    scrollwheel: false,
+    scrollwheel: true,
     disableDoubleClickZoom: true,
     maxZoom: 20,
     minZoom: 4,
+    streetViewControl: false,
   };
 
   markerInfoContent = '';
-  markerOptions: google.maps.MarkerOptions = {
-    draggable: false,
-    animation: google.maps.Animation.DROP,
-  };
+  //markerOptions: google.maps.MarkerOptions = {
+  //  draggable: false,
+  //  animation: google.maps.Animation.DROP,
+  //};
 
   geocoderWorking = false;
   geolocationWorking = false;
@@ -51,63 +51,16 @@ export class ActivitiesComponent {
     }
   }
 
-  getCurrentLocation() {
-    this.geolocationWorking = true;
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        this.geolocationWorking = false;
-  
-        const point: google.maps.LatLngLiteral = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-  
-        this.geocoderWorking = true;
-        this.geocodingService
-          .geocodeLatLng(point)
-          .then((response: GeocoderResponse) => {
-            if (response.status === 'OK' && response.results?.length) {
-              const value = response.results[0];
-  
-              this.locationCoords = new google.maps.LatLng(point);
-  
-              this.mapCenter = new google.maps.LatLng(point);
-              this.map.panTo(point);
-  
-              this.address = value.formatted_address;
-              this.formattedAddress = value.formatted_address;
-              this.markerInfoContent = value.formatted_address;
-  
-              this.markerOptions = {
-                draggable: true,
-                animation: google.maps.Animation.DROP,
-              };
-            } else {
-              console.log("error");
-            }
-          })
-          .finally(() => {
-            this.geocoderWorking = false;
-          });
-      },
-      (error) => {
-        this.geolocationWorking = false;
-  
-        if (error.PERMISSION_DENIED) {
-          console.log("Couldn't get your location", 'Permission denied');
-        } else if (error.POSITION_UNAVAILABLE) {
-          console.log(
-            "Couldn't get your location",
-            'Position unavailable'
-          );
-        } else if (error.TIMEOUT) {
-          console.log("Couldn't get your location", 'Timed out');
-        } else {
-          console.log(error.message, `Error: ${error.code}`);
-        }
-      },
-      { enableHighAccuracy: true }
-    );
+  onMapClick(event: google.maps.MapMouseEvent): void {
+    console.log(event);
+  }
+
+  markerOptions: google.maps.MarkerOptions = {draggable: false};
+  markerPosition!: google.maps.LatLngLiteral;
+  addMarker(event: google.maps.MapMouseEvent) {
+    if(event.latLng){
+      this.markerPosition=event.latLng.toJSON();
+    }
   }
 
   findAddress() {
@@ -154,41 +107,4 @@ export class ActivitiesComponent {
         this.geocoderWorking = false;
       });
   }
-
-  onMapDragEnd(event: google.maps.MapMouseEvent) {
-    console.log(event.latLng?.lat())
-    /*const point: google.maps.LatLngLiteral = {
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    };
-  
-    this.geocoderWorking = true;
-    this.geocodingService
-      .geocodeLatLng(point)
-      .then((response: GeocoderResponse) => {
-        if (response.status === 'OK') {
-          if (response.results.length) {
-            const value = response.results[0];
-  
-            this.locationCoords = new google.maps.LatLng(point);
-  
-            this.mapCenter = new google.maps.LatLng(point);
-            this.map.panTo(point);
-  
-            this.address = value.formatted_address;
-            this.formattedAddress = value.formatted_address;
-  
-            this.markerOptions = {
-              draggable: true,
-              animation: google.maps.Animation.DROP,
-            };
-  
-            this.markerInfoContent = value.formatted_address;
-          }
-        }
-      })
-      .finally(() => {
-        this.geocoderWorking = false;
-      });
-  */}
 }

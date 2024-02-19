@@ -26,10 +26,15 @@ export class AddingMemoryComponent {
       title: ['', Validators.required],
       description: [''],
       firestore_bucket_url: [''],
-      location_id: ['456'], // replace with actual location ID
       memory_date: [null],
       memory_end_date: [null],
       title_pic: [''],
+      location_id: [''],
+      l_street: [''],
+      l_housenumer: [''],
+      l_city: [''],
+      l_postcode: [''],
+      l_country: [''],
     });
   }
   async ngOnInit() {

@@ -29,18 +29,22 @@
   <mat-step [stepControl]="memoryForm" label="Location Details">
     <form [formGroup]="memoryForm" class="details-form">
       <mat-form-field appearance="outline">
+        <mat-label>Street</mat-label>
         <input matInput placeholder="Street" name="street" formControlName="l_street">
       </mat-form-field>
       <mat-form-field appearance="outline">
+        <mat-label>City</mat-label>
         <input matInput placeholder="City" name="city" formControlName="l_city">
       </mat-form-field>
       <mat-form-field appearance="outline">
+        <mat-label>Postcode</mat-label>
         <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
       </mat-form-field>
       <mat-form-field appearance="outline">
+        <mat-label>Country</mat-label>
         <input matInput placeholder="Country" name="country" formControlName="l_country">
       </mat-form-field>
-      <button mat-raised-button color="accent" class="fixed-fab">
+      <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()">
         <mat-icon class="add-icon">search</mat-icon>
         Find Address on Map
       </button>

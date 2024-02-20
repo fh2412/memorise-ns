@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { UserService } from '../../services/userService';
 import { MatDatepicker } from '@angular/material/datepicker';
+import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 
 @Component({
   selector: 'app-adding-memory',
@@ -47,5 +48,60 @@ export class AddingMemoryComponent {
   onSelectedValuesChange(selectedValues: string[]) {
     this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
     console.log(this.emailArray);
+  }
+
+
+  mapCenter: google.maps.LatLng= new google.maps.LatLng(47.5, 14.2);
+
+  mapOptions: google.maps.MapOptions = {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    zoomControl: true,
+    scrollwheel: true,
+    disableDoubleClickZoom: true,
+    maxZoom: 20,
+    minZoom: 4,
+    streetViewControl: false,
+  };
+
+  formattedAddress: any;
+
+
+  openMapDialog(): void {
+    const dialogRef = this.dialog.open(ChooseLocationComponent, {
+      data: { mapCenter: this.mapCenter },
+      width: '500px',
+      height: '542px'
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.formattedAddress = result.address_components;
+        if (this.formattedAddress.length == 9) {
+          this.memoryForm.patchValue({
+            l_street: this.formattedAddress[1].long_name,
+            l_housenumer: this.formattedAddress[0].long_name,
+            l_city: this.formattedAddress[2].long_name,
+            l_postcode: this.formattedAddress[7].long_name,
+            l_country: this.formattedAddress[6].long_name,
+          });
+        }
+        else if (this.formattedAddress.length == 6) {
+          this.memoryForm.patchValue({
+            l_city: this.formattedAddress[1].long_name,
+            l_postcode: this.formattedAddress[5].long_name,
+            l_country: this.formattedAddress[4].long_name,
+          });
+        }
+        else {
+          this.memoryForm.patchValue({
+            l_street: this.formattedAddress[1].long_name,
+            l_housenumer: this.formattedAddress[0].long_name,
+            l_city: this.formattedAddress[2].long_name,
+            l_postcode: this.formattedAddress[6].long_name,
+            l_country: this.formattedAddress[5].long_name,
+          });
+        }
+      }
+    });
   }
 }

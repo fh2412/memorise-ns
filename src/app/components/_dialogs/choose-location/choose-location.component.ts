@@ -27,7 +27,7 @@ export class ChooseLocationComponent {
     streetViewControl: false,
   };
 
-
+  fulladdress: any;
   geocoderWorking = false;
   geolocationWorking = false;
 
@@ -37,6 +37,7 @@ export class ChooseLocationComponent {
 
   markerOptions: google.maps.MarkerOptions = {draggable: false};
   markerPosition!: google.maps.LatLngLiteral;
+  
   addMarker(event: google.maps.MapMouseEvent) {
     if(event.latLng){
       this.markerPosition=event.latLng.toJSON();
@@ -46,9 +47,9 @@ export class ChooseLocationComponent {
 
   async submitAddress() {
     if(this.markerPosition) {
-      var fulladdress = await this.geocodingService.geocodeLatLng(this.markerPosition);
-      console.log(fulladdress.results[0]);
+      this.fulladdress = await this.geocodingService.geocodeLatLng(this.markerPosition);
+      console.log(this.fulladdress.results[0]);
     }
-    this.dialogRef.close();
+    this.dialogRef.close(this.fulladdress.results[0]);
   }
 }

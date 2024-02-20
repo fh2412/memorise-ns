@@ -1,4 +1,4 @@
-<div>
+<!--<div>
   <input type="search" [(ngModel)]="address" (keydown.enter)="findAddress()" placeholder="Enter an address here"
     [disabled]="isWorking">
 </div>
@@ -13,7 +13,7 @@
 
 <hr>
 
-<div>
+
   <div>
     <div>
       <h5>Formatted Address</h5>
@@ -35,11 +35,10 @@
       </google-map>
     </div>
   </div>
-  <button (click)="submitAddress()">Get Address</button>
+  <button (click)="submitAddress()">Get Address</button>-->
 
   <div *ngIf="formattedAddress">
     <p>Formatted Address: {{ formattedAddress }}</p>
   </div>
-</div>
 
 <button (click)="openMapDialog()">Open Map Dialog</button>

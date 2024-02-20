@@ -117,12 +117,15 @@ export class ActivitiesComponent {
 
   openMapDialog(): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { mapCenter: this.mapCenter }
+      data: { mapCenter: this.mapCenter },
+      width: '500px',
+      height: '542px'
     });
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.mapCenter = result;
+        console.log("result:", result);
+        this.formattedAddress = result.formatted_address;
       }
     });
   }

@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class FriendsService {
-  private apiUrl = 'http://localhost:3000/api/friends'; // Replace with your API endpoint
+  private apiUrl = 'http://localhost:3000/api/friends';
 
   constructor(private http: HttpClient) {}
 

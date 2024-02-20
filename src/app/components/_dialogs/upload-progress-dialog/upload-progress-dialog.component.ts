@@ -2,6 +2,7 @@ import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
+import { LocationService } from '../../../services/location.service';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -15,9 +16,10 @@ export class UploadProgressDialogComponent implements OnInit {
 
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; files: File[]; memoryData: any; emails: any;},
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; files: File[]; memoryData: any; emails: any; },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
+    private locationService: LocationService,
     private dialogRef: MatDialogRef<UploadProgressDialogComponent> // Inject MatDialogRef
   ) {
     // Initialize progress array with zeros
@@ -51,30 +53,43 @@ export class UploadProgressDialogComponent implements OnInit {
       const memoryData = this.data.memoryData.value;
       memoryData.firestore_bucket_url = this.googleStorageUrl;
       memoryData.title_pic = this.downloadURL;
-  
-      this.memoryService.createMemory(memoryData).subscribe(
-        (response: { message: string, memoryId: any }) => {
-          
-          const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
-          if(this.data.emails){
-            this.memoryService.addFriendToMemory(friendData).subscribe(
-              (friendResponse) => {
-                console.log('Friend added to memory successfully:', friendResponse);
-                // Handle success (e.g., show a success message to the user)
-              },
-              (friendError) => {
-                console.error('Error adding friend to memory:', friendError);
-                // Handle error (e.g., show an error message to the user)
+      if (memoryData.memory_end_date == null) {
+        memoryData.memory_end_date = memoryData.memory_date;
+      }
+
+      this.locationService.createLocation(memoryData).subscribe(
+        (response: { message: string, locationId: any }) => {
+          console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
+          memoryData.location_id = response.locationId[0]?.insertId;
+
+          this.memoryService.createMemory(memoryData).subscribe(
+            (response: { message: string, memoryId: any }) => {
+
+              const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
+              if (this.data.emails) {
+                this.memoryService.addFriendToMemory(friendData).subscribe(
+                  (friendResponse) => {
+                    console.log('Friend added to memory successfully:', friendResponse);
+                    // Handle success (e.g., show a success message to the user)
+                  },
+                  (friendError) => {
+                    console.error('Error adding friend to memory:', friendError);
+                    // Handle error (e.g., show an error message to the user)
+                  }
+                );
               }
-            );
-          }
+            },
+            (error) => {
+              console.error('Error creating memory:', error);
+              // Handle error (e.g., show an error message to the user)
+            }
+          );
         },
-        (error) => {
-          console.error('Error creating memory:', error);
-          // Handle error (e.g., show an error message to the user)
+        (locationResponse) => {
+          console.error('Error creating Location:', locationResponse);
         }
       );
-  
+
     } else {
       // Handle form validation errors if needed
       console.error('Form is not valid. Please fill in all required fields.');

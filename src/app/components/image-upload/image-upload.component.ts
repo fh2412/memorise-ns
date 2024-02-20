@@ -5,7 +5,6 @@ import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialo
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { Router } from '@angular/router';
-import { response } from 'express';
 
 @Component({
   selector: 'app-image-upload',
@@ -27,40 +26,38 @@ export class ImageUploadComponent implements OnInit {
   imageInfos?: Observable<any>;
   downloadURL: string | undefined;
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService, private router: Router,) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService, private router: Router) { }
 
 
   selectFiles(event: any): void {
     this.message = [];
     this.progressInfos = [];
     this.selectedFiles = event.target.files;
-  
+
     this.previews = [];
     if (this.selectedFiles && this.selectedFiles[0]) {
       const numberOfFiles = this.selectedFiles.length;
       for (let i = 0; i < numberOfFiles; i++) {
         const reader = new FileReader();
-  
+
         reader.onload = (e: any) => {
           console.log(e.target.result);
           this.previews.push(e.target.result);
         };
-  
+
         reader.readAsDataURL(this.selectedFiles[i]);
       }
     }
   }
-  
 
   uploadFiles(): void {
     this.message = [];
-  
+
     if (this.selectedFiles) {
       this.openUploadDialog();
     }
   }
-  
-  
+
   ngOnInit(): void {
     this.imageInfos = this.uploadService.getFiles();
   }
@@ -80,48 +77,6 @@ export class ImageUploadComponent implements OnInit {
       //this.createMemory(result);
     });
   }
-  
-  createMemory(result: string) {
-    if (this.memoryData.valid) {
-      const memoryData = this.memoryData.value;
-      memoryData.firestore_bucket_url = result;
-      memoryData.title_pic = this.downloadURL;
-      if(memoryData.memory_end_date==null){
-        memoryData.memory_end_date = memoryData.memory_date;
-      }
-  
-      this.memoryService.createMemory(memoryData).subscribe(
-        (response: { message: string, memoryId: any }) => {
-          console.log('Memory created successfully:', response.memoryId[0]?.insertId);
-          
-          const friendData = { emails: this.emails, memoryId: response.memoryId[0]?.insertId };
-          if(friendData){
-            this.memoryService.addFriendToMemory(friendData).subscribe(
-              (friendResponse) => {
-                console.log('Friend added to memory successfully:', friendResponse);
-                // Handle success (e.g., show a success message to the user)
-              },
-              (friendError) => {
-                console.error('Error adding friend to memory:', friendError);
-                // Handle error (e.g., show an error message to the user)
-              }
-            );
-          }
-        },
-        (error) => {
-          console.error('Error creating memory:', error);
-          // Handle error (e.g., show an error message to the user)
-        }
-      );
-  
-    } else {
-      // Handle form validation errors if needed
-      console.error('Form is not valid. Please fill in all required fields.');
-    }
-  
-    this.router.navigate(['/home']);
-  }
-  
 }
 
 

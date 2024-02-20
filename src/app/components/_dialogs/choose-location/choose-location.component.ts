@@ -37,11 +37,12 @@ export class ChooseLocationComponent {
 
   markerOptions: google.maps.MarkerOptions = {draggable: false};
   markerPosition!: google.maps.LatLngLiteral;
+  location_details: any[] = [];
+
   
   addMarker(event: google.maps.MapMouseEvent) {
     if(event.latLng){
       this.markerPosition=event.latLng.toJSON();
-      console.log(this.markerPosition);
     }
   }
 
@@ -49,7 +50,9 @@ export class ChooseLocationComponent {
     if(this.markerPosition) {
       this.fulladdress = await this.geocodingService.geocodeLatLng(this.markerPosition);
       console.log(this.fulladdress.results[0]);
+      this.location_details[0] = this.fulladdress.results[0];
+      this.location_details[1] = this.markerPosition;
     }
-    this.dialogRef.close(this.fulladdress.results[0]);
+    this.dialogRef.close(this.location_details);
   }
 }

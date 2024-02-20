@@ -31,11 +31,13 @@ export class AddingMemoryComponent {
       memory_end_date: [null],
       title_pic: [''],
       location_id: [''],
+      long: [''],
+      lat: [''],
+      l_country: [''],
+      l_city: [''],
       l_street: [''],
       l_housenumer: [''],
-      l_city: [''],
       l_postcode: [''],
-      l_country: [''],
     });
   }
   async ngOnInit() {
@@ -75,7 +77,7 @@ export class AddingMemoryComponent {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.formattedAddress = result.address_components;
+        this.formattedAddress = result[0].address_components;
         if (this.formattedAddress.length == 9) {
           this.memoryForm.patchValue({
             l_street: this.formattedAddress[1].long_name,
@@ -85,14 +87,7 @@ export class AddingMemoryComponent {
             l_country: this.formattedAddress[6].long_name,
           });
         }
-        else if (this.formattedAddress.length == 6) {
-          this.memoryForm.patchValue({
-            l_city: this.formattedAddress[1].long_name,
-            l_postcode: this.formattedAddress[5].long_name,
-            l_country: this.formattedAddress[4].long_name,
-          });
-        }
-        else {
+        else if (this.formattedAddress.length >= 7){
           this.memoryForm.patchValue({
             l_street: this.formattedAddress[1].long_name,
             l_housenumer: this.formattedAddress[0].long_name,
@@ -101,6 +96,16 @@ export class AddingMemoryComponent {
             l_country: this.formattedAddress[5].long_name,
           });
         }
+        else {
+          this.memoryForm.patchValue({
+            l_city: this.formattedAddress[1].long_name,
+            l_country: this.formattedAddress[4].long_name,
+          });
+        }
+        this.memoryForm.patchValue({
+          lat: result[1].lat,
+          long: result[1].lng,
+        });
       }
     });
   }

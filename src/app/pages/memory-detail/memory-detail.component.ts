@@ -7,6 +7,7 @@ import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/ima
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { DateRange } from '@angular/material/datepicker';
+import { LocationService } from '../../services/location.service';
 
 
 @Component({
@@ -22,6 +23,7 @@ export class MemoryDetailComponent {
   selectedDate = new Date(2024, 1, 1);
   endDate = new Date(2024, 1, 1);
   dateRange: any;
+  location: any;
 
   
   images: string[] = [];
@@ -31,7 +33,7 @@ export class MemoryDetailComponent {
   imagePaths: any;
 
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private storage: AngularFireStorage) {}
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private locationService: LocationService) {}
 
   ngOnInit(): void {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -51,9 +53,24 @@ export class MemoryDetailComponent {
         this.selectedDate = new Date(this.memorydb.memory_date);
         this.endDate = new Date(this.memorydb.memory_end_date);
         this.dateRange = new DateRange(this.selectedDate, this.endDate);
-
-        console.log(this.dateRange);
         this.getImages(this.memorydb.image_url);
+        const locationObs = this.locationService.getLocationById(this.memorydb.location_id);
+        locationObs.subscribe(
+          (locationData) => {
+          if (locationData.length === 0) {
+            // Set a default value when there are no friends
+            this.location = null;
+          } else {
+            this.location = locationData;
+            console.log(this.location);
+          }
+        },
+        (error: any) => {
+          console.error('Error fetching friends data:', error);
+          // Set an error message or handle the error as needed
+          this.memorydbFriends = 'Error fetching friends data';
+        }
+        )
       },
       (error: any) => {
         console.error('Error fetching memory data:', error);

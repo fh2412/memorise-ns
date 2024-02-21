@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MapSnippetComponent } from '../../components/map-snippet/map-snippet.component';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 const routes: Routes = [
   {
@@ -18,6 +20,7 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     MemoryDetailComponent,
+    MapSnippetComponent
   ],
   imports: [
     CommonModule,
@@ -27,6 +30,7 @@ const routes: Routes = [
     MatGridListModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    GoogleMapsModule
   ]
 })
 export class MemoryModule { }

@@ -18,7 +18,7 @@
 
   <mat-grid-tile colspan="1" rowspan="1">
     <div class="memory-color">
-      <span class="sub-title">Friends:</span>
+      <h2>Friends:</h2>
       <div *ngFor="let friend of memorydbFriends" class="profile-row">
         <img src="/assets/img/1.png">
         <div class="text">
@@ -50,7 +50,7 @@
 
   <mat-grid-tile colspan="1" rowspan="2">
     <div class="memory-color">
-      <span class="sub-title">Date:</span>
+      <h2>Date:</h2>
       <div class="calender">
         <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
       </div>
@@ -60,13 +60,15 @@
   <!-- Third Row -->
   <mat-grid-tile colspan="2" rowspan="1">
     <div class="memory-color">
-      <span class="sub-title">Additional Files:</span>
+      <h2>Additional Files:</h2>
+      <p *ngIf="location">long: {{location[0].longitude}}; lat: {{location[0].latitude}}</p>
     </div>
   </mat-grid-tile>
 
   <mat-grid-tile colspan="1" rowspan="1">
     <div class="memory-color">
-      <span class="sub-title">Map:</span>
+      <h2>Map:</h2>
+      <app-map-snippet></app-map-snippet>
     </div>
   </mat-grid-tile>
 </mat-grid-list>

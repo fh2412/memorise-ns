@@ -68,10 +68,16 @@
   <mat-grid-tile colspan="1" rowspan="1">
     <div class="memory-color">
       <h2>Map:</h2>
-      <app-map-snippet></app-map-snippet>
+
     </div>
   </mat-grid-tile>
 </mat-grid-list>
+<ng-container *ngIf="location && location.length > 0">
+  <app-map-snippet [long]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
+</ng-container>
+<ng-container *ngIf="!location || location.length === 0">
+  <p>No location data available</p>
+</ng-container>
 
 
 

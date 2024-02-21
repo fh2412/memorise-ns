@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 
 @Component({
@@ -9,9 +9,9 @@ import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 export class MapSnippetComponent {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
+  @Input() long: string='';
+  @Input() lat: string='';
 
-  mapZoom = 7;
-  mapCenter: google.maps.LatLng= new google.maps.LatLng(47.5, 14.2);
   mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoomControl: true,
@@ -21,16 +21,27 @@ export class MapSnippetComponent {
     minZoom: 4,
     streetViewControl: false,
   };
-
-  fulladdress: any;
-  geocoderWorking = false;
-  geolocationWorking = false;
-
-  address: string ='';
-  formattedAddress?: string | null = null;
-  locationCoords?: google.maps.LatLng | null = null;
-
   markerOptions: google.maps.MarkerOptions = {draggable: false};
+
+  mapCenter: google.maps.LatLng | undefined;
   markerPosition!: google.maps.LatLngLiteral;
-  location_details: any[] = [];
+
+  ngOnInit() {
+    var lat = parseInt(this.lat);
+    var lng = parseInt(this.long);
+    lat = 10;
+    this.mapCenter = new google.maps.LatLng(lat, lng)
+  }
+
+  private updateMap() {
+    if (this.lat && this.long) {
+      const lat = parseFloat(this.lat);
+      const lng = parseFloat(this.long);
+
+      // Check if parsing is successful
+      if (!isNaN(lat) && !isNaN(lng)) {
+        console.log(lat, lng);
+      }
+    }
+  }
 }

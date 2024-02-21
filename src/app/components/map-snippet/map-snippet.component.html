@@ -1,5 +1,5 @@
-<div>
-    <google-map [zoom]="mapZoom" [center]="mapCenter" [options]="mapOptions">
+<div *ngIf="mapCenter">
+    <google-map [zoom]="7" [center]="mapCenter" [options]="mapOptions">
         <map-marker [position]="markerPosition" [options]="markerOptions" />
     </google-map>
 </div>

@@ -1,7 +1,8 @@
-<main>
-    <form [formGroup]="form">
-        <h1>Enter with your account</h1>
-        <mat-form-field>
+<main class="login-main">
+    <div class="logo"><img src="/assets/img/logo.png" alt="Logo"></div>
+    <form [formGroup]="form" class="login-form">
+        <h1 class="headline">Enter with your account</h1>
+        <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
             <input type="email" matInput placeholder="Ex: pat@example.com" formControlName="email">
             <mat-error *ngIf="form.get('email')!.hasError('required')">
@@ -11,7 +12,7 @@
                 Email is invalid
             </mat-error>
         </mat-form-field>
-        <mat-form-field>
+        <mat-form-field appearance="outline">
             <mat-label>Password</mat-label>
             <input type="password" matInput placeholder="Password" formControlName="password">
             <mat-error *ngIf="form.get('password')!.hasError('required')">
@@ -29,14 +30,18 @@
                 <mat-spinner color="primary" diameter="20"></mat-spinner>
             </button>
         </div>
-        <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="login()"
-            *ngIf="!isLoggingIn" test-id="login-button">
-            LOGIN
-        </button>
-        <button mat-raised-button color="primary" class="button-loader" *ngIf="isLoggingIn"
-            test-id="login-loader">
-            <mat-spinner color="accent" diameter="20"></mat-spinner>
-        </button>
-        <button mat-stroked-button color="primary">REGISTER</button>
+        <div class="action-buttons">
+            <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="login()"
+                *ngIf="!isLoggingIn" test-id="login-button">
+                LOGIN
+            </button>
+            <button mat-raised-button color="primary" class="button-loader" *ngIf="isLoggingIn"
+                test-id="login-loader">
+                <mat-spinner color="accent" diameter="20"></mat-spinner>
+            </button>
+            <button mat-stroked-button color="primary" class="reg-button">REGISTER</button>
+        </div>
     </form>
 </main>
+<div class="picturediv">
+</div>

@@ -20,11 +20,6 @@ mat-grid-list {
     font-size: 40px;
 }
 
-.sub-title {
-    font-size: 30px;
-    font-weight: bold;
-}
-
 p {
     margin-left: 15px;
 }
@@ -44,4 +39,10 @@ mat-calendar {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+h2 {
+    margin-left: 5px;
+    margin-top: 10px;
+    font-size: 30px
 }

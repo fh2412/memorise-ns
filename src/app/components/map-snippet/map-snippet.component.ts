@@ -29,7 +29,7 @@ export class MapSnippetComponent {
   ngOnInit() {
     const lat: number = parseFloat(this.lat);
     const lng: number = parseFloat(this.long);
-    this.mapCenter = (new google.maps.LatLng(lng, lat));
-    this.markerPosition = (new google.maps.LatLng(lng, lat));
+    this.mapCenter = (new google.maps.LatLng(lat, lng));
+    this.markerPosition = (new google.maps.LatLng(lat, lng));
   }
 }

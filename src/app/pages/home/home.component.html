@@ -1,12 +1,3 @@
-<!--<div *ngIf="currentUser">
-    <p>Welcome, {{ currentUser.displayName || currentUser.email }}</p>
-    <p>Email: {{ currentUser.email }}</p>
-</div>
-<div>
-</div>-->
-
-
-
 <div class="wrapper">
     <div class="sticky-sidebar">
         <app-user-information></app-user-information>
@@ -16,20 +7,25 @@
     </div>
     <div class="main-content">
         <h1>YOUR MEMORIES</h1>
-        <!-- parent.component.html -->
-        <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
-            <mat-grid-tile *ngFor="let item of pagedData">
-                <app-memory-card [cardData]="item" class="test" (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
-            </mat-grid-tile>
-        </mat-grid-list>
+        <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
+            <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
+                <mat-grid-tile *ngFor="let item of pagedData">
+                    <app-memory-card [cardData]="item" class="test" (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
+                </mat-grid-tile>
+            </mat-grid-list>
 
-        <mat-paginator [length]="data.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
-            (page)="onPageChange($event)"></mat-paginator>
-            
+            <mat-paginator [length]="data.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                (page)="onPageChange($event)"></mat-paginator>
+        </div>    
         <button mat-raised-button color="accent" class="fixed-fab" (click)="addMemory()">
             <mat-icon class="add-icon">add</mat-icon>
             Create New
         </button>
-        
     </div>
 </div>
+
+<ng-template #noMemorise>
+    <div class="main-content">
+        <p>You have not created any memories yet. Create one now and start Memoriseing!</p>
+    </div>
+</ng-template>

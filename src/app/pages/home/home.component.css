@@ -10,7 +10,6 @@
     top: 0; /* Stick to the top */
     bottom: 0;
     height: 100vh; /* Full height of the viewport */
-    /* Additional styles for the sidebar */
     margin-top: 20px;
     margin-left: 20px;
   }
@@ -20,7 +19,6 @@
     flex: 1; /* Take remaining space */
     padding: 20px; /* Example padding */
     padding-top: 40px;
-    background-color: #e0e0e0; /* Example background color for the main content */
     margin-left: 20%; /* Adjust to match the width of the fixed sidebar */
   }
 
@@ -43,4 +41,24 @@
   h1 {
     font-size: 50px;
     font-weight: bold;
+  }
+
+  .image{
+    width: 100%;
+    border-radius: 20px;
+  }
+  .image-div{
+    width: 45%;
+    border-radius: 20px;
+  }
+
+  p {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 20px;
+    padding-bottom: 50%;
+  }
+  span{
+    color: #FFA500;
   }

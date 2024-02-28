@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
+import { FormBuilder } from '@angular/forms';
 
 
 @Component({
@@ -11,7 +12,12 @@ import { MemoryService } from '../../services/memory.service';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-
+  filterForm = this._formBuilder.group({
+    showFilter: false,
+  });
+  openForm = this._formBuilder.group({
+    search: '',
+  });
   currentUser: any;
   userdb: any;
   data = [];
@@ -20,7 +26,7 @@ export class HomeComponent {
   pageIndex = 0; // Current page index
   pagedData: any[] = [];
 
-  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService) {
+  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder) {
   }
 
   onPageChange(event: any) {

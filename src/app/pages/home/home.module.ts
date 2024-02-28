@@ -12,6 +12,8 @@ import { MatButtonModule } from '@angular/material/button';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 const routes: Routes = [
   {
@@ -36,7 +38,9 @@ const routes: Routes = [
     MatIconModule,
     MatButtonModule,
     MatGridListModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatCheckboxModule,
+    ReactiveFormsModule
   ],
   providers: [DatePipe],
 })

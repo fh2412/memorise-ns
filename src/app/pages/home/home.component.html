@@ -6,7 +6,18 @@
         </ng-container>    
     </div>
     <div class="main-content">
-        <h1>YOUR MEMORIES</h1>
+        <div class="header">
+            <h1>YOUR MEMORIES</h1>
+            <section class="filter" [formGroup]="filterForm">
+                <mat-checkbox formControlName="showFilter">Show Filter</mat-checkbox>
+            </section>
+        </div>
+        <section [formGroup]="openForm" *ngIf="filterForm.get('showFilter')!.value">
+            <mat-form-field appearance="outline">
+                <mat-label>Search</mat-label>
+                <input matInput formControlName="search">
+            </mat-form-field>
+        </section>
         <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
             <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
                 <mat-grid-tile *ngFor="let item of pagedData">

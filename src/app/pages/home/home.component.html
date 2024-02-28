@@ -15,7 +15,7 @@
         <section [formGroup]="openForm" *ngIf="filterForm.get('showFilter')!.value">
             <mat-form-field appearance="outline">
                 <mat-label>Search</mat-label>
-                <input matInput formControlName="search">
+                <input matInput formControlName="search" (input)="filterItems()">
             </mat-form-field>
         </section>
         <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">

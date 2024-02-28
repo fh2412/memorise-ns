@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -15,18 +15,20 @@ export class HomeComponent {
   filterForm = this._formBuilder.group({
     showFilter: false,
   });
-  openForm = this._formBuilder.group({
-    search: '',
-  });
+  openForm: any;
   currentUser: any;
   userdb: any;
-  data = [];
+  data: any[] = [];
 
   pageSize = 9; // Number of items per page
   pageIndex = 0; // Current page index
   pagedData: any[] = [];
+  filteredItems: any[] = [];
 
   constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder) {
+    this.openForm = this._formBuilder.group({
+      search: '',
+    });
   }
 
   onPageChange(event: any) {
@@ -34,15 +36,24 @@ export class HomeComponent {
     this.loadData();
   }
 
+  filterItems() {
+    const searchTerm = this.openForm.get('search').value.toLowerCase();
+      this.filteredItems = this.data.filter(item =>
+        item.title.toLowerCase().includes(searchTerm)
+      );
+      this.loadData();
+  }
+
   private async loadData() {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
-    this.pagedData = this.data.slice(startIndex, endIndex);
+    this.pagedData = this.filteredItems.slice(startIndex, endIndex);
   }
 
   async ngOnInit() {
     await this.setUserId();
     await this.getCreatedMemories();
+    this.filteredItems = this.data;
     this.loadData();
   }
 

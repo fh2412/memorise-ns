@@ -20,6 +20,7 @@ export class HomeComponent {
   userdb: any;
   data: any[] = [];
   friendsdata: any[] = [];
+  displaydata: any[] = [];
 
   pageSize = 9; // Number of items per page
   pageIndex = 0; // Current page index
@@ -40,7 +41,7 @@ export class HomeComponent {
 
   filterItems() {
     const searchTerm = this.openForm.get('search').value.toLowerCase();
-      this.filteredItems = this.data.filter(item =>
+      this.filteredItems = this.displaydata.filter(item =>
         item.title.toLowerCase().includes(searchTerm)
       );
       this.loadData();
@@ -48,18 +49,17 @@ export class HomeComponent {
 
   showAll(checked: boolean){
     if(checked){
-      this.filteredItems = [...this.data, ...this.friendsdata];
+      this.displaydata = [...this.data, ...this.friendsdata];
     }
     else{
-      this.filteredItems = this.data;
+      this.displaydata = this.data;
     }
     if(this.openForm.get('search').value.toLowerCase()){
       this.filterItems();
-      console.log("Filter gesetzt:", this.openForm.get('search').value.toLowerCase())
     }
     else{
+      this.filteredItems = this.displaydata;
       this.loadData();
-      console.log("Kein Filter");
     }
   }
 
@@ -73,7 +73,8 @@ export class HomeComponent {
     await this.setUserId();
     await this.getCreatedMemories();
     await this.getAddedMemories();
-    this.filteredItems = this.data;
+    this.displaydata = this.data;
+    this.filteredItems = this.displaydata;
     this.loadData();
   }
 

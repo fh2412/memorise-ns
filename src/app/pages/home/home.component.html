@@ -17,6 +17,7 @@
                 <mat-label>Search</mat-label>
                 <input matInput formControlName="search" (input)="filterItems()">
             </mat-form-field>
+            <mat-checkbox class="firends-memory-checkbox" formControlName="showFriendsMemories" (change)="showAll($event.checked)">Show Friends Memories</mat-checkbox>
         </section>
         <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
             <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">

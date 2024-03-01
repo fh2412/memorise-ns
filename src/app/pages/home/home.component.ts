@@ -19,6 +19,7 @@ export class HomeComponent {
   currentUser: any;
   userdb: any;
   data: any[] = [];
+  friendsdata: any[] = [];
 
   pageSize = 9; // Number of items per page
   pageIndex = 0; // Current page index
@@ -28,6 +29,7 @@ export class HomeComponent {
   constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder) {
     this.openForm = this._formBuilder.group({
       search: '',
+      showFriendsMemories: false,
     });
   }
 
@@ -44,6 +46,23 @@ export class HomeComponent {
       this.loadData();
   }
 
+  showAll(checked: boolean){
+    if(checked){
+      this.filteredItems = [...this.data, ...this.friendsdata];
+    }
+    else{
+      this.filteredItems = this.data;
+    }
+    if(this.openForm.get('search').value.toLowerCase()){
+      this.filterItems();
+      console.log("Filter gesetzt:", this.openForm.get('search').value.toLowerCase())
+    }
+    else{
+      this.loadData();
+      console.log("Kein Filter");
+    }
+  }
+
   private async loadData() {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
@@ -53,6 +72,7 @@ export class HomeComponent {
   async ngOnInit() {
     await this.setUserId();
     await this.getCreatedMemories();
+    await this.getAddedMemories();
     this.filteredItems = this.data;
     this.loadData();
   }
@@ -92,6 +112,21 @@ export class HomeComponent {
       this.memoryService.getCreatedMemory(this.userdb.user_id).subscribe(
         (data) => {
           this.data = data;
+          resolve();  // Resolve the Promise when the operation is complete
+        },
+        (error: any) => {
+          console.error('Error fetching createdMemory data:', error);
+          reject(error);  // Reject the Promise if there is an error
+        }
+      );
+    });
+  }
+
+  async getAddedMemories(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.memoryService.getAddedMemories(this.userdb.user_id).subscribe(
+        (data) => {
+          this.friendsdata = data;
           resolve();  // Resolve the Promise when the operation is complete
         },
         (error: any) => {

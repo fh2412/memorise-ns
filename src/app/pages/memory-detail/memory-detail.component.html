@@ -68,12 +68,12 @@
   <mat-grid-tile colspan="1" rowspan="1">
     <div class="memory-color">
       <h2>Map:</h2>
-      <div style="height: 100%; display: flex; flex-direction: column; background-color: red;">
-        <ng-container *ngIf="location && location.length > 0">
+      <div style="height: 100%; display: flex; flex-direction: column;">
+        <ng-container *ngIf="location && location.length > 0 && (location[0].longitude != 0.000000 || location[0].latitude != 0.000000)">
           <app-map-snippet [long]="location[0].longitude" [lat]="location[0].latitude" style="flex: 1;"></app-map-snippet>
         </ng-container>
-        <ng-container *ngIf="!location || location.length === 0">
-          <p>No location data available</p>
+        <ng-container *ngIf="!location || location.length === 0 || (location[0].longitude == 0.000000 || location[0].latitude == 0.000000)">
+          <p>No location data available!</p>
         </ng-container>
       </div>
     </div>

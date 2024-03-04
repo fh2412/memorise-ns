@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable, catchError, forkJoin, map, of } from 'rxjs';
+import { Observable, catchError, finalize, forkJoin, map, of, switchMap, tap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask  } from '@angular/fire/compat/storage';
 
 @Injectable({
@@ -39,7 +39,7 @@ export class FileUploadService {
   }
 
   getProfilePictureUrl(userId: string): Promise<string> {
-    const path = `profile-pictures/${userId}/profile.jpg`; // adjust the path as needed
+    const path = `profile-pictures/${userId}/profile.jpg`;
     const ref = this.storage.ref(path);
 
     return ref.getDownloadURL().toPromise();
@@ -51,7 +51,7 @@ export class FileUploadService {
 
     // Upload each file
     files.forEach((file, index) => {
-      const path = `memories/${memoryId}/picture_${index + 1}.jpg`; // adjust the path as needed
+      const path = `memories/${memoryId}/picture_${index + 1}.jpg`;
       const ref = this.storage.ref(path);
       const task: AngularFireUploadTask = ref.put(file);
 
@@ -67,5 +67,20 @@ export class FileUploadService {
     // Return the combined progress observable
     return combinedProgress$;
   }
+
+  deleteMemorysFolder(memoryId: string): Observable<void[]> {
+    const path = `memories/${memoryId}`;
+    const storageRef = this.storage.ref(path);
+
+    return storageRef.listAll().pipe(
+      switchMap((result) => {
+        // Delete each item in the folder
+        const deletionPromises: Promise<void>[] = result.items.map((itemRef) => itemRef.delete());
+        return Promise.all(deletionPromises);
+      }),
+      finalize(() => console.log(`Folder ${path} deleted successfully.`)),
+    );
+  }
+
 }
 

@@ -74,7 +74,6 @@ export class ImageUploadComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       console.log('Dialog closed with result:', result);
       this.router.navigate(['/home']);
-      //this.createMemory(result);
     });
   }
 }

@@ -6,7 +6,7 @@ import { FileUploadService } from '../../services/file-upload.service';
 @Component({
   selector: 'app-editmemory',
   templateUrl: './editmemory.component.html',
-  styleUrl: './editmemory.component.css'
+  styleUrl: './editmemory.component.scss'
 })
 export class EditmemoryComponent {
   memoryId: string = '';
@@ -42,6 +42,10 @@ export class EditmemoryComponent {
       }
     );
     this.router.navigate(['/home']);
+  }
+
+  addPhotos(){
+    console.log("Add Photos!");
   }
 
   getMemory() {

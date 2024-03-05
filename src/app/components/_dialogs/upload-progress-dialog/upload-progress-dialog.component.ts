@@ -56,6 +56,7 @@ export class UploadProgressDialogComponent implements OnInit {
       if (memoryData.memory_end_date == null) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
+      console.log("Date:", memoryData.memory_date, memoryData.memory_end_date);
 
       this.locationService.createLocation(memoryData).subscribe(
         (response: { message: string, locationId: any }) => {

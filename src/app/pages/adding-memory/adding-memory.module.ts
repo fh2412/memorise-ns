@@ -20,6 +20,7 @@ import {MatChipsModule} from '@angular/material/chips';
 import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
+import { MatGridListModule } from '@angular/material/grid-list';
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
     MatChipsModule,
     MatAutocompleteModule,
     AsyncPipe,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatGridListModule
   ]
 })
 export class AddingMemoryModule {}

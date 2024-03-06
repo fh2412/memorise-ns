@@ -76,6 +76,10 @@ export class ImageUploadComponent implements OnInit {
       this.router.navigate(['/home']);
     });
   }
+
+  removeImage(index: number): void {
+    this.previews.splice(index, 1);
+  }
 }
 
 

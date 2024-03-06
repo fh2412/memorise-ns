@@ -1,3 +1,5 @@
+@import '../../pages/memory-detail/image-preview.scss';
+
 .preview {
   max-width: 30%; 
   height: auto; 
@@ -19,4 +21,21 @@
 .upload-button{
   margin-left: 0px;
 }
-  
+ 
+.remove-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba($color: #FFA500, $alpha: 0.5);
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+.card{
+  cursor: auto;
+}
+
+mat-grid-list{
+  margin-top: 15px;
+}

@@ -1,5 +1,61 @@
-<h2>Edit Your Memory</h2>
-<div class="main">
+<div class="header">
+    <h1>EDIT MEMORY</h1>
     <button mat-flat-button color="warn" (click)="deleteMemory()">Delete Memory</button>
-    <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
+</div>
+
+<mat-divider></mat-divider>
+
+<div *ngIf="this.memory">
+    <mat-grid-list cols="3" rowHeight="2:1">
+        <!-- First Row -->
+        <mat-grid-tile colspan="2" rowspan="1">
+            <div class="memory-color">
+                <h2 class="title">{{ memory.title || 'Not provided' }}</h2>
+                <form [formGroup]="memoryForm" class="details-form">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Description</mat-label>
+                      <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                    </mat-form-field>
+                  </form>                  
+            </div>
+        </mat-grid-tile>
+
+        <mat-grid-tile colspan="1" rowspan="1">
+            <div class="memory-color">
+                <h2>Friends:</h2>
+                <span>Manage friends</span>
+            </div>
+        </mat-grid-tile>
+
+        <!-- Second Row -->
+        <mat-grid-tile colspan="2" rowspan="1">
+            <div class="memory-color">
+                <h2>Photos</h2>
+                <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
+                <button mat-flat-button color="accent" (click)="addPhotos()">Manage Photos</button>
+            </div>
+        </mat-grid-tile>
+
+        <mat-grid-tile colspan="1" rowspan="1">
+            <div class="memory-color">
+                <h2>Date:</h2>
+                <span>Date</span>
+            </div>
+        </mat-grid-tile>
+
+        <!-- Third Row -->
+        <mat-grid-tile colspan="2" rowspan="1">
+            <div class="memory-color">
+                <h2>Additional Files:</h2>
+                <span>additional</span>
+            </div>
+        </mat-grid-tile>
+
+        <mat-grid-tile colspan="1" rowspan="1">
+            <div class="memory-color">
+                <h2>Map:</h2>
+                <span>Location</span>
+            </div>
+        </mat-grid-tile>
+    </mat-grid-list>
 </div>

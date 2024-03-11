@@ -29,7 +29,6 @@ import { ChangePasswordDialogComponent } from './components/_dialogs/change-pass
 import { SeeAllFirendsDialogComponent } from './components/_dialogs/see-all-friends-dialog/see-all-firends-dialog.component';
 import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { EditmemoryComponent } from './pages/editmemory/editmemory.component';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 
 @NgModule({
@@ -42,7 +41,6 @@ import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-d
     ChangePasswordDialogComponent,
     SeeAllFirendsDialogComponent,
     UploadProgressDialogComponent,
-    EditmemoryComponent,
     ImageDialogComponent,
   ],
   imports: [

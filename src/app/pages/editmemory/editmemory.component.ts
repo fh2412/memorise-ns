@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-editmemory',
@@ -10,9 +11,15 @@ import { FileUploadService } from '../../services/file-upload.service';
 })
 export class EditmemoryComponent {
   memoryId: string = '';
+  memory: any;
   firebaseId: string = '';
+  memoryForm: FormGroup;
 
-  constructor(private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {}
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
+    this.memoryForm = this.formBuilder.group({
+      description: [''],
+    });
+  }
 
   async ngOnInit(): Promise<void> {
     this.route.paramMap.subscribe((params) => {
@@ -52,6 +59,10 @@ export class EditmemoryComponent {
     this.memoryService.getMemory(this.memoryId).subscribe(
       (response) => {
         this.firebaseId = response.image_url;
+        this.memory = response;
+        this.memoryForm.patchValue({
+          description: this.memory.text,
+        });
       },
       (error) => {
         console.error('Error getting memory:', error);

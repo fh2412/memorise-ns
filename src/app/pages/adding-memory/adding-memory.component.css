@@ -13,7 +13,6 @@ h1 {
     max-width: 75%;
     margin: 0 auto;
     margin-top: 15px;
-    background-color: rgba(0, 0, 0, 0.1);
   }
   
   mat-form-field {

@@ -3,7 +3,6 @@
     <mat-progress-bar
       mode="determinate"
       [value]="progressInfo.value"
-      class="mb-2"
     ></mat-progress-bar>
 </div>
   
@@ -11,7 +10,7 @@
     <div>
       <button mat-raised-button color="primary" (click)="fileInput.click()">
         <mat-icon>folder</mat-icon>
-        <span>Select Files</span>
+        <span>{{ selectedFiles.length > 0 ? 'Add Photos' : 'Select Photos' }}</span>
         <input
           #fileInput
           type="file"
@@ -20,14 +19,14 @@
           (change)="selectFiles($event)"
           style="display: none"
         />
-      </button>    
+      </button>
     </div>
-  
+
     <div class="upload-button">
       <button
         mat-raised-button
         color="primary"
-        [disabled]="!selectedFiles"
+        [disabled]="selectedFiles.length <= 0"
         (click)="uploadFiles()"
       >
       <mat-icon>file_upload</mat-icon>
@@ -49,11 +48,4 @@
       </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
-  
-  
-  <div *ngIf="message.length" class="image-show">
-    <ul *ngFor="let msg of message; let i = index">
-      <li>{{ msg }}</li>
-    </ul>
-  </div>
   

@@ -18,9 +18,8 @@ export class ImageUploadComponent implements OnInit {
   @Input() emails: any;
 
 
-  selectedFiles?: FileList;
+  selectedFiles: any[] = [];
   progressInfos: any[] = [];
-  message: string[] = [];
 
   previews: string[] = [];
   imageInfos?: Observable<any>;
@@ -30,9 +29,10 @@ export class ImageUploadComponent implements OnInit {
 
 
   selectFiles(event: any): void {
-    this.message = [];
     this.progressInfos = [];
-    this.selectedFiles = event.target.files;
+    const newFiles = event.target.files;
+    this.selectedFiles = this.selectedFiles || [];
+    Array.prototype.push.apply(this.selectedFiles, newFiles);
 
     this.previews = [];
     if (this.selectedFiles && this.selectedFiles[0]) {
@@ -41,7 +41,6 @@ export class ImageUploadComponent implements OnInit {
         const reader = new FileReader();
 
         reader.onload = (e: any) => {
-          console.log(e.target.result);
           this.previews.push(e.target.result);
         };
 
@@ -51,8 +50,6 @@ export class ImageUploadComponent implements OnInit {
   }
 
   uploadFiles(): void {
-    this.message = [];
-
     if (this.selectedFiles) {
       this.openUploadDialog();
     }
@@ -72,13 +69,15 @@ export class ImageUploadComponent implements OnInit {
 
     // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
     dialogRef.afterClosed().subscribe((result) => {
-      console.log('Dialog closed with result:', result);
       this.router.navigate(['/home']);
     });
   }
 
   removeImage(index: number): void {
     this.previews.splice(index, 1);
+    if(this.previews.length === 0){
+      this.selectedFiles = [];
+    }
   }
 }
 

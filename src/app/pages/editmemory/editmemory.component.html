@@ -10,13 +10,18 @@
         <!-- First Row -->
         <mat-grid-tile colspan="2" rowspan="1">
             <div class="memory-color">
-                <h2 class="title">{{ memory.title || 'Not provided' }}</h2>
+                <div class="title-div">
+                    <h2 class="title">{{ memory.title || 'Not provided' }}</h2>
+                    <button mat-mini-fab color="accent" (click)="editTitle()" [disabled]="editTitleBool">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </div>
                 <form [formGroup]="memoryForm" class="details-form">
                     <mat-form-field appearance="outline">
-                      <mat-label>Description</mat-label>
-                      <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                        <mat-label>Description</mat-label>
+                        <textarea matInput placeholder="Description" formControlName="description"></textarea>
                     </mat-form-field>
-                  </form>                  
+                </form>
             </div>
         </mat-grid-tile>
 

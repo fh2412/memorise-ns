@@ -14,6 +14,7 @@ export class EditmemoryComponent {
   memory: any;
   firebaseId: string = '';
   memoryForm: FormGroup;
+  editTitleBool: boolean = false;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
     this.memoryForm = this.formBuilder.group({
@@ -68,5 +69,9 @@ export class EditmemoryComponent {
         console.error('Error getting memory:', error);
       }
     );
+  }
+
+  editTitle() {
+    this.editTitleBool = !this.editTitleBool;
   }
 }

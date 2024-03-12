@@ -28,3 +28,12 @@ mat-grid-list {
 mat-form-field{
     width: 90%;
 }
+
+.title-div{
+    display: flex;
+    align-items: center;
+    button{
+        margin-left: 20px;
+        color: white;
+    }
+}

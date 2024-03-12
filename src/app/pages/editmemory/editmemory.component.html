@@ -1,6 +1,12 @@
 <div class="header">
-    <h1>EDIT MEMORY</h1>
-    <button mat-flat-button color="warn" (click)="deleteMemory()">Delete Memory</button>
+    <div>
+        <h1>EDIT MEMORY</h1>
+    </div>
+    <div class="actions">
+        <button mat-flat-button class="save" (click)="saveChanges()" [disabled]="true"><mat-icon>save</mat-icon>Save</button>
+        <button mat-flat-button class="discard" (click)="goToHome()" [disabled]="true"><mat-icon>cancel</mat-icon>Discard</button>
+        <button mat-flat-button color="warn" (click)="deleteMemory()"><mat-icon>delete</mat-icon>Delete Memory</button>
+    </div>
 </div>
 
 <mat-divider></mat-divider>
@@ -10,13 +16,11 @@
         <!-- First Row -->
         <mat-grid-tile colspan="2" rowspan="1">
             <div class="memory-color">
-                <div class="title-div">
-                    <h2 class="title">{{ memory.title || 'Not provided' }}</h2>
-                    <button mat-mini-fab color="accent" (click)="editTitle()" [disabled]="editTitleBool">
-                        <mat-icon>edit</mat-icon>
-                    </button>
-                </div>
-                <form [formGroup]="memoryForm" class="details-form">
+                <form [formGroup]="memoryForm">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Title</mat-label>
+                        <input matInput placeholder="Title" formControlName="title">
+                    </mat-form-field>
                     <mat-form-field appearance="outline">
                         <mat-label>Description</mat-label>
                         <textarea matInput placeholder="Description" formControlName="description"></textarea>

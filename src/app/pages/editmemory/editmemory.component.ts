@@ -19,6 +19,7 @@ export class EditmemoryComponent {
   constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
+      title: [''],
     });
   }
 
@@ -63,6 +64,7 @@ export class EditmemoryComponent {
         this.memory = response;
         this.memoryForm.patchValue({
           description: this.memory.text,
+          title: this.memory.title,
         });
       },
       (error) => {
@@ -71,7 +73,11 @@ export class EditmemoryComponent {
     );
   }
 
-  editTitle() {
-    this.editTitleBool = !this.editTitleBool;
+  goToHome(): void {
+    this.router.navigate(['/home']);
+  }
+
+  saveChanges(): void {
+    this.router.navigate(['/home']);
   }
 }

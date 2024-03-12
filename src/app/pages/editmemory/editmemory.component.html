@@ -12,7 +12,7 @@
 <mat-divider></mat-divider>
 
 <div *ngIf="this.memory">
-    <mat-grid-list cols="3" rowHeight="2:1">
+    <mat-grid-list cols="3" rowHeight="2:1" [gutterSize]="'2px'">
         <!-- First Row -->
         <mat-grid-tile colspan="2" rowspan="1">
             <div class="memory-color">
@@ -32,8 +32,9 @@
         <mat-grid-tile colspan="1" rowspan="1">
             <div class="memory-color">
                 <h2>Friends:</h2>
-                <span>Manage friends</span>
+                <span>Select the friends you want to add and hit "Save"!</span>
                 <app-friends-autocomplet></app-friends-autocomplet>
+                <button mat-flat-button color="accent"><mat-icon>edit</mat-icon>Edit existing friends</button>
             </div>
         </mat-grid-tile>
 

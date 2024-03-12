@@ -17,10 +17,10 @@ import { MatListModule } from '@angular/material/list';
 import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
-import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 import { MatGridListModule } from '@angular/material/grid-list';
+import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
 
 const routes: Routes = [
   {
@@ -34,7 +34,6 @@ const routes: Routes = [
     AddingMemoryComponent,
     ImageUploadComponent,
     MemoryAddFriendDialogComponent,
-    FriendsAutocompletComponent
   ],
   imports: [
     CommonModule,
@@ -53,10 +52,10 @@ const routes: Routes = [
     MatDialogModule,
     FormsModule,
     MatChipsModule,
-    MatAutocompleteModule,
     AsyncPipe,
     MatSlideToggleModule,
-    MatGridListModule
+    MatGridListModule,
+    FriendsAutocompleteModule 
   ]
 })
 export class AddingMemoryModule {}

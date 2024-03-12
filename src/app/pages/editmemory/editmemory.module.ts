@@ -13,6 +13,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
 
 const routes: Routes = [
   {
@@ -39,7 +40,8 @@ const routes: Routes = [
     MatFormFieldModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    FriendsAutocompleteModule
   ]
 })
 export class EditMemoryModule { }

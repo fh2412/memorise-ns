@@ -14,12 +14,14 @@ export class EditmemoryComponent {
   memory: any;
   firebaseId: string = '';
   memoryForm: FormGroup;
-  editTitleBool: boolean = false;
+  isFormChanged: boolean = true;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
       title: [''],
+      memory_date: [''],
+      memory_end_date: [''],
     });
   }
 
@@ -28,6 +30,9 @@ export class EditmemoryComponent {
       this.memoryId = params.get('id')!;
     });
     await this.getMemory();
+    //this.memoryForm.valueChanges.subscribe(() => {
+    //  this.isFormChanged = true;
+    //});
   }
 
   deleteMemory() {
@@ -65,6 +70,8 @@ export class EditmemoryComponent {
         this.memoryForm.patchValue({
           description: this.memory.text,
           title: this.memory.title,
+          memory_date: this.memory.memory_date,
+          memory_end_date: this.memory.memory_end_date
         });
       },
       (error) => {
@@ -78,6 +85,14 @@ export class EditmemoryComponent {
   }
 
   saveChanges(): void {
+    this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).subscribe(
+      (response) => {
+        console.log(response); // Handle success response
+      },
+      (error) => {
+        console.error('Error updating memory:', error); // Handle error
+      }
+    );
     this.router.navigate(['/home']);
   }
 }

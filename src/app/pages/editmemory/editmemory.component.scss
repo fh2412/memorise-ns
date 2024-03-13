@@ -20,9 +20,12 @@ mat-grid-list {
     margin: 5px;
 }
 
+mat-grid-tile{
+    border-radius: 10px;
+}
+
 .memory-color {
-    background-color: rgba(#80a1c1, 0.1);
-    border-radius: 15px;
+    background-color: rgba(#80a1c1, 0.2);
     padding: 5px;
 }
 
@@ -53,6 +56,3 @@ mat-form-field{
     color: white;
 }
 
-.friends-div{
-    background-color: red;
-}

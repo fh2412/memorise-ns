@@ -37,9 +37,8 @@ export class MemoryService {
     return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends`);
   }
 
-  updateMemory(memoryData: any): Observable<any> {
-    // Implement the logic to update user data in your backend API
-    return this.http.put<any>(`${this.apiUrl}/memory`, memoryData);
+  updateMemory(memory_id: string, memoryData: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
   }
 
   createMemory(memoryData: any): Observable<any> {

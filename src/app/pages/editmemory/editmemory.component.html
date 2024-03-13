@@ -14,16 +14,16 @@
 <div *ngIf="this.memory">
     <mat-grid-list cols="3" rowHeight="2:1" [gutterSize]="'2px'">
         <!-- First Row -->
-        <mat-grid-tile colspan="2" rowspan="1">
+        <mat-grid-tile colspan="2" rowspan="2">
             <div class="memory-color">
                 <form [formGroup]="memoryForm">
                     <mat-form-field appearance="outline">
                         <mat-label>Title</mat-label>
                         <input matInput placeholder="Title" formControlName="title">
                     </mat-form-field>
-                    <mat-form-field appearance="outline">
+                    <mat-form-field appearance="outline" class="form-desc">
                         <mat-label>Description</mat-label>
-                        <textarea matInput placeholder="Description" formControlName="description"></textarea>
+                        <textarea matInput placeholder="Description" formControlName="description" [cdkTextareaAutosize]="true" class="form-desc"></textarea>
                     </mat-form-field>
                 </form>
             </div>
@@ -32,18 +32,11 @@
         <mat-grid-tile colspan="1" rowspan="1">
             <div class="memory-color">
                 <h2>Friends:</h2>
-                <span>Select the friends you want to add and hit "Save"!</span>
-                <app-friends-autocomplet></app-friends-autocomplet>
-                <button mat-flat-button color="accent"><mat-icon>edit</mat-icon>Edit existing friends</button>
-            </div>
-        </mat-grid-tile>
-
-        <!-- Second Row -->
-        <mat-grid-tile colspan="2" rowspan="1">
-            <div class="memory-color">
-                <h2>Photos</h2>
-                <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
-                <button mat-flat-button color="accent" (click)="addPhotos()">Manage Photos</button>
+                <div class="friends-div">
+                    <span>Select the friends you want to add and hit "Save"!</span>
+                    <app-friends-autocomplet></app-friends-autocomplet>
+                    <button mat-flat-button color="accent"><mat-icon>edit</mat-icon>Edit existing friends</button>
+                </div>
             </div>
         </mat-grid-tile>
 
@@ -53,19 +46,24 @@
                 <span>Date</span>
             </div>
         </mat-grid-tile>
-
-        <!-- Third Row -->
-        <mat-grid-tile colspan="2" rowspan="1">
+        <!-- Second Row -->
+        <mat-grid-tile colspan="2" rowspan="2">
             <div class="memory-color">
-                <h2>Additional Files:</h2>
-                <span>additional</span>
+                <h2>Photos</h2>
+                <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
+                <button mat-flat-button color="accent" (click)="addPhotos()">Manage Photos</button>
             </div>
         </mat-grid-tile>
-
         <mat-grid-tile colspan="1" rowspan="1">
             <div class="memory-color">
                 <h2>Map:</h2>
                 <span>Location</span>
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="1" rowspan="1">
+            <div class="memory-color">
+                <h2>Additional Files:</h2>
+                <span>additional</span>
             </div>
         </mat-grid-tile>
     </mat-grid-list>

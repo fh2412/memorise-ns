@@ -17,19 +17,24 @@
 }
 
 mat-grid-list {
-    margin: 0px;
-    margin-left: 15px;
+    margin: 5px;
 }
 
 .memory-color {
-    background-color: rgba(#000000, 0.01);
+    background-color: rgba(#80a1c1, 0.1);
+    border-radius: 15px;
+    padding: 5px;
 }
 
 mat-form-field{
     width: 90%;
     margin-top: 15px;
+    margin-left: 10px;
+    
 }
-
+.form-desc{
+    max-height: 400px;
+}
 .title-div{
     display: flex;
     align-items: center;
@@ -46,4 +51,8 @@ mat-form-field{
 .discard {
     background-color: rgba(#6f726f, 1);
     color: white;
+}
+
+.friends-div{
+    background-color: red;
 }

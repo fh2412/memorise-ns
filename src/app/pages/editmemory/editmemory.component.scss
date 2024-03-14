@@ -1,5 +1,4 @@
 @import '../memory-detail/memory-detail.component.scss';
-
 .header {
     display: flex;
     align-items: center;
@@ -25,7 +24,7 @@ mat-grid-tile{
 }
 
 .memory-color {
-    background-color: rgba(#80a1c1, 0.2);
+    background-color: white;
     padding: 5px;
 }
 
@@ -56,3 +55,21 @@ mat-form-field{
     color: white;
 }
 
+.friends-div{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    height: 56px;
+    app-friends-autocomplet{
+        width: 90%;
+    }
+    button{
+        margin-right: 10px;
+        margin-top: 10px;
+    }
+}
+
+.edit-friends{
+    margin-top: 55px;
+    margin-left: 30px;
+}

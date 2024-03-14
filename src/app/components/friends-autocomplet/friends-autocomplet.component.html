@@ -1,25 +1,25 @@
 <form>
-    <mat-form-field appearance="outline">
-      <mat-label>Memories friends</mat-label>
-      <mat-chip-grid #chipGrid aria-label="friend selection">
-        @for (friend of friends; track friend) {
-          <mat-chip-row (removed)="remove(friend)">
-            {{friend}}
-            <button matChipRemove [attr.aria-label]="'remove ' + friend">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip-row>
-        }
-      </mat-chip-grid>
-      <input placeholder="Type friends name..." #friendInput [formControl]="friendCtrl"
-        [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="add($event)"/>
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        @for (friend of filteredfriends | async; track friend) {
-          <mat-option [value]="friend">{{friend}}</mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-  </form>
-  
+  <mat-form-field appearance="outline">
+    <mat-label>Memories friends</mat-label>
+    <div class="friend-chips-container">
+    <mat-chip-grid #chipGrid aria-label="friend selection">
+      @for (friend of friends; track friend) {
+      <mat-chip-row (removed)="remove(friend)">
+        {{friend}}
+        <button matChipRemove [attr.aria-label]="'remove ' + friend">
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+      }
+    </mat-chip-grid>
+    </div>
+    <input placeholder="Type friends name..." #friendInput [formControl]="friendCtrl" [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      (matChipInputTokenEnd)="add($event)" />
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      @for (friend of filteredfriends | async; track friend) {
+      <mat-option [value]="friend">{{friend}}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+</form>

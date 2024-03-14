@@ -15,6 +15,7 @@ export class EditmemoryComponent {
   firebaseId: string = '';
   memoryForm: FormGroup;
   isFormChanged: boolean = true;
+  emailArray: any;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
     this.memoryForm = this.formBuilder.group({
@@ -94,5 +95,14 @@ export class EditmemoryComponent {
       }
     );
     this.router.navigate(['/home']);
+  }
+
+  onSelectedValuesChange(selectedValues: string[]) {
+    this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
+  }
+
+
+  addFriends(): void{
+    console.log(this.emailArray);
   }
 }

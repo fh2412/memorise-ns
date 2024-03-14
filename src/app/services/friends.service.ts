@@ -16,6 +16,10 @@ export class FriendsService {
     return this.http.get<any[]>(`${this.apiUrl}/${userId}`);
   }
 
+  getMemoriesMissingFriends(memoryId: string, userId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}//missingMemory/${memoryId}/${userId}`);
+  }
+
   getPendingFriends(userId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.apiUrl}/pending/${userId}`);
   }

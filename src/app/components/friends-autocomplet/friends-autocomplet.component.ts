@@ -20,6 +20,8 @@ export class FriendsAutocompletComponent {
   friendCtrl = new FormControl('');
   filteredfriends: Observable<string[]> | undefined;
   friends: string[] = [];
+  @Input() memoryId = "0";
+
   @Output() selectedValuesChange: EventEmitter<any[]> = new EventEmitter<any[]>();
 
   @ViewChild('friendInput') friendInput: ElementRef<HTMLInputElement> | any;
@@ -31,7 +33,7 @@ export class FriendsAutocompletComponent {
   async getFriends() {
     try {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
-      this.friendsService.getUserFriends(this.loggedInUserId).subscribe(
+      this.friendsService.getMemoriesMissingFriends(this.memoryId, this.loggedInUserId).subscribe(
         (friends) => {
           this.allfriends = friends.map(item => `${item.name} (${item.email})`);
           

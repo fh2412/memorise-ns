@@ -23,7 +23,7 @@ export class AddingMemoryComponent {
   emailArray: any;
   constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService) {
     this.memoryForm = this.formBuilder.group({
-      creator_id: [this.userId], // replace with actual creator ID
+      creator_id: [this.userId],
       title: ['', Validators.required],
       description: [''],
       firestore_bucket_url: [''],
@@ -49,7 +49,6 @@ export class AddingMemoryComponent {
 
   onSelectedValuesChange(selectedValues: string[]) {
     this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
-    console.log(this.emailArray);
   }
 
 

@@ -16,6 +16,7 @@ export class EditmemoryComponent {
   memoryForm: FormGroup;
   isFormChanged: boolean = true;
   emailArray: any;
+  newFriends: boolean = true;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
     this.memoryForm = this.formBuilder.group({
@@ -99,10 +100,26 @@ export class EditmemoryComponent {
 
   onSelectedValuesChange(selectedValues: string[]) {
     this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
+    if(this.emailArray.length>0){
+      this.newFriends=false;
+    }
+    else{
+      this.newFriends=true;
+    }
   }
 
 
-  addFriends(): void{
-    console.log(this.emailArray);
+  async addFriends(): Promise<void>{
+    const friendData = { emails: this.emailArray, memoryId: this.memoryId };
+    await this.memoryService.addFriendToMemory(friendData).subscribe(
+      (friendResponse) => {
+        console.log('Friend added to memory successfully:', friendResponse);
+        window.location.reload();
+      },
+      (friendError) => {
+        console.error('Error adding friend to memory:', friendError);
+        // Handle error (e.g., show an error message to the user)
+      }
+    );
   }
 }

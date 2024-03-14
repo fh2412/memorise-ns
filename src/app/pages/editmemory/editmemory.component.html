@@ -34,8 +34,9 @@
                 <h2>Friends:</h2>
                 <div>
                     <span style="margin-left: 30px;">Select the friends you want to add and hit "Save"!</span>
-                    <div class="friends-div"><app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet><button mat-flat-button
-                            class="save" (click)="addFriends()"><mat-icon>add</mat-icon>Add</button></div>
+                    <div class="friends-div">
+                        <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet>
+                        <button mat-flat-button class="save" (click)="addFriends()" [disabled]="newFriends"><mat-icon>add</mat-icon>Add</button></div>
                     <button mat-flat-button color="accent" class="edit-friends"><mat-icon>edit</mat-icon>Edit existing friends</button>
                 </div>
             </div>

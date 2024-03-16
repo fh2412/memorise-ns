@@ -37,7 +37,7 @@
                     <div class="friends-div">
                         <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet>
                         <button mat-flat-button class="save" (click)="addFriends()" [disabled]="newFriends"><mat-icon>add</mat-icon>Add</button></div>
-                    <button mat-flat-button color="accent" class="edit-friends"><mat-icon>edit</mat-icon>Edit existing friends</button>
+                    <button mat-flat-button color="accent" class="edit-friends" (click)="manageFriends()"><mat-icon>edit</mat-icon>Edit existing friends</button>
                 </div>
             </div>
         </mat-grid-tile>

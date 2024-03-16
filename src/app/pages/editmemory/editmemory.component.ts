@@ -3,6 +3,8 @@ import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { ManageFriendsDialogComponent } from '../../components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-editmemory',
@@ -18,7 +20,7 @@ export class EditmemoryComponent {
   emailArray: any;
   newFriends: boolean = true;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService, private dialog: MatDialog) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
       title: [''],
@@ -121,5 +123,13 @@ export class EditmemoryComponent {
         // Handle error (e.g., show an error message to the user)
       }
     );
+  }
+
+  manageFriends(): void {
+    const dialogRef = this.dialog.open(ManageFriendsDialogComponent, {
+      width: '300px', // Adjust the width as needed
+    });
+
+    // You can handle dialog close or other events if needed
   }
 }

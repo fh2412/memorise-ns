@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
 
@@ -14,22 +14,26 @@ export class FriendPreviewComponent {
   @Input() buttonColor: string = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
   @Input() buttonIcon: string = 'person_add'; // Use MatButton icon options
   @Input() friend: any;
+  @Output() buttonClicked = new EventEmitter<void>();
   loggedInUserId: any;
 
   constructor(private friendshipService: FriendsService, private userService: UserService) {}
 
   async requestFriend(friend: any, methode: string, req: boolean) {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
-    if(methode == "Accept"){
+    if(methode == "Remove from Memory"){
+      this.onButtonClick();
+    }
+    else if(methode == "Accept"){
       this.acceptFriendRequest(friend.user_id, this.loggedInUserId);
     }
-    if(methode == "Remove"){
+    else if(methode == "Remove"){
       this.removeFriend(friend.user_id, this.loggedInUserId);
     }
-    if(methode == "Request" && req == true){
+    else if(methode == "Request" && req == true){
       this.removeFriend(friend.user_id, this.loggedInUserId);
     }
-    if(methode == "Request" && req == false){
+    else if(methode == "Request" && req == false){
       this.sendFriendRequest(friend.user_id, this.loggedInUserId);
     }
     this.requested = !this.requested;
@@ -66,5 +70,9 @@ export class FriendPreviewComponent {
         console.error('Error sending friend request', error);
       }
     );
+  }
+
+  onButtonClick(): void {
+    this.buttonClicked.emit(this.friend);
   }
 }

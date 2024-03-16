@@ -3,7 +3,7 @@
     <div style="height: 300px;">
         Friends:
         <ng-container *ngFor="let friend of friends; let last = last">
-            <app-friend-preview [friend]="friend" [requested]="false" [buttonText]="'Remove'" [requestedText]="'Undo'" [buttonIcon]="'person_remove'"></app-friend-preview>
+            <app-friend-preview [friend]="friend" [requested]="false" [buttonText]="'Remove from Memory'" [requestedText]="'Undo'" [buttonIcon]="'person_remove'" (buttonClicked)="handleButtonClicked(friend)"></app-friend-preview>
             <mat-divider *ngIf="!last"></mat-divider>
           </ng-container>
     </div>

@@ -1,7 +1,11 @@
 <div>
     <!-- Content of the dialog -->
     <div style="height: 300px;">
-        Friends: <p *ngFor="let friend of friends">{{ friend.name }}</p>
+        Friends:
+        <ng-container *ngFor="let friend of friends; let last = last">
+            <app-friend-preview [friend]="friend" [requested]="false" [buttonText]="'Remove'" [requestedText]="'Undo'" [buttonIcon]="'person_remove'"></app-friend-preview>
+            <mat-divider *ngIf="!last"></mat-divider>
+          </ng-container>
     </div>
     <!-- Buttons -->
     <div>

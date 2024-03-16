@@ -31,6 +31,7 @@ import { UploadProgressDialogComponent } from './components/_dialogs/upload-prog
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { ManageFriendsDialogComponent } from './components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
+import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { ManageFriendsDialogComponent } from './components/_dialogs/manage-frien
     ReactiveFormsModule,
     MatSelectModule,
     MatProgressBarModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    FriendsPreviewModule
   ],
   providers: [],
   bootstrap: [AppComponent]

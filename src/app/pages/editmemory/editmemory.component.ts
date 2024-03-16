@@ -127,7 +127,7 @@ export class EditmemoryComponent {
 
   manageFriends(): void {
     const dialogRef = this.dialog.open(ManageFriendsDialogComponent, {
-      width: '300px', 
+      width: '35%', 
       data: { memoryId: this.memoryId }
     });
 

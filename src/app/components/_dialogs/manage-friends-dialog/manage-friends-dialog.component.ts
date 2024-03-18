@@ -35,7 +35,6 @@ export class ManageFriendsDialogComponent {
     } else {
       this.deleteFriends.push(friend.user_id);
     }
-    console.log("Friends to delete:", this.deleteFriends);
   }
 
   onSave(): void {

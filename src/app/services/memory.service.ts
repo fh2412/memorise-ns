@@ -53,4 +53,9 @@ export class MemoryService {
     const url = `${this.apiUrl}/memories/${memoryId}`;
     return this.http.delete(url);
   }
+
+  deleteFriendsFromMemory(userId: string, memoryId: string): Observable<any> {
+    const url = `${this.apiUrl}/memories/${memoryId}/${userId}`;
+    return this.http.delete(url);
+  }
 }

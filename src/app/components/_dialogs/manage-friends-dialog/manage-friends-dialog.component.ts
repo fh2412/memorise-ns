@@ -5,7 +5,7 @@ import { MemoryService } from '../../../services/memory.service';
 @Component({
   selector: 'app-manage-friends-dialog',
   templateUrl: './manage-friends-dialog.component.html',
-  styleUrls: ['./manage-friends-dialog.component.css']
+  styleUrls: ['./manage-friends-dialog.component.scss']
 })
 export class ManageFriendsDialogComponent {
   constructor(private dialogRef: MatDialogRef<ManageFriendsDialogComponent>, private friendsService: MemoryService, @Inject(MAT_DIALOG_DATA) public data: { memoryId: string }) { }
@@ -39,6 +39,17 @@ export class ManageFriendsDialogComponent {
 
   onSave(): void {
     // You can add save logic here
+    console.log(this.deleteFriends);
+    this.deleteFriends.forEach(friend => {
+      this.friendsService.deleteFriendsFromMemory(friend, this.data.memoryId).subscribe(
+        (response) => {
+          console.log('successfully deleted friend from memory:', response);
+        },
+        (error) => {
+          console.error('Error deleting friends from memory:', error);
+        }
+      );
+    });
     this.dialogRef.close();
   }
 

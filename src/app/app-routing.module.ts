@@ -23,6 +23,11 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'editmemory/:id/addphotos',
+    loadChildren: () => import('./pages/editmemory/add-photos/add-photos.module').then(m => m.AddPhotosModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'newmemory',
     loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
     canActivate: [authGuard]

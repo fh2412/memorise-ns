@@ -14,6 +14,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
+import { ImageUploadModule } from '../../components/image-upload/image-upload.module';
 
 const routes: Routes = [
   {
@@ -23,25 +24,26 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    EditmemoryComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    GoogleMapsModule,
-    MatButtonModule,
-    MatDividerModule,
-    MatFormFieldModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatIconModule,
-    FriendsAutocompleteModule
-  ]
+    declarations: [
+        EditmemoryComponent,
+    ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        GoogleMapsModule,
+        MatButtonModule,
+        MatDividerModule,
+        MatFormFieldModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatIconModule,
+        FriendsAutocompleteModule,
+        ImageUploadModule
+    ]
 })
 export class EditMemoryModule { }

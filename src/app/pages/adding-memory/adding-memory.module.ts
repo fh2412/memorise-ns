@@ -11,16 +11,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import {MatStepperModule} from '@angular/material/stepper'; 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
 import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 import { MatListModule } from '@angular/material/list';
 import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
-import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
+import { ImageUploadModule } from '../../components/image-upload/image-upload.module';
 
 const routes: Routes = [
   {
@@ -32,7 +31,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AddingMemoryComponent,
-    ImageUploadComponent,
     MemoryAddFriendDialogComponent,
   ],
   imports: [
@@ -55,7 +53,8 @@ const routes: Routes = [
     AsyncPipe,
     MatSlideToggleModule,
     MatGridListModule,
-    FriendsAutocompleteModule 
+    FriendsAutocompleteModule,
+    ImageUploadModule, 
   ]
 })
 export class AddingMemoryModule {}

@@ -19,6 +19,7 @@ export class EditmemoryComponent {
   isFormChanged: boolean = true;
   emailArray: any;
   newFriends: boolean = true;
+  parentSelectedFiles: File[] = [];
 
   constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService, private dialog: MatDialog) {
     this.memoryForm = this.formBuilder.group({
@@ -63,7 +64,9 @@ export class EditmemoryComponent {
   }
 
   addPhotos(){
-    console.log("Add Photos!");
+    const currentUrl = this.router.url; // Get the current URL
+    const newUrl = currentUrl + '/addphotos'; // Append /addphotos to the current URL
+    this.router.navigateByUrl(newUrl);
   }
 
   getMemory() {
@@ -130,7 +133,10 @@ export class EditmemoryComponent {
       width: '35%', 
       data: { memoryId: this.memoryId }
     });
+  }
 
-    // You can handle dialog close or other events if needed
+  onSelectedFilesChange(files: File[]) {
+    this.parentSelectedFiles = files;
+    // Do whatever you need with the selected files in the parent component
   }
 }

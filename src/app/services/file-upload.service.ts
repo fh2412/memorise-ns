@@ -45,13 +45,14 @@ export class FileUploadService {
     return ref.getDownloadURL().toPromise();
   }
 
-  uploadMemoryPictures(memoryId: string, files: File[]): Observable<number[]> {
+  uploadMemoryPictures(memoryId: string, files: File[], count: string): Observable<number[]> {
     const uploadTasks: AngularFireUploadTask[] = [];
     const progressObservables: Observable<number | undefined>[] = [];
 
+    const countP = parseInt(count);
     // Upload each file
     files.forEach((file, index) => {
-      const path = `memories/${memoryId}/picture_${index + 1}.jpg`;
+      const path = `memories/${memoryId}/picture_${index + countP + 1}.jpg`;
       const ref = this.storage.ref(path);
       const task: AngularFireUploadTask = ref.put(file);
 

@@ -41,6 +41,11 @@ export class MemoryService {
     return this.http.put<any>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
   }
 
+  updatePictureCount(memory_id: string, pictureCount: any): Observable<any> {
+    return this.http.put<any>(`${this.apiUrl}/memories/picturecount/${memory_id}`, pictureCount);
+  }
+
+
   createMemory(memoryData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/memories/createMemory`, memoryData);
   }

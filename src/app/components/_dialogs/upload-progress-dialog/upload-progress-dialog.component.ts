@@ -13,6 +13,7 @@ export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
   downloadURL: string | undefined;
   googleStorageUrl: string = "";
+  memoryId: string='99';
 
 
   constructor(
@@ -20,7 +21,7 @@ export class UploadProgressDialogComponent implements OnInit {
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
-    private dialogRef: MatDialogRef<UploadProgressDialogComponent>
+    private dialogRef: MatDialogRef<UploadProgressDialogComponent>, 
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.files.length).fill(0);
@@ -33,7 +34,7 @@ export class UploadProgressDialogComponent implements OnInit {
   uploadFiles() {
     if(this.data.userId!="justAddPhotos!"){
       this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
-      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files).subscribe(
+      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, "0").subscribe(
         (progress: number[]) => {
           this.progress = progress;
         },
@@ -51,7 +52,7 @@ export class UploadProgressDialogComponent implements OnInit {
     else{
       console.log(this.data.userId, this.data.memoryData);
       this.googleStorageUrl = this.data.memoryData;
-      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files).subscribe(
+      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, this.data.emails).subscribe(
         (progress: number[]) => {
           this.progress = progress;
         },
@@ -59,10 +60,25 @@ export class UploadProgressDialogComponent implements OnInit {
           console.error('Error uploading pictures:', error);
         },
         async () => {
+            this.updatePicureCount(this.memoryId);
             this.dialogRef.close(this.googleStorageUrl);
         }
       );
     }
+  }
+
+  updatePicureCount(memoryId: string) {
+    const pictureCountData: any = {};
+    pictureCountData.picture_count = this.data.files.length.toString()
+
+    this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe(
+      (response) => {
+        console.log(response);
+      },
+      (error) => {
+        console.error('Error updating memory:', error);
+      }
+    );
   }
 
   createMemory() {
@@ -96,6 +112,7 @@ export class UploadProgressDialogComponent implements OnInit {
                   }
                 );
               }
+              this.updatePicureCount(response.memoryId[0]?.insertId);
             },
             (error) => {
               console.error('Error creating memory:', error);

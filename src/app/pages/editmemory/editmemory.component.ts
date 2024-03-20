@@ -64,8 +64,8 @@ export class EditmemoryComponent {
   }
 
   addPhotos(){
-    const currentUrl = this.router.url; // Get the current URL
-    const newUrl = currentUrl + '/addphotos'; // Append /addphotos to the current URL
+    const currentUrl = this.router.url;
+    const newUrl = currentUrl + '/addphotos';
     this.router.navigateByUrl(newUrl);
   }
 

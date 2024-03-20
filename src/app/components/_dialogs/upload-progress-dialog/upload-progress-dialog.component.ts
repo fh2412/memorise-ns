@@ -20,7 +20,7 @@ export class UploadProgressDialogComponent implements OnInit {
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
-    private dialogRef: MatDialogRef<UploadProgressDialogComponent> // Inject MatDialogRef
+    private dialogRef: MatDialogRef<UploadProgressDialogComponent>
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.files.length).fill(0);
@@ -31,26 +31,38 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
   uploadFiles() {
-    this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
-    this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files).subscribe(
-      (progress: number[]) => {
-        this.progress = progress;
-      },
-      (error) => {
-        console.error('Error uploading pictures:', error);
-        // Handle error, e.g., close the dialog or show an error message
-      },
-      async () => {
-        this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
-        this.dialogRef.close(this.googleStorageUrl);
-        if(this.data.userId!="justAddPhotos!"){
-          this.createMemory();
+    if(this.data.userId!="justAddPhotos!"){
+      this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
+      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files).subscribe(
+        (progress: number[]) => {
+          this.progress = progress;
+        },
+        (error) => {
+          console.error('Error uploading pictures:', error);
+          // Handle error, e.g., close the dialog or show an error message
+        },
+        async () => {
+            this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
+            this.dialogRef.close(this.googleStorageUrl);
+            this.createMemory();
         }
-        else{
-          console.log(this.data.userId);
+      );
+    }
+    else{
+      console.log(this.data.userId, this.data.memoryData);
+      this.googleStorageUrl = this.data.memoryData;
+      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files).subscribe(
+        (progress: number[]) => {
+          this.progress = progress;
+        },
+        (error) => {
+          console.error('Error uploading pictures:', error);
+        },
+        async () => {
+            this.dialogRef.close(this.googleStorageUrl);
         }
-      }
-    );
+      );
+    }
   }
 
   createMemory() {

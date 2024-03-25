@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 })
 export class ImageUploadComponent implements OnInit {
   @Input() userId: any;
+  @Input() memoryId: string = '';
   @Input() memoryData: any;
   @Input() friends: any;
   @Input() emails: any;
@@ -64,7 +65,7 @@ export class ImageUploadComponent implements OnInit {
     const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
       width: '300px',
       disableClose: true, // Prevent closing the dialog by clicking outside
-      data: { userId: this.userId, files: filesArray, memoryData: this.memoryData, emails: this.emails },
+      data: { userId: this.userId, memoryId: this.memoryId, files: filesArray, memoryData: this.memoryData, emails: this.emails },
     });
 
     // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

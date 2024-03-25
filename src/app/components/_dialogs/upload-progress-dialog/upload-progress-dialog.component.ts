@@ -13,11 +13,11 @@ export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
   downloadURL: string | undefined;
   googleStorageUrl: string = "";
-  memoryId: string='99';
+  originalCount: any = 0;
 
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; files: File[]; memoryData: any; emails: any; },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; files: File[]; memoryData: any; emails: any; },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -32,7 +32,7 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
   uploadFiles() {
-    if(this.data.userId!="justAddPhotos!"){
+    if(this.data.memoryId==''){
       this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
       this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, "0").subscribe(
         (progress: number[]) => {
@@ -50,9 +50,8 @@ export class UploadProgressDialogComponent implements OnInit {
       );
     }
     else{
-      console.log(this.data.userId, this.data.memoryData);
       this.googleStorageUrl = this.data.memoryData;
-      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, this.data.emails).subscribe(
+      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, this.data.emails).subscribe(             //this.data.emails is the count of the pictures, needed to append new pictures instead of overwriting them
         (progress: number[]) => {
           this.progress = progress;
         },
@@ -60,7 +59,8 @@ export class UploadProgressDialogComponent implements OnInit {
           console.error('Error uploading pictures:', error);
         },
         async () => {
-            this.updatePicureCount(this.memoryId);
+          this.originalCount=this.data.emails;
+            this.updatePicureCount(this.data.memoryId);
             this.dialogRef.close(this.googleStorageUrl);
         }
       );
@@ -69,8 +69,9 @@ export class UploadProgressDialogComponent implements OnInit {
 
   updatePicureCount(memoryId: string) {
     const pictureCountData: any = {};
-    pictureCountData.picture_count = this.data.files.length.toString()
-
+    pictureCountData.picture_count = this.data.files.length + this.originalCount;
+    this.originalCount = 0;
+    console.log("New Picture Count:", pictureCountData.picture_count);
     this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe(
       (response) => {
         console.log(response);
@@ -89,7 +90,6 @@ export class UploadProgressDialogComponent implements OnInit {
       if (memoryData.memory_end_date == null) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
-      console.log("Date:", memoryData.memory_date, memoryData.memory_end_date);
 
       this.locationService.createLocation(memoryData).subscribe(
         (response: { message: string, locationId: any }) => {

@@ -28,6 +28,11 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'editmemory/managephotos/:imageUrl',
+    loadChildren: () => import('./pages/editmemory/manage-photos/manage-photos.module').then(m => m.ManagePhotosModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'newmemory',
     loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
     canActivate: [authGuard]

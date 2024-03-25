@@ -1,0 +1,13 @@
+<p>images</p>
+<mat-grid-list cols="4" rowHeight="3:2">
+    <mat-grid-tile *ngFor="let image of images">
+      <img mat-card-image [src]="image" alt="Image">
+      <button mat-icon-button (click)="onStar(image)" style="position: absolute; top: 5px; right: 5px;">
+        <mat-icon>star</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onDelete(image)" style="position: absolute; bottom: 5px; right: 5px;">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-grid-tile>
+  </mat-grid-list>
+  

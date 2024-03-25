@@ -63,12 +63,6 @@ export class EditmemoryComponent {
     this.router.navigate(['/home']);
   }
 
-  addPhotos(){
-    const currentUrl = this.router.url;
-    const newUrl = currentUrl + '/addphotos';
-    this.router.navigateByUrl(newUrl);
-  }
-
   getMemory() {
     this.memoryService.getMemory(this.memoryId).subscribe(
       (response) => {
@@ -138,5 +132,15 @@ export class EditmemoryComponent {
   onSelectedFilesChange(files: File[]) {
     this.parentSelectedFiles = files;
     // Do whatever you need with the selected files in the parent component
+  }
+
+  addPhotos(){
+    const currentUrl = this.router.url;
+    const newUrl = currentUrl + '/addphotos';
+    this.router.navigateByUrl(newUrl);
+  }
+
+  managePhotos(){
+    this.router.navigate(['/editmemory/managephotos', this.memory.image_url]);
   }
 }

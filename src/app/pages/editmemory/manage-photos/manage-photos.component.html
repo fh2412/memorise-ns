@@ -1,7 +1,16 @@
-<p>images</p>
-<mat-grid-list cols="4" rowHeight="3:2">
+<div class="header">
+  <div>
+      <h1>MANAGE PICTURES</h1>
+  </div>
+  <div class="actions">
+      <button mat-flat-button class="discard" [disabled]="true"><mat-icon>cancel</mat-icon>Discard</button>
+      <button mat-flat-button color="warn"><mat-icon>delete</mat-icon>Delete Selected</button>
+  </div>
+</div>
+<div class="body">
+<mat-grid-list cols="4" rowHeight="1:1">
   <mat-grid-tile *ngFor="let image of images">
-    <img mat-card-image [src]="image" alt="Image">
+    <img mat-card-image [src]="image" alt="Image" class="background-image">
     <button mat-icon-button (click)="onStar(image)" style="position: absolute; top: 5px; right: 5px;">
       <mat-icon>grade</mat-icon>
     </button>
@@ -18,5 +27,6 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
+</div>
 </div>
 

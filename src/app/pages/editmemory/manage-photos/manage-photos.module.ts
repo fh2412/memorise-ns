@@ -5,6 +5,7 @@ import { ImageUploadModule } from '../../../components/image-upload/image-upload
 import { ManagePhotosComponent } from './manage-photos.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
         RouterModule.forChild(routes),
         ImageUploadModule,
         MatGridListModule,
-        MatIconModule
+        MatIconModule,
+        MatButtonModule
     ]
 })
 export class ManagePhotosModule { }

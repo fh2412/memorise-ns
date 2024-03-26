@@ -1,0 +1,34 @@
+.images-to-delete-container {
+    display: flex;
+    flex-wrap: nowrap; /* Ensures images stay on one line */
+    overflow-x: auto; /* Enables horizontal scrollbar */
+    white-space: nowrap; /* Prevents unwanted line breaks */
+    padding: 5px; /* Adjust padding as needed */
+    background-color: #f2f2f2; /* Optional background color */
+    border-radius: 5px; /* Optional border radius */
+    height: 100px; /* Adjust height as needed */
+  }
+  
+  .images-to-delete-container div {
+    position: relative; /* Enable absolute positioning for buttons */
+  }
+
+  .images-to-delete-container img {
+    margin: 0 5px; /* Adjust margin between images */
+    max-width: 100px; /* Set a maximum width for images */
+    max-height: 100%; /* Maintain image aspect ratio */
+  }
+
+  .images-to-delete-container button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent; /* Removes default button background */
+    border: none; /* Removes default button border */
+    padding: 0; /* Removes default button padding */
+  }
+  
+  .images-to-delete-container button mat-icon {
+    font-size: 18px; /* Adjust icon size as needed */
+    color: #990000; /* Adjust icon color as needed */
+  }

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
+import { getDownloadURL, getMetadata, getStorage, listAll, ref, updateMetadata } from 'firebase/storage';
 
 @Component({
   selector: 'app-manage-photos',
@@ -9,6 +9,7 @@ import { getDownloadURL, getStorage, listAll, ref } from 'firebase/storage';
 })
 export class ManagePhotosComponent {
   images: string[] = [];
+  imagesToDelete: string[] = [];
   imageUrl: string | null | undefined;
 
   constructor(private route: ActivatedRoute) {}
@@ -23,12 +24,33 @@ export class ManagePhotosComponent {
 
   onStar(imageUrl: string) {
     // Add logic to handle starring an image here
-    console.log('Starred image: ', imageUrl);
+    const storage = getStorage();
+    console.log("storage:", storage);
+    const forestRef = ref(storage, imageUrl);
+    const newMetadata = {
+      cacheControl: 'public,max-age=300',
+      contentType: 'image/jpeg',
+      customElements: {
+        'fav' : true,
+      }
+    };
+        updateMetadata(forestRef, newMetadata)
+      .then((metadata) => {
+        console.log(metadata)
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+      });
   }
 
   onDelete(imageUrl: string) {
     // Add logic to handle deleting an image here
-    console.log('Deleted image: ', imageUrl);
+    this.imagesToDelete.push(imageUrl);
+    this.images = this.images.filter(item => item !== imageUrl);
+  }
+
+  removeFromDeleteList(imageUrl: string){
+    this.images.push(imageUrl);
+    this.imagesToDelete = this.imagesToDelete.filter(item => item !== imageUrl);
   }
 
   getImages(imageid: any) {

@@ -84,4 +84,9 @@ export class ManagePhotosComponent {
     this.fileService.deleteImages(this.imagesToDelete);
     this.imagesToDelete=[];
   }
+
+  discard(){
+    this.images=[...this.images, ...this.imagesToDelete];
+    this.imagesToDelete=[];
+  }
 }

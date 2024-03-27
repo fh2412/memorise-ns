@@ -24,8 +24,9 @@
   </mat-grid-list>
 
   <div class="images-to-delete-container" *ngIf="imagesToDelete.length > 0">
+    <h2>Images to delete:</h2>
     <div *ngFor="let imageUrl of imagesToDelete">
-      <img [src]="imageUrl" alt="Image to Delete">
+      <img [src]="imageUrl" alt="Image to Delete" class="background-image">
       <button mat-icon-button (click)="removeFromDeleteList(imageUrl)">
         <mat-icon>close</mat-icon>
       </button>

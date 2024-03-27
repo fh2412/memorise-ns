@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable, catchError, finalize, forkJoin, map, of, switchMap, tap } from 'rxjs';
+import { Observable, finalize, forkJoin, map, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask  } from '@angular/fire/compat/storage';
+import { deleteObject, getStorage, ref } from 'firebase/storage';
 
 @Injectable({
   providedIn: 'root'
@@ -81,6 +82,28 @@ export class FileUploadService {
       }),
       finalize(() => console.log(`Folder ${path} deleted successfully.`)),
     );
+  }
+
+  deleteImages(imageUrls: string[]) {
+    /*const body = { urls: imageUrls };
+    return this.http.post<any>('http://localhost:3000/api/firestore/delete-images', body)
+      .subscribe(response => {
+        console.log('Images deleted:', response);
+        // Clear the imagesToDelete array and update UI
+      }, error => {
+        console.error('Error deleting images:', error);
+        // Handle potential errors
+      });*/
+      const storage = getStorage();
+      // Create a reference to the file to delete
+      const desertRef = ref(storage, imageUrls[0]);
+
+      // Delete the file
+      deleteObject(desertRef).then(() => {
+        console.log("deleted images sucessfully");
+      }).catch((error) => {
+        console.log(error);
+      });
   }
 
 }

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref, updateMetadata } from 'firebase/storage';
+import { FileUploadService } from '../../../services/file-upload.service';
 
 @Component({
   selector: 'app-manage-photos',
@@ -12,7 +13,7 @@ export class ManagePhotosComponent {
   imagesToDelete: string[] = [];
   imageUrl: string | null | undefined;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private fileService: FileUploadService) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -77,5 +78,9 @@ export class ManagePhotosComponent {
       }).catch((error) => {
         console.log(error);
       });
+  }
+
+  deleteImages(){
+    this.fileService.deleteImages(this.imagesToDelete)
   }
 }

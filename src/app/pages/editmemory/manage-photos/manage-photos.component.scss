@@ -32,14 +32,16 @@ mat-grid-tile{
 
 
 .images-to-delete-container {
+    bottom: 0; /* Positions the container at the bottom */
+    left: 0; /* Positions the container on the left side */
+    width: 100%; /* Stretches the container across the entire width */
+    height: 100px; /* Adjust the height as needed */
+    background-color: #f2f2f2; /* Optional background color */
     display: flex;
     flex-wrap: nowrap; /* Ensures images stay on one line */
-    overflow-x: auto; /* Enables horizontal scrollbar */
-    white-space: nowrap; /* Prevents unwanted line breaks */
+    overflow-x: auto; /* Enables horizontal scrollbar if needed */
     padding: 5px; /* Adjust padding as needed */
-    background-color: #f2f2f2; /* Optional background color */
     border-radius: 5px; /* Optional border radius */
-    height: 100px; /* Adjust height as needed */
   }
   
   .images-to-delete-container div {

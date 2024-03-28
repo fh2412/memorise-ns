@@ -1,0 +1,28 @@
+div {
+    text-align: center; /* Center the content horizontally */
+    padding: 2rem; /* Add some padding for better spacing */
+    height: 50%;
+    h2 {
+      margin-top: 200px;
+      color: #004080; /* Set blue color for heading */
+      font-size: 1.5rem; /* Adjust heading font size */
+      margin-bottom: 1rem; /* Add some space after the heading */
+    }
+    
+    p {
+      color: #333; /* Set default text color to a dark gray */
+      font-size: 1rem; /* Set paragraph font size */
+      margin-bottom: 0.5rem; /* Add a smaller margin between paragraphs */
+    }
+    
+    span {
+      color: #FFA500; /* Set orange color for the emphasized word */
+      font-weight: bold; /* Make the emphasized word bold */
+    }
+  }
+
+  .picturediv{
+    height: 30%;
+    background: url('../../../assets/img/mountain3.png') repeat-x;
+}
+  

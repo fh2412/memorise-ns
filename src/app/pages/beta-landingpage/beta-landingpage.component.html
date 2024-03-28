@@ -1,0 +1,14 @@
+<main class="landingpage-main">
+    <div class="logo"><img src="/assets/img/logo.png" alt="Logo"></div>
+    <form (ngSubmit)="onSubmit()" class="landingpage-form">
+        <mat-form-field appearance="outline">
+          <input matInput type="email" placeholder="Enter your email" [formControl]="email" required>
+        </mat-form-field>
+        <div class="action-buttons">
+            <button mat-raised-button routerLink="/thank-you" color="primary" type="submit" [disabled]="!isEmailValid">Request Beta Access</button>
+            <button mat-raised-button routerLink="/login" class="beta-button">I am a Beta User</button>
+        </div>
+      </form>
+</main>
+<div class="picturediv">
+</div>

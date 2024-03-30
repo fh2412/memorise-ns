@@ -5,7 +5,7 @@
           <input matInput type="email" placeholder="Enter your email" [formControl]="email" required>
         </mat-form-field>
         <div class="action-buttons">
-            <button mat-raised-button routerLink="/thank-you" color="primary" type="submit" [disabled]="!isEmailValid">Request Beta Access</button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="!isEmailValid">Request Beta Access</button>
             <button mat-raised-button routerLink="/login" class="beta-button">I am a Beta User</button>
         </div>
       </form>

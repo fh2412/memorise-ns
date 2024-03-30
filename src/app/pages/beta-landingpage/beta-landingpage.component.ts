@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { BetaUserService } from '../../services/user-registration.service';
 
 @Component({
   selector: 'app-beta-landingpage',
@@ -10,10 +11,19 @@ import { Router } from '@angular/router';
 export class BetaLandingpageComponent {
   email = new FormControl('', [Validators.required, Validators.email]);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private request: BetaUserService) {}
 
   onSubmit() {
-    console.log(`Email submitted for beta access: ${this.email.value}`);
+    if(this.email?.value){
+      this.request.sendRegistrationRequest(this.email.value).subscribe(
+        (result) => {
+          this.router.navigate(['thank-you']);
+        },
+        (error) => {
+          console.error('Error:', error);
+        }
+      );
+    }
   }
   
   get isEmailValid() {

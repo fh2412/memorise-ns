@@ -1,5 +1,9 @@
+<div class="logo"><img src="/assets/img/logo.png" alt="Logo"></div>
 <main class="landingpage-main">
-    <div class="logo"><img src="/assets/img/logo.png" alt="Logo"></div>
+    <div class="beta-message">
+      <h3>{{ randomBetaTitle }}</h3>
+      <p>{{ randomBetaMessage }}</p>
+    </div>
     <form (ngSubmit)="onSubmit()" class="landingpage-form">
         <mat-form-field appearance="outline">
           <input matInput type="email" placeholder="Enter your email" [formControl]="email" required>

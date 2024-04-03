@@ -46,4 +46,8 @@ export class UserService {
 
     return this.http.put(url, body);
   }
+
+  searchUsers(searchTerm: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/search/users?term=${searchTerm}`);
+  }
 }

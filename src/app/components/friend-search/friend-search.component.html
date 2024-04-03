@@ -6,5 +6,14 @@
     <button mat-icon-button (click)="searchFriend()">
       <mat-icon>search</mat-icon>
     </button>
-  </div>
+
+    <div class="search-results" *ngIf="searchResults.length > 0">
+      <h2>Search Results</h2>
+      <ul>
+        <li *ngFor="let result of searchResults">
+          {{ result.email }} - {{ result.username }} - {{ result.name }}
+        </li>
+      </ul>
+    </div>
+</div>
   

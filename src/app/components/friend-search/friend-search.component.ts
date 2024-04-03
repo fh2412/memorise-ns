@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-friend-search',
@@ -6,10 +7,22 @@ import { Component } from '@angular/core';
   styleUrl: './friend-search.component.scss'
 })
 export class FriendSearchComponent {
+
+  constructor(private searchService: UserService) { }
   searchTerm = '';
+  searchResults: any[] = [];
 
   searchFriend() {
-    // Implement your search logic here
-    console.log('Search term:', this.searchTerm);
+    if (!this.searchTerm) {
+      return;
+    }
+
+    this.searchService.searchUsers(this.searchTerm)
+      .subscribe(results => {
+        this.searchResults = results;
+      }, error => {
+        console.error(error);
+        // Handle errors (display error message to the user)
+      });
   }
 }

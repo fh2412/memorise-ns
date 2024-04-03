@@ -11,6 +11,10 @@ import { MatListModule } from '@angular/material/list';
 import {MatTabsModule} from '@angular/material/tabs'; 
 import { FriendCardComponent } from '../../components/friend-card/friend-card.component';
 import { FriendsPreviewModule } from '../../components/friend-preview/friend-preview.module';
+import { FriendSearchComponent } from '../../components/friend-search/friend-search.component';
+import { MatInputModule } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+
 
 const routes: Routes = [
   {
@@ -23,6 +27,7 @@ const routes: Routes = [
   declarations: [
     FriendsComponent,
     FriendCardComponent,
+    FriendSearchComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +40,9 @@ const routes: Routes = [
     MatDividerModule,
     MatListModule,
     MatTabsModule,
-    FriendsPreviewModule
+    FriendsPreviewModule,
+    MatInputModule,
+    FormsModule
   ]
 })
 export class FriendsModule { }

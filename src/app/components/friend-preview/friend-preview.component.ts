@@ -20,6 +20,7 @@ export class FriendPreviewComponent {
   constructor(private friendshipService: FriendsService, private userService: UserService) {}
 
   async requestFriend(friend: any, methode: string, req: boolean) {
+    console.log(friend);
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if(methode == "Remove from Memory"){
       this.onButtonClick();

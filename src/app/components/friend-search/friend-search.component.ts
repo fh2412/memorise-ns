@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { UserService } from '../../services/userService';
 
 @Component({
@@ -8,16 +8,19 @@ import { UserService } from '../../services/userService';
 })
 export class FriendSearchComponent {
 
+  @Input() userId: string="";
+
   constructor(private searchService: UserService) { }
   searchTerm = '';
   searchResults: any[] = [];
+
 
   searchFriend() {
     if (!this.searchTerm) {
       return;
     }
 
-    this.searchService.searchUsers(this.searchTerm)
+    this.searchService.searchUsers(this.searchTerm, this.userId)
       .subscribe(results => {
         this.searchResults = results;
       }, error => {

@@ -11,7 +11,7 @@
   <h2>Search Results</h2>
   <mat-list>
     <ng-container *ngFor="let friend of searchResults.slice(0, 5); let last = last">
-      <app-friend-preview [friend]="friend" [buttonText]="'Remove'" [requestedText]="'Undo'" [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-preview>
+      <app-friend-preview [friend]="friend" [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-preview>
       <mat-divider *ngIf="!last"></mat-divider>
     </ng-container>
   </mat-list>

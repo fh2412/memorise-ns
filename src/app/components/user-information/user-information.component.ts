@@ -5,7 +5,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { ChangePasswordDialogComponent } from '../_dialogs/change-password-dialog/change-password-dialog.component';
 import { FileUploadService } from '../../services/file-upload.service';
-import { MemorystatsService } from '../../services/memorystats.service';
 
 
 @Component({
@@ -44,9 +43,8 @@ export class UserInformationComponent implements OnInit {
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '40%', // Adjust the width as needed
-      data: {name: this.userdb.name, bio: this.userdb.bio, dob: this.userdb.formatted_dob, gender: this.userdb.gender, country: this.userdb.location},
+      data: {name: this.userdb.name, bio: this.userdb.bio, dob: this.userdb.formatted_dob, gender: this.userdb.gender, country: this.userdb.country, username: this.userdb.username},
     });
-    console.log("userdb", this.userdb);
     // Subscribe to afterClosed event to handle any actions after the dialog closes
     dialogRef.componentInstance.updateUserData.subscribe((result: any) => {
       if (result) {

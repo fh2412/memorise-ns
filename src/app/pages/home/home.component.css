@@ -1,6 +1,7 @@
 /* Apply styles to the wrapper to manage layout */
 .wrapper {
     display: flex;
+    height: 100vh;
   }
   
   /* Style for the sticky sidebar */

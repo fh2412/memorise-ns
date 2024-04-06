@@ -16,4 +16,7 @@
     </ng-container>
   </mat-list>
 </div>
+<div class="no-results" *ngIf="searchResults.length === 0 && searchTerm && enter">
+  <p>No results found for your search.</p>
+</div>
   

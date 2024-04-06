@@ -13,12 +13,14 @@ export class FriendSearchComponent {
   constructor(private searchService: UserService) { }
   searchTerm = '';
   searchResults: any[] = [];
+  enter: boolean = false;
 
 
   searchFriend() {
     if (!this.searchTerm) {
       return;
     }
+    this.enter = true;
 
     this.searchService.searchUsers(this.searchTerm, this.userId)
       .subscribe(results => {

@@ -8,6 +8,7 @@ export interface DialogData {
   dob: string;
   gender: string;
   country: string;
+  username: string;
 }
 
 @Component({
@@ -27,7 +28,8 @@ export class EditUserDialogComponent {
         bio: userdata.bio,
         dob: userdata.dob,
         gender: userdata.gender,
-        location: userdata.country,
+        country: userdata.country,
+        username: userdata.username
       });
     }
 

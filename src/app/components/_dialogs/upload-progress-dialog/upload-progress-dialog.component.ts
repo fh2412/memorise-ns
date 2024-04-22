@@ -90,44 +90,56 @@ export class UploadProgressDialogComponent implements OnInit {
       if (memoryData.memory_end_date == null) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
-
-      this.locationService.createLocation(memoryData).subscribe(
-        (response: { message: string, locationId: any }) => {
-          console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
-          memoryData.location_id = response.locationId[0]?.insertId;
-
-          this.memoryService.createMemory(memoryData).subscribe(
-            (response: { message: string, memoryId: any }) => {
-
-              const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
-              if (this.data.emails) {
-                this.memoryService.addFriendToMemory(friendData).subscribe(
-                  (friendResponse) => {
-                    console.log('Friend added to memory successfully:', friendResponse);
-                    // Handle success (e.g., show a success message to the user)
-                  },
-                  (friendError) => {
-                    console.error('Error adding friend to memory:', friendError);
-                    // Handle error (e.g., show an error message to the user)
-                  }
-                );
-              }
-              this.updatePicureCount(response.memoryId[0]?.insertId);
-            },
-            (error) => {
-              console.error('Error creating memory:', error);
-              // Handle error (e.g., show an error message to the user)
-            }
-          );
-        },
-        (locationResponse) => {
-          console.error('Error creating Location:', locationResponse);
-        }
-      );
-
+      if(memoryData.lat!='' && memoryData.lng!=''){
+        this.create_location(memoryData);
+      }
+      else{
+        memoryData.location_id = 1;
+        this.create_memory(memoryData);
+      }
     } else {
       // Handle form validation errors if needed
       console.error('Form is not valid. Please fill in all required fields.');
     }
+  }
+
+  create_memory(memoryData: any){
+    this.memoryService.createMemory(memoryData).subscribe(
+      (response: { message: string, memoryId: any }) => {
+
+        const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
+        if (this.data.emails) {
+          this.memoryService.addFriendToMemory(friendData).subscribe(
+            (friendResponse) => {
+              console.log('Friend added to memory successfully:', friendResponse);
+              // Handle success (e.g., show a success message to the user)
+            },
+            (friendError) => {
+              console.error('Error adding friend to memory:', friendError);
+              // Handle error (e.g., show an error message to the user)
+            }
+          );
+        }
+        this.updatePicureCount(response.memoryId[0]?.insertId);
+      },
+      (error) => {
+        console.error('Error creating memory:', error);
+        // Handle error (e.g., show an error message to the user)
+      }
+    );
+  }
+
+  create_location(memoryData: any){
+    this.locationService.createLocation(memoryData).subscribe(
+      (response: { message: string, locationId: any }) => {
+        console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
+        memoryData.location_id = response.locationId[0]?.insertId;
+
+        this.create_memory(memoryData);
+      },
+      (locationResponse) => {
+        console.error('Error creating Location:', locationResponse);
+      }
+    );
   }
 }

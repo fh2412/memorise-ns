@@ -9,6 +9,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MapSnippetComponent } from '../../components/map-snippet/map-snippet.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
 
 const routes: Routes = [
   {
@@ -30,7 +33,10 @@ const routes: Routes = [
     MatGridListModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    MatIconModule,
+    MatDividerModule,
+    MatButtonModule
   ]
 })
 export class MemoryModule { }

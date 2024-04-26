@@ -1,17 +1,18 @@
-<!--<p>memory-detail works!</p>
-<div class="user-details" *ngIf="memorydb && memorydbFriends">
-  <h3>memory_id: {{ memorydb.memory_id || 'Not provided' }}</h3>
-  <p>user_id: {{ memorydb.user_id || 'Not provided' }}</p>
-  <p>Text: {{ memorydb.text || 'Not provided' }}</p>
-  <p>Country: {{ memorydb.image_url || 'Not provided' }}</p>
-</div>-->
-<!-- memory-detail.component.html -->
+<div class="header">
+  <div>
+      <h1>{{memorydb.title}}</h1>
+  </div>
+  <div class="actions">
+      <button mat-flat-button [routerLink]="['/editmemory', memoryID]"><mat-icon>edit</mat-icon>Edit</button>
+  </div>
+</div>
 
-<mat-grid-list cols="3" rowHeight="2:1" *ngIf="memorydb && memorydbFriends">
+<mat-divider></mat-divider>
+
+<mat-grid-list cols="3" rowHeight="2:1" *ngIf="memorydb && memorydbFriends" [gutterSize]="'4px'">
   <!-- First Row -->
   <mat-grid-tile colspan="2" rowspan="1">
     <div class="memory-color">
-      <h2 class="title">{{ memorydb.title || 'Not provided' }}</h2>
       <p>{{ memorydb.text || 'Not provided' }}</p>
     </div>
   </mat-grid-tile>
@@ -69,10 +70,10 @@
     <div class="memory-color">
       <h2>Map:</h2>
       <div style="height: 100%; display: flex; flex-direction: column;">
-        <ng-container *ngIf="location && location.length > 0 && (location[0].longitude != 0.000000 || location[0].latitude != 0.000000)">
+        <ng-container *ngIf="location[0].location_id != '1'">
           <app-map-snippet [long]="location[0].longitude" [lat]="location[0].latitude" style="flex: 1;"></app-map-snippet>
         </ng-container>
-        <ng-container *ngIf="!location || location.length === 0 || (location[0].longitude == 0.000000 || location[0].latitude == 0.000000)">
+        <ng-container *ngIf="location[0].location_id == '1'">
           <p>No location data available!</p>
         </ng-container>
       </div>

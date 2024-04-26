@@ -10,7 +10,7 @@ import { ChooseLocationComponent } from '../../components/_dialogs/choose-locati
 @Component({
   selector: 'app-activities',
   templateUrl: './activities.component.html',
-  styleUrl: './activities.component.css'
+  styleUrl: './activities.component.scss'
 })
 export class ActivitiesComponent {
   constructor( private geocodingService: GeocodingService, public dialog: MatDialog) {}

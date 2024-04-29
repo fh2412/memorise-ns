@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { EditUserDialogComponent } from '../_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { ChangePasswordDialogComponent } from '../_dialogs/change-password-dialog/change-password-dialog.component';
 import { FileUploadService } from '../../services/file-upload.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class UserInformationComponent implements OnInit {
   constructor(private userService: UserService, 
     private afAuth: AngularFireAuth,  
     public dialog: MatDialog, 
-    private fileUploadService: FileUploadService, ) {}
+    private fileUploadService: FileUploadService, private router: Router) {}
 
   ngOnInit(): void {
     this.getUserInfo();
@@ -48,10 +49,16 @@ export class UserInformationComponent implements OnInit {
     // Subscribe to afterClosed event to handle any actions after the dialog closes
     dialogRef.componentInstance.updateUserData.subscribe((result: any) => {
       if (result) {
-        console.log(result);
         this.userService.updateUser(this.userdb.user_id, result).subscribe(
-          (response) => {
-            console.log('User updated successfully:', response);
+          () => {
+            this.userdb.name=result.name;
+            this.userdb.bio=result.bio;
+            this.userdb.gender=result.gender;
+            this.userdb.formatted_dob=result.dob;
+            this.userdb.country=result.country;
+            this.userdb.username=result.username;
+
+            dialogRef.close();
           },
           (error) => {
             console.error('Error updating user:', error);

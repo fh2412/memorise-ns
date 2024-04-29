@@ -14,7 +14,7 @@
     <h3>Name: {{ userdb.name || 'Not provided' }}</h3>
     <p>DOB: {{ userdb.formatted_dob || 'Not provided' }}</p>
     <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
-    <p>Country: {{ userdb.location || 'Not provided' }}</p>
+    <p>Country: {{ userdb.country || 'Not provided' }}</p>
 
     <button *ngIf="showEditForm" mat-stroked-button color="primary" (click)="openEditDialog()">
       Edit Information

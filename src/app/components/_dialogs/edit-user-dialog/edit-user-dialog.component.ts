@@ -36,7 +36,6 @@ export class EditUserDialogComponent {
   saveChanges() {
     const updatedUserData = this.userForm.value;
     this.updateUserData.emit(updatedUserData);
-    this.dialogRef.close();
-    window.location.reload();
+    //this.dialogRef.close();
   }
 }

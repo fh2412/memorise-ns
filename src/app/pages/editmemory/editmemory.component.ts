@@ -40,15 +40,13 @@ export class EditmemoryComponent {
     //});
   }
 
-  deleteMemory() {
-    console.log("got firebase ID", this.firebaseId);
-    this.memoryService.deleteMemoryAndFriends(this.memoryId).subscribe(
+  async deleteMemory() {
+    await this.memoryService.deleteMemoryAndFriends(this.memoryId).subscribe(
       (response) => {
-        console.log('Memory and friends deleted successfully:', response);
         this.firebaseService.deleteMemorysFolder(this.firebaseId)
         .subscribe(
           () => {
-            console.log('Folder deleted successfully.');
+            this.router.navigate(['/home']);
           },
           (error) => {
             console.error('Error deleting folder:', error);
@@ -60,7 +58,6 @@ export class EditmemoryComponent {
         // Handle error, e.g., show an error message
       }
     );
-    this.router.navigate(['/home']);
   }
 
   getMemory() {

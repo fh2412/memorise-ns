@@ -5,6 +5,7 @@ import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialo
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { Router } from '@angular/router';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-image-upload',

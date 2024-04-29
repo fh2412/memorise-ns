@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 
 
 @Component({
@@ -60,7 +60,7 @@ export class ChangePasswordDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  changePassword() {
+  /*changePassword() {
     const auth = getAuth();
 
     const user = auth.currentUser;
@@ -72,21 +72,73 @@ export class ChangePasswordDialogComponent implements OnInit {
         // Update successful.
         console.log("Password set to:", newPassword);
       }).catch((error) => {
+        console.log("ERROR!:", error);
         reauthenticateWithCredential(user, credential).then(() => {
           updatePassword(user, newPassword).then(() => {
             // Update successful.
             console.log("Password set to:", newPassword);
           }).catch((error) => {
-            // An error ocurred
-            // ...
+            console.log("Error Changing PW:", error);
           });
         });
       });
+      this.closeDialog();
     }
-  }
+  }*/
 
 
   closeDialog() {
     this.dialogRef.close();
+  }
+
+
+  changePassword() {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    const newPassword = this.changePasswordForm.get('newPassword')?.value;
+    const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
+  
+    if (user && currentPassword && newPassword && user.email!=null) {
+      // Validate new password strength (client-side)
+      if (!this.validateNewPassword(newPassword)) {
+        console.error('New password does not meet complexity requirements.');
+        return; // Prevent proceeding with weak password
+      }
+  
+      // Verify current password using reauthenticateWithCredential
+      reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, currentPassword))
+        .then(() => {
+          // Current password is correct, proceed with updatePassword
+          updatePassword(user, newPassword)
+            .then(() => {
+              console.log('Password updated successfully!');
+              this.closeDialog(); // Assuming you have a closeDialog function for the modal
+            })
+            .catch((error) => {
+              console.error('Error updating password:', error);
+            });
+        })
+        .catch((error) => {
+          console.error('Incorrect current password:', error);
+          // Optionally display an error message to the user
+        });
+    }
+  }
+  
+  // Function to validate new password strength (adjust requirements as needed)
+  validateNewPassword(password: string): boolean {
+    const minLength = 8; // Minimum password length
+    const hasUpperCase = /[A-Z]/.test(password);
+    const hasLowerCase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSymbol = /[^\w\s]/.test(password);
+  
+    return (
+      password.length >= minLength &&
+      hasUpperCase &&
+      hasLowerCase &&
+      hasNumber &&
+      hasSymbol
+    );
   }
 }

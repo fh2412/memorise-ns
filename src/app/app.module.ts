@@ -12,7 +12,6 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { BlankComponent } from './mocks/blank/blank.component';
 
 import { MainNavComponent } from './components/mainnav/mainnav.component';
-import { LogoutButtonComponent } from './components/logout-button/logout-button.component';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,7 +36,6 @@ import { FriendsPreviewModule } from './components/friend-preview/friend-preview
   declarations: [
     AppComponent,
     BlankComponent,
-    LogoutButtonComponent,
     MainNavComponent,
     EditUserDialogComponent,
     ChangePasswordDialogComponent,

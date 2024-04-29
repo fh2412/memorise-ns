@@ -8,7 +8,7 @@ import { getAuth, reauthenticateWithCredential, updatePassword } from "firebase/
 @Component({
   selector: 'app-change-password-dialog',
   templateUrl: './change-password-dialog.component.html',
-  styleUrls: ['./change-password-dialog.component.css']
+  styleUrls: ['./change-password-dialog.component.scss']
 })
 export class ChangePasswordDialogComponent implements OnInit {
   @Output() updateUserPassword = new EventEmitter<any>();

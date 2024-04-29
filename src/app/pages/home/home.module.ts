@@ -15,6 +15,8 @@ import { MemoryCardComponent } from '../../components/memory-card/memory-card.co
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+
 
 const routes: Routes = [
   {
@@ -29,7 +31,8 @@ const routes: Routes = [
     UserInformationComponent,
     MomorypreviewComponent,
     StatsComponent,
-    MemoryCardComponent
+    MemoryCardComponent,
+    LogoutButtonComponent
   ],
   imports: [
     CommonModule,

@@ -59,3 +59,13 @@ mat-form-field{
     margin-top: 55px;
     margin-left: 30px;
 }
+
+.photo-buttons{
+    margin-top: 35px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    button{
+        width: 40%;
+    }
+}

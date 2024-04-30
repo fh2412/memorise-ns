@@ -3,9 +3,9 @@
         <h1>EDIT MEMORY</h1>
     </div>
     <div class="actions">
-        <button mat-flat-button class="save" (click)="saveChanges()"><mat-icon>save</mat-icon>Save</button>
-        <button mat-flat-button class="discard" (click)="goToHome()" [disabled]="isFormChanged"><mat-icon>cancel</mat-icon>Discard</button>
-        <button mat-flat-button color="warn" (click)="deleteMemory()"><mat-icon>delete</mat-icon>Delete Memory</button>
+        <button mat-flat-button class="save" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
+        <button mat-flat-button class="discard" (click)="goToHome()"><mat-icon>close</mat-icon>DISCARD</button>
+        <button mat-flat-button color="warn" (click)="deleteMemory()"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 
@@ -29,7 +29,7 @@
             </div>
         </mat-grid-tile>
 
-        <mat-grid-tile colspan="1" rowspan="1">
+        <mat-grid-tile colspan="1" rowspan="2">
             <div class="memory-color">
                 <h2>Friends:</h2>
                 <div>
@@ -56,11 +56,13 @@
             </div>
         </mat-grid-tile>
         <!-- Second Row -->
-        <mat-grid-tile colspan="2" rowspan="2">
+        <mat-grid-tile colspan="1" rowspan="1">
             <div class="memory-color">
                 <h2>Photos</h2>
-                <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
-                <button mat-flat-button color="accent" (click)="managePhotos()">Manage Photos</button>
+                <div class="photo-buttons">
+                    <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
+                    <button mat-flat-button color="accent" (click)="managePhotos()" style="margin-left: 10px;">Manage Photos</button>
+                </div>
             </div>
         </mat-grid-tile>
         <mat-grid-tile colspan="1" rowspan="1">
@@ -69,11 +71,11 @@
                 <span>Location</span>
             </div>
         </mat-grid-tile>
-        <mat-grid-tile colspan="1" rowspan="1">
+        <!--<mat-grid-tile colspan="1" rowspan="1">
             <div class="memory-color">
-                <h2>Additional Files:</h2>
+                <h2>Additional Space:</h2>
                 <span>additional</span>
             </div>
-        </mat-grid-tile>
+        </mat-grid-tile>-->
     </mat-grid-list>
 </div>

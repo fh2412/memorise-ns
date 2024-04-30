@@ -71,6 +71,8 @@ export class UserInformationComponent implements OnInit {
   openPassowrdChangeDialog(): void {
     const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
       width: '20%', // Adjust the width as needed
+      enterAnimationDuration: '1500ms',
+
       data: {oldpw: 'test'},
     });
     // Subscribe to afterClosed event to handle any actions after the dialog closes

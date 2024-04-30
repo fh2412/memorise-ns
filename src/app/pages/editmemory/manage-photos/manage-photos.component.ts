@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { getDownloadURL, getMetadata, getStorage, listAll, ref, updateMetadata } from 'firebase/storage';
+import { Component } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { getDownloadURL, getStorage, listAll, ref, updateMetadata } from 'firebase/storage';
 import { FileUploadService } from '../../../services/file-upload.service';
 
 @Component({
@@ -13,7 +13,7 @@ export class ManagePhotosComponent {
   imagesToDelete: string[] = [];
   imageUrl: string | null | undefined;
 
-  constructor(private route: ActivatedRoute, private fileService: FileUploadService) {}
+  constructor(private route: ActivatedRoute, private fileService: FileUploadService, private router: Router) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -85,8 +85,7 @@ export class ManagePhotosComponent {
     this.imagesToDelete=[];
   }
 
-  discard(){
-    this.images=[...this.images, ...this.imagesToDelete];
-    this.imagesToDelete=[];
+  goToHome(): void {
+    this.router.navigate(['/home']);
   }
 }

@@ -3,8 +3,7 @@
     <h1>MANAGE PICTURES</h1>
   </div>
   <div class="actions">
-    <button mat-flat-button class="discard"
-      [disabled]="imagesToDelete.length==0" (click)="discard()"><mat-icon>cancel</mat-icon>Discard</button>
+    <button mat-flat-button class="discard" (click)="goToHome()"><mat-icon>close</mat-icon>DISCARD</button>
     <button mat-flat-button color="warn" [disabled]="imagesToDelete.length==0" (click)="deleteImages()"><mat-icon>delete</mat-icon>Delete
       Selected</button>
   </div>

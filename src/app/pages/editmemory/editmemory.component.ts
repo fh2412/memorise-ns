@@ -5,6 +5,8 @@ import { FileUploadService } from '../../services/file-upload.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ManageFriendsDialogComponent } from '../../components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
+import { LocationService } from '../../services/location.service';
 
 @Component({
   selector: 'app-editmemory',
@@ -21,7 +23,7 @@ export class EditmemoryComponent {
   newFriends: boolean = true;
   parentSelectedFiles: File[] = [];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private firebaseService: FileUploadService, private dialog: MatDialog) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private locationService: LocationService, private firebaseService: FileUploadService, private dialog: MatDialog) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
       title: [''],
@@ -139,5 +141,48 @@ export class EditmemoryComponent {
 
   managePhotos(){
     this.router.navigate(['/editmemory/managephotos', this.memory.image_url]);
+  }
+
+  mapCenter: google.maps.LatLng= new google.maps.LatLng(47.5, 14.2);
+  openMapDialog(): void {
+    const dialogRef = this.dialog.open(ChooseLocationComponent, {
+      data: { mapCenter: this.mapCenter },
+      width: '500px',
+      height: '542px'
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if(this.memory.location_id == 1){
+          this.create_location(result[1]);
+        }
+        else{
+          this.updateLocation(result[1]);
+        }
+      }
+    });
+  }
+
+  create_location(locationData: any){
+    this.locationService.createLocation(locationData).subscribe(
+      (response: { message: string, locationId: any }) => {
+        const location_id = response.locationId[0]?.insertId;
+        this.memoryService.updateMemoryLocation(this.memory.id, location_id);
+      },
+      (locationResponse) => {
+        console.error('Error creating Location:', locationResponse);
+      }
+    );
+  }
+
+  updateLocation(locationData: any) {
+    this.locationService.updateLocation(this.memory.location_id, locationData)
+      .subscribe(response => {
+        console.log('Location updated:', response);
+        // Handle successful update (e.g., display a success message)
+      }, error => {
+        console.error('Error updating location:', error);
+        // Handle errors (e.g., display an error message)
+      });
   }
 }

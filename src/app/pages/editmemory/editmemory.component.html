@@ -68,7 +68,10 @@
         <mat-grid-tile colspan="1" rowspan="1">
             <div class="memory-color">
                 <h2>Map:</h2>
-                <span>Location</span>
+                <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()">
+                    <mat-icon class="add-icon">search</mat-icon>
+                    Update Address on Map
+                </button>
             </div>
         </mat-grid-tile>
         <!--<mat-grid-tile colspan="1" rowspan="1">

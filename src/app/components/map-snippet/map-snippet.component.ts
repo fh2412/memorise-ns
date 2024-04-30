@@ -9,7 +9,7 @@ import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 export class MapSnippetComponent {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
-  @Input() long: string='';
+  @Input() lng: string='';
   @Input() lat: string='';
 
   mapOptions: google.maps.MapOptions = {
@@ -28,7 +28,7 @@ export class MapSnippetComponent {
 
   ngOnInit() {
     const lat: number = parseFloat(this.lat);
-    const lng: number = parseFloat(this.long);
+    const lng: number = parseFloat(this.lng);
     this.mapCenter = (new google.maps.LatLng(lat, lng));
     this.markerPosition = (new google.maps.LatLng(lat, lng));
   }

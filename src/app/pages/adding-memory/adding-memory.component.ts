@@ -31,7 +31,7 @@ export class AddingMemoryComponent {
       memory_end_date: [null],
       title_pic: [''],
       location_id: [''],
-      long: [''],
+      lng: [''],
       lat: [''],
       l_country: [''],
       l_city: [''],
@@ -103,7 +103,7 @@ export class AddingMemoryComponent {
         }
         this.memoryForm.patchValue({
           lat: result[1].lat,
-          long: result[1].lng,
+          lng: result[1].lng,
         });
       }
     });

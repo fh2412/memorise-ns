@@ -17,4 +17,8 @@ export class LocationService {
   createLocation(locationData: any): Observable<any> {
     return this.http.post(`${this.apiUrl}/createLocation`, locationData);
   }
+  updateLocation(locationId: number, locationData: any): Observable<any> {
+    const url = `${this.apiUrl}/updateLocation/${locationId}`;
+    return this.http.put(url, locationData);
+  }
 }

@@ -62,7 +62,7 @@
   <mat-grid-tile colspan="2" rowspan="1">
     <div class="memory-color">
       <h2>Additional Files:</h2>
-      <p *ngIf="location">long: {{location[0].longitude}}; lat: {{location[0].latitude}}</p>
+      <p *ngIf="location">lng: {{location[0].longitude}}; lat: {{location[0].latitude}}</p>
     </div>
   </mat-grid-tile>
 
@@ -71,7 +71,7 @@
       <h2>Map:</h2>
       <div style="height: 100%; display: flex; flex-direction: column;">
         <ng-container *ngIf="location[0].location_id != '1'">
-          <app-map-snippet [long]="location[0].longitude" [lat]="location[0].latitude" style="flex: 1;"></app-map-snippet>
+          <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude" style="flex: 1;"></app-map-snippet>
         </ng-container>
         <ng-container *ngIf="location[0].location_id == '1'">
           <p>No location data available!</p>

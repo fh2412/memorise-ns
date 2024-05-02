@@ -35,12 +35,12 @@ export class MemoryDetailComponent {
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private locationService: LocationService) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
     this.route.params.subscribe(params => {
       this.memoryID = params['id'];
     });
-    this.getMemoryInfo();
+    await this.getMemoryInfo();
   }
 
   getMemoryInfo(): void {

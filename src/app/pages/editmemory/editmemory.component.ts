@@ -167,7 +167,14 @@ export class EditmemoryComponent {
     this.locationService.createLocation(locationData).subscribe(
       (response: { message: string, locationId: any }) => {
         const location_id = response.locationId[0]?.insertId;
-        this.memoryService.updateMemoryLocation(this.memory.id, location_id);
+        this.memoryService.updateMemoryLocation(this.memory.memory_id, location_id).subscribe(
+          (response) => {
+            console.log(response);
+          },
+          (error) => {
+            console.error('Error creating Location:', error);
+          }
+        );
       },
       (locationResponse) => {
         console.error('Error creating Location:', locationResponse);

@@ -31,7 +31,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { ManageFriendsDialogComponent } from './components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
-import { HomeMapViewComponent } from './pages/home-map-view/home-map-view.component';
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 
 @NgModule({
   declarations: [
@@ -44,7 +44,6 @@ import { HomeMapViewComponent } from './pages/home-map-view/home-map-view.compon
     UploadProgressDialogComponent,
     ImageDialogComponent,
     ManageFriendsDialogComponent,
-    HomeMapViewComponent,
   ],
   imports: [
     BrowserModule,
@@ -68,7 +67,7 @@ import { HomeMapViewComponent } from './pages/home-map-view/home-map-view.compon
     GoogleMapsModule,
     FriendsPreviewModule
   ],
-  providers: [],
+  providers: [    { provide: DateAdapter, useClass: MatNativeDateModule },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

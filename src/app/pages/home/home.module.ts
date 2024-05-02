@@ -35,7 +35,7 @@ const routes: Routes = [
     StatsComponent,
     MemoryCardComponent,
     LogoutButtonComponent,
-    ViewSelecorComponent
+    ViewSelecorComponent,
   ],
   imports: [
     CommonModule,

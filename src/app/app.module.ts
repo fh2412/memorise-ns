@@ -31,6 +31,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { ManageFriendsDialogComponent } from './components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
+import { HomeMapViewComponent } from './pages/home-map-view/home-map-view.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { FriendsPreviewModule } from './components/friend-preview/friend-preview
     UploadProgressDialogComponent,
     ImageDialogComponent,
     ManageFriendsDialogComponent,
+    HomeMapViewComponent,
   ],
   imports: [
     BrowserModule,

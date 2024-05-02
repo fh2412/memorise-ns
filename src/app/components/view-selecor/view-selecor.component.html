@@ -1,0 +1,7 @@
+<mat-form-field>
+    <mat-label>Select View</mat-label>
+    <mat-select [(value)]="selectedView" (selectionChange)="onChangeView($event.value)">
+      <mat-option *ngFor="let view of viewOptions" [value]="view">{{ view }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  

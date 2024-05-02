@@ -16,6 +16,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor.component';
+import { MatSelectModule } from '@angular/material/select';
 
 
 const routes: Routes = [
@@ -32,7 +34,8 @@ const routes: Routes = [
     MomorypreviewComponent,
     StatsComponent,
     MemoryCardComponent,
-    LogoutButtonComponent
+    LogoutButtonComponent,
+    ViewSelecorComponent
   ],
   imports: [
     CommonModule,
@@ -46,7 +49,8 @@ const routes: Routes = [
     MatCheckboxModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule
   ],
   providers: [DatePipe],
 })

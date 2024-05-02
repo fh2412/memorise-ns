@@ -21,6 +21,11 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'home/map',
+    loadChildren: () => import('./pages/home-map-view/home-map-view.module').then(m => m.HomeMapViewModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'memory/:id',
     loadChildren: () => import('./pages/memory-detail/memory-detail.module').then(m => m.MemoryModule),
     canActivate: [authGuard]

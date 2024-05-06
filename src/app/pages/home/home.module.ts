@@ -52,6 +52,6 @@ const routes: Routes = [
     MatInputModule,
     MatSelectModule
   ],
-  providers: [DatePipe],
+  providers: [DatePipe, ViewSelecorComponent],
 })
 export class HomeModule { }

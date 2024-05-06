@@ -3,7 +3,8 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
+import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor.component';
 
 
 @Component({
@@ -27,11 +28,27 @@ export class HomeComponent {
   pagedData: any[] = [];
   filteredItems: any[] = [];
 
-  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder) {
+  selectedValue: string = 'standard'; // Set default value for view
+
+  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder, private viewSelector: ViewSelecorComponent) {
     this.openForm = this._formBuilder.group({
       search: '',
       showFriendsMemories: false,
     });
+  }
+
+  
+  async ngOnInit() {
+    await this.setUserId();
+    await this.getCreatedMemories();
+    await this.getAddedMemories();
+    this.displaydata = this.data;
+    this.filteredItems = this.displaydata;
+    this.loadData();
+  }
+
+  changeView(newView: string){
+    this.selectedValue = newView; // Update component state
   }
 
   onPageChange(event: any) {
@@ -67,15 +84,6 @@ export class HomeComponent {
     const startIndex = this.pageIndex * this.pageSize;
     const endIndex = startIndex + this.pageSize;
     this.pagedData = this.filteredItems.slice(startIndex, endIndex);
-  }
-
-  async ngOnInit() {
-    await this.setUserId();
-    await this.getCreatedMemories();
-    await this.getAddedMemories();
-    this.displaydata = this.data;
-    this.filteredItems = this.displaydata;
-    this.loadData();
   }
 
   async setUserId(): Promise<void> {

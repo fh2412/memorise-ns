@@ -1,6 +1,7 @@
 <mat-form-field appearance="outline">
-    <mat-select [(value)]="selectedView" (selectionChange)="onChangeView($event.value)">
-      <mat-option *ngFor="let view of viewOptions" [value]="view">{{ view }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <mat-select [(value)]="selectedValue" (selectionChange)="onChange($event.value)">
+    <mat-option *ngFor="let option of options" [value]="option.value">{{ option.label }}</mat-option>
+  </mat-select>
+</mat-form-field>
+
   

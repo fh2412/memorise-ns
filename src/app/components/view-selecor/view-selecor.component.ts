@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-view-selecor',
@@ -7,16 +6,18 @@ import { Router } from '@angular/router';
   styleUrl: './view-selecor.component.scss'
 })
 export class ViewSelecorComponent {
+  selectedValue: string = 'standard'; // Set default value
 
-  selectedView: string = 'standard'; // Set initial selected view
-  viewOptions = ['standard', 'calendar', 'map']; // Options for the dropdown
+  options = [
+    { value: 'standard', label: 'Standard' },
+    { value: 'map', label: 'Map' },
+    { value: 'calendar', label: 'Calendar' }
+  ];
 
-  constructor(private router: Router) { }
+  @Output() selectionChanged = new EventEmitter<string>();
 
-  ngOnInit(): void { }
-
-  onChangeView(view: string) {
-    this.selectedView = view;
-    this.router.navigate([view === 'standard' ? '/home' : `/home/${view}`]);
+  onChange(value: string) {
+    this.selectedValue = value;
+    this.selectionChanged.emit(value);
   }
 }

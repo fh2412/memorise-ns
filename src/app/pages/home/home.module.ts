@@ -18,6 +18,8 @@ import { MatInputModule } from '@angular/material/input';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor.component';
 import { MatSelectModule } from '@angular/material/select';
+import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 
 const routes: Routes = [
@@ -36,6 +38,7 @@ const routes: Routes = [
     MemoryCardComponent,
     LogoutButtonComponent,
     ViewSelecorComponent,
+    HomeMapViewComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +53,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    GoogleMapsModule,
   ],
   providers: [DatePipe, ViewSelecorComponent],
 })

@@ -1,13 +1,5 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
-import { Marker } from '@googlemaps/markerclusterer';
-
-interface Markers {
-  lat: number;
-  lng: number;
-  title: string;
-  id: number;
-}
 
 @Component({
   selector: 'app-home-map-view',
@@ -46,15 +38,10 @@ export class HomeMapViewComponent {
     this.router.navigate(['/memory', memory.memory_id]);
   }*/
 
-  markers: any[] = [
-    { lat: 37.7749, lng: -122.4194, title: 'Marker 1', id: 1 },
-    // ... other markers
-  ];
+  markers: any[] = [];
 
-  @ViewChild(GoogleMap, { static: false }) map: GoogleMap | undefined;
-  @ViewChild(MapInfoWindow)
-  infoWindow!: MapInfoWindow;
-   
+  @ViewChild(MapInfoWindow)infoWindow!: MapInfoWindow;
+
   zoom = 5;
   center: google.maps.LatLngLiteral = { lat: 37.7749, lng: -122.4194 };
   options: google.maps.MapOptions = {
@@ -63,36 +50,32 @@ export class HomeMapViewComponent {
     disableDoubleClickZoom: true,
     maxZoom: 15,
   };
-  infoContent = '';
+  currentmemory: any = 'abc';
  
   ngOnInit() {
-    /*navigator.geolocation.getCurrentPosition((position) => {
-      this.center = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
-    });*/
     const markers: any[] = this.memories.map((memory) => ({
       lat: parseFloat(memory.latitude), // Convert latitude to number
       lng: parseFloat(memory.longitude), // Convert longitude to number
-      title: memory.title,
-      id: memory.memory_id,
     }));
     const marker_locations = markers.map((position, i) => {
-      const label = "";
       const marker = new google.maps.Marker({
         position,
-        label,
+        title: i.toString(),
       });
       return marker;
     });
 
-    this.markers=marker_locations;
+    this.markers = marker_locations;
     this.center = { lat: markers[0].lat, lng: markers[0].lng };
   }
  
-  openInfoWindow(marker: MapMarker) {
+  openInfoWindow(marker: MapMarker, pos: any) {
+    this.currentmemory = this.memories[pos.title];
+    console.log(this.currentmemory);
     this.infoWindow.open(marker);
   }
-  
+  onButtonClick(memory: any) {
+    // Handle button click here (consider emitting an event if needed)
+    console.log('Details button clicked for memory:', memory);
+  }
 }

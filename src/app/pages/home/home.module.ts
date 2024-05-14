@@ -20,7 +20,6 @@ import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor
 import { MatSelectModule } from '@angular/material/select';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { CustomInfoWindowComponent } from './custom-info-window/custom-info-window.component';
 
 
 const routes: Routes = [
@@ -40,7 +39,6 @@ const routes: Routes = [
     LogoutButtonComponent,
     ViewSelecorComponent,
     HomeMapViewComponent,
-    CustomInfoWindowComponent
   ],
   imports: [
     CommonModule,

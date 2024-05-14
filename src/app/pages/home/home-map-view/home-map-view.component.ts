@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home-map-view',
@@ -38,6 +39,8 @@ export class HomeMapViewComponent {
     this.router.navigate(['/memory', memory.memory_id]);
   }*/
 
+
+
   markers: any[] = [];
 
   @ViewChild(MapInfoWindow)infoWindow!: MapInfoWindow;
@@ -52,6 +55,8 @@ export class HomeMapViewComponent {
   };
   currentmemory: any = 'abc';
  
+  constructor(private router: Router) {}
+
   ngOnInit() {
     const markers: any[] = this.memories.map((memory) => ({
       lat: parseFloat(memory.latitude), // Convert latitude to number
@@ -75,7 +80,6 @@ export class HomeMapViewComponent {
     this.infoWindow.open(marker);
   }
   onButtonClick(memory: any) {
-    // Handle button click here (consider emitting an event if needed)
-    console.log('Details button clicked for memory:', memory);
+    this.router.navigate(['/memory', memory.memory_id]);
   }
 }

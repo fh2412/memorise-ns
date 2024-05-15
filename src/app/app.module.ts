@@ -32,6 +32,8 @@ import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-d
 import { ManageFriendsDialogComponent } from './components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
 import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
+import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +46,8 @@ import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
     UploadProgressDialogComponent,
     ImageDialogComponent,
     ManageFriendsDialogComponent,
+    InfoDialogComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,

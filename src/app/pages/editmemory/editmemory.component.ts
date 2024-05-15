@@ -7,6 +7,7 @@ import { ManageFriendsDialogComponent } from '../../components/_dialogs/manage-f
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { LocationService } from '../../services/location.service';
+import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/info-dialog/info-dialog.component';
 
 @Component({
   selector: 'app-editmemory',
@@ -152,6 +153,7 @@ export class EditmemoryComponent {
     });
   
     dialogRef.afterClosed().subscribe(result => {
+      this.openInfoDialog();
       if (result) {
         if(this.memory.location_id == 1){
           this.create_location(result[1]);
@@ -160,6 +162,19 @@ export class EditmemoryComponent {
           this.updateLocation(result[1]);
         }
       }
+    });
+  }
+
+  openInfoDialog() {
+    console.log("OPEN DIALOG");
+    const dialogData: InfoDialogData = {
+      text: 'Location got sucessfully updated!',
+      buttonText: 'Ok'
+    };
+
+    const dialogRef = this.dialog.open(InfoDialogComponent, {
+      width: '250px',
+      data: dialogData,
     });
   }
 

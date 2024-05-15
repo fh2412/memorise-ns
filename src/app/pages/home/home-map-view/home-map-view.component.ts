@@ -34,12 +34,7 @@ export class HomeMapViewComponent {
     // Add a marker clusterer to manage the markers.
     new MarkerClusterer({ markers, map });
   }
-
-  onButtonClick(memory: any) {
-    this.router.navigate(['/memory', memory.memory_id]);
-  }*/
-
-
+*/
 
   markers: any[] = [];
 
@@ -53,7 +48,7 @@ export class HomeMapViewComponent {
     disableDoubleClickZoom: true,
     maxZoom: 15,
   };
-  currentmemory: any = 'abc';
+  currentmemory: any = '';
  
   constructor(private router: Router) {}
 
@@ -76,7 +71,6 @@ export class HomeMapViewComponent {
  
   openInfoWindow(marker: MapMarker, pos: any) {
     this.currentmemory = this.memories[pos.title];
-    console.log(this.currentmemory);
     this.infoWindow.open(marker);
   }
   onButtonClick(memory: any) {

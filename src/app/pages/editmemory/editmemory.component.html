@@ -4,8 +4,8 @@
     </div>
     <div class="actions">
         <button mat-flat-button class="save" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-        <button mat-flat-button class="discard" (click)="goToHome()"><mat-icon>close</mat-icon>DISCARD</button>
-        <button mat-flat-button color="warn" (click)="deleteMemory()"><mat-icon>delete</mat-icon>DELETE</button>
+        <button mat-flat-button class="discard" (click)="onDeleteClick('DISCARD')"><mat-icon>close</mat-icon>DISCARD</button>
+        <button mat-flat-button color="warn" (click)="onDeleteClick('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 

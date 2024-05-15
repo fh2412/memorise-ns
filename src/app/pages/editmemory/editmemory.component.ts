@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { LocationService } from '../../services/location.service';
 import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/info-dialog/info-dialog.component';
+import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-editmemory',
@@ -206,5 +207,28 @@ export class EditmemoryComponent {
         console.error('Error updating location:', error);
         // Handle errors (e.g., display an error message)
       });
+  }
+
+  onDeleteClick(status: string) {
+    const confirmationData: ConfirmationDialogData = {
+      title: 'Confirm '+status,
+      message: 'Are you sure you want to '+status+' this memory?'
+    };
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: confirmationData,
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        if(status==='DELETE'){
+          this.deleteMemory();
+        }
+        else{
+          this.goToHome();
+        }
+      }
+    });
   }
 }

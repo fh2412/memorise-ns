@@ -1,1 +1,12 @@
-<p>confirm-dialog works!</p>
+<h1 mat-dialog-title>{{ data.title }}</h1>
+<mat-dialog-content>
+  <p>{{ data.message }}</p>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button color="primary" (click)="onCloseClick(true)">
+    Yes
+  </button>
+  <button mat-raised-button (click)="onCloseClick(false)">
+    No
+  </button>
+</mat-dialog-actions>

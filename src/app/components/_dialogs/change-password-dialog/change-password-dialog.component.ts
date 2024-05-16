@@ -15,6 +15,10 @@ export class ChangePasswordDialogComponent implements OnInit {
   changePasswordForm: FormGroup;
   currentUser: any;
 
+  errorMessage: string | null = null;
+
+
+
 
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
@@ -60,33 +64,6 @@ export class ChangePasswordDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  /*changePassword() {
-    const auth = getAuth();
-
-    const user = auth.currentUser;
-    const newPassword = this.changePasswordForm.get('newPassword')?.value;
-    const credential = this.changePasswordForm.get('currentPassword')?.value;
-
-    if (user && credential) {
-      updatePassword(user, newPassword).then(() => {
-        // Update successful.
-        console.log("Password set to:", newPassword);
-      }).catch((error) => {
-        console.log("ERROR!:", error);
-        reauthenticateWithCredential(user, credential).then(() => {
-          updatePassword(user, newPassword).then(() => {
-            // Update successful.
-            console.log("Password set to:", newPassword);
-          }).catch((error) => {
-            console.log("Error Changing PW:", error);
-          });
-        });
-      });
-      this.closeDialog();
-    }
-  }*/
-
-
   closeDialog() {
     this.dialogRef.close();
   }
@@ -97,17 +74,20 @@ export class ChangePasswordDialogComponent implements OnInit {
     const user = auth.currentUser;
     const newPassword = this.changePasswordForm.get('newPassword')?.value;
     const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
-  
-    if (user && currentPassword && newPassword && user.email!=null) {
+
+    if (user && currentPassword && newPassword && user.email != null) {
       // Validate new password strength (client-side)
       if (!this.validateNewPassword(newPassword)) {
-        console.error('New password does not meet complexity requirements.');
+        this.errorMessage = 'New password does not meet complexity requirements.';
         return; // Prevent proceeding with weak password
+      } else {
+        this.errorMessage = null; // Clear previous error if any
       }
-  
+    
       // Verify current password using reauthenticateWithCredential
       reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, currentPassword))
         .then(() => {
+          this.errorMessage = null; // Clear previous error if any
           // Current password is correct, proceed with updatePassword
           updatePassword(user, newPassword)
             .then(() => {
@@ -116,13 +96,13 @@ export class ChangePasswordDialogComponent implements OnInit {
             })
             .catch((error) => {
               console.error('Error updating password:', error);
+              this.errorMessage = 'An error occurred while changing password.'; // Generic error message
             });
         })
         .catch((error) => {
-          console.error('Incorrect current password:', error);
-          // Optionally display an error message to the user
+          this.errorMessage = 'Incorrect current password or other error.'; // More generic error
         });
-    }
+      }
   }
   
   // Function to validate new password strength (adjust requirements as needed)

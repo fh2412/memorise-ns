@@ -19,6 +19,9 @@
         align-items: center;
         margin-top: 12vh;
         width: 50%;
+        img{
+            width: 100%;
+        }
     }
 
     @media (max-width: 768px) {

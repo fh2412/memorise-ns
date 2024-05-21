@@ -43,7 +43,7 @@ export class UserInformationComponent implements OnInit {
 
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
-      width: '40%', // Adjust the width as needed
+      width: '40%',
       data: {name: this.userdb.name, bio: this.userdb.bio, dob: this.userdb.formatted_dob, gender: this.userdb.gender, country: this.userdb.country, username: this.userdb.username},
     });
     // Subscribe to afterClosed event to handle any actions after the dialog closes
@@ -107,7 +107,6 @@ export class UserInformationComponent implements OnInit {
   }
 
   saveProfilePicUrlInDatabase(userId: string, profilePicUrl: string): void {
-    // Assuming you have a user service to handle database operations
     this.userService.updateUserProfilePic(userId, profilePicUrl)
       .subscribe(
         () => console.log('Profile picture URL saved in the database.'),

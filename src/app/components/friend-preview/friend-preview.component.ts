@@ -27,9 +27,14 @@ export class FriendPreviewComponent {
     }
     else if(methode == "Accept"){
       this.acceptFriendRequest(friend.user_id, this.loggedInUserId);
+      console.log("Accept");
     }
-    else if(methode == "Remove"){
+    else if(methode == "Remove" && req == false){
       this.removeFriend(friend.user_id, this.loggedInUserId);
+      console.log("Remove");
+    }
+    else if(methode == "Remove" && req == true){
+      this.addFriendRequest(friend.user_id, this.loggedInUserId);
     }
     else if(methode == "Request" && req == true){
       this.removeFriend(friend.user_id, this.loggedInUserId);
@@ -64,6 +69,17 @@ export class FriendPreviewComponent {
 
   sendFriendRequest(receiverId: string, senderId: string) {
     this.friendshipService.sendFriendRequest(senderId, receiverId).subscribe(
+      response => {
+        console.log('Friend request sent successfully', response);
+      },
+      error => {
+        console.error('Error sending friend request', error);
+      }
+    );
+  }
+
+  addFriendRequest(receiverId: string, senderId: string) {
+    this.friendshipService.addFriendRequest(senderId, receiverId).subscribe(
       response => {
         console.log('Friend request sent successfully', response);
       },

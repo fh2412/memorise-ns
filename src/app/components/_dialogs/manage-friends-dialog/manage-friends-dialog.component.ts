@@ -38,7 +38,6 @@ export class ManageFriendsDialogComponent {
   }
 
   onSave(): void {
-    // You can add save logic here
     console.log(this.deleteFriends);
     this.deleteFriends.forEach(friend => {
       this.friendsService.deleteFriendsFromMemory(friend, this.data.memoryId).subscribe(

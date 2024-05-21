@@ -47,5 +47,11 @@ export class FriendsService {
     const body = { senderId, receiverId };
     return this.http.post(url, body);
   }
+
+  addFriendRequest(senderId: string, receiverId: string): Observable<any> {
+    const url = `${this.apiUrl}/add_friend`;
+    const body = { senderId, receiverId };
+    return this.http.post(url, body);
+  }
   
 }

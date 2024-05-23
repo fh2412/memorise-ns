@@ -40,11 +40,11 @@ export class UserService {
     return this.http.put<any>(url, userData);
   }
 
-  updateUserProfilePic(userId: string, profilePicUrl: string) {
+  updateUserProfilePic(userId: string, profilePicUrl: any): Observable<any> {
     const url = `${this.apiUrl}/profilepic/${userId}`;
     const body = { profilepic: profilePicUrl };
-
-    return this.http.put(url, body);
+    console.log(url, body);
+    return this.http.put<any>(url, body);
   }
 
   searchUsers(searchTerm: string, userId: string): Observable<any> {

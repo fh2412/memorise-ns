@@ -31,16 +31,16 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { ManageFriendsDialogComponent } from './components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   declarations: [
     AppComponent,
     BlankComponent,
     MainNavComponent,
-    EditUserDialogComponent,
     ChangePasswordDialogComponent,
     SeeAllFirendsDialogComponent,
     UploadProgressDialogComponent,
@@ -69,9 +69,9 @@ import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/con
     MatSelectModule,
     MatProgressBarModule,
     GoogleMapsModule,
-    FriendsPreviewModule
+    FriendsPreviewModule,
   ],
-  providers: [    { provide: DateAdapter, useClass: MatNativeDateModule },],
+  providers: [ provideNativeDateAdapter(), { provide: DateAdapter, useClass: MatNativeDateModule },],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

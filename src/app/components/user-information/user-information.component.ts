@@ -106,11 +106,14 @@ export class UserInformationComponent implements OnInit {
     }
   }
 
-  saveProfilePicUrlInDatabase(userId: string, profilePicUrl: string): void {
-    this.userService.updateUserProfilePic(userId, profilePicUrl)
+  async saveProfilePicUrlInDatabase(userId: string, profilePicUrl: string): Promise<void> {
+    console.log(userId, profilePicUrl);
+    await this.userService.updateUserProfilePic(userId, profilePicUrl)
       .subscribe(
         () => console.log('Profile picture URL saved in the database.'),
-        error => console.error('Error saving profile picture URL in the database:', error)
+        (error) => {
+          console.error('Error saving profile picture URL in the database:', error);
+        }
       );
     location.reload();
   }

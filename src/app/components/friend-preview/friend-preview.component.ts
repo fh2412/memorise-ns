@@ -14,6 +14,13 @@ export class FriendPreviewComponent {
   @Input() buttonColor: string = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
   @Input() buttonIcon: string = 'person_add'; // Use MatButton icon options
   @Input() friend: any;
+  get formattedDob(): string {
+    if (!this.friend?.dob) {
+      return "dob";
+    }
+    const dateObj = new Date(this.friend.dob);
+    return dateObj.toLocaleDateString('en-GB', { year: 'numeric', day: '2-digit', month: '2-digit' });
+  }
   @Output() buttonClicked = new EventEmitter<void>();
   loggedInUserId: any;
 

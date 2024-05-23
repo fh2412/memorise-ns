@@ -13,9 +13,13 @@
     <br>
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Birthday</mat-label>
-      <input matInput placeholder="24/12/2002" formControlName="dob">
+      <input matInput [matDatepicker]="picker" placeholder="DD/MM/YYYY" formControlName="dob">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
+    
     <br>
+    
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Gender</mat-label>
       <mat-select formControlName="gender">

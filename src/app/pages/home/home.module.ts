@@ -20,6 +20,10 @@ import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor
 import { MatSelectModule } from '@angular/material/select';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
 
 
 const routes: Routes = [
@@ -39,6 +43,7 @@ const routes: Routes = [
     LogoutButtonComponent,
     ViewSelecorComponent,
     HomeMapViewComponent,
+    EditUserDialogComponent
   ],
   imports: [
     CommonModule,
@@ -55,6 +60,9 @@ const routes: Routes = [
     MatInputModule,
     MatSelectModule,
     GoogleMapsModule,
+    MatDialogModule,
+    MatDatepickerModule,
+    MatNativeDateModule
   ],
   providers: [DatePipe, ViewSelecorComponent],
 })

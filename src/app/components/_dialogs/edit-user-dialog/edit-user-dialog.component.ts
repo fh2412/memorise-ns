@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -21,7 +22,7 @@ export class EditUserDialogComponent {
   @Output() updateUserData = new EventEmitter<any>();
   userForm: FormGroup;
 
-  constructor(public dialogRef: MatDialogRef<EditUserDialogComponent>,
+  constructor(private datePipe: DatePipe, public dialogRef: MatDialogRef<EditUserDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public userdata: DialogData, private fb: FormBuilder) {
       this.userForm = this.fb.group({
         name: userdata.name,
@@ -34,6 +35,7 @@ export class EditUserDialogComponent {
     }
 
   saveChanges() {
+    this.userForm.value.dob = this.datePipe.transform(this.userForm.value.dob, 'dd/MM/yyyy');
     const updatedUserData = this.userForm.value;
     this.updateUserData.emit(updatedUserData);
     //this.dialogRef.close();

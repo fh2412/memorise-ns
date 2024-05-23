@@ -29,6 +29,7 @@ export class HomeComponent {
   filteredItems: any[] = [];
 
   selectedValue: string = 'standard'; // Set default value for view
+  noMemory: boolean = true;
 
   constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder, private viewSelector: ViewSelecorComponent) {
     this.openForm = this._formBuilder.group({
@@ -37,7 +38,7 @@ export class HomeComponent {
     });
   }
 
-  
+
   async ngOnInit() {
     await this.setUserId();
     await this.getCreatedMemories();
@@ -47,7 +48,7 @@ export class HomeComponent {
     this.loadData();
   }
 
-  changeView(newView: string){
+  changeView(newView: string) {
     this.selectedValue = newView; // Update component state
   }
 
@@ -57,33 +58,37 @@ export class HomeComponent {
   }
 
   filterItems() {
-    const searchTerm = this.openForm.get('search').value.toLowerCase();
+    if (!this.noMemory) {
+      const searchTerm = this.openForm.get('search').value.toLowerCase();
       this.filteredItems = this.displaydata.filter(item =>
         item.title.toLowerCase().includes(searchTerm)
       );
       this.loadData();
+    }
   }
 
-  showAll(checked: boolean){
-    if(checked){
+  showAll(checked: boolean) {
+    if (checked) {
       this.displaydata = [...this.data, ...this.friendsdata];
     }
-    else{
+    else {
       this.displaydata = this.data;
     }
-    if(this.openForm.get('search').value.toLowerCase()){
+    if (this.openForm.get('search').value.toLowerCase()) {
       this.filterItems();
     }
-    else{
+    else {
       this.filteredItems = this.displaydata;
       this.loadData();
     }
   }
 
   private async loadData() {
-    const startIndex = this.pageIndex * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.pagedData = this.filteredItems.slice(startIndex, endIndex);
+    if (!this.noMemory) {
+      const startIndex = this.pageIndex * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      this.pagedData = this.filteredItems.slice(startIndex, endIndex);
+    }
   }
 
   async setUserId(): Promise<void> {
@@ -106,7 +111,7 @@ export class HomeComponent {
       });
     });
   }
-  
+
 
   addMemory() {
     this.router.navigate(['/newmemory']);
@@ -120,12 +125,17 @@ export class HomeComponent {
     return new Promise<void>((resolve, reject) => {
       this.memoryService.getCreatedMemory(this.userdb.user_id).subscribe(
         (data) => {
-          this.data = data;
-          resolve();  // Resolve the Promise when the operation is complete
+          if (data.message != 'You haven\'t created any memories yet!') {
+            this.data = data;
+            this.noMemory = false;
+          }
+          else {
+            this.noMemory = true;
+          }
+          resolve();
         },
-        (error: any) => {
-          console.error('Error fetching createdMemory data:', error);
-          reject(error);  // Reject the Promise if there is an error
+        (status: 200) => {
+          reject(status);
         }
       );
     });

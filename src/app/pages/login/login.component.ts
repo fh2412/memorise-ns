@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from './services/authentication.service';
 
 @Component({
@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private formBuilder: FormBuilder,
     private router: Router,
+    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) { }
 
@@ -36,7 +37,11 @@ export class LoginComponent implements OnInit {
       email: this.form.value.email,
       password: this.form.value.password
     }).subscribe({
-      next: () => this.router.navigate(['home']),
+      next: () => {
+        // Retrieve redirect URL from query params (replace with your logic)
+        const redirectUrl = this.route.snapshot.queryParams?.['redirectUrl'] || '/home';
+        this.router.navigate([redirectUrl]);
+      },
       error: error => {
         this.isLoggingIn = false;
         this.snackBar.open(error.message, "OK", {

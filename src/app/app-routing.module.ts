@@ -50,6 +50,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/friends/friends.module').then(m => m.FriendsModule),
     canActivate: [authGuard]
   },
+  { 
+    path: 'share/friendlink/:userId', 
+    loadChildren: () => import('./pages/openlink/openlink.module').then(m => m.OpenLinkModule),
+  },
   {
     path: 'activities',
     loadChildren: () => import('./pages/activities/activites.module').then(m => m.ActivitiesModule),

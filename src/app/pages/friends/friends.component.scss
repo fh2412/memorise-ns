@@ -28,5 +28,18 @@ mat-card-content {
 }
 
 .main{
-  margin-top: 15px;
+  margin: 10px;
+  margin-top: 35px;
+}
+
+.header{
+  display: flex;
+  justify-content: space-between;
+  padding-right: 30px;
+}
+
+h1 {
+  font-size: 50px;
+  font-weight: bold;
+  width: 430px;
 }

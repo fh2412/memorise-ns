@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
+import { LinkModalComponent } from '../../components/_dialogs/link-modal/link-modal.component';
 
 @Component({
   selector: 'app-friends',
@@ -70,5 +71,15 @@ export class FriendsComponent implements OnInit{
     //  data: { friends: this.friends } // Pass the complete list of friends to the dialog
     //});
     console.log("Open Dialog!");
+  }
+
+  openLinkModal(link: string) {
+    const dialogRef = this.dialog.open(LinkModalComponent, {
+      data: { link: 'https://www.memorise.online/share/friendlink/' + this.loggedInUserId },
+      width: '500px',
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {});
+      
   }
 }

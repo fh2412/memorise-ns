@@ -17,7 +17,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
-import { EditUserDialogComponent } from './components/_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -34,7 +33,7 @@ import { FriendsPreviewModule } from './components/friend-preview/friend-preview
 import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
-import { MatDatepickerModule } from '@angular/material/datepicker';
+import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +47,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     ManageFriendsDialogComponent,
     InfoDialogComponent,
     ConfirmDialogComponent,
+    LinkModalComponent,
   ],
   imports: [
     BrowserModule,

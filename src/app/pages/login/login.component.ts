@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
     }).subscribe({
       next: () => {
         // Retrieve redirect URL from query params (replace with your logic)
+        // const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         const redirectUrl = this.route.snapshot.queryParams?.['redirectUrl'] || '/home';
         this.router.navigate([redirectUrl]);
       },

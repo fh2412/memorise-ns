@@ -26,9 +26,9 @@ export class UserService {
 
   constructor(private http: HttpClient) {}
 
-  getUser(): Observable<any> {
+  getUser(id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}`); // Adjust the endpoint according to your API
+    return this.http.get<any>(`${this.apiUrl}/${id}`); // Adjust the endpoint according to your API
   }
 
   getUserByEmail(email: string) {

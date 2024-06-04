@@ -75,7 +75,7 @@ export class FriendsComponent implements OnInit{
 
   openLinkModal(link: string) {
     const dialogRef = this.dialog.open(LinkModalComponent, {
-      data: { link: 'https://www.memorise.online/share/friendlink/' + this.loggedInUserId },
+      data: { link: 'https://www.memorise.online/invite/' + this.loggedInUserId },
       width: '500px',
     });
   

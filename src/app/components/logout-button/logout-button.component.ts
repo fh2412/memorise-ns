@@ -35,7 +35,6 @@ export class LogoutButtonComponent {
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
-      console.log("DIALOG CLOSED!", confirmed);
       if (confirmed) {
         this.logout();
       } 

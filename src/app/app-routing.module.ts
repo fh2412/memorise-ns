@@ -51,7 +51,7 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   { 
-    path: 'share/friendlink/:userId', 
+    path: 'invite/:userId', 
     loadChildren: () => import('./pages/openlink/openlink.module').then(m => m.OpenLinkModule),
   },
   {

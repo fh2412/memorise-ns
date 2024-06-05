@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../services/userService';
 import { FriendsService } from '../../services/friends.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-openlink',
@@ -15,7 +16,7 @@ export class OpenlinkComponent implements OnInit {
   user: any;
   loggedInUserId: any;
 
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar) {
     
   }
 
@@ -27,7 +28,7 @@ export class OpenlinkComponent implements OnInit {
       (response) => {
         this.user = response;
         if (this.router.url.startsWith('/invite')) {
-          this.showConfirmDialog();
+          this.checkFriendshipStatus();
         }
       },
       (error) => {
@@ -37,10 +38,10 @@ export class OpenlinkComponent implements OnInit {
     );
   }
 
-  showConfirmDialog() {
+  showConfirmDialog(title: string, message: string) {
     const confirmationData: ConfirmationDialogData = {
-      title: 'Offer Friendship',
-      message: 'Do you want to add ' + this.user.name + ' as your friend?'
+      title: title,
+      message: message
     };
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -60,11 +61,39 @@ export class OpenlinkComponent implements OnInit {
       }
     });
   }
+
+  checkFriendshipStatus(){
+    this.friedService.getFriendsStatus(this.loggedInUserId, this.userId).subscribe(
+      (response) => {
+        const result = response.toString();
+        console.log(response);
+        if(result == 'empty'){
+          this.showConfirmDialog('Offer Friendship', 'Do you want to add ' + this.user.name + ' as your friend?');
+        }
+        else if(result == 'waiting'){
+          this.showConfirmDialog('Accept Friend Request', 'Do you want to accept ' + this.user.name + ' as your friend?');
+        }
+        else if(result == 'accepted'){
+          this.openSnackBar('You guys are already friends!', 'Great!');
+        }
+        else if(result == 'pending'){
+          this.openSnackBar('You already send this user a friend request!', 'Got it!');
+        }
+      },
+      (error) => {
+        console.error('Error fetching user:', error);
+      }
+    );
+
+  }
+
+  openSnackBar(message: string, action: string) {
+    this._snackBar.open(message, action);
+  }
+
 }
 
 
 
 //TODO
-//Redirect to home if the userID does not exist
-//Check why the dialog has to be close twice
-//Check what happens if the person is already a friend
+//Einbauen, dass bei waiting und empty die richtigen funktionen gerufen werden | sendFriendRequest | acceptFriendRequest

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../services/userService';
 import { FriendsService } from '../../services/friends.service';
@@ -15,20 +15,23 @@ export class OpenlinkComponent implements OnInit {
   user: any;
   loggedInUserId: any;
 
-  constructor(private route: ActivatedRoute, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService) {
     
   }
 
   async ngOnInit() {
     this.userId = this.route.snapshot.paramMap.get('userId');
     this.loggedInUserId = this.userService.getLoggedInUserId();
+
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
-        this.showConfirmDialog();
+        if (this.router.url.startsWith('/invite')) {
+          this.showConfirmDialog();
+        }
       },
       (error) => {
-        console.error('Error deleting memory and friends:', error);
+        console.error('Error fetching user:', error);
         // Handle error, e.g., show an error message
       }
     );
@@ -64,3 +67,4 @@ export class OpenlinkComponent implements OnInit {
 //TODO
 //Redirect to home if the userID does not exist
 //Check why the dialog has to be close twice
+//Check what happens if the person is already a friend

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
+import { UserResolver } from './models/user-resolver';
 
 const routes: Routes = [
   {
@@ -53,6 +54,14 @@ const routes: Routes = [
   { 
     path: 'invite/:userId', 
     loadChildren: () => import('./pages/openlink/openlink.module').then(m => m.OpenLinkModule),
+    canActivate: [authGuard],
+    resolve: { user: UserResolver }
+  },
+  { 
+    path: 'userprofile/:userId', 
+    loadChildren: () => import('./pages/openlink/openlink.module').then(m => m.OpenLinkModule),
+    canActivate: [authGuard],
+    resolve: { user: UserResolver }
   },
   {
     path: 'activities',

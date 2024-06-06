@@ -49,10 +49,20 @@ export class OpenlinkComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
+      if (result && title == "Offer Friendship") {
         this.friedService.sendFriendRequest( this.loggedInUserId, this.userId).subscribe(
           response => {
             console.log('Friend request sent successfully', response);
+          },
+          error => {
+            console.error('Error sending friend request', error);
+          }
+        );
+      }
+      else if (result && title == "Accept Friend Request") {
+        this.friedService.acceptFriendRequest( this.loggedInUserId, this.userId).subscribe(
+          response => {
+            console.log('Friend added', response);
           },
           error => {
             console.error('Error sending friend request', error);
@@ -92,8 +102,3 @@ export class OpenlinkComponent implements OnInit {
   }
 
 }
-
-
-
-//TODO
-//Einbauen, dass bei waiting und empty die richtigen funktionen gerufen werden | sendFriendRequest | acceptFriendRequest

@@ -68,7 +68,7 @@ const routes: Routes = [
     loadChildren: () => import('./pages/activities/activites.module').then(m => m.ActivitiesModule),
     canActivate: [authGuard]
   },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
 
 @NgModule({

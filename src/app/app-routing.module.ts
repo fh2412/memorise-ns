@@ -53,13 +53,13 @@ const routes: Routes = [
   },
   { 
     path: 'invite/:userId', 
-    loadChildren: () => import('./pages/openlink/openlink.module').then(m => m.OpenLinkModule),
+    loadChildren: () => import('./pages/userprofile/userprofile.module').then(m => m.UserProfileModule),
     canActivate: [authGuard],
     resolve: { user: UserResolver }
   },
   { 
     path: 'userprofile/:userId', 
-    loadChildren: () => import('./pages/openlink/openlink.module').then(m => m.OpenLinkModule),
+    loadChildren: () => import('./pages/userprofile/userprofile.module').then(m => m.UserProfileModule),
     canActivate: [authGuard],
     resolve: { user: UserResolver }
   },

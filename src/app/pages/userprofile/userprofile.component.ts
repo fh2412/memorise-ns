@@ -7,11 +7,11 @@ import { FriendsService } from '../../services/friends.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-openlink',
-  templateUrl: './openlink.component.html',
-  styleUrl: './openlink.component.scss'
+  selector: 'app-userprofile',
+  templateUrl: './userprofile.component.html',
+  styleUrl: './userprofile.component.scss'
 })
-export class OpenlinkComponent implements OnInit {
+export class UserProfileComponent implements OnInit {
   userId: any;
   user: any;
   loggedInUserId: any;

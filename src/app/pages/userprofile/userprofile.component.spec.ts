@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { OpenlinkComponent } from './openlink.component';
+import { OpenlinkComponent } from './userprofile.component';
 
 describe('OpenlinkComponent', () => {
   let component: OpenlinkComponent;

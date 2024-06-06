@@ -10,18 +10,18 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { OpenlinkComponent } from './openlink.component';
+import { UserProfileComponent } from './userprofile.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: OpenlinkComponent
+    component: UserProfileComponent
   }
 ]
 
 @NgModule({
   declarations: [
-    OpenlinkComponent
+    UserProfileComponent
   ],
   imports: [
     CommonModule,
@@ -37,4 +37,4 @@ const routes: Routes = [
     MatButtonModule
   ]
 })
-export class OpenLinkModule { }
+export class UserProfileModule { }

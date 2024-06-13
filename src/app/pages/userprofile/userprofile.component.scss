@@ -18,6 +18,16 @@
   box-shadow: 0 0 0 0 transparent;
   border: 1px solid #e0e0e0;
 }
+.memory-card{
+  box-shadow: 0 0 0 0 transparent;
+  border: 1px solid #e0e0e0;
+  width: 98%;
+  height: 95%;
+}
+
+.list-wrapper mat-list-item {
+  height: 34px;
+}
 
 .level{
   display: flex;
@@ -35,5 +45,14 @@ img{
   margin-left: 5%;
 }
 .editbutton{
+  margin-top: 1rem;
   width: 100%;
+}
+
+.bio-content {
+  height: 160px; /* Adjust height as needed */
+  overflow-y: auto;
+  display: flex; /* Make the content itself a flex container */
+  align-items: center;
+  margin-left: 2rem;
 }

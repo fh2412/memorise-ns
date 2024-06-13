@@ -17,12 +17,14 @@
 .card{
   box-shadow: 0 0 0 0 transparent;
   border: 1px solid #e0e0e0;
+  border-radius: 12px;
 }
 .memory-card{
   box-shadow: 0 0 0 0 transparent;
   border: 1px solid #e0e0e0;
   width: 98%;
   height: 95%;
+  border-radius: 12px;
 }
 
 .list-wrapper mat-list-item {
@@ -55,4 +57,12 @@ img{
   display: flex; /* Make the content itself a flex container */
   align-items: center;
   margin-left: 2rem;
+}
+
+.tag{
+  display: flex; /* Make the content itself a flex container */
+  align-items: center;
+  mat-icon{
+    margin-right: 3px;
+  }
 }

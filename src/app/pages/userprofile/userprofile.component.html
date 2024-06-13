@@ -54,9 +54,10 @@
                   </mat-card-title-group>
                   <mat-card-subtitle>This is the description of the memory in a short</mat-card-subtitle>
                   <br>
-                  <mat-card-footer>
-                    <mat-chip color="primary">Vacation</mat-chip>
-                  </mat-card-footer>
+                    <span class="tag">
+                      <mat-icon color="primary">circle</mat-icon>
+                      Vacation
+                    </span>                    
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>
@@ -70,28 +71,8 @@
   <div class="container">
     <mat-card>
       <div class="level">
-        <h3 class="title is-4 level-left">Badges</h3>
-        <button mat-button class="level-right">See all Badges</button>
-      </div>
-      <div class="columns">
-        <div class="column has-text-centered">
-          <figure class="image is-square">
-            <img src="../assets/tro1.png" alt="Image 1">
-          </figure>
-          <p class="title is-6">Image Title 1</p>
-        </div>
-        <div class="column has-text-centered">
-          <figure class="image is-square">
-            <img src="../assets/tro2.png" alt="Image 2">
-          </figure>
-          <p class="title is-6">Image Title 2</p>
-        </div>
-        <div class="column has-text-centered">
-          <figure class="image is-square">
-            <img src="../assets/tro3.png" alt="Image 3">
-          </figure>
-          <p class="title is-6">Image Title 3</p>
-        </div>
+        <h3>Earned Badges</h3>
+        <button mat-stroked-button>See all</button>
       </div>
     </mat-card>
   </div>

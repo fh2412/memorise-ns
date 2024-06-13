@@ -15,6 +15,12 @@ export class UserProfileComponent implements OnInit {
   userId: any;
   user: any;
   loggedInUserId: any;
+  memories = [
+    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
+    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
+    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
+    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 }
+  ];
 
   constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar) {
     

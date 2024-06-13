@@ -1,0 +1,39 @@
+/* Add your styles here */
+.container {
+  margin: 0 auto;
+  max-width: 1200px;
+}
+.columns {
+  display: flex;
+  justify-content: space-between;
+}
+
+.mat-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card{
+  box-shadow: 0 0 0 0 transparent;
+  border: 1px solid #e0e0e0;
+}
+
+.level{
+  display: flex;
+  justify-content: space-between;
+}
+img{
+  border-radius: 50%;
+  width: 100%;
+}
+.image{
+  width: 25%;
+}
+.bio{
+  width: 80%;
+  margin-left: 5%;
+}
+.editbutton{
+  width: 100%;
+}

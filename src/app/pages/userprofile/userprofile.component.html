@@ -1,1 +1,100 @@
-<h1>This is the coming soon User Profile Page</h1>
+<section style="margin-top: 1.5rem;">
+  <div class="container">
+    <div class="columns">
+      <div class="image">
+          <img src="{{user.profilepic}}" alt="Florian Hofer">
+          <mat-card-title>Florian Hofer</mat-card-title>
+          <mat-card-subtitle>
+            <span>fh2412</span> - <span>Male</span>
+          </mat-card-subtitle>
+          <button mat-stroked-button class="editbutton">Edit Profile/Send Request</button>
+          <mat-list>
+            <mat-list-item>
+              <mat-icon matListItemIcon>location_on</mat-icon>
+              <div matListItemTitle>Austria</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>calendar_today</mat-icon>
+              <div matListItemTitle>{{user.dob}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>access_timemat-icon</mat-icon>
+              <div matListItemTitle>Timezone</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>public</mat-icon>
+              <div matListItemTitle>instagram</div>
+            </mat-list-item>
+          </mat-list>
+      </div>
+      <div class="bio">
+        <mat-card class="card">
+          <mat-card-content>
+            <p class="subtitle is-6">
+              👋 Hi, I’m fh2412<br>
+              👀 I’m interested in AI be it creating my own models or leveraging the newest technologies<br>
+              🌱 I’m currently learning the pyTorch python framework and Fast.ai<br>
+              💻 I'm currently working on an Angular project creating a web app<br>
+              📫 How to reach me email: florianhofer024gmail.com
+            </p>
+          </mat-card-content>
+        </mat-card>
+        <div style="margin-top: 2rem;">
+          <div class="level">
+            <h3 class="title is-4 level-left">Pinned Memories</h3>
+            <button mat-stroked-button>Customize your pins</button>
+          </div>
+          <mat-grid-list cols="2">
+            <mat-grid-tile *ngFor="let memory of memories">
+              <mat-card>
+                <mat-card-content>
+                  <mat-card-title-group>
+                    <mat-card-title>Heading Text</mat-card-title>
+                    <mat-chip color="primary">Public</mat-chip>
+                  </mat-card-title-group>
+                  <mat-card-subtitle>This is the description of the memory in a short</mat-card-subtitle>
+                  <mat-card-footer>
+                    <mat-chip color="primary">Vacation</mat-chip>
+                    <mat-chip>
+                      <mat-icon>star</mat-icon> 8
+                    </mat-chip>
+                  </mat-card-footer>
+                </mat-card-content>
+              </mat-card>
+            </mat-grid-tile>
+          </mat-grid-list>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<section style="margin-top: 1.5rem;">
+  <div class="container">
+    <mat-card>
+      <div class="level">
+        <h3 class="title is-4 level-left">Badges</h3>
+        <button mat-button class="level-right">See all Badges</button>
+      </div>
+      <div class="columns">
+        <div class="column has-text-centered">
+          <figure class="image is-square">
+            <img src="../assets/tro1.png" alt="Image 1">
+          </figure>
+          <p class="title is-6">Image Title 1</p>
+        </div>
+        <div class="column has-text-centered">
+          <figure class="image is-square">
+            <img src="../assets/tro2.png" alt="Image 2">
+          </figure>
+          <p class="title is-6">Image Title 2</p>
+        </div>
+        <div class="column has-text-centered">
+          <figure class="image is-square">
+            <img src="../assets/tro3.png" alt="Image 3">
+          </figure>
+          <p class="title is-6">Image Title 3</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</section>

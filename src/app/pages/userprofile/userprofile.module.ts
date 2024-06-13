@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { MatCardModule } from '@angular/material/card';
+import { MatCardHeader, MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { UserProfileComponent } from './userprofile.component';
+import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
 
 const routes: Routes = [
   {
@@ -34,7 +36,11 @@ const routes: Routes = [
     GoogleMapsModule,
     MatIconModule,
     MatDividerModule,
-    MatButtonModule
+    MatButtonModule,
+    MatListModule,
+    MatGridListModule,
+    MatCardModule,
+    MatChipsModule
   ]
 })
 export class UserProfileModule { }

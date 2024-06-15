@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { UserProfileComponent } from './userprofile.component';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 
 const routes: Routes = [
   {
@@ -23,7 +24,8 @@ const routes: Routes = [
 
 @NgModule({
   declarations: [
-    UserProfileComponent
+    UserProfileComponent,
+    LogoutButtonComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +42,7 @@ const routes: Routes = [
     MatListModule,
     MatGridListModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
   ]
 })
 export class UserProfileModule { }

@@ -14,6 +14,8 @@ import { FriendsPreviewModule } from '../../components/friend-preview/friend-pre
 import { FriendSearchComponent } from '../../components/friend-search/friend-search.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { UserInformationComponent } from '../../components/user-information/user-information.component';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 
 
 const routes: Routes = [
@@ -27,7 +29,9 @@ const routes: Routes = [
   declarations: [
     FriendsComponent,
     FriendCardComponent,
-    FriendSearchComponent
+    FriendSearchComponent,
+    UserInformationComponent,
+    //LogoutButtonComponent
   ],
   imports: [
     CommonModule,

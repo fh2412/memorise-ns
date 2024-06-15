@@ -1,70 +1,75 @@
 <!-- friends.component.html -->
-<div class="main">
-  <div class="header">
-    <h1>YOUR FRIENDS</h1>
-    <button mat-raised-button color="accent" class="fixed-fab" (click)="openLinkModal('yourLink')">
-      <mat-icon class="add-icon">share</mat-icon>
-      Share Friendcode
-    </button>
+<div class="wrapper">
+  <div class="sticky-sidebar">
+    <app-user-information></app-user-information>
   </div>
-  <mat-tab-group>
-    <mat-tab label="Friends/Suggestions">
-      <div class="friends-container">
-        <!-- Left side: Search Bar -->
-        <div class="search-bar" *ngIf="friends">
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Your Friends</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <!-- friends-list.component.html -->
-              <mat-list>
-                <ng-container *ngFor="let friend of friends.slice(0, 5); let last = last">
-                  <app-friend-preview [friend]="friend" [buttonText]="'Remove'" [requestedText]="'Undo'"
-                    [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-preview>
-                  <mat-divider *ngIf="!last"></mat-divider>
-                </ng-container>
-              </mat-list>
+  <div class="main">
+    <div class="header">
+      <h1>YOUR FRIENDS</h1>
+      <button mat-raised-button color="accent" class="fixed-fab" (click)="openLinkModal('yourLink')">
+        <mat-icon class="add-icon">share</mat-icon>
+        Share Friendcode
+      </button>
+    </div>
+    <mat-tab-group>
+      <mat-tab label="Friends/Suggestions">
+        <div class="friends-container">
+          <!-- Left side: Search Bar -->
+          <div class="search-bar" *ngIf="friends">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Your Friends</mat-card-title>
+              </mat-card-header>
+              <mat-card-content>
+                <!-- friends-list.component.html -->
+                <mat-list>
+                  <ng-container *ngFor="let friend of friends.slice(0, 5); let last = last">
+                    <app-friend-preview [friend]="friend" [buttonText]="'Remove'" [requestedText]="'Undo'"
+                      [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-preview>
+                    <mat-divider *ngIf="!last"></mat-divider>
+                  </ng-container>
+                </mat-list>
 
 
-              <button mat-raised-button color="primary" *ngIf="friends.length > 5" (click)="openSeeAllDialog()">See
-                All</button>
-            </mat-card-content>
-          </mat-card>
-        </div>
+                <button mat-raised-button color="primary" *ngIf="friends.length > 5" (click)="openSeeAllDialog()">See
+                  All</button>
+              </mat-card-content>
+            </mat-card>
+          </div>
 
-        <!-- Right side: Suggestions Card -->
-        <div class="suggestions-card" *ngIf="friendSuggestions">
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Search for new Friends</mat-card-title>
-            </mat-card-header>
-            <mat-card-content class="search">
-              <app-friend-search [userId]="loggedInUserId"></app-friend-search>
-              <!--<mat-list>
+          <!-- Right side: Suggestions Card -->
+          <div class="suggestions-card" *ngIf="friendSuggestions">
+            <mat-card>
+              <mat-card-header>
+                <mat-card-title>Search for new Friends</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="search">
+                <app-friend-search [userId]="loggedInUserId"></app-friend-search>
+                <!--<mat-list>
               <ng-container *ngFor="let suggestedfriend of friendSuggestions.slice(0, 5); let last = last">
                 <app-friend-preview [friend]="suggestedfriend" [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-preview>
                 <mat-divider *ngIf="!last"></mat-divider>
               </ng-container>
             </mat-list>-->
-            </mat-card-content>
-          </mat-card>
+              </mat-card-content>
+            </mat-card>
+          </div>
         </div>
-      </div>
-    </mat-tab>
-    <mat-tab label="Pending/Requested">
-      <div class="friends-container">
-        <!-- Left side: Search Bar -->
-        <div class="search-bar" *ngIf="pendingFriends">
-          <app-friend-card [friends]="pendingFriends" [title]="'Pending Requests'" [requested]='true'
-            [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'"
-            [buttonIcon]="'person_add'"></app-friend-card>
+      </mat-tab>
+      <mat-tab label="Pending/Requested">
+        <div class="friends-container">
+          <!-- Left side: Search Bar -->
+          <div class="search-bar" *ngIf="pendingFriends">
+            <app-friend-card [friends]="pendingFriends" [title]="'Pending Requests'" [requested]='true'
+              [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'"
+              [buttonIcon]="'person_add'"></app-friend-card>
+          </div>
+          <div class="suggestions-card" *ngIf="ingoingFriends">
+            <app-friend-card [friends]="ingoingFriends" [title]="'Ingoing Requests'" [buttonText]="'Accept'"
+              [requestedText]="'Accepted'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-card>
+          </div>
         </div>
-        <div class="suggestions-card" *ngIf="ingoingFriends">
-          <app-friend-card [friends]="ingoingFriends" [title]="'Ingoing Requests'" [buttonText]="'Accept'"
-            [requestedText]="'Accepted'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-card>
-        </div>
-      </div>
-    </mat-tab>
-  </mat-tab-group>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

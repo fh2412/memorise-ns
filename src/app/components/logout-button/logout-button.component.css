@@ -1,28 +1,12 @@
-/* Example styles for the logout button */
 .logout-button {
-    background-color: #ff5555; /* Background color */
-    color: white; /* Text color */
-    border: none; /* Remove default button border */
-    padding: 5px 10px; /* Padding for the button */
-    border-radius: 5px; /* Add some rounded corners */
-    cursor: pointer; /* Show pointer cursor on hover */
-    transition: background-color 0.3s ease; /* Smooth transition for background color */
-    font-family: Arial, sans-serif; /* Custom font family */
-    display: flex; /* Enable flex layout */
-    align-items: center; /* Center items vertically */
-    justify-content: center; /* Center items horizontally */
-    font-weight: bold; /* Make the text bold */
-  }
-  
-  /* Styles for the icon inside the button */
-  .logout-icon {
-    margin-right: 5px; /* Add spacing between the icon and text */
-    font-size: 20px; /* Adjust icon size */
-    margin-top: 4px; /* Move the icon 2px lower */
+    background-color: #ff5555;
+    color: white;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
   }
   
   /* Hover effect */
   .logout-button:hover {
-    background-color: #ff3333; /* Darken the background color on hover */
+    background-color: #ff3333;
   }
   

@@ -36,11 +36,11 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    UserInformationComponent,
+    //UserInformationComponent,
     MomorypreviewComponent,
     StatsComponent,
     MemoryCardComponent,
-    LogoutButtonComponent,
+    //LogoutButtonComponent,
     ViewSelecorComponent,
     HomeMapViewComponent,
     EditUserDialogComponent

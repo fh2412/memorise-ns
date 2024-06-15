@@ -117,4 +117,8 @@ export class UserInformationComponent implements OnInit {
       );
     location.reload();
   }
+
+  navigateToUserProfile() {
+    this.router.navigate([`/userprofile/${this.userdb.user_id}`]);
+  }
 }

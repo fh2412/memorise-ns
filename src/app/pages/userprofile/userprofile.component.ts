@@ -5,6 +5,9 @@ import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components
 import { UserService } from '../../services/userService';
 import { FriendsService } from '../../services/friends.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
+import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-password-dialog/change-password-dialog.component';
+import { FileUploadService } from '../../services/file-upload.service';
 
 @Component({
   selector: 'app-userprofile',
@@ -22,7 +25,7 @@ export class UserProfileComponent implements OnInit {
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 }
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService,) {
     
   }
 
@@ -107,4 +110,81 @@ export class UserProfileComponent implements OnInit {
     this._snackBar.open(message, action);
   }
 
+  openEditDialog(): void {
+    const dialogRef = this.dialog.open(EditUserDialogComponent, {
+      width: '40%',
+      data: {name: this.user.name, bio: this.user.bio, dob: this.user.formatted_dob, gender: this.user.gender, country: this.user.country, username: this.user.username},
+    });
+    // Subscribe to afterClosed event to handle any actions after the dialog closes
+    dialogRef.componentInstance.updateUserData.subscribe((result: any) => {
+      if (result) {
+        this.userService.updateUser(this.user.user_id, result).subscribe(
+          () => {
+            this.user.name=result.name;
+            this.user.bio=result.bio;
+            this.user.gender=result.gender;
+            this.user.formatted_dob=result.dob;
+            this.user.country=result.country;
+            this.user.username=result.username;
+
+            dialogRef.close();
+          },
+          (error) => {
+            console.error('Error updating user:', error);
+            // Handle error scenarios if needed
+          }
+        );
+      }
+    });
+  }
+  
+  openPassowrdChangeDialog(): void {
+    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
+      width: '20%', // Adjust the width as needed
+      enterAnimationDuration: '1500ms',
+
+      data: {oldpw: 'test'},
+    });
+    // Subscribe to afterClosed event to handle any actions after the dialog closes
+    dialogRef.componentInstance.updateUserPassword.subscribe((result: any) => {
+      if (result) {
+        console.log(result);
+      }
+    });
+  }
+
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+
+    if (file) {
+      // Usage in a component or service
+      this.fileUploadService.uploadProfilePicture(this.user.user_id, file).subscribe(
+        (uploadProgress: number | undefined) => {
+          console.log(`Upload Progress: ${uploadProgress}%`);
+        },
+        error => {
+          console.error('Error uploading profile picture:', error);
+        },
+        async () => {
+          const downloadURL = await this.fileUploadService.getProfilePictureUrl(this.user.user_id);
+          console.log('Profile picture uploaded successfully. URL:', downloadURL);
+          
+          // Now, save the downloadURL in your database
+          this.saveProfilePicUrlInDatabase(this.user.user_id, downloadURL);
+        }
+      );
+    }
+  }
+
+  async saveProfilePicUrlInDatabase(userId: string, profilePicUrl: string): Promise<void> {
+    console.log(userId, profilePicUrl);
+    await this.userService.updateUserProfilePic(userId, profilePicUrl)
+      .subscribe(
+        () => console.log('Profile picture URL saved in the database.'),
+        (error) => {
+          console.error('Error saving profile picture URL in the database:', error);
+        }
+      );
+    location.reload();
+  }
 }

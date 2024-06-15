@@ -28,8 +28,7 @@ mat-card-content {
 }
 
 .main{
-  margin: 10px;
-  margin-top: 35px;
+  width: 80%;
 }
 
 .header{
@@ -42,4 +41,14 @@ h1 {
   font-size: 50px;
   font-weight: bold;
   width: 430px;
+}
+.wrapper {
+  display: flex;
+  height: 100vh;
+  margin-top: 35px;
+}
+
+.sticky-sidebar {
+  width: 20%;
+  margin-left: 20px;
 }

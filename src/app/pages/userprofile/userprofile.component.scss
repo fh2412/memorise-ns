@@ -47,7 +47,6 @@ img{
   margin-left: 5%;
 }
 .editbutton{
-  margin-top: 1rem;
   width: 100%;
 }
 
@@ -64,5 +63,61 @@ img{
   align-items: center;
   mat-icon{
     margin-right: 3px;
+  }
+}
+
+.usersettings{
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  button{
+    width: 60%;
+  }
+}
+
+.profile-picture-container {
+  position: relative;
+  cursor: pointer;
+
+  // Profile picture styles
+  .profile-picture {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; // Ensure the image covers the container without stretching
+    border-radius: 50%; // Make the image round
+    transition: filter 0.3s ease; // Add transition for smooth effect
+
+    // Hover effect
+    &:hover {
+      filter: grayscale(100%);
+      + .change-icon {
+        color: black; // Change color on hover
+        opacity: 1; // Make the icon fully visible on hover
+      }
+    }
+  }
+
+  // Change icon styles
+  .change-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: transparent; // Hide the text by default
+    font-size: 20px; // Adjust the font size as needed
+    opacity: 0; // Initially hide the icon
+    transition: color 0.3s ease, opacity 0.3s ease; // Add transitions for smooth effect
+
+    // Hover effect for the icon
+    .profile-picture-container:hover & {
+      filter: grayscale(100%);
+      opacity: 1; // Make the icon fully visible on hover
+    }
+  }
+  .image-label {
+    cursor: pointer; // Set the cursor to pointer
+    display: block;
+    width: 100%;
+    height: 100%;
   }
 }

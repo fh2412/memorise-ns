@@ -2,30 +2,42 @@
   <div class="container">
     <div class="columns">
       <div class="image">
-          <img src="{{user.profilepic}}" alt="Florian Hofer">
-          <mat-card-title>Florian Hofer</mat-card-title>
-          <mat-card-subtitle>
-            <span>fh2412</span> - <span>Male</span>
-          </mat-card-subtitle>
-          <button mat-stroked-button class="editbutton">Edit Profile/Send Request</button>
-          <mat-list class="list-wrapper">
-            <mat-list-item>
-              <mat-icon matListItemIcon>location_on</mat-icon>
-              <div matListItemTitle>Austria</div>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-icon matListItemIcon>calendar_today</mat-icon>
-              <div matListItemTitle>{{user.dob}}</div>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-icon matListItemIcon>access_timemat-icon</mat-icon>
-              <div matListItemTitle>Timezone</div>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-icon matListItemIcon>public</mat-icon>
-              <div matListItemTitle>instagram</div>
-            </mat-list-item>
-          </mat-list>
+        <div class="profile-picture-container">
+          <label for="fileInput" class="image-label">
+            <img src="{{this.user.profilepic}}" alt="Profile Picture" class="profile-picture">
+            <mat-icon class="change-icon">add_a_photo</mat-icon>
+          </label>
+          <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer" (change)="onFileChange($event)" />
+        </div>
+        <mat-card-title>Florian Hofer</mat-card-title>
+        <mat-card-subtitle>
+          <span>fh2412</span> - <span>Male</span>
+        </mat-card-subtitle>
+        <button mat-stroked-button class="editbutton" (click)="openEditDialog()">Edit Profile/Send Request</button>
+        <mat-list class="list-wrapper">
+          <mat-list-item>
+            <mat-icon matListItemIcon>location_on</mat-icon>
+            <div matListItemTitle>Austria</div>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon matListItemIcon>calendar_today</mat-icon>
+            <div matListItemTitle>{{user.dob}}</div>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon matListItemIcon>access_timemat-icon</mat-icon>
+            <div matListItemTitle>Timezone</div>
+          </mat-list-item>
+          <mat-list-item>
+            <mat-icon matListItemIcon>public</mat-icon>
+            <div matListItemTitle>instagram</div>
+          </mat-list-item>
+        </mat-list>
+        <div class="usersettings">
+          <button mat-stroked-button (click)="openPassowrdChangeDialog()">
+            Change PW
+          </button>
+          <app-logout-button></app-logout-button>
+        </div>
       </div>
       <div class="bio">
         <mat-card class="card">
@@ -35,7 +47,7 @@
               👀 I’m interested in AI be it creating my own models or leveraging the newest technologies<br>
               🌱 I’m currently learning the pyTorch python framework and Fast.ai<br>
               💻 I'm currently working on an Angular project creating a web app<br>
-              📫 How to reach me email: florianhofer024gmail.com          
+              📫 How to reach me email: florianhofer024gmail.com
             </p>
           </mat-card-content>
         </mat-card>
@@ -54,10 +66,10 @@
                   </mat-card-title-group>
                   <mat-card-subtitle>This is the description of the memory in a short</mat-card-subtitle>
                   <br>
-                    <span class="tag">
-                      <mat-icon color="primary">circle</mat-icon>
-                      Vacation
-                    </span>                    
+                  <span class="tag">
+                    <mat-icon color="primary">circle</mat-icon>
+                    Vacation
+                  </span>
                 </mat-card-content>
               </mat-card>
             </mat-grid-tile>

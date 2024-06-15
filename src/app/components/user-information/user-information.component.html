@@ -16,6 +16,9 @@
     <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
     <p>Country: {{ userdb.country || 'Not provided' }}</p>
 
+    <button *ngIf="showEditForm" mat-stroked-button color="primary" (click)="navigateToUserProfile()">
+      View Profile
+    </button>
     <button *ngIf="showEditForm" mat-stroked-button color="primary" (click)="openEditDialog()">
       Edit Information
     </button>
@@ -23,7 +26,7 @@
       <button mat-stroked-button color="primary" (click)="openPassowrdChangeDialog()">
         Change PW
       </button>
-      <app-logout-button class="logout"></app-logout-button>
+      <!--<app-logout-button class="logout"></app-logout-button>-->
     </div>
 
   </div>

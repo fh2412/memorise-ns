@@ -32,6 +32,7 @@ export class EditUserDialogComponent {
         country: userdata.country,
         username: userdata.username
       });
+      console.log(this.userForm.value);
     }
 
   saveChanges() {

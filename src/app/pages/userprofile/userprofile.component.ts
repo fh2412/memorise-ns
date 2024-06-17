@@ -36,7 +36,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
-        this.user.dob = this.datePipe.transform(this.user.dob, 'dd/MM/yyyy');
+        this.user.formatted_dob = this.datePipe.transform(this.user.dob, 'dd/MM/yyyy');
         if (this.router.url.startsWith('/invite')) {
           this.checkFriendshipStatus();
         }

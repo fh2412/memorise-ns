@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardHeader, MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,6 +14,13 @@ import { UserProfileComponent } from './userprofile.component';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
+import { MatDialogActions, MatDialogModule } from '@angular/material/dialog';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
 
 const routes: Routes = [
   {
@@ -25,7 +32,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     UserProfileComponent,
-    LogoutButtonComponent
+    LogoutButtonComponent,
+    EditUserDialogComponent
   ],
   imports: [
     CommonModule,
@@ -40,9 +48,14 @@ const routes: Routes = [
     MatDividerModule,
     MatButtonModule,
     MatListModule,
-    MatGridListModule,
     MatCardModule,
     MatChipsModule,
-  ]
+    MatDialogModule,
+
+    ReactiveFormsModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
+  providers: [DatePipe], // Add DatePipe here if needed
 })
 export class UserProfileModule { }

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
-import { UserInformationComponent } from '../../components/user-information/user-information.component';
 import { MatCardModule } from '@angular/material/card';
 import { MomorypreviewComponent } from '../../components/momorypreview/momorypreview.component';
 import { StatsComponent } from '../../components/stats/stats.component';
@@ -15,15 +14,13 @@ import { MemoryCardComponent } from '../../components/memory-card/memory-card.co
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor.component';
 import { MatSelectModule } from '@angular/material/select';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { DateAdapter, MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 
 
 const routes: Routes = [
@@ -43,7 +40,6 @@ const routes: Routes = [
     //LogoutButtonComponent,
     ViewSelecorComponent,
     HomeMapViewComponent,
-    EditUserDialogComponent
   ],
   imports: [
     CommonModule,

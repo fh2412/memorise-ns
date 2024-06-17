@@ -8,6 +8,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-password-dialog/change-password-dialog.component';
 import { FileUploadService } from '../../services/file-upload.service';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-userprofile',
@@ -25,7 +26,7 @@ export class UserProfileComponent implements OnInit {
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 }
   ];
 
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService,) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe,) {
     
   }
 
@@ -36,6 +37,7 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
+        this.user.dob = this.datePipe.transform(this.user.dob, 'dd/MM/yyyy');
         if (this.router.url.startsWith('/invite')) {
           this.checkFriendshipStatus();
         }
@@ -113,7 +115,7 @@ export class UserProfileComponent implements OnInit {
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '40%',
-      data: {name: this.user.name, bio: this.user.bio, dob: this.user.formatted_dob, gender: this.user.gender, country: this.user.country, username: this.user.username},
+      data: {name: this.user.name, bio: this.user.bio, dob: this.user.dob, gender: this.user.gender, country: this.user.country, username: this.user.username},
     });
     // Subscribe to afterClosed event to handle any actions after the dialog closes
     dialogRef.componentInstance.updateUserData.subscribe((result: any) => {

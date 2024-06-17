@@ -1,4 +1,4 @@
-<section style="margin-top: 1.5rem;">
+<section style="margin-top: 1.5rem;" *ngIf="user">
   <div class="container">
     <div class="columns">
       <div class="image">
@@ -43,11 +43,7 @@
         <mat-card class="card">
           <mat-card-content class="bio-content">
             <p>
-              👋 Hi, I’m fh2412<br>
-              👀 I’m interested in AI be it creating my own models or leveraging the newest technologies<br>
-              🌱 I’m currently learning the pyTorch python framework and Fast.ai<br>
-              💻 I'm currently working on an Angular project creating a web app<br>
-              📫 How to reach me email: florianhofer024gmail.com
+              {{user.bio}}
             </p>
           </mat-card-content>
         </mat-card>

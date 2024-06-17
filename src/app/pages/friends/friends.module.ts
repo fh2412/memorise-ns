@@ -15,7 +15,7 @@ import { FriendSearchComponent } from '../../components/friend-search/friend-sea
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { UserInformationComponent } from '../../components/user-information/user-information.component';
-import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
 
 
 const routes: Routes = [

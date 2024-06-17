@@ -13,7 +13,7 @@
     <br>
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Birthday</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="DD/MM/YYYY" formControlName="dob">
+      <input matInput [matDatepicker]="picker" placeholder="DD/MM/YYYY" formControlName="dob" [readonly]="true">
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>

@@ -1,24 +1,30 @@
 <mat-card class="user-card" *ngIf="userdb">
-  <h2>User Information</h2>
-  <!-- Profile Picture -->
   <div class="profile-picture-container">
-    <label for="fileInput" class="image-label">
-      <img src="{{this.userdb.profilepic}}" alt="Profile Picture" class="profile-picture">
-      <mat-icon class="change-icon">add_a_photo</mat-icon>
-    </label>
-    <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer" (change)="onFileChange($event)" />
+    <img src="{{this.userdb.profilepic}}" alt="Profile Picture" class="profile-picture">
   </div>
-  
-   <!-- User Information -->
   <div class="user-details">
-    <h3>Name: {{ userdb.name || 'Not provided' }}</h3>
-    <p>DOB: {{ userdb.formatted_dob || 'Not provided' }}</p>
-    <p>Gender: {{ userdb.gender || 'Not provided' }}</p>
-    <p>Country: {{ userdb.country || 'Not provided' }}</p>
-
-    <button *ngIf="showEditForm" mat-stroked-button color="primary" (click)="navigateToUserProfile()">
-      View Profile
-    </button>
+    <mat-card-title>{{userdb.name}}</mat-card-title>
+    <mat-card-subtitle>
+      <span>{{userdb.username}}</span> - <span>{{userdb.gender}}</span>
+    </mat-card-subtitle>
+    <button mat-stroked-button class="editbutton" (click)="navigateToUserProfile()">View Profile</button>
+    <mat-list class="list-wrapper">
+      <mat-list-item>
+        <mat-icon matListItemIcon>location_on</mat-icon>
+        <div matListItemTitle>{{userdb.country}}</div>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon matListItemIcon>calendar_today</mat-icon>
+        <div matListItemTitle>{{userdb.formatted_dob}}</div>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon matListItemIcon>access_timemat-icon</mat-icon>
+        <div matListItemTitle>Timezone</div>
+      </mat-list-item>
+      <mat-list-item>
+        <mat-icon matListItemIcon>public</mat-icon>
+        <div matListItemTitle>instagram</div>
+      </mat-list-item>
+    </mat-list>
   </div>
 </mat-card>
-  

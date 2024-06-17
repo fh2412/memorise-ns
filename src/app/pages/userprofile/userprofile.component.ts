@@ -33,7 +33,6 @@ export class UserProfileComponent implements OnInit {
   async ngOnInit() {
     this.userId = this.route.snapshot.paramMap.get('userId');
     this.loggedInUserId = this.userService.getLoggedInUserId();
-
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;

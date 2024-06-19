@@ -1,0 +1,23 @@
+<h1 mat-dialog-title>Edit pinned memories</h1>
+<h2 mat-dialog-subtitle>Select up to {{selectableCount}} of your favorite memories</h2>
+
+<mat-form-field appearance="fill">
+  <mat-label>Search Memories</mat-label>
+  <!--<input matInput [(ngModel)]="searchText" (keyup)="updateSearch($event.target)">-->
+</mat-form-field>
+
+<p>You can select {{1}} more memories.</p>
+
+<mat-list>
+  <mat-list-item *ngFor="let memory of memories"> <!-- | filter: searchText-->
+    <mat-icon mat-list-icon>star</mat-icon>
+    <mat-checkbox [(ngModel)]="memory.selected" (change)="updateSelection(memory, $event)">
+      {{ memory.name }}
+    </mat-checkbox>
+  </mat-list-item>
+</mat-list>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="!hasChanges()" (click)="onSave()">Save</button>
+</div>

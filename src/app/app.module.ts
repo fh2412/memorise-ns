@@ -34,6 +34,7 @@ import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@ang
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.component';
+import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinned-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,6 +49,7 @@ import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.
     InfoDialogComponent,
     ConfirmDialogComponent,
     LinkModalComponent,
+    PinnedDialogComponent,
   ],
   imports: [
     BrowserModule,

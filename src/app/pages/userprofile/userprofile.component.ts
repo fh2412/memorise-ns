@@ -19,7 +19,7 @@ export class UserProfileComponent implements OnInit {
   userId: any;
   user: any;
   loggedInUserId: any;
-  memories = [
+  pin_memories = [
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
@@ -33,6 +33,7 @@ export class UserProfileComponent implements OnInit {
   async ngOnInit() {
     this.userId = this.route.snapshot.paramMap.get('userId');
     this.loggedInUserId = this.userService.getLoggedInUserId();
+    this.getPinnedMemories();
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
@@ -105,6 +106,15 @@ export class UserProfileComponent implements OnInit {
       }
     );
 
+  }
+
+  getPinnedMemories(){
+    this.userService.getPinnedMemories(this.userId)
+      .subscribe(memories => {
+        this.pin_memories = memories;
+      }, error => {
+        console.error('Error fetching favorite memories:', error);
+      });
   }
 
   openSnackBar(message: string, action: string) {

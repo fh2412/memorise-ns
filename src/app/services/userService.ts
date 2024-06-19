@@ -27,12 +27,16 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   getUser(id: string) {
-    // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/${id}`); // Adjust the endpoint according to your API
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
   getUserByEmail(email: string) {
     return this.http.get<any>(`${this.apiUrl}/email/${email}`);
+  }
+
+  getPinnedMemories(userId: string): Observable<any[]> {
+    const url = `${this.apiUrl}/${userId}/favourite-memories`;
+    return this.http.get<any[]>(url);
   }
 
   updateUser(userId: string, userData: any): Observable<any> {

@@ -11,7 +11,6 @@ export class ManageFriendsDialogComponent {
   constructor(private dialogRef: MatDialogRef<ManageFriendsDialogComponent>, private friendsService: MemoryService, @Inject(MAT_DIALOG_DATA) public data: { memoryId: string }) { }
 
 
-  //@Input() memoryId: string = '';
   @Input() userId: string = '4';
   friends: any[] = [];
   deleteFriends: string[] = [];

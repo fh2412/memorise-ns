@@ -56,9 +56,9 @@
             <h3 class="title is-4 level-left">Pinned Memories</h3>
             <button mat-stroked-button>Customize your pins</button>
           </div>
-          <mat-grid-list cols="2" rowHeight="3:1">
-            <mat-grid-tile *ngFor="let memory of memories">
-              <mat-card class="memory-card">
+          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pin_memories">
+            <mat-grid-tile *ngFor="let memory of pin_memories">
+              <!--<mat-card class="memory-card">
                 <mat-card-content>
                   <mat-card-title-group>
                     <mat-card-title>Heading Text</mat-card-title>
@@ -71,7 +71,8 @@
                     Vacation
                   </span>
                 </mat-card-content>
-              </mat-card>
+              </mat-card>-->
+              <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>
           </mat-grid-list>
         </div>

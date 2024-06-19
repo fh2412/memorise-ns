@@ -21,6 +21,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 
 const routes: Routes = [
   {
@@ -33,7 +34,8 @@ const routes: Routes = [
   declarations: [
     UserProfileComponent,
     LogoutButtonComponent,
-    EditUserDialogComponent
+    EditUserDialogComponent,
+    PinCardComponent
   ],
   imports: [
     CommonModule,

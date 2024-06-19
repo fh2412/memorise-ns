@@ -1,6 +1,4 @@
 .memory-card{
-    box-shadow: 0 0 0 0 transparent;
-    border: 1px solid #e0e0e0;
     border-radius: 12px;
   }
 
@@ -10,4 +8,13 @@
     mat-icon{
       margin-right: 3px;
     }
+  }
+
+  .memory-card-empty{
+    background-color: rgba(209, 209, 209, 0.534);
+    border-radius: 12px;
+    height: 95%;
+    text-align: center;
+    justify-content: center;
+    font-style: italic;
   }

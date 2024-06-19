@@ -57,21 +57,7 @@
             <button mat-stroked-button>Customize your pins</button>
           </div>
           <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pin_memories">
-            <mat-grid-tile *ngFor="let memory of pin_memories">
-              <!--<mat-card class="memory-card">
-                <mat-card-content>
-                  <mat-card-title-group>
-                    <mat-card-title>Heading Text</mat-card-title>
-                    <mat-chip color="primary">Public</mat-chip>
-                  </mat-card-title-group>
-                  <mat-card-subtitle>This is the description of the memory in a short</mat-card-subtitle>
-                  <br>
-                  <span class="tag">
-                    <mat-icon color="primary">circle</mat-icon>
-                    Vacation
-                  </span>
-                </mat-card-content>
-              </mat-card>-->
+            <mat-grid-tile *ngFor="let memory of getMemoriesToDisplay()">
               <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>
           </mat-grid-list>

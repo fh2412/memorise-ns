@@ -117,6 +117,15 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  getMemoriesToDisplay() {
+    const displayedMemories = [...this.pin_memories];
+    // Fill remaining slots with placeholder objects
+    for (let i = displayedMemories.length; i < 4; i++) {
+      displayedMemories.push({ title: '', description: '', type: '', stars: 0 });
+    }
+    return displayedMemories;
+  }
+
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action);
   }

@@ -1,4 +1,4 @@
-<mat-card class="memory-card">
+<mat-card class="memory-card" appearance="outlined" *ngIf="memory && memory.title !== ''">
     <mat-card-content>
       <mat-card-title-group>
         <mat-card-title>{{memory.title}}</mat-card-title>
@@ -11,4 +11,8 @@
         Vacation
       </span>
     </mat-card-content>
+</mat-card>
+
+<mat-card class="memory-card-empty" appearance="outlined" *ngIf="memory && memory.title === ''">
+    <p>Add a favorite memory!</p>
 </mat-card>

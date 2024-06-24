@@ -26,6 +26,10 @@ export class MemoryService {
     return this.http.get<any>(`${this.apiUrl}/memories/getAddedMemories/${user_id}`);
   }
 
+  getAllMemories(user_id: string) {
+    return this.http.get<any>(`${this.apiUrl}/memories/allMemories/${user_id}`);
+  }
+
   getMemoryTitlePictureUrl(memoryId: string): Promise<string> {
     const path = `memories/${memoryId}/picture_1.jpg`;
     const ref = this.storage.ref(path);

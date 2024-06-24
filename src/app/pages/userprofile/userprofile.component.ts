@@ -10,6 +10,7 @@ import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-
 import { FileUploadService } from '../../services/file-upload.service';
 import { DatePipe } from '@angular/common';
 import { PinnedDialogComponent } from '../../components/_dialogs/pinned-dialog/pinned-dialog.component';
+import { MemoryService } from '../../services/memory.service';
 
 @Component({
   selector: 'app-userprofile',
@@ -22,12 +23,10 @@ export class UserProfileComponent implements OnInit {
   loggedInUserId: any;
   pin_memories = [
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
-    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
-    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 },
-    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8 }
   ];
+  all_memories = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe,) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe,) {
     
   }
 
@@ -35,6 +34,7 @@ export class UserProfileComponent implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('userId');
     this.loggedInUserId = this.userService.getLoggedInUserId();
     this.getPinnedMemories();
+    this.getAllMemories();
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
@@ -118,6 +118,15 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  getAllMemories(){
+    this.memoryService.getAllMemories(this.userId)
+      .subscribe(memories => {
+        this.all_memories = memories;
+      }, error => {
+        console.error('Error fetching favorite memories:', error);
+      });
+  }
+
   getMemoriesToDisplay() {
     const displayedMemories = [...this.pin_memories];
     // Fill remaining slots with placeholder objects
@@ -162,7 +171,7 @@ export class UserProfileComponent implements OnInit {
   openPinsDialog(): void {
     const dialogRef = this.dialog.open(PinnedDialogComponent, {
       width: '40%',
-      data: {memories: this.pin_memories, pinned: this.pin_memories},
+      data: {memories: this.all_memories, pinned: this.pin_memories},
     });    
   }
   

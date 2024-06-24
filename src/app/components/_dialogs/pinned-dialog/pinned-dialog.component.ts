@@ -21,11 +21,22 @@ export class PinnedDialogComponent {
 
   constructor(
     public dialogRef: MatDialogRef<PinnedDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { memories: Memory[], pinned: Memory[] }
+    @Inject(MAT_DIALOG_DATA) public data: { memories: any[], pinned: any[] }
   ) {
-    this.favoriteMemories = this.data.pinned;
-    this.allMemories = this.data.memories;
+    this.favoriteMemories = this.data.pinned.map(memory => ({
+      name: memory.title,
+      id: memory.memory_id,
+      isFavorite: true,
+    }));
+    this.allMemories = this.data.memories.map(memory => ({
+      name: memory.title,
+      id: memory.memoryId,
+      isFavorite: false,
+    }));
     this.selectedCount = this.favoriteMemories.length;
+    console.log("fav", this.favoriteMemories);
+    console.log("all", this.allMemories);
+
   }
 
   updateSearch(value: any) {
@@ -34,9 +45,9 @@ export class PinnedDialogComponent {
     }
   }
 
-  updateSelection(memory: Memory, event: Event) {
-    const checkbox = event.target as HTMLInputElement;
-    memory.isFavorite = checkbox.checked;
+  updateSelection(memory: Memory, event: any) {
+    console.log(memory, event.checked);
+    memory.isFavorite = event.checked;
 
     if (memory.isFavorite) {
       this.favoriteMemories.push(memory);

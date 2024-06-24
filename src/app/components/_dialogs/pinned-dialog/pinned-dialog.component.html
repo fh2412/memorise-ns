@@ -5,7 +5,6 @@
 <h2>Favorite Memories</h2>
 <mat-list *ngIf="favoriteMemories.length > 0">
   <mat-list-item *ngFor="let memory of favoriteMemories">
-    <mat-icon mat-list-icon>star</mat-icon>
     <mat-checkbox [(ngModel)]="memory.isFavorite" (change)="updateSelection(memory, $event)">
       {{ memory.name }}
     </mat-checkbox>
@@ -22,7 +21,6 @@
 
 <mat-list *ngIf="allMemories.length > 0">
   <mat-list-item *ngFor="let memory of allMemories">
-    <mat-icon mat-list-icon>star_outline</mat-icon>
     <mat-checkbox [(ngModel)]="memory.isFavorite" (change)="updateSelection(memory, $event)">
       {{ memory.name }}
     </mat-checkbox>

@@ -35,6 +35,7 @@ import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dial
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.component';
 import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinned-dialog.component';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinne
     MatProgressBarModule,
     GoogleMapsModule,
     FriendsPreviewModule,
+    MatCheckboxModule
   ],
   providers: [ provideNativeDateAdapter(), { provide: DateAdapter, useClass: MatNativeDateModule },],
   bootstrap: [AppComponent]

@@ -54,7 +54,7 @@
         <div style="margin-top: 2rem;">
           <div class="level">
             <h3 class="title is-4 level-left">Pinned Memories</h3>
-            <button mat-stroked-button>Customize your pins</button>
+            <button mat-stroked-button (click)="openPinsDialog()">Customize your pins</button>
           </div>
           <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pin_memories">
             <mat-grid-tile *ngFor="let memory of getMemoriesToDisplay()">

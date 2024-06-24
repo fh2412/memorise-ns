@@ -9,6 +9,7 @@ import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dia
 import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-password-dialog/change-password-dialog.component';
 import { FileUploadService } from '../../services/file-upload.service';
 import { DatePipe } from '@angular/common';
+import { PinnedDialogComponent } from '../../components/_dialogs/pinned-dialog/pinned-dialog.component';
 
 @Component({
   selector: 'app-userprofile',
@@ -156,6 +157,13 @@ export class UserProfileComponent implements OnInit {
         );
       }
     });
+  }
+
+  openPinsDialog(): void {
+    const dialogRef = this.dialog.open(PinnedDialogComponent, {
+      width: '40%',
+      data: {memories: this.pin_memories, pinned: this.pin_memories},
+    });    
   }
   
   openPassowrdChangeDialog(): void {

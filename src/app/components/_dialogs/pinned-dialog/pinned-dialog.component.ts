@@ -3,7 +3,8 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface Memory {
   name: string;
-  selected: boolean;
+  id: number;
+  isFavorite: boolean;
 }
 
 @Component({
@@ -12,28 +13,63 @@ export interface Memory {
   styleUrl: './pinned-dialog.component.scss'
 })
 export class PinnedDialogComponent {
-  memories: Memory[];
+  favoriteMemories: Memory[] = [];
+  allMemories: Memory[] = [];
   searchText = '';
   selectableCount = 4;
   selectedCount = 0;
 
   constructor(
     public dialogRef: MatDialogRef<PinnedDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { memories: Memory[] }
+    @Inject(MAT_DIALOG_DATA) public data: { memories: Memory[], pinned: Memory[] }
   ) {
-    this.memories = this.data.memories.map(memory => ({ ...memory, selected: memory.selected }));
-    this.selectedCount = this.memories.filter(memory => memory.selected).length;
+    this.favoriteMemories = this.data.pinned;
+    this.allMemories = this.data.memories;
+    this.selectedCount = this.favoriteMemories.length;
+  }
+
+  updateSearch(value: any) {
+    if(value){
+      this.searchText = value.target.value;
+    }
   }
 
   updateSelection(memory: Memory, event: Event) {
     const checkbox = event.target as HTMLInputElement;
-    memory.selected = checkbox.checked;
-    this.selectedCount = this.memories.filter(memory => memory.selected).length;
+    memory.isFavorite = checkbox.checked;
+
+    if (memory.isFavorite) {
+      this.favoriteMemories.push(memory);
+      this.removeFromAllMemories(memory);
+    } else {
+      this.removeFromFavoriteMemories(memory);
+      this.addAllMemories(memory);
+    }
+
+    this.selectedCount = this.favoriteMemories.length;
     this.updateSaveButton();
   }
 
-  updateSearch(value: string) {
-    this.searchText = value;
+  removeFromFavoriteMemories(memory: Memory) {
+    const index = this.favoriteMemories.findIndex(m => m.id === memory.id);
+    if (index > -1) {
+      this.favoriteMemories.splice(index, 1);
+    }
+  }
+
+  removeFromAllMemories(memory: Memory) {
+    const index = this.allMemories.findIndex(m => m.id === memory.id);
+    if (index > -1) {
+      this.allMemories.splice(index, 1);
+    }
+  }
+
+  addAllMemories(memory: Memory) {
+    this.allMemories.push(memory);
+  }
+
+  getRemainingSelections() {
+    return this.selectableCount - this.selectedCount;
   }
 
   updateSaveButton() {
@@ -41,14 +77,11 @@ export class PinnedDialogComponent {
   }
 
   hasChanges() {
-    return JSON.stringify(this.data.memories) !== JSON.stringify(this.memories);
+    return this.favoriteMemories.some(memory => !memory.isFavorite) ||
+           this.allMemories.some(memory => memory.isFavorite);
   }
 
   onSave() {
-    this.dialogRef.close(this.memories);
-  }
-
-  getRemainingSelections() {
-    return this.selectableCount - this.selectedCount;
+    this.dialogRef.close(this.favoriteMemories);
   }
 }

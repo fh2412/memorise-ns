@@ -15,15 +15,22 @@ export interface Memory {
 export class PinnedDialogComponent {
   favoriteMemories: Memory[] = [];
   allMemories: Memory[] = [];
+  initFavoriteMemories: Memory[] = [];
   searchText = '';
   selectableCount = 4;
   selectedCount = 0;
+  hasChangesBool: boolean = false;
 
   constructor(
     public dialogRef: MatDialogRef<PinnedDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { memories: any[], pinned: any[] }
   ) {
     this.favoriteMemories = this.data.pinned.map(memory => ({
+      name: memory.title,
+      id: memory.memory_id,
+      isFavorite: true,
+    }));
+    this.initFavoriteMemories = this.data.pinned.map(memory => ({
       name: memory.title,
       id: memory.memory_id,
       isFavorite: true,
@@ -56,6 +63,7 @@ export class PinnedDialogComponent {
     }
     this.updateSaveButton();
     this.selectedCount = this.favoriteMemories.length;
+    console.log(this.initFavoriteMemories, this.favoriteMemories);
   }
 
   removeFromFavoriteMemories(memory: Memory) {
@@ -81,12 +89,12 @@ export class PinnedDialogComponent {
   }
 
   updateSaveButton() {
-    this.dialogRef.disableClose = !this.hasChanges();
+    this.hasChangesBool = !this.hasChanges();
   }
 
   hasChanges() {
-    return this.favoriteMemories.some(memory => !memory.isFavorite) ||
-      this.allMemories.some(memory => memory.isFavorite);
+    console.log(this.initFavoriteMemories == this.favoriteMemories);
+    return this.initFavoriteMemories == this.favoriteMemories;
   }
 
   onSave() {

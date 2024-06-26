@@ -21,7 +21,7 @@
 
 <mat-list *ngIf="allMemories.length > 0">
   <mat-list-item *ngFor="let memory of allMemories">
-    <mat-checkbox [(ngModel)]="memory.isFavorite" (change)="updateSelection(memory, $event)">
+    <mat-checkbox [(ngModel)]="memory.isFavorite" [disabled]="selectedCount >= selectableCount && !memory.isFavorite" (change)="updateSelection(memory, $event)">
       {{ memory.name }}
     </mat-checkbox>
   </mat-list-item>

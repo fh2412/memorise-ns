@@ -34,31 +34,25 @@ export class PinnedDialogComponent {
       isFavorite: false,
     }));
     this.selectedCount = this.favoriteMemories.length;
-    console.log("fav", this.favoriteMemories);
-    console.log("all", this.allMemories);
-
   }
 
   updateSearch(value: any) {
-    if(value){
+    if (value) {
       this.searchText = value.target.value;
     }
   }
 
   updateSelection(memory: Memory, event: any) {
-    console.log(memory, event.checked);
     memory.isFavorite = event.checked;
-
-    if (memory.isFavorite) {
+    if (memory.isFavorite && this.selectedCount < 4) {
       this.favoriteMemories.push(memory);
       this.removeFromAllMemories(memory);
     } else {
       this.removeFromFavoriteMemories(memory);
       this.addAllMemories(memory);
     }
-
-    this.selectedCount = this.favoriteMemories.length;
     this.updateSaveButton();
+    this.selectedCount = this.favoriteMemories.length;
   }
 
   removeFromFavoriteMemories(memory: Memory) {
@@ -89,7 +83,7 @@ export class PinnedDialogComponent {
 
   hasChanges() {
     return this.favoriteMemories.some(memory => !memory.isFavorite) ||
-           this.allMemories.some(memory => memory.isFavorite);
+      this.allMemories.some(memory => memory.isFavorite);
   }
 
   onSave() {

@@ -33,6 +33,9 @@ export class PinnedDialogComponent {
       id: memory.memoryId,
       isFavorite: false,
     }));
+    this.allMemories = this.allMemories.filter(
+      memory => !this.favoriteMemories.some(favorite => favorite.id === memory.id)
+    );
     this.selectedCount = this.favoriteMemories.length;
   }
 

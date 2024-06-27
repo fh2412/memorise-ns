@@ -63,7 +63,6 @@ export class PinnedDialogComponent {
     }
     this.updateSaveButton();
     this.selectedCount = this.favoriteMemories.length;
-    console.log(this.initFavoriteMemories, this.favoriteMemories);
   }
 
   removeFromFavoriteMemories(memory: Memory) {
@@ -93,7 +92,7 @@ export class PinnedDialogComponent {
   }
 
   hasChanges() {
-    return JSON.stringify(this.favoriteMemories) !== JSON.stringify(this.initFavoriteMemories);
+    return JSON.stringify(this.favoriteMemories) == JSON.stringify(this.initFavoriteMemories);
   }
 
   onSave() {

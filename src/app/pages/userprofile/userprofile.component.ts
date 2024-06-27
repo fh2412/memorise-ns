@@ -173,6 +173,17 @@ export class UserProfileComponent implements OnInit {
       width: '40%',
       data: {memories: this.all_memories, pinned: this.pin_memories},
     }); 
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('Dialog was closed with:', result, this.pin_memories.length);
+      for (let index = 0; index < 4; index++) {
+        if(index<this.pin_memories.length){
+          console.log("update", this.pin_memories[index], "to", result[index]);
+        }
+        else {
+          console.log("insert", result[index]);
+        }
+      }
+    });
   }
   
   openPassowrdChangeDialog(): void {

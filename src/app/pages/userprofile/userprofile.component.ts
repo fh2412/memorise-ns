@@ -172,7 +172,7 @@ export class UserProfileComponent implements OnInit {
     const dialogRef = this.dialog.open(PinnedDialogComponent, {
       width: '40%',
       data: {memories: this.all_memories, pinned: this.pin_memories},
-    });    
+    }); 
   }
   
   openPassowrdChangeDialog(): void {

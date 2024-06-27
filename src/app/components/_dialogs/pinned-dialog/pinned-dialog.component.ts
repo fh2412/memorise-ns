@@ -93,8 +93,7 @@ export class PinnedDialogComponent {
   }
 
   hasChanges() {
-    console.log(this.initFavoriteMemories == this.favoriteMemories);
-    return this.initFavoriteMemories == this.favoriteMemories;
+    return JSON.stringify(this.favoriteMemories) !== JSON.stringify(this.initFavoriteMemories);
   }
 
   onSave() {

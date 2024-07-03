@@ -17,7 +17,7 @@
           <span>{{user.username}}</span> - <span>{{user.gender}}</span>
         </mat-card-subtitle>
         <button mat-stroked-button class="editbutton" (click)="openEditDialog()"
-          *ngIf="this.userId==this.loggedInUserId">Edit Profile</button>
+          *ngIf="this.userId==this.loggedInUserId">{{buttonText}}</button>
         <button mat-stroked-button class="editbutton" (click)="openEditDialog()"
           *ngIf="this.userId!=this.loggedInUserId">Friendstatus</button>
         <mat-list class="list-wrapper">

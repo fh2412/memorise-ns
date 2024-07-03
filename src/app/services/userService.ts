@@ -34,11 +34,6 @@ export class UserService {
     return this.http.get<any>(`${this.apiUrl}/email/${email}`);
   }
 
-  getPinnedMemories(userId: string): Observable<any[]> {
-    const url = `${this.apiUrl}/${userId}/favourite-memories`;
-    return this.http.get<any[]>(url);
-  }
-
   updateUser(userId: string, userData: any): Observable<any> {
     const url = `${this.apiUrl}/${userId}`;
     return this.http.put<any>(url, userData);

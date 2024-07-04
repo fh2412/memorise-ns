@@ -16,10 +16,7 @@
         <mat-card-subtitle>
           <span>{{user.username}}</span> - <span>{{user.gender}}</span>
         </mat-card-subtitle>
-        <button mat-stroked-button class="editbutton" (click)="openEditDialog()"
-          *ngIf="this.userId==this.loggedInUserId">{{buttonText}}</button>
-        <button mat-stroked-button class="editbutton" (click)="openEditDialog()"
-          *ngIf="this.userId!=this.loggedInUserId">Friendstatus</button>
+        <button mat-stroked-button class="editbutton" (click)="openEditDialog()">{{buttonText}}</button>
         <mat-list class="list-wrapper">
           <mat-list-item>
             <mat-icon matListItemIcon>location_on</mat-icon>

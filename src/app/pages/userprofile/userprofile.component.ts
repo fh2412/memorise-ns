@@ -41,9 +41,7 @@ export class UserProfileComponent implements OnInit {
       (response) => {
         this.user = response;
         this.user.formatted_dob = this.datePipe.transform(this.user.dob, 'dd/MM/yyyy');
-        if (this.router.url.startsWith('/invite')) {
-          this.checkFriendshipStatus();
-        }
+        this.checkFriendshipStatus();
       },
       (error) => {
         console.error('Error fetching user:', error);
@@ -87,28 +85,43 @@ export class UserProfileComponent implements OnInit {
   }
 
   checkFriendshipStatus() {
-    this.friedService.getFriendsStatus(this.loggedInUserId, this.userId).subscribe(
-      (response) => {
-        const result = response.toString();
-        console.log(response);
-        if (result == 'empty') {
-          this.showConfirmDialog('Offer Friendship', 'Do you want to add ' + this.user.name + ' as your friend?');
+    if (this.loggedInUserId == this.userId) {
+      this.buttonText = "Edit Profile";
+    }
+    else {
+      this.friedService.getFriendsStatus(this.loggedInUserId, this.userId).subscribe(
+        (response) => {
+          const result = response.toString();
+          if (result == 'empty') {
+            this.buttonText = 'Offer Friendship';
+            if (this.router.url.startsWith('/invite')) {
+              this.showConfirmDialog('Offer Friendship', 'Do you want to add ' + this.user.name + ' as your friend?');
+            }
+          }
+          else if (result == 'waiting') {
+            this.buttonText = 'Accept Friend';
+            if (this.router.url.startsWith('/invite')) {
+              this.showConfirmDialog('Accept Friend Request', 'Do you want to accept ' + this.user.name + ' as your friend?');
+            }
+          }
+          else if (result == 'accepted') {
+            this.buttonText = 'Remove Friend';
+            if (this.router.url.startsWith('/invite')) {
+              this.openSnackBar('You guys are already friends!', 'Great!');
+            }
+          }
+          else if (result == 'pending') {
+            this.buttonText = 'Cancle Request';
+            if (this.router.url.startsWith('/invite')) {
+              this.openSnackBar('You already send this user a friend request!', 'Got it!');
+            }
+          }
+        },
+        (error) => {
+          console.error('Error fetching user:', error);
         }
-        else if (result == 'waiting') {
-          this.showConfirmDialog('Accept Friend Request', 'Do you want to accept ' + this.user.name + ' as your friend?');
-        }
-        else if (result == 'accepted') {
-          this.openSnackBar('You guys are already friends!', 'Great!');
-        }
-        else if (result == 'pending') {
-          this.openSnackBar('You already send this user a friend request!', 'Got it!');
-        }
-      },
-      (error) => {
-        console.error('Error fetching user:', error);
-      }
-    );
-
+      );
+    }
   }
 
   getPinnedMemories() {
@@ -214,7 +227,7 @@ export class UserProfileComponent implements OnInit {
   comparePinnedMemories(pinMemories: any[], result: any[]) {
     const pinMemorySet = new Set(pinMemories.map(memory => memory.memory_id)); // Set of IDs from pin_memories
     const resultSet = new Set(result.map(item => item.id)); // Set of IDs from result
-  
+
     // Find IDs in pin_memories but not in result (for deletion)
     const deletedIds = [...pinMemorySet].filter(id => !resultSet.has(id));
     if (deletedIds.length) {
@@ -223,7 +236,7 @@ export class UserProfileComponent implements OnInit {
         this.deletePinnedMemoryEntry(id);
       });
     }
-  
+
     // Find IDs in result but not in pin_memories (for insertion)
     const insertedIds = [...resultSet].filter(id => !pinMemorySet.has(id));
     if (insertedIds.length) {

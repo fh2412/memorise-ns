@@ -120,21 +120,6 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
-  updatePinnedMemory(memoryIdToUpdate: number, updatedMemoryId: number) {
-    this.pinnedService.updatePinnedMemory(this.userId, memoryIdToUpdate, updatedMemoryId)
-      .subscribe(
-        response => {
-          // Handle successful update
-          console.log('Favorite memory updated successfully!');
-          // Update UI or data as needed
-        },
-        error => {
-          console.error('Error updating favorite memory:', error);
-          // Handle errors (e.g., display error message to user)
-        }
-      );
-  }
-
   createPinnedMemoryEntry(memoryId: number) {
     this.pinnedService.createPinnedMemory(this.userId, memoryId)
       .subscribe(
@@ -222,64 +207,31 @@ export class UserProfileComponent implements OnInit {
       data: { memories: this.all_memories, pinned: this.pin_memories },
     });
     dialogRef.afterClosed().subscribe(async result => {
-      console.log('Dialog was closed with:', result);
-      const updatePromises = [];
-      if (result.length >= this.pin_memories.length) {
-        for (let index = 0; index < result.length; index++) {
-          if (index < this.pin_memories.length) {
-            if (this.pin_memories[index].memory_id != result[index].id) {
-              console.log("update", this.pin_memories[index].memory_id, "to", result[index].id);
-              updatePromises.push(this.updatePinnedMemory(this.pin_memories[index].memory_id, result[index].id));
-              //await this.updatePinnedMemory(this.pin_memories[index].memory_id, result[index].id);
-            }
-            else {
-              console.log("skipped: ", result[index]);
-            }
-          }
-          else {
-            console.log("insert", result[index]);
-            //await this.createPinnedMemoryEntry(result[index].id);
-            updatePromises.push(this.createPinnedMemoryEntry(result[index].id));
-          }
-        }
-      }
-      else{
-        console.log("less!");
-        for (let index = 0; index < this.pin_memories.length; index++) {
-          if (index < result.length) {
-            if (this.pin_memories[index].memory_id != result[index].id) {
-              console.log("update", this.pin_memories[index].memory_id, "to", result[index]);
-              updatePromises.push(this.updatePinnedMemory(this.pin_memories[index].memory_id, result[index].id));
-              //await this.updatePinnedMemory(this.pin_memories[index].memory_id, result[index].id);
-            }
-            else {
-              console.log("skipped: ", result[index]);
-            }
-          }
-          else {
-            console.log("delete", this.pin_memories[index].memory_id);
-            updatePromises.push(this.deletePinnedMemoryEntry(this.pin_memories[index].memory_id));
-            //await this.deletePinnedMemoryEntry(this.pin_memories[index].memory_id);
-          }
-        }
-      }
-      if (updatePromises.length > 0) {
-        Promise.all(updatePromises)
-          .then(() => {
-            // All updates/inserts/deletes are complete
-            console.log('All pinned memory updates finished!');
-            // Update UI or perform other actions after successful completion
-          })
-          .catch(error => {
-            console.error('Error during pinned memory updates:', error);
-            // Handle errors gracefully
-          });
-      } else {
-        console.log('No changes to pinned memories detected.');
-        // Handle the case where no updates were needed
-      }
-      
+      await this.comparePinnedMemories(this.pin_memories, result);
     });
+  }
+
+  comparePinnedMemories(pinMemories: any[], result: any[]) {
+    const pinMemorySet = new Set(pinMemories.map(memory => memory.memory_id)); // Set of IDs from pin_memories
+    const resultSet = new Set(result.map(item => item.id)); // Set of IDs from result
+  
+    // Find IDs in pin_memories but not in result (for deletion)
+    const deletedIds = [...pinMemorySet].filter(id => !resultSet.has(id));
+    if (deletedIds.length) {
+      console.log('Delete:', deletedIds.join(', '));
+      deletedIds.forEach(id => {
+        this.deletePinnedMemoryEntry(id);
+      });
+    }
+  
+    // Find IDs in result but not in pin_memories (for insertion)
+    const insertedIds = [...resultSet].filter(id => !pinMemorySet.has(id));
+    if (insertedIds.length) {
+      console.log('Insert:', insertedIds.join(', '));
+      insertedIds.forEach(id => {
+        this.createPinnedMemoryEntry(id);
+      });
+    }
   }
 
   openPassowrdChangeDialog(): void {

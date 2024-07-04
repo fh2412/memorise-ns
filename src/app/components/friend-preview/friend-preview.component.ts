@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
+import { ManageFriendsService } from '../../services/friend-manage.service';
 
 @Component({
   selector: 'app-friend-preview',
@@ -24,76 +25,29 @@ export class FriendPreviewComponent {
   @Output() buttonClicked = new EventEmitter<void>();
   loggedInUserId: any;
 
-  constructor(private friendshipService: FriendsService, private userService: UserService) {}
+  constructor(private userService: UserService, private manageFriedService: ManageFriendsService) {}
 
   async requestFriend(friend: any, methode: string, req: boolean) {
-    console.log(friend);
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if(methode == "Remove from Memory"){
       this.onButtonClick();
     }
     else if(methode == "Accept"){
-      this.acceptFriendRequest(friend.user_id, this.loggedInUserId);
-      console.log("Accept");
+      this.manageFriedService.acceptFriendRequest(friend.user_id, this.loggedInUserId);
     }
     else if(methode == "Remove" && req == false){
-      this.removeFriend(friend.user_id, this.loggedInUserId);
-      console.log("Remove");
+      this.manageFriedService.removeFriend(friend.user_id, this.loggedInUserId);
     }
     else if(methode == "Remove" && req == true){
-      this.addFriendRequest(friend.user_id, this.loggedInUserId);
+      this.manageFriedService.addFriendRequest(friend.user_id, this.loggedInUserId);
     }
     else if(methode == "Request" && req == true){
-      this.removeFriend(friend.user_id, this.loggedInUserId);
+      this.manageFriedService.removeFriend(friend.user_id, this.loggedInUserId);
     }
     else if(methode == "Request" && req == false){
-      this.sendFriendRequest(friend.user_id, this.loggedInUserId);
+      this.manageFriedService.sendFriendRequest(friend.user_id, this.loggedInUserId);
     }
     this.requested = !this.requested;
-  }
-
-  acceptFriendRequest(userId1: string, userId2: string) {
-    this.friendshipService.acceptFriendRequest(userId1, userId2).subscribe(
-      response => {
-        console.log('Friend request accepted successfully', response);
-      },
-      error => {
-        console.error('Error accepting friend request', error);
-      }
-    );
-  }
-
-  removeFriend(userId1: string, userId2: string) {
-    this.friendshipService.removeFriend(userId1, userId2).subscribe(
-      response => {
-        console.log('Friend removed successfully', response);
-      },
-      error => {
-        console.error('Error removing friend', error);
-      }
-    );
-  }
-
-  sendFriendRequest(receiverId: string, senderId: string) {
-    this.friendshipService.sendFriendRequest(senderId, receiverId).subscribe(
-      response => {
-        console.log('Friend request sent successfully', response);
-      },
-      error => {
-        console.error('Error sending friend request', error);
-      }
-    );
-  }
-
-  addFriendRequest(receiverId: string, senderId: string) {
-    this.friendshipService.addFriendRequest(senderId, receiverId).subscribe(
-      response => {
-        console.log('Friend request sent successfully', response);
-      },
-      error => {
-        console.error('Error sending friend request', error);
-      }
-    );
   }
 
   onButtonClick(): void {

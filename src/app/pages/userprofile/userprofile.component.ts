@@ -12,6 +12,7 @@ import { DatePipe } from '@angular/common';
 import { PinnedDialogComponent } from '../../components/_dialogs/pinned-dialog/pinned-dialog.component';
 import { MemoryService } from '../../services/memory.service';
 import { pinnedMemoryService } from '../../services/pinnedMemorService';
+import { ManageFriendsService } from '../../services/friend-manage.service';
 
 @Component({
   selector: 'app-userprofile',
@@ -28,7 +29,7 @@ export class UserProfileComponent implements OnInit {
   ];
   all_memories = [];
 
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private pinnedService: pinnedMemoryService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe,) {
+  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private pinnedService: pinnedMemoryService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe, private manageFriendService: ManageFriendsService) {
 
   }
 
@@ -163,7 +164,6 @@ export class UserProfileComponent implements OnInit {
       );
   }
 
-
   getAllMemories() {
     this.memoryService.getAllMemories(this.userId)
       .subscribe(memories => {
@@ -184,6 +184,27 @@ export class UserProfileComponent implements OnInit {
 
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action);
+  }
+
+  profileButtonClick(): void {
+    if(this.buttonText=='Edit Profile'){
+      this.openEditDialog();
+    }
+    else if(this.buttonText=='Offer Friendship'){
+      this.manageFriendService.sendFriendRequest(this.userId, this.loggedInUserId);
+      this.openSnackBar('Friend Request send sucessfully!', 'Great!');
+      this.buttonText='Cancle Request';
+    }
+    else if(this.buttonText=='Accept Friend'){
+      this.manageFriendService.acceptFriendRequest(this.userId, this.loggedInUserId);
+      this.openSnackBar('You sucessfully added this user as a Friend!', 'We go memoriesing!');
+      this.buttonText='Remove Friend';
+    }
+    else if(this.buttonText=='Remove Friend' || this.buttonText=='Cancle Request'){
+      this.manageFriendService.removeFriend(this.userId, this.loggedInUserId);
+      this.openSnackBar('You ended this Friendship', 'Got it!');
+      this.buttonText='Offer Friendship';
+    }
   }
 
   openEditDialog(): void {

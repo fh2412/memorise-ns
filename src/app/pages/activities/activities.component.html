@@ -1,7 +1,15 @@
-<div class="coming-soon">
-    <div class="image-div">
-        <img src="/assets/img/coming.jpg" class="image">
-        <p><span>ACITVITIES</span> will be introduced to <span>MEMORISE</span> soon! So stay tuned and keep building these memories.</p>
+<div class="wrapper">
+    <div class="sticky-sidebar">
+        <app-my-activity-information></app-my-activity-information>
     </div>
-</div>
+    <div class="main">
+      <div class="header">
+        <h1>ACITVITIES</h1>
+        <button mat-raised-button color="accent" class="fixed-fab" (click)="addActivity()">
+          <mat-icon class="add-icon">add</mat-icon>
+          Add Activity
+        </button>
+      </div>
+    </div>
+  </div>
   

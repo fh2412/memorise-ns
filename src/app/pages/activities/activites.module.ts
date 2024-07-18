@@ -12,6 +12,7 @@ import {MatInputModule} from '@angular/material/input';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { FilterbarComponent } from '../../components/filterbar/filterbar.component';
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
+import { MyActivityInformationComponent } from '../../components/my-activity-information/my-activity-information.component';
 
 const routes: Routes = [
   {
@@ -24,7 +25,8 @@ const routes: Routes = [
   declarations: [
     ActivitiesComponent,
     ChooseLocationComponent,
-    FilterbarComponent
+    FilterbarComponent,
+    MyActivityInformationComponent
   ],
   imports: [
     CommonModule,

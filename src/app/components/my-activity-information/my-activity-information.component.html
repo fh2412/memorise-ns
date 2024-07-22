@@ -12,19 +12,19 @@
         <mat-list class="list-wrapper">
             <mat-list-item>
               <mat-icon matListItemIcon>apartment</mat-icon>
-              <div matListItemTitle>Company Name:</div>
+              <div matListItemTitle>{{company.name}}</div>
             </mat-list-item>
             <mat-list-item>
               <mat-icon matListItemIcon>call</mat-icon>
-              <div matListItemTitle>Phone:</div>
+              <div matListItemTitle>{{company.phone}}</div>
             </mat-list-item>
             <mat-list-item>
               <mat-icon matListItemIcon>mail</mat-icon>
-              <div matListItemTitle>Email:</div>
+              <div matListItemTitle>{{company.email}}</div>
             </mat-list-item>
             <mat-list-item>
               <mat-icon matListItemIcon>language</mat-icon>
-              <div matListItemTitle>Website:</div>
+              <div matListItemTitle>{{company.website}}</div>
             </mat-list-item>
           </mat-list>
       <button mat-stroked-button class="editbutton" (click)="navigateToUserActivities()">Edit Details</button>

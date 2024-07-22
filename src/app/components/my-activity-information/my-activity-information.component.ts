@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import { UserService } from '../../services/userService';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-my-activity-information',
@@ -7,28 +6,8 @@ import { UserService } from '../../services/userService';
   styleUrl: './my-activity-information.component.scss'
 })
 export class MyActivityInformationComponent {
-  user: any;
-  loggedInUserId: any;
-  constructor(private userService: UserService) {
-
-  }
-  
-  async ngOnInit() {
-    const userId = this.userService.getLoggedInUserId();
-    this.loggedInUserId = this.userService.getLoggedInUserId();
-    if(userId){
-      this.userService.getUser(userId).subscribe(
-        (response) => {
-          this.user = response;
-        },
-        (error) => {
-          console.error('Error fetching user:', error);
-        }
-      );
-    }
-  }
-  getUserInfo(): void {
-  }
+  @Input() user: any;
+  @Input() company: any;
   navigateToUserActivities(): void{
   }
 }

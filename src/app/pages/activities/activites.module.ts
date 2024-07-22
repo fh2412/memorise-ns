@@ -13,6 +13,7 @@ import { ChooseLocationComponent } from '../../components/_dialogs/choose-locati
 import { FilterbarComponent } from '../../components/filterbar/filterbar.component';
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import { MyActivityInformationComponent } from '../../components/my-activity-information/my-activity-information.component';
+import { MatListModule } from '@angular/material/list';
 
 const routes: Routes = [
   {
@@ -41,6 +42,7 @@ const routes: Routes = [
     MatCheckboxModule,
     FormsModule,
     ReactiveFormsModule,
+    MatListModule
   ]
 })
 export class ActivitiesModule { }

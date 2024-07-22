@@ -5,7 +5,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
   }
-  
+
 button{
   margin-top: 3px;
 }
@@ -13,3 +13,6 @@ button{
 .editbutton{
   width: 100%;
 }
+.list-wrapper mat-list-item {
+    height: 34px;
+  }

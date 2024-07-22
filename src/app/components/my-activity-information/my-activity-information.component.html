@@ -1,6 +1,32 @@
-<mat-card class="activity-card" *ngIf="userdb">
+<mat-card class="activity-card" *ngIf="user">
     <div class="user-details">
-        <span>some random placeholder text</span>
-      <button mat-stroked-button class="editbutton" (click)="navigateToUserActivities()">View Profile</button>
+        <h3>News</h3>
+        <p>You got ... activities</p>
+        <p>... Memories got created to ...</p>
+      <button mat-stroked-button class="editbutton" (click)="navigateToUserActivities()">View Activities</button>
     </div>
-  </mat-card>
+</mat-card>
+<br>
+<mat-card class="activity-card" *ngIf="user.company_id">
+    <div class="user-details">
+        <mat-list class="list-wrapper">
+            <mat-list-item>
+              <mat-icon matListItemIcon>apartment</mat-icon>
+              <div matListItemTitle>Company Name:</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>call</mat-icon>
+              <div matListItemTitle>Phone:</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>mail</mat-icon>
+              <div matListItemTitle>Email:</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>language</mat-icon>
+              <div matListItemTitle>Website:</div>
+            </mat-list-item>
+          </mat-list>
+      <button mat-stroked-button class="editbutton" (click)="navigateToUserActivities()">Edit Details</button>
+    </div>
+</mat-card>

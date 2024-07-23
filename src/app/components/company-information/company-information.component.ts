@@ -17,9 +17,12 @@ export class CompanyInformationComponent {
   leaveOrDeleteCompany(deleteBool: boolean) {
     if(deleteBool){
       console.log("delete")
+      //router.put('/leave/:id', async (req, res)
+      //router.delete('/delete/:id', async (req, res)
     }
     else{
       console.log("leave")
+      //router.put('/leave/:id', async (req, res)
     }
   }
 }

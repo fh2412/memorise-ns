@@ -1,0 +1,38 @@
+<mat-card appearance="outlined" *ngIf="company">
+    <div class="user-details">
+        <mat-list class="list-wrapper">
+            <mat-list-item>
+                <mat-icon matListItemIcon>apartment</mat-icon>
+                <div matListItemTitle>{{company.name}}</div>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon matListItemIcon>call</mat-icon>
+                <div matListItemTitle>{{company.phone}}</div>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon matListItemIcon>mail</mat-icon>
+                <div matListItemTitle>{{company.email}}</div>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-icon matListItemIcon>language</mat-icon>
+                <div matListItemTitle>{{company.website}}</div>
+            </mat-list-item>
+        </mat-list>
+        <mat-card-actions>
+            <button mat-stroked-button class="editbutton" (click)="changeCompanyDetails()" style="margin-right: 3px;">Edit Details</button>
+            <button mat-stroked-button class="editbutton" (click)="changeCompanyDetails()" color="warn">Leave</button>
+        </mat-card-actions>
+    </div>
+</mat-card>
+<br>
+<mat-card *ngIf="company" appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>No Company</mat-card-title>
+        <mat-card-subtitle>You have not joined a company yet. Do you want to change that?</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions>
+        <button mat-stroked-button class="editbutton" style="margin-right: 3px;"
+            (click)="changeCompanyDetails()">Join</button>
+        <button mat-stroked-button class="editbutton" (click)="changeCompanyDetails()">Create</button>
+    </mat-card-actions>
+</mat-card>

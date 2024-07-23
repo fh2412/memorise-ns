@@ -7,26 +7,3 @@
     </div>
 </mat-card>
 <br>
-<mat-card class="activity-card" *ngIf="user.company_id">
-    <div class="user-details">
-        <mat-list class="list-wrapper">
-            <mat-list-item>
-              <mat-icon matListItemIcon>apartment</mat-icon>
-              <div matListItemTitle>{{company.name}}</div>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-icon matListItemIcon>call</mat-icon>
-              <div matListItemTitle>{{company.phone}}</div>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-icon matListItemIcon>mail</mat-icon>
-              <div matListItemTitle>{{company.email}}</div>
-            </mat-list-item>
-            <mat-list-item>
-              <mat-icon matListItemIcon>language</mat-icon>
-              <div matListItemTitle>{{company.website}}</div>
-            </mat-list-item>
-          </mat-list>
-      <button mat-stroked-button class="editbutton" (click)="navigateToUserActivities()">Edit Details</button>
-    </div>
-</mat-card>

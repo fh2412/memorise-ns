@@ -14,6 +14,7 @@ import { FilterbarComponent } from '../../components/filterbar/filterbar.compone
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import { MyActivityInformationComponent } from '../../components/my-activity-information/my-activity-information.component';
 import { MatListModule } from '@angular/material/list';
+import { CompanyInformationComponent } from '../../components/company-information/company-information.component';
 
 const routes: Routes = [
   {
@@ -27,7 +28,8 @@ const routes: Routes = [
     ActivitiesComponent,
     ChooseLocationComponent,
     FilterbarComponent,
-    MyActivityInformationComponent
+    MyActivityInformationComponent,
+    CompanyInformationComponent
   ],
   imports: [
     CommonModule,

@@ -1,6 +1,7 @@
 <div class="wrapper">
     <div class="sticky-sidebar" *ngIf="user && company">
-        <app-my-activity-information [user]="user" [company]="company"></app-my-activity-information>
+        <app-my-activity-information [user]="user"></app-my-activity-information>
+        <app-company-information [company]="company"></app-company-information>
     </div>
     <div class="main">
       <div class="header">

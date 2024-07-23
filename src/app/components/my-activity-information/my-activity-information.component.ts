@@ -7,7 +7,6 @@ import { Component, Input } from '@angular/core';
 })
 export class MyActivityInformationComponent {
   @Input() user: any;
-  @Input() company: any;
   navigateToUserActivities(): void{
   }
 }

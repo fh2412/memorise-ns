@@ -1,5 +1,5 @@
-<div class="wrapper">
-    <div class="sticky-sidebar" *ngIf="user && company">
+<div class="wrapper" *ngIf="user">
+    <div class="sticky-sidebar">
         <app-my-activity-information [user]="user"></app-my-activity-information>
         <app-company-information [company]="company" [userId]="user.user_id"></app-company-information>
     </div>

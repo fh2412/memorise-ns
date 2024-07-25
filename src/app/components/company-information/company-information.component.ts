@@ -3,6 +3,7 @@ import { companyService } from '../../services/company.service';
 import { error } from 'console';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { CompanyDialogComponent } from '../_dialogs/company-dialog/company-dialog.component';
 
 @Component({
   selector: 'app-company-information',
@@ -65,5 +66,36 @@ export class CompanyInformationComponent {
         console.error('Error deleting User from company: ', error);
       }
     );
+  }
+
+  openEditCreateDialog(): void {
+    const dialogRef = this.dialog.open(CompanyDialogComponent, {
+      width: '300px',
+      data: this.company ? this.company : { name: '', phone: '', email: '', website: '' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        if (this.company) {
+          this.companyService.updateCompany(this.company.id, result).subscribe(
+            response => {
+              console.log('Company updated successfully:', response);
+            },
+            error => {
+              console.error('Error updating company:', error);
+            }
+          );
+        } else {
+          this.companyService.createCompany(result).subscribe(
+            response => {
+              console.log('Company created successfully:', response);
+            },
+            error => {
+              console.error('Error creating company:', error);
+            }
+          );
+        }
+      }
+    });
   }
 }

@@ -36,6 +36,7 @@ import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/con
 import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.component';
 import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinned-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     ConfirmDialogComponent,
     LinkModalComponent,
     PinnedDialogComponent,
+    CompanyDialogComponent,
   ],
   imports: [
     BrowserModule,

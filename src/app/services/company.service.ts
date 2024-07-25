@@ -12,5 +12,13 @@ export class companyService {
   getUserCompany(user_id: string) {
     return this.http.get<any>(`${this.apiUrl}/${user_id}`);
   }
+
+  leaveCompany(user_id: string) {
+    return this.http.put<any>(`${this.apiUrl}/leave/${user_id}`, {});
+  }
+
+  deleteCompany(company_id: string) {
+    return this.http.delete<any>(`${this.apiUrl}/delete/${company_id}`);
+  }
   
 }

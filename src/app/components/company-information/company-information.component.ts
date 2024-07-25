@@ -1,4 +1,6 @@
 import { Component, Input } from '@angular/core';
+import { companyService } from '../../services/company.service';
+import { error } from 'console';
 
 @Component({
   selector: 'app-company-information',
@@ -6,6 +8,8 @@ import { Component, Input } from '@angular/core';
   styleUrl: './company-information.component.scss'
 })
 export class CompanyInformationComponent {
+
+  constructor(private companyService: companyService) {}
 
   @Input() company: any;
   @Input() userId: any;
@@ -15,14 +19,24 @@ export class CompanyInformationComponent {
   }
 
   leaveOrDeleteCompany(deleteBool: boolean) {
-    if(deleteBool){
-      console.log("delete")
-      //router.put('/leave/:id', async (req, res)
-      //router.delete('/delete/:id', async (req, res)
-    }
-    else{
-      console.log("leave")
-      //router.put('/leave/:id', async (req, res)
-    }
+    
+    this.companyService.leaveCompany(this.userId).subscribe(
+      () => {
+        if(deleteBool){
+          console.log("delete")
+          this.companyService.deleteCompany(this.company.id).subscribe(
+            () => {
+              console.log("Company deleted!");
+            },
+            (error: any) => {
+              console.log("could not delete company!: ", error);
+            }
+          )
+        }
+      },
+      (error: any) => {
+        console.error('Error deleting User from company: ', error);
+      }
+    );
   }
 }

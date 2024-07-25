@@ -21,7 +21,7 @@
         <mat-card-actions>
             <button mat-stroked-button class="editbutton" (click)="changeCompanyDetails()" style="margin-right: 3px;"
                 *ngIf="company.owner_id===userId">Edit Details</button>
-            <button mat-stroked-button class="editbutton" (click)="leaveOrDeleteCompany(company.owner_id===userId)" color="warn">
+            <button mat-stroked-button class="editbutton" (click)="onLeaveClick(company.owner_id===userId)" color="warn">
                 {{ company.owner_id === userId ? 'Delete' : 'Leave' }}
             </button>
         </mat-card-actions>

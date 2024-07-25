@@ -30,8 +30,8 @@ export class companyService {
     return this.http.delete<any>(`${this.apiUrl}/delete/${company_id}`);
   }
   
-  createCompany(company: Company): Observable<Company> {
-    return this.http.post<Company>(`${this.apiUrl}/create`, company);
+  createCompany(id: number, company: Company): Observable<Company> {
+    return this.http.post<Company>(`${this.apiUrl}/create/${id}`, company);
   }
 
   updateCompany(id: number, company: Company): Observable<Company> {

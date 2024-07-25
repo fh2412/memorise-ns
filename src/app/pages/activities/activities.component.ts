@@ -20,7 +20,7 @@ export class ActivitiesComponent {
       this.userService.getUser(this.loggedInUserId).subscribe(
         (response) => {
           this.user = response;
-          if(this.user.company_id){
+          if(this.user.company_id){ 
             this.getCompany();
           }
         },
@@ -31,6 +31,7 @@ export class ActivitiesComponent {
     }
   }
   getCompany(): void {
+    console.log(this.company);
     this.companyService.getUserCompany(this.loggedInUserId).subscribe(
       (response) => {
         this.company = response;

@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { companyService } from '../../services/company.service';
-import { error } from 'console';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CompanyDialogComponent } from '../_dialogs/company-dialog/company-dialog.component';
@@ -86,7 +85,7 @@ export class CompanyInformationComponent {
             }
           );
         } else {
-          this.companyService.createCompany(result).subscribe(
+          this.companyService.createCompany(this.userId, result).subscribe(
             response => {
               console.log('Company created successfully:', response);
             },

@@ -73,10 +73,10 @@ export class CompanyInformationComponent {
       data: this.company ? this.company : { name: '', phone: '', email: '', website: '' }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe(async result => {
       if (result) {
         if (this.company) {
-          this.companyService.updateCompany(this.company.id, result).subscribe(
+          await this.companyService.updateCompany(this.company.id, result).subscribe(
             response => {
               console.log('Company updated successfully:', response);
             },
@@ -85,9 +85,9 @@ export class CompanyInformationComponent {
             }
           );
         } else {
-          this.companyService.createCompany(this.userId, result).subscribe(
+          await this.companyService.createCompany(this.userId, result).subscribe(
             response => {
-              console.log('Company created successfully:', response);
+              console.log(response);
             },
             error => {
               console.error('Error creating company:', error);

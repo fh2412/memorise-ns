@@ -26,6 +26,10 @@ export class companyService {
     return this.http.put<any>(`${this.apiUrl}/leave/${user_id}`, {});
   }
 
+  setCompanyOwner(user_id: string, company_id: string) {
+    return this.http.put<any>(`${this.apiUrl}/owner/${user_id}`, {companyId: company_id});
+  }
+
   deleteCompany(company_id: string) {
     return this.http.delete<any>(`${this.apiUrl}/delete/${company_id}`);
   }

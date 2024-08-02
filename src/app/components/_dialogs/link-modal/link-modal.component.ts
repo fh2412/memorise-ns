@@ -9,6 +9,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class LinkModalComponent implements OnInit {
 
   link: string = ''; // Link to display in the modal
+  header: string = '';
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
@@ -17,6 +18,7 @@ export class LinkModalComponent implements OnInit {
 
   ngOnInit() {
     this.link = this.data.link;
+    this.header = this.data.text;
   }
 
   copyLink() {

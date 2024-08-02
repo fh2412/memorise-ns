@@ -20,7 +20,10 @@
         </mat-list>
         <mat-card-actions>
             <button mat-stroked-button class="editbutton" (click)="openEditCreateDialog()" style="margin-right: 3px;"
-                *ngIf="company.owner_id===userId">Edit Details</button>
+                *ngIf="company.owner_id===userId">Edit</button>
+            <button mat-stroked-button class="editbutton" (click)="openInviteDialog()" style="margin-right: 3px;" *ngIf="company.owner_id===userId">
+                Invite
+            </button>
             <button mat-stroked-button class="editbutton" (click)="onLeaveClick(company.owner_id===userId)" color="warn">
                 {{ company.owner_id === userId ? 'Delete' : 'Leave' }}
             </button>
@@ -35,7 +38,7 @@
     </mat-card-header>
     <mat-card-actions>
         <button mat-stroked-button class="editbutton" style="margin-right: 3px;"
-            (click)="changeCompanyDetails()">Join</button>
+            (click)="joinCompany()">Join</button>
         <button mat-stroked-button class="editbutton" (click)="openEditCreateDialog()">Create</button>
     </mat-card-actions>
 </mat-card>

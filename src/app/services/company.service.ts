@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Company {
+  [x: string]: any;
   id?: number;
   name: string;
   phone: string;
@@ -40,5 +41,9 @@ export class companyService {
 
   updateCompany(id: number, company: Company): Observable<Company> {
     return this.http.put<Company>(`${this.apiUrl}/update/${id}`, company);
+  }
+
+  generateCode(companyId: number){
+    return this.http.post<any>(`${this.apiUrl}/generateCode/${companyId}`, {});
   }
 }

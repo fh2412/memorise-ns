@@ -1,0 +1,22 @@
+.stats-card {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin-top: 15px;
+    padding: 15px;
+  }
+  
+  .user-details {
+    padding-left: 20px;
+    line-height: 10px;
+  }
+  
+  .memory-card-empty{
+    background-color: rgba(209, 209, 209, 0.534);
+    height: 500px;
+    width: 300px;
+    text-align: center;
+    justify-content: center;
+    font-style: italic;
+    margin-top: 15px;
+  }

@@ -4,7 +4,7 @@ import { MemorystatsService } from '../../services/memorystats.service';
 @Component({
   selector: 'app-stats',
   templateUrl: './stats.component.html',
-  styleUrl: './stats.component.css'
+  styleUrl: './stats.component.scss'
 })
 export class StatsComponent {
   @Input() userid: string = '';

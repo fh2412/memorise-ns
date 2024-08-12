@@ -29,11 +29,7 @@
   display: flex;
   justify-content: space-between;
 }
-img{
-  border-radius: 50%;
-  width: 100%;
-}
-.image{
+.profile-section{
   width: 25%;
 }
 .bio{
@@ -64,7 +60,9 @@ img{
 .profile-picture-container {
   position: relative;
   cursor: pointer;
-
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  
   // Profile picture styles
   .profile-picture {
     width: 100%;

@@ -25,7 +25,7 @@ export class UserProfileComponent implements OnInit {
   loggedInUserId: any;
   buttonText: string = 'Edit Profile';
   pin_memories = [
-    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Vacation', stars: 8, memory_id: 0 },
+    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Beta Memory', stars: 8, memory_id: 0 },
   ];
   all_memories = [];
 

@@ -1,3 +1,4 @@
+<app-back-button [text]="'Cancel'"></app-back-button>
 <mat-stepper linear #stepper>
   <mat-step [stepControl]="memoryForm">
     <form [formGroup]="memoryForm" class="details-form">
@@ -10,15 +11,15 @@
         <textarea matInput placeholder="Description" formControlName="description"></textarea>
       </mat-form-field>
 
-      <mat-form-field appearance="outline">      
-        <mat-date-range-input  [formGroup]="memoryForm" [rangePicker]="rangePicker">
+      <mat-form-field appearance="outline">
+        <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
           <input matStartDate formControlName="memory_date" placeholder="Start Date">
           <input matEndDate formControlName="memory_end_date" placeholder="End Date">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
         <mat-date-range-picker #rangePicker></mat-date-range-picker>
       </mat-form-field>
-      
+
       <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"></app-friends-autocomplet>
       <div>
         <button mat-button matStepperNext>Next</button>

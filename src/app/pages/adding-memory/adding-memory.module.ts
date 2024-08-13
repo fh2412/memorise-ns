@@ -20,6 +20,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
 import { ImageUploadModule } from '../../components/image-upload/image-upload.module';
+import { BackButtonModule } from '../../components/back-button/back-button.module';
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
     MatSlideToggleModule,
     MatGridListModule,
     FriendsAutocompleteModule,
-    ImageUploadModule, 
+    ImageUploadModule,
+    BackButtonModule
   ]
 })
 export class AddingMemoryModule {}

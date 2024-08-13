@@ -5,11 +5,12 @@ import { MemoryService } from '../../services/memory.service';
 import { UserService } from '../../services/userService';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-adding-memory',
   templateUrl: './adding-memory.component.html',
-  styleUrl: './adding-memory.component.css'
+  styleUrl: './adding-memory.component.scss'
 })
 export class AddingMemoryComponent {  
   
@@ -21,7 +22,7 @@ export class AddingMemoryComponent {
   memoryForm: FormGroup;
   userId: string | null | undefined;
   emailArray: any;
-  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService) {
+  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService, private router: Router) {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId],
       title: ['', Validators.required],
@@ -107,5 +108,9 @@ export class AddingMemoryComponent {
         });
       }
     });
+  }
+
+  cancelCreation(): void{
+    this.router.navigate(['/home']);
   }
 }

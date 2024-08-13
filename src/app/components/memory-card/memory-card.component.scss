@@ -1,16 +1,12 @@
 // card.component.scss
 .card {
-  margin: 0;   // Eliminate margin
-  padding: 0;  // Eliminate padding
   width: 100%;
   height: 100%;
-  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   &:hover {
     background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    border: 2px solid #004080;
     .edit-button {
       transform: translateY(0); /* Bring the button back into view on hover */
     }
@@ -38,7 +34,6 @@
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.7); // Semi-transparent white background
     color: #333; // Text color
-    border-bottom-left-radius: 8px;
 
     h3 {
       margin: 0;

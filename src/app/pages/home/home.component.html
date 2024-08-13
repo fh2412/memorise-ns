@@ -22,7 +22,6 @@
         </section>
         <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
             <div *ngIf="selectedValue === 'map'">
-                <!--<span *ngFor="let item of data">Id: {{item.memory_id}}; Lat: {{item.latitude}}; Lng: {{item.longitude}}</span>-->
                 <app-home-map-view [memories]="data"></app-home-map-view>
             </div>
             <div *ngIf="selectedValue === 'calendar'">Content for Calendar View</div>
@@ -30,7 +29,7 @@
             <div *ngIf="selectedValue === 'standard'">
                 <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
                     <mat-grid-tile *ngFor="let item of pagedData">
-                        <app-memory-card [cardData]="item" class="test" (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
+                        <app-memory-card [cardData]="item" class="fullcard" (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
                     </mat-grid-tile>
                 </mat-grid-list>
 

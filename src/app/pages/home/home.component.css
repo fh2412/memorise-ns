@@ -1,7 +1,8 @@
 /* Apply styles to the wrapper to manage layout */
 .wrapper {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
+    height: 100%;
   }
   
   /* Style for the sticky sidebar */
@@ -18,9 +19,9 @@
   /* Style for the main content area */
   .main-content {
     flex: 1; /* Take remaining space */
-    padding: 20px; /* Example padding */
+    padding: 20px;
     padding-top: 40px;
-    margin-left: 20%; /* Adjust to match the width of the fixed sidebar */
+    margin-left: 20%;
   }
 
   .fixed-fab {
@@ -30,7 +31,7 @@
     z-index: 1; /* Ensure it's above other elements */
   }
   
-  .test {
+  .fullcard {
     height: 100%;
     width: 100%;
   }

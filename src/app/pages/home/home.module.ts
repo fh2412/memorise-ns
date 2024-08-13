@@ -3,7 +3,6 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { HomeComponent } from './home.component';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MomorypreviewComponent } from '../../components/momorypreview/momorypreview.component';
 import { StatsComponent } from '../../components/stats/stats.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -34,7 +33,6 @@ const routes: Routes = [
   declarations: [
     HomeComponent,
     //UserInformationComponent,
-    MomorypreviewComponent,
     StatsComponent,
     MemoryCardComponent,
     //LogoutButtonComponent,

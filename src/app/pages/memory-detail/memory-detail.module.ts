@@ -12,6 +12,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { BackButtonModule } from "../../components/back-button/back-button.module";
 
 const routes: Routes = [
   {
@@ -36,7 +37,8 @@ const routes: Routes = [
     GoogleMapsModule,
     MatIconModule,
     MatDividerModule,
-    MatButtonModule
-  ]
+    MatButtonModule,
+    BackButtonModule
+]
 })
 export class MemoryModule { }

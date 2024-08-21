@@ -57,38 +57,6 @@ export class FileUploadService {
     return ref.getDownloadURL().toPromise();
   }
 
-  uploadMemoryPictures(memoryId: string, files: File[], count: string): Observable<number[]> {
-       const uploadTasks: AngularFireUploadTask[] = [];
-       const progressObservables: Observable<number | undefined>[] = [];
-   
-       const countP = parseInt(count);
-   
-       // Upload each file and track progress
-       const fileProgress: { [index: number]: number } = {};
-       files.forEach((file, index) => {
-         const path = `memories/${memoryId}/picture_${index + countP + 1}.jpg`;
-         const ref = this.storage.ref(path);
-         const task: AngularFireUploadTask = ref.put(file);
-   
-         uploadTasks.push(task);
-   
-         progressObservables.push(task.percentageChanges().pipe(
-          map(progress => {
-            fileProgress[index] = progress ?? 0;
-            return progress;
-          })
-        ));
-       });
-   
-       const combinedProgress: Observable<number[]> = forkJoin(
-        progressObservables.map(progress => progress.pipe(
-          filter(value => value !== undefined),
-          map(value => value as number)
-        ))
-      );
-       return combinedProgress;
-     }
-
   deleteMemorysFolder(memoryId: string): Observable<void[]> {
     const path = `memories/${memoryId}`;
     const storageRef = this.storage.ref(path);

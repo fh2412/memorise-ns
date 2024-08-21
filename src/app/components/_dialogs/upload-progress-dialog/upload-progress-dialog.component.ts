@@ -31,7 +31,7 @@ export class UploadProgressDialogComponent implements OnInit {
     this.oneByOneUpload();
   }
 
-  uploadFiles() {
+  /*uploadFiles() {
     if (this.data.memoryId == '') {
       this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
       this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, "0").subscribe(
@@ -66,31 +66,48 @@ export class UploadProgressDialogComponent implements OnInit {
         }
       );
     }
-  }
-  async oneByOneUpload() {
-    this.counter=0;
-    this.data.files.forEach(file => {
-      if (file) {
-        this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
-        this.storageService.uploadMemoryPicture(this.googleStorageUrl, file, "0", this.counter).subscribe(
-          (uploadProgress: number | undefined) => {
-            console.log(`Upload Progress: ${uploadProgress}%`, "picture:", this.counter);
-            this.progress[this.counter] = uploadProgress ?? 0;
-          },
-          error => {
-            console.error('Error uploading profile picture:', error);
-          },
-          async () => {
-            this.counter++;
-          }
-        );
+  }*/
+    async oneByOneUpload() {
+      this.counter = 0;
+      const uploadPromises: Promise<void>[] = [];
+    
+      this.data.files.forEach((file, index) => {
+        if (file) {
+          this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
+    
+          const uploadPromise = new Promise<void>((resolve, reject) => {
+            this.storageService.uploadMemoryPicture(this.googleStorageUrl, file, "0", index).subscribe(
+              (uploadProgress: number | undefined) => {
+                console.log(`Upload Progress: ${uploadProgress}%`, "picture:", index);
+                this.progress[index] = uploadProgress ?? 0;
+              },
+              error => {
+                console.error('Error uploading profile picture:', error);
+                reject(error);
+              },
+              () => {
+                this.counter++;
+                resolve();
+              }
+            );
+          });
+          uploadPromises.push(uploadPromise);
+        }
+      });
+    
+      try {
+        await Promise.all(uploadPromises);
+        console.log("finished upload!");
+    
+        this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
+        this.dialogRef.close(this.googleStorageUrl);
+        this.createMemory();
+      } catch (error) {
+        console.error('Error during upload process:', error);
+        // Handle the error appropriately here.
       }
-    })
-    console.log("finished upload!");
-    this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
-    this.dialogRef.close(this.googleStorageUrl);
-    this.createMemory();
-  }
+    }
+    
 
   updatePicureCount(memoryId: string) {
     const pictureCountData: any = {};

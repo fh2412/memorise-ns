@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable, finalize, forkJoin, map, switchMap } from 'rxjs';
+import { Observable, filter, finalize, forkJoin, map, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask  } from '@angular/fire/compat/storage';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
 
@@ -31,7 +31,18 @@ export class FileUploadService {
   }
 
   uploadProfilePicture(userId: string, file: File): Observable<number | undefined> {
-    const path = `profile-pictures/${userId}/profile.jpg`; // adjust the path as needed
+    const path = `profile-pictures/${userId}/profile.jpg`;
+    const ref = this.storage.ref(path);
+    const task: AngularFireUploadTask = ref.put(file);
+
+    // Use Observable to track the upload progress
+    return task.percentageChanges();
+  }
+
+  uploadMemoryPicture(memoryId: string, file: File, count: string, index: number): Observable<number | undefined> {
+    const countP = parseInt(count);
+
+    const path = `memories/${memoryId}/picture_${index + countP + 1}.jpg`;
     const ref = this.storage.ref(path);
     const task: AngularFireUploadTask = ref.put(file);
 
@@ -47,28 +58,36 @@ export class FileUploadService {
   }
 
   uploadMemoryPictures(memoryId: string, files: File[], count: string): Observable<number[]> {
-    const uploadTasks: AngularFireUploadTask[] = [];
-    const progressObservables: Observable<number | undefined>[] = [];
-
-    const countP = parseInt(count);
-    // Upload each file
-    files.forEach((file, index) => {
-      const path = `memories/${memoryId}/picture_${index + countP + 1}.jpg`;
-      const ref = this.storage.ref(path);
-      const task: AngularFireUploadTask = ref.put(file);
-
-      uploadTasks.push(task);
-      progressObservables.push(task.percentageChanges().pipe(map(value => value || 0)));
-    });
-
-    // Combine progress observables using forkJoin and map to transform the array
-    const combinedProgress$: Observable<number[]> = forkJoin(progressObservables).pipe(
-      map(values => values as number[])
-    );
-
-    // Return the combined progress observable
-    return combinedProgress$;
-  }
+       const uploadTasks: AngularFireUploadTask[] = [];
+       const progressObservables: Observable<number | undefined>[] = [];
+   
+       const countP = parseInt(count);
+   
+       // Upload each file and track progress
+       const fileProgress: { [index: number]: number } = {};
+       files.forEach((file, index) => {
+         const path = `memories/${memoryId}/picture_${index + countP + 1}.jpg`;
+         const ref = this.storage.ref(path);
+         const task: AngularFireUploadTask = ref.put(file);
+   
+         uploadTasks.push(task);
+   
+         progressObservables.push(task.percentageChanges().pipe(
+          map(progress => {
+            fileProgress[index] = progress ?? 0;
+            return progress;
+          })
+        ));
+       });
+   
+       const combinedProgress: Observable<number[]> = forkJoin(
+        progressObservables.map(progress => progress.pipe(
+          filter(value => value !== undefined),
+          map(value => value as number)
+        ))
+      );
+       return combinedProgress;
+     }
 
   deleteMemorysFolder(memoryId: string): Observable<void[]> {
     const path = `memories/${memoryId}`;

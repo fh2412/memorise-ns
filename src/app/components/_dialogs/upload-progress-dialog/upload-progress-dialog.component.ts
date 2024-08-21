@@ -14,28 +14,29 @@ export class UploadProgressDialogComponent implements OnInit {
   downloadURL: string | undefined;
   googleStorageUrl: string = "";
   originalCount: any = 0;
-
+  counter: number = 0;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; files: File[]; memoryData: any; emails: any; },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
-    private dialogRef: MatDialogRef<UploadProgressDialogComponent>, 
+    private dialogRef: MatDialogRef<UploadProgressDialogComponent>,
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.files.length).fill(0);
   }
 
   ngOnInit() {
-    this.uploadFiles();
+    this.oneByOneUpload();
   }
 
   uploadFiles() {
-    if(this.data.memoryId==''){
+    if (this.data.memoryId == '') {
       this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
       this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, "0").subscribe(
         (progress: number[]) => {
+          console.log(`Upload Progress: ${progress}%`);
           this.progress = progress;
         },
         (error) => {
@@ -43,13 +44,13 @@ export class UploadProgressDialogComponent implements OnInit {
           // Handle error, e.g., close the dialog or show an error message
         },
         async () => {
-            this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
-            this.dialogRef.close(this.googleStorageUrl);
-            this.createMemory();
+          this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
+          this.dialogRef.close(this.googleStorageUrl);
+          this.createMemory();
         }
       );
     }
-    else{
+    else {
       this.googleStorageUrl = this.data.memoryData;
       this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, this.data.emails).subscribe(             //this.data.emails is the count of the pictures, needed to append new pictures instead of overwriting them
         (progress: number[]) => {
@@ -59,12 +60,36 @@ export class UploadProgressDialogComponent implements OnInit {
           console.error('Error uploading pictures:', error);
         },
         async () => {
-          this.originalCount=this.data.emails;
-            this.updatePicureCount(this.data.memoryId);
-            this.dialogRef.close(this.googleStorageUrl);
+          this.originalCount = this.data.emails;
+          this.updatePicureCount(this.data.memoryId);
+          this.dialogRef.close(this.googleStorageUrl);
         }
       );
     }
+  }
+  async oneByOneUpload() {
+    this.counter=0;
+    this.data.files.forEach(file => {
+      if (file) {
+        this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
+        this.storageService.uploadMemoryPicture(this.googleStorageUrl, file, "0", this.counter).subscribe(
+          (uploadProgress: number | undefined) => {
+            console.log(`Upload Progress: ${uploadProgress}%`, "picture:", this.counter);
+            this.progress[this.counter] = uploadProgress ?? 0;
+          },
+          error => {
+            console.error('Error uploading profile picture:', error);
+          },
+          async () => {
+            this.counter++;
+          }
+        );
+      }
+    })
+    console.log("finished upload!");
+    this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
+    this.dialogRef.close(this.googleStorageUrl);
+    this.createMemory();
   }
 
   updatePicureCount(memoryId: string) {
@@ -90,10 +115,10 @@ export class UploadProgressDialogComponent implements OnInit {
       if (memoryData.memory_end_date == null) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
-      if(memoryData.lat!='' && memoryData.lng!=''){
+      if (memoryData.lat != '' && memoryData.lng != '') {
         this.create_location(memoryData);
       }
-      else{
+      else {
         memoryData.location_id = 1;
         this.create_memory(memoryData);
       }
@@ -103,7 +128,7 @@ export class UploadProgressDialogComponent implements OnInit {
     }
   }
 
-  create_memory(memoryData: any){
+  create_memory(memoryData: any) {
     this.memoryService.createMemory(memoryData).subscribe(
       (response: { message: string, memoryId: any }) => {
 
@@ -129,7 +154,7 @@ export class UploadProgressDialogComponent implements OnInit {
     );
   }
 
-  create_location(memoryData: any){
+  create_location(memoryData: any) {
     this.locationService.createLocation(memoryData).subscribe(
       (response: { message: string, locationId: any }) => {
         console.log('Location added to memory successfully:', response.locationId[0]?.insertId);

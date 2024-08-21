@@ -187,23 +187,23 @@ export class UserProfileComponent implements OnInit {
   }
 
   profileButtonClick(): void {
-    if(this.buttonText=='Edit Profile'){
+    if (this.buttonText == 'Edit Profile') {
       this.openEditDialog();
     }
-    else if(this.buttonText=='Offer Friendship'){
+    else if (this.buttonText == 'Offer Friendship') {
       this.manageFriendService.sendFriendRequest(this.userId, this.loggedInUserId);
       this.openSnackBar('Friend Request send sucessfully!', 'Great!');
-      this.buttonText='Cancle Request';
+      this.buttonText = 'Cancle Request';
     }
-    else if(this.buttonText=='Accept Friend'){
+    else if (this.buttonText == 'Accept Friend') {
       this.manageFriendService.acceptFriendRequest(this.userId, this.loggedInUserId);
       this.openSnackBar('You sucessfully added this user as a Friend!', 'We go memoriesing!');
-      this.buttonText='Remove Friend';
+      this.buttonText = 'Remove Friend';
     }
-    else if(this.buttonText=='Remove Friend' || this.buttonText=='Cancle Request'){
+    else if (this.buttonText == 'Remove Friend' || this.buttonText == 'Cancle Request') {
       this.manageFriendService.removeFriend(this.userId, this.loggedInUserId);
       this.openSnackBar('You ended this Friendship', 'Got it!');
-      this.buttonText='Offer Friendship';
+      this.buttonText = 'Offer Friendship';
     }
   }
 

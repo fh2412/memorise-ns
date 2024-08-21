@@ -5,7 +5,6 @@ import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialo
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { Router } from '@angular/router';
-import { Console } from 'console';
 
 @Component({
   selector: 'app-image-upload',
@@ -13,11 +12,13 @@ import { Console } from 'console';
   styleUrls: ['./image-upload.component.scss']
 })
 export class ImageUploadComponent implements OnInit {
-  @Input() userId: any;
+  @Input() userId: any = '';
   @Input() memoryId: string = '';
   @Input() memoryData: any;
   @Input() friends: any;
   @Input() emails: any;
+  @Input() picture_count: number = 0;
+  @Input() googleStorageUrl: String = "";
 
 
   selectedFiles: any[] = [];
@@ -59,6 +60,10 @@ export class ImageUploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.imageInfos = this.uploadService.getFiles();
+    if(this.picture_count == 0){
+      this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+      console.log("New Memory");
+    }
   }
 
   openUploadDialog() {
@@ -66,7 +71,7 @@ export class ImageUploadComponent implements OnInit {
     const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
       width: '300px',
       disableClose: true, // Prevent closing the dialog by clicking outside
-      data: { userId: this.userId, memoryId: this.memoryId, files: filesArray, memoryData: this.memoryData, emails: this.emails },
+      data: { userId: this.userId, memoryId: this.memoryId, files: filesArray, memoryData: this.memoryData, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl },
     });
 
     // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

@@ -17,7 +17,7 @@ export class UploadProgressDialogComponent implements OnInit {
   counter: number = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; files: File[]; memoryData: any; emails: any; },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; files: File[]; memoryData: any; emails: any; picture_count: number; googleStorageUrl: String },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -29,85 +29,56 @@ export class UploadProgressDialogComponent implements OnInit {
 
   ngOnInit() {
     this.oneByOneUpload();
+    console.log(this.data);
   }
+  async oneByOneUpload() {
+    this.counter = 0;
+    const uploadPromises: Promise<void>[] = [];
 
-  /*uploadFiles() {
-    if (this.data.memoryId == '') {
-      this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
-      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, "0").subscribe(
-        (progress: number[]) => {
-          console.log(`Upload Progress: ${progress}%`);
-          this.progress = progress;
-        },
-        (error) => {
-          console.error('Error uploading pictures:', error);
-          // Handle error, e.g., close the dialog or show an error message
-        },
-        async () => {
-          this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
-          this.dialogRef.close(this.googleStorageUrl);
-          this.createMemory();
-        }
-      );
-    }
-    else {
-      this.googleStorageUrl = this.data.memoryData;
-      this.storageService.uploadMemoryPictures(this.googleStorageUrl, this.data.files, this.data.emails).subscribe(             //this.data.emails is the count of the pictures, needed to append new pictures instead of overwriting them
-        (progress: number[]) => {
-          this.progress = progress;
-        },
-        (error) => {
-          console.error('Error uploading pictures:', error);
-        },
-        async () => {
-          this.originalCount = this.data.emails;
-          this.updatePicureCount(this.data.memoryId);
-          this.dialogRef.close(this.googleStorageUrl);
-        }
-      );
-    }
-  }*/
-    async oneByOneUpload() {
-      this.counter = 0;
-      const uploadPromises: Promise<void>[] = [];
-    
-      this.data.files.forEach((file, index) => {
-        if (file) {
-          this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
-    
-          const uploadPromise = new Promise<void>((resolve, reject) => {
-            this.storageService.uploadMemoryPicture(this.googleStorageUrl, file, "0", index).subscribe(
-              (uploadProgress: number | undefined) => {
-                console.log(`Upload Progress: ${uploadProgress}%`, "picture:", index);
-                this.progress[index] = uploadProgress ?? 0;
-              },
-              error => {
-                console.error('Error uploading profile picture:', error);
-                reject(error);
-              },
-              () => {
-                this.counter++;
-                resolve();
-              }
-            );
-          });
-          uploadPromises.push(uploadPromise);
-        }
-      });
-    
-      try {
-        await Promise.all(uploadPromises);
-        console.log("finished upload!");
-    
+    this.data.files.forEach((file, index) => {
+      if (file) {
+        this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
+
+        const uploadPromise = new Promise<void>((resolve, reject) => {
+          this.storageService.uploadMemoryPicture(this.googleStorageUrl, file, this.data.picture_count, index).subscribe(
+            (uploadProgress: number | undefined) => {
+              console.log(`Upload Progress: ${uploadProgress}%`, "picture:", index);
+              this.progress[index] = uploadProgress ?? 0;
+            },
+            error => {
+              console.error('Error uploading profile picture:', error);
+              reject(error);
+            },
+            () => {
+              this.counter++;
+              resolve();
+            }
+          );
+        });
+        uploadPromises.push(uploadPromise);
+      }
+    });
+
+    try {
+      await Promise.all(uploadPromises);
+      console.log("finished upload!");
+
+      if (this.data.picture_count == 0) {
         this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.googleStorageUrl);
         this.dialogRef.close(this.googleStorageUrl);
         this.createMemory();
-      } catch (error) {
-        console.error('Error during upload process:', error);
-        // Handle the error appropriately here.
       }
+      else {
+        this.originalCount = this.data.emails;
+        this.updatePicureCount(this.data.memoryId);
+        this.dialogRef.close(this.googleStorageUrl);
+      }
+    } catch (error) {
+      console.error('Error during upload process:', error);
+      // Handle the error appropriately here.
     }
-    
+  }
+
 
   updatePicureCount(memoryId: string) {
     const pictureCountData: any = {};

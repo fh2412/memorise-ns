@@ -18,7 +18,7 @@ export class AddPhotosComponent {
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
       this.memoryId = params['id'];
-      console.log("MemoryId:", this.memoryId);
+      //console.log("MemoryId:", this.memoryId);
     });
     this.loadMemory();
   }
@@ -27,7 +27,7 @@ export class AddPhotosComponent {
       (response) => {
         this.firebasePath = response.image_url;
         this.pictureCount = response.picture_count;
-        console.log("FirebasePath:", this.firebasePath, this.pictureCount);
+        //console.log("FirebasePath:", this.firebasePath, this.pictureCount);
       },
       (error) => {
         console.error('Error getting memory:', error);

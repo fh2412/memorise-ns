@@ -146,7 +146,7 @@ export class HomeComponent {
       this.memoryService.getAddedMemories(this.userdb.user_id).subscribe(
         (data) => {
           this.friendsdata = data;
-          resolve();  // Resolve the Promise when the operation is complete
+          resolve();
         },
         (error: any) => {
           console.error('Error fetching createdMemory data:', error);

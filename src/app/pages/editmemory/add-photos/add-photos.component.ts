@@ -13,7 +13,8 @@ export class AddPhotosComponent {
 
   memoryId: string = "1";
   firebasePath: any;
-  pictureCount: any;
+  pictureCount: number = 0;
+  loaded: boolean = false;
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
@@ -27,7 +28,8 @@ export class AddPhotosComponent {
       (response) => {
         this.firebasePath = response.image_url;
         this.pictureCount = response.picture_count;
-        //console.log("FirebasePath:", this.firebasePath, this.pictureCount);
+        this.loaded=true;
+        console.log("Add memories count:", response);
       },
       (error) => {
         console.error('Error getting memory:', error);

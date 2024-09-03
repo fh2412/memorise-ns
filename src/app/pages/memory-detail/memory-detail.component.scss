@@ -1,66 +1,44 @@
-@import '../../components/friend-preview/friend-preview.component.scss';
 @import 'image-preview.scss';
 
-.header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 35px;
-    h1{
-        font-size: 50px;
-        font-weight: bold;
-        margin-left: 25px;
-    }
-    button{
-        margin-right: 25px;
-        margin-bottom: 10px;
-    }
-}
 
-.memory-color {
+.bd-home-section {
+    --spacing: 3rem;
+    --bd-section-vertical: 1rem;
+    --bd-section-horizontal: 1rem;
+    align-items: stretch;
+    background-image: linear-gradient(180deg, hsla(39, 100%, 50%, 0.219), transparent calc(var(--spacing)* 3));
+    background-repeat: repeat-x;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing);
+    overflow: hidden;
+    padding: calc(var(--spacing)* 3) calc(var(--spacing)* 4) calc(var(--spacing)* 3);
+    position: relative;
+    z-index: 1;
+  }
+  
+  .example-spacer {
+    flex: 1 1 auto;
+  }
+  mat-calendar{
+    width: 85%;
+  }
+
+.full-width{
     width: 100%;
     height: 100%;
-    background-color: white;
-    padding: 5px;
 }
 
-mat-grid-list {
-    margin: 5px;
-}
-
-
-.title, .sub-title {
-    margin-left: 15px;
-}
-
-.title {
-    margin-top: 15px;
-    font-size: 40px;
-}
-
-p {
-    margin-left: 15px;
-}
-
-mat-calendar {
-    margin: 0 20px 20px 20px;
-    width: 75%;
-}
-
-.calender {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+h1{
+    font-size: 30px;
+    font-weight: 800;
 }
 
 .profile-row {
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
-h2 {
-    margin-left: 5px;
-    margin-top: 10px;
-    font-size: 30px
+.profile-image{
+    width: 50px;
 }

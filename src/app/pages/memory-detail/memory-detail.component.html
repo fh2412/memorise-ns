@@ -1,86 +1,57 @@
-<app-back-button></app-back-button>
-<div class="header" *ngIf="this.memorydb">
-  <div>
-    <h1>{{memorydb.title}}</h1>
-  </div>
-  <div class="actions">
-    <button mat-flat-button [routerLink]="['/editmemory', memoryID]"><mat-icon>edit</mat-icon>Edit</button>
-  </div>
-</div>
-
-<mat-divider></mat-divider>
-
-<div *ngIf="this.memorydb && this.location">
-  <mat-grid-list cols="3" rowHeight="2:1" *ngIf="memorydb && memorydbFriends" [gutterSize]="'4px'">
-    <!-- First Row -->
-    <mat-grid-tile colspan="2" rowspan="1">
-      <div class="memory-color">
-        <p>{{ memorydb.text || 'Not provided' }}</p>
-      </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile colspan="1" rowspan="1">
-      <div class="memory-color">
-        <h2>Friends:</h2>
-        <div *ngFor="let friend of memorydbFriends" class="profile-row">
-          <img src="/assets/img/1.png">
-          <div class="text">
-            <b>{{ friend.name || 'name' }}</b><br>
-            <span class="desc">{{ friend.dob || 'dob' }}, {{ friend.gender || 'gender' }}</span>
+<section class="bd-home-section bd-theme-memorise">
+  <div class="container">
+    <mat-toolbar>
+      <h1>{{memorydb.title}}</h1>
+      <span class="example-spacer"></span>
+      <button mat-stroked-button color="primary">
+        <mat-icon>send</mat-icon>
+        Share
+      </button>
+      <button mat-stroked-button color="primary">
+        <mat-icon>edit</mat-icon>
+        Edit
+      </button>
+    </mat-toolbar>
+    <mat-card appearance="outlined" style="overflow: hidden;">
+      <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+        <mat-grid-tile colspan="2" rowspan="2">
+          <img [src]="images[0]">
+        </mat-grid-tile>
+        <mat-grid-tile><img class="background-image" [src]="images[1]"></mat-grid-tile>
+        <mat-grid-tile><img class="background-image" [src]="images[2]"></mat-grid-tile>
+        <mat-grid-tile><img class="background-image" [src]="images[3]"></mat-grid-tile>
+        <mat-grid-tile><img class="background-image" [src]="images[4]"></mat-grid-tile>
+        <div style="position: absolute; bottom: 24px; right: 24px;">
+          <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;">
+            <mat-icon>apps</mat-icon>
+            Show all pictures
+          </button>
+        </div>
+      </mat-grid-list>
+    </mat-card>
+    <br><br>
+    <div style="overflow: hidden;">
+      <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+        <mat-grid-tile colspan="3">
+          <div class="full-width">
+            <h1>Activity in City, Country</h1>
+            <span>{{selectedDate.getDate()}}-{{selectedDate.getMonth()}}-{{selectedDate.getFullYear()}},
+              {{memorydbFriends.length + 1}} people</span>
+            <mat-divider></mat-divider>
+            <div class="profile-row">
+              <img src="/assets/img/1.png" class="profile-image">
+              <div class="text">
+                <b>{{ memorydbFriends[0].name || 'name' }}</b><br>
+                <span class="desc">{{ memorydbFriends[0].dob || 'dob' }}, {{ memorydbFriends[0].gender || 'gender' }}</span>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-    </mat-grid-tile>
 
-    <!-- Second Row -->
-    <mat-grid-tile colspan="2" rowspan="2">
-      <div class="memory-color">
-        <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
-          <mat-grid-tile *ngFor="let image of images.slice(0, 8); let last = last; let i = index">
-            <mat-card appearance="outlined" class="card" (click)="openImageDialog(image, i)">
-              <div *ngIf="!last || images.length < 7" class="image-container">
-                <img class="background-image" [src]="image">
-              </div>
-              <div *ngIf="last && images.length > 7" class="additional-images">
-                +{{ images.length - 7 }} more
-              </div>
-            </mat-card>
-          </mat-grid-tile>
-        </mat-grid-list>
-      </div>
-
-    </mat-grid-tile>
-
-    <mat-grid-tile colspan="1" rowspan="2">
-      <div class="memory-color">
-        <h2>Date:</h2>
-        <div class="calender">
+        </mat-grid-tile>
+        <mat-grid-tile>
           <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
-        </div>
-      </div>
-    </mat-grid-tile>
-
-    <!-- Third Row -->
-    <mat-grid-tile colspan="2" rowspan="1">
-      <div class="memory-color">
-        <h2>Additional Files:</h2>
-        <p *ngIf="location">lng: {{location[0].longitude}}; lat: {{location[0].latitude}}</p>
-      </div>
-    </mat-grid-tile>
-
-    <mat-grid-tile colspan="1" rowspan="1">
-      <div class="memory-color">
-        <h2>Map:</h2>
-        <div style="height: 100%; display: flex; flex-direction: column;">
-          <ng-container *ngIf="location[0].location_id != '1'">
-            <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"
-              style="flex: 1;"></app-map-snippet>
-          </ng-container>
-          <ng-container *ngIf="location[0].location_id == '1'">
-            <p>No location data available!</p>
-          </ng-container>
-        </div>
-      </div>
-    </mat-grid-tile>
-  </mat-grid-list>
-</div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </div>
+  </div>
+</section>

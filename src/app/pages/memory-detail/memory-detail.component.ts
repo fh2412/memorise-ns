@@ -13,7 +13,7 @@ import { LocationService } from '../../services/location.service';
 @Component({
   selector: 'app-memory-detail',
   templateUrl: './memory-detail.component.html',
-  styleUrl: './memory-detail.component.scss'
+  styleUrl: 'memory-detail.component.scss'
 })
 export class MemoryDetailComponent {
   memorydb: any;

@@ -1,6 +1,5 @@
 @import 'image-preview.scss';
 
-
 .bd-home-section {
     --spacing: 3rem;
     --bd-section-vertical: 1rem;
@@ -41,4 +40,10 @@ h1{
 
 .profile-image{
     width: 50px;
+}
+
+.image-size{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }

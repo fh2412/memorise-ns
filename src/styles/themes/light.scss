@@ -1,0 +1,37 @@
+$deep-blue-palette: (
+  50: #80a1c1,     // Lightest
+  100: #668db3,
+  200: #507fb0,
+  300: #3b71ac,
+  400: #2563a9,
+  500: #004080,     // Base color
+  600: #003773,
+  700: #002f66,
+  800: #002359,
+  900: #001b4d,     // Darkest
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+ )
+);
+
+$vibrant-orange-palette: (
+  50: #ffd480,     // Lightest
+  100: #ffcc66,
+  200: #ffb84d,
+  300: #ffa533,
+  400: #ff991a,
+  500: #FFA500,     // Base color
+  600: #e59400,
+  700: #cc8400,
+  800: #b27400,
+  900: #995400,     // Darkest
+  contrast: (
+    50: rgba(black, 0.87),      // Contrast for the lightest hue
+    100: rgba(black, 0.87),
+    200: rgba(black, 0.87),
+    300: white,
+  )
+);

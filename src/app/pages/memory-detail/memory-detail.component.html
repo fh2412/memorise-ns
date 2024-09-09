@@ -1,4 +1,4 @@
-<section class="bd-home-section bd-theme-memorise">
+<section class="bd-home-section bd-theme-memorise" *ngIf="memorydb">
   <div class="container">
     <mat-toolbar>
       <h1>{{memorydb.title}}</h1>
@@ -22,7 +22,7 @@
         <mat-grid-tile><img class="image-size" [src]="images[3]"></mat-grid-tile>
         <mat-grid-tile><img class="image-size" [src]="images[4]"></mat-grid-tile>
         <div style="position: absolute; bottom: 24px; right: 24px;">
-          <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;">
+          <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;" (click)="openGallery()">
             <mat-icon>apps</mat-icon>
             Show all pictures
           </button>
@@ -33,20 +33,23 @@
     <div style="overflow: hidden;">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
-          <div class="full-width">
+          <div class="full-width" *ngIf="memorydbFriends">
             <h1>Activity in City, Country</h1>
             <span>{{selectedDate.getDate()}}-{{selectedDate.getMonth()}}-{{selectedDate.getFullYear()}},
               {{memorydbFriends.length + 1}} people</span>
             <mat-divider></mat-divider>
-            <div class="profile-row">
-              <img src="/assets/img/1.png" class="profile-image">
+            <div class="profile-row" *ngIf="memoryCreator">
+              <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
               <div class="text">
-                <b>{{ memorydbFriends[0].name || 'name' }}</b><br>
-                <span class="desc">{{ memorydbFriends[0].dob || 'dob' }}, {{ memorydbFriends[0].gender || 'gender' }}</span>
+                <b>{{ memoryCreator.name || 'name' }}</b><br>
+                <span class="desc">{{ memoryCreator.dob.substring(0, 10) || 'dob' }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
+              <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
+              <span class="more">+ {{memorydbFriends.length}} more</span>
             </div>
+            <br>
+            <mat-divider></mat-divider>
           </div>
-
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>

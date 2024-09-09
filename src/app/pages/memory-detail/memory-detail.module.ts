@@ -14,6 +14,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { BackButtonModule } from "../../components/back-button/back-button.module";
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { ImageGalleryComponent } from '../../components/image-gallery/image-gallery.component';
 
 const routes: Routes = [
   {
@@ -25,7 +26,8 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     MemoryDetailComponent,
-    MapSnippetComponent
+    MapSnippetComponent,
+    ImageGalleryComponent
   ],
   imports: [
     CommonModule,

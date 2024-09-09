@@ -5,10 +5,10 @@ import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
 import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
-import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
-
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { ImageGalleryComponent } from '../../components/image-gallery/image-gallery.component';
 
 @Component({
   selector: 'app-memory-detail',
@@ -18,6 +18,7 @@ import { LocationService } from '../../services/location.service';
 export class MemoryDetailComponent {
   memorydb: any;
   memoryID: any;
+  memoryCreator: any;
   loggedInUserId: string | any;
   memorydbFriends: any;
   selectedDate = new Date(2024, 1, 1);
@@ -33,7 +34,7 @@ export class MemoryDetailComponent {
   imagePaths: any;
 
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private locationService: LocationService) {}
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private bottomSheet: MatBottomSheet) {}
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -46,6 +47,8 @@ export class MemoryDetailComponent {
   getMemoryInfo(): void {
     const memoryObs = this.memoryService.getMemory(this.memoryID);
     const friendsObs = this.memoryService.getMemorysFriends(this.memoryID, this.loggedInUserId);
+    const memoryCreatorObs = this.userService.getUser(this.loggedInUserId);
+
   
     memoryObs.subscribe(
       (memoryData) => {
@@ -62,7 +65,6 @@ export class MemoryDetailComponent {
             this.location = null;
           } else {
             this.location = locationData;
-            console.log(this.location);
           }
         },
         (error: any) => {
@@ -84,13 +86,25 @@ export class MemoryDetailComponent {
           this.memorydbFriends = 'There are no friends added to the memory yet!';
         } else {
           this.memorydbFriends = friendsData;
-          console.log(this.memorydbFriends);
         }
       },
       (error: any) => {
         console.error('Error fetching friends data:', error);
         // Set an error message or handle the error as needed
         this.memorydbFriends = 'Error fetching friends data';
+      }
+    );
+
+    memoryCreatorObs.subscribe(
+      (userData) => {
+        if (userData.length === 0) {
+          this.memoryCreator = 'There is no creator for this memory';
+        } else {
+          this.memoryCreator = userData;
+        }
+      },
+      (error: any) => {
+        console.error('Error fetching memories creator:', error);
       }
     );
   }
@@ -115,7 +129,6 @@ export class MemoryDetailComponent {
     listAll(listRef)
       .then((res) => {
         res.prefixes.forEach((folderRef) => {
-          console.log(folderRef);
         });
         res.items.forEach((itemRef) => {
           getDownloadURL(ref(storage, itemRef.fullPath))
@@ -129,5 +142,12 @@ export class MemoryDetailComponent {
       }).catch((error) => {
         // Uh-oh, an error occurred!
       });
+  }
+
+  openGallery() {
+    console.log("openGallery: ", this.images);
+    this.bottomSheet.open(ImageGalleryComponent, {
+      data: { imageUrls: this.images }
+    });
   }
 }

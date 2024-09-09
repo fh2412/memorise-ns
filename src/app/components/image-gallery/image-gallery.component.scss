@@ -1,0 +1,48 @@
+.landscape-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+  
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+  
+  .portrait-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  
+    img {
+      width: 48%;
+      height: auto;
+    }
+  }
+  
+  .portrait-landscape-combo {
+    display: flex;
+    margin-bottom: 16px;
+  
+    img:first-child {
+      width: 48%;
+      margin-right: 4%;
+    }
+  
+    .landscape-stack {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+  
+      img {
+        width: 100%;
+        height: auto;
+        margin-bottom: 8px;
+  
+        &:last-child {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+  

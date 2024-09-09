@@ -1,0 +1,19 @@
+<div *ngFor="let layout of imageLayouts">
+    <ng-container [ngSwitch]="layout.type">
+      <div *ngSwitchCase="'landscape'" class="landscape-row">
+        <img [src]="layout.urls[0]" alt="landscape image">
+      </div>
+  
+      <div *ngSwitchCase="'two-portraits'" class="portrait-row">
+        <img *ngFor="let url of layout.urls" [src]="url" alt="portrait image">
+      </div>
+  
+      <div *ngSwitchCase="'portrait-two-landscapes'" class="portrait-landscape-combo">
+        <img [src]="layout.urls[0]" alt="portrait image">
+        <div class="landscape-stack">
+          <img *ngFor="let url of layout.urls.slice(1)" [src]="url" alt="landscape image">
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  

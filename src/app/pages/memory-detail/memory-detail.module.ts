@@ -15,6 +15,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { BackButtonModule } from "../../components/back-button/back-button.module";
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ImageGalleryComponent } from '../../components/image-gallery/image-gallery.component';
+import {MatTableModule} from '@angular/material/table'; 
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
     MatDividerModule,
     MatButtonModule,
     BackButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatTableModule
 ]
 })
 export class MemoryModule { }

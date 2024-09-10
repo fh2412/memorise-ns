@@ -42,19 +42,71 @@
               <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
               <div class="text">
                 <b>{{ memoryCreator.name || 'name' }}</b><br>
-                <span class="desc">{{ memoryCreator.dob.substring(0, 10) || 'dob' }}, {{ memoryCreator.gender || 'gender' }}</span>
+                <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
               <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
               <span class="more">+ {{memorydbFriends.length}} more</span>
             </div>
-            <br>
-            <mat-divider></mat-divider>
+            <mat-card class="desc">
+              <mat-card-content>
+                <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>
+                <div *ngIf="!showMore" class="custom-pre">{{ memorydb.text }}</div>
+                <button *ngIf="showMore" mat-stroked-button color="primary" (click)="openFullDescDialog()">
+                  Show more
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </mat-card-content>
+            </mat-card>            
           </div>
         </mat-grid-tile>
         <mat-grid-tile>
           <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
         </mat-grid-tile>
       </mat-grid-list>
+      <br><br>
+      <table mat-table [dataSource]="memorydbFriends">  
+        <!-- Profile Picture Column -->  
+        <ng-container matColumnDef="profilePicture">  
+          <th mat-header-cell *matHeaderCellDef> Profile Picture </th>  
+          <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'" alt="Profile Picture" width="30" height="30" class="profile"></td>  
+        </ng-container>  
+    
+        <!-- Name Column -->  
+        <ng-container matColumnDef="name">  
+          <th mat-header-cell *matHeaderCellDef> Name </th>  
+          <td mat-cell *matCellDef="let user"> {{user.name}} </td>  
+        </ng-container>  
+    
+        <!-- Birthday Column -->  
+        <ng-container matColumnDef="birthday">  
+          <th mat-header-cell *matHeaderCellDef> Birthday </th>  
+          <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>  
+        </ng-container>  
+    
+        <!-- Country Column -->  
+        <ng-container matColumnDef="country">  
+          <th mat-header-cell *matHeaderCellDef> Country </th>  
+          <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}" width="30" height="20"> {{user.country}} </td>  
+        </ng-container>  
+    
+        <!-- Shared Memories Column -->  
+        <ng-container matColumnDef="sharedMemories">  
+          <th mat-header-cell *matHeaderCellDef> Shared Memories </th>  
+          <td mat-cell *matCellDef="let user"> {{user.sharedMemories}} </td>  
+        </ng-container>  
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>  
+      </table>
+      <br>
+      <div class="desc" style="height: 300px; border-radius: 0%;" *ngIf="location">
+          <ng-container *ngIf="location[0].location_id != '1'">
+            <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
+          </ng-container>
+          <ng-container *ngIf="location[0].location_id == '1'">
+            <p>No location data available!</p>
+          </ng-container>
+       </div>
     </div>
   </div>
 </section>

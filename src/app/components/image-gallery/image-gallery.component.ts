@@ -12,50 +12,52 @@ export class ImageGalleryComponent implements OnInit {
 
   constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: {imageUrls: string[]}) { }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     this.arrangeImages();
   }
 
-  arrangeImages() {
+  async arrangeImages() {
     const portraitImages: string[] = [];
     const landscapeImages: string[] = [];
-
-    this.data.imageUrls.forEach((url) => {
-      this.getImageDimensions(url).then(dimensions => {
-        if (dimensions.height > dimensions.width) {
-          portraitImages.push(url);
-        } else {
-          landscapeImages.push(url);
-        }
-      });
+  
+    // Map each URL to a promise that resolves with the image dimensions and categorizes the image
+    const dimensionPromises = this.data.imageUrls.map(async (url) => {
+      const dimensions = await this.getImageDimensions(url);
+      if (dimensions.height > dimensions.width) {
+        portraitImages.push(url);
+      } else {
+        landscapeImages.push(url);
+      }
     });
+  
+    // Wait for all promises to resolve
+    await Promise.all(dimensionPromises);
+  
+    this.generateLayouts(landscapeImages, portraitImages);
+  }
 
-    console.log("port: ", portraitImages);
-    console.log("land: ", landscapeImages);
-    
-    // Layout 1: One landscape image per row
-    landscapeImages.forEach(landscapeUrl => {
-      this.imageLayouts.push({ type: 'landscape', urls: [landscapeUrl] });
-    });
+  generateLayouts(landscape: any[], portrait: string[]) {
+    let landscapeIndex = 0;
+    let portraitIndex = 0;
 
-    // Layout 2: Two portrait images side by side
-    for (let i = 0; i < portraitImages.length; i += 2) {
-      this.imageLayouts.push({
-        type: 'two-portraits',
-        urls: [portraitImages[i], portraitImages[i + 1]]
-      });
-    }
+    while (landscapeIndex < landscape.length || portraitIndex < portrait.length) {
+      const layoutType = this.imageLayouts.length % 4 + 1;
 
-    // Layout 3: One portrait with two landscape images underneath
-    while (portraitImages.length && landscapeImages.length >= 2) {
-      this.imageLayouts.push({
-        type: 'portrait-two-landscapes',
-        urls: [
-          portraitImages.shift(),
-          landscapeImages.shift(),
-          landscapeImages.shift()
-        ]
-      });
+      if (layoutType === 1 && landscapeIndex < landscape.length) {
+        this.imageLayouts.push({ type: 1, images: [landscape[landscapeIndex++]] });
+        landscapeIndex++;
+      } else if (layoutType === 2 && portraitIndex + 1 < portrait.length) {
+        this.imageLayouts.push({ type: 2, images: [portrait[portraitIndex++], portrait[portraitIndex++]] });
+        portraitIndex = portraitIndex + 2;
+      } else if (layoutType === 3 && landscapeIndex + 1 < landscape.length && portraitIndex < portrait.length) {
+        this.imageLayouts.push({ type: 3, images: [portrait[portraitIndex++], landscape[landscapeIndex++], landscape[landscapeIndex++]] });
+        portraitIndex++;
+        landscapeIndex = landscapeIndex + 2;
+      } else if (layoutType === 4 && landscapeIndex + 1 < landscape.length && portraitIndex < portrait.length) {
+        this.imageLayouts.push({ type: 4, images: [portrait[portraitIndex++], landscape[landscapeIndex++], landscape[landscapeIndex++]] });
+        portraitIndex++;
+        landscapeIndex = landscapeIndex + 2;
+      }
     }
   }
 

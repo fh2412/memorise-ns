@@ -9,6 +9,8 @@ import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { ImageGalleryComponent } from '../../components/image-gallery/image-gallery.component';
+import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
+
 
 @Component({
   selector: 'app-memory-detail',
@@ -26,12 +28,17 @@ export class MemoryDetailComponent {
   dateRange: any;
   location: any;
 
+  displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];  
   
   images: string[] = [];
 
   uniqueID: string = "your-unique-id";
   downloadURLs: any;
   imagePaths: any;
+
+  showMore: boolean = false;
+  truncatedDescription: string = '';
+  characterLimit: number = 150;
 
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private bottomSheet: MatBottomSheet) {}
@@ -53,6 +60,7 @@ export class MemoryDetailComponent {
     memoryObs.subscribe(
       (memoryData) => {
         this.memorydb = memoryData;
+        this.truncateDescription();
         this.selectedDate = new Date(this.memorydb.memory_date);
         this.endDate = new Date(this.memorydb.memory_end_date);
         this.dateRange = new DateRange(this.selectedDate, this.endDate);
@@ -61,7 +69,6 @@ export class MemoryDetailComponent {
         locationObs.subscribe(
           (locationData) => {
           if (locationData.length === 0) {
-            // Set a default value when there are no friends
             this.location = null;
           } else {
             this.location = locationData;
@@ -86,6 +93,7 @@ export class MemoryDetailComponent {
           this.memorydbFriends = 'There are no friends added to the memory yet!';
         } else {
           this.memorydbFriends = friendsData;
+          console.log(this.memorydbFriends);
         }
       },
       (error: any) => {
@@ -107,6 +115,15 @@ export class MemoryDetailComponent {
         console.error('Error fetching memories creator:', error);
       }
     );
+  }
+
+  truncateDescription() {
+    if (this.memorydb.text.length > this.characterLimit) {
+      this.truncatedDescription = this.memorydb.text.substring(0, this.characterLimit) + '...';
+      this.showMore = true;
+    } else {
+      this.truncatedDescription = this.memorydb.text;
+    }
   }
   
   openImageDialog(imageSrc: string, index: number): void {
@@ -145,9 +162,15 @@ export class MemoryDetailComponent {
   }
 
   openGallery() {
-    console.log("openGallery: ", this.images);
     this.bottomSheet.open(ImageGalleryComponent, {
       data: { imageUrls: this.images }
+    });
+  }
+  openFullDescDialog() {
+    this.dialog.open(FullDescriptionDialogComponent, {
+      data: {
+        description: this.memorydb.text
+      }
     });
   }
 }

@@ -37,6 +37,7 @@ import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.
 import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinned-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
+import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { CompanyDialogComponent } from './components/_dialogs/company-dialog/com
     LinkModalComponent,
     PinnedDialogComponent,
     CompanyDialogComponent,
+    FullDescriptionDialogComponent,
   ],
   imports: [
     BrowserModule,

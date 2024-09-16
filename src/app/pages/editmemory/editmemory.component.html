@@ -16,12 +16,12 @@
 <section class="bd-home-section bd-theme-memorise" *ngIf="memory">
     <div class="container">
         <mat-toolbar>
-            <h1>{{memory.title}}</h1>
-            <span class="example-spacer"></span>
-            <button mat-stroked-button color="primary" style="margin-left: 5px;">
-                <mat-icon>edit</mat-icon>
-                Edit
-            </button>
+            <form [formGroup]="memoryForm" class="full-width">
+                <mat-form-field appearance="outline" class="full-width" style="margin-top: 5px;">
+                  <mat-label>Title</mat-label>
+                  <input matInput formControlName="title">
+                </mat-form-field>
+            </form>
         </mat-toolbar>
         <mat-card appearance="outlined" style="overflow: hidden;">
             <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
@@ -52,14 +52,14 @@
         <div style="overflow: hidden;">
             <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
                 <mat-grid-tile colspan="3">
-                    <form [formGroup]="memoryForm">
-                        <mat-form-field appearance="outline" class="full-width">
-                            <mat-label>Description</mat-label>
-                            <textarea matInput formControlName="description"
-                                [cdkTextareaAutosize]="true"></textarea>
-                        </mat-form-field>
+                    <form [formGroup]="memoryForm" class="full-width">
+                      <mat-form-field appearance="outline" class="full-width" style="margin-top: 5px;">
+                        <mat-label>Description</mat-label>
+                        <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18" formControlName="description"></textarea>
+                      </mat-form-field>
                     </form>
-                </mat-grid-tile>
+                  </mat-grid-tile>
+                  
                 <mat-grid-tile>
                     <mat-form-field appearance="outline">
                         <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
@@ -101,8 +101,9 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>  
         </table>-->
             <br>
-            <div class="memory-card-empty">
-                <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()">
+            <div class="memory-card-empty map-wrap">
+                <img class="map-background" src="../../../assets/img/map.PNG" alt="picture of map">
+                <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()" style="margin-top: 55px;">
                     <mat-icon class="add-icon">search</mat-icon>
                     Update Address on Map
                 </button>

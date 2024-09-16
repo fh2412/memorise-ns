@@ -75,3 +75,19 @@ h1{
   font-size: large;
   margin-left: 3rem;
 }
+
+.map-wrap {
+  overflow: hidden;
+  border-radius: 5px;
+  position: relative;
+  height: 150px;
+}
+
+.map-background {
+  opacity: 0.3;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: auto;
+}

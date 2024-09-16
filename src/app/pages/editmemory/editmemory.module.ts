@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
 import { ImageUploadModule } from '../../components/image-upload/image-upload.module';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const routes: Routes = [
   {
@@ -43,7 +44,8 @@ const routes: Routes = [
         MatInputModule,
         MatIconModule,
         FriendsAutocompleteModule,
-        ImageUploadModule
+        ImageUploadModule,
+        MatToolbarModule
     ]
 })
 export class EditMemoryModule { }

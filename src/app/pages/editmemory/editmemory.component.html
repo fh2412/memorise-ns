@@ -3,82 +3,110 @@
         <h1>EDIT MEMORY</h1>
     </div>
     <div class="actions">
-        <button mat-flat-button class="save" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-        <button mat-flat-button class="discard" (click)="onDeleteClick('DISCARD')"><mat-icon>close</mat-icon>DISCARD</button>
-        <button mat-flat-button color="warn" (click)="onDeleteClick('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
+        <button mat-flat-button color="primary" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
+        <button mat-flat-button class="discard"
+            (click)="onDeleteClick('DISCARD')"><mat-icon>close</mat-icon>DISCARD</button>
+        <button mat-flat-button color="warn"
+            (click)="onDeleteClick('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 
 <mat-divider></mat-divider>
 
-<div *ngIf="this.memory">
-    <mat-grid-list cols="3" rowHeight="2:1" [gutterSize]="'4px'">
-        <!-- First Row -->
-        <mat-grid-tile colspan="2" rowspan="2">
-            <div class="memory-color">
-                <form [formGroup]="memoryForm">
+<section class="bd-home-section bd-theme-memorise" *ngIf="memory">
+    <div class="container">
+        <mat-toolbar>
+            <h1>{{memory.title}}</h1>
+            <span class="example-spacer"></span>
+            <button mat-stroked-button color="primary" style="margin-left: 5px;">
+                <mat-icon>edit</mat-icon>
+                Edit
+            </button>
+        </mat-toolbar>
+        <mat-card appearance="outlined" style="overflow: hidden;">
+            <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+                <mat-grid-tile colspan="2" rowspan="2">
+                    <div class="memory-card-empty">Add Pictures</div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="memory-card-empty">Add Pictures</div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="memory-card-empty">Add Pictures</div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="memory-card-empty">Add Pictures</div>
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <div class="memory-card-empty">Add Pictures</div>
+                </mat-grid-tile>
+                <div style="position: absolute; bottom: 24px; right: 24px;">
+                    <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;">
+                        <mat-icon>apps</mat-icon>
+                        Manage Pictures
+                    </button>
+                </div>
+            </mat-grid-list>
+        </mat-card>
+        <br><br>
+        <div style="overflow: hidden;">
+            <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+                <mat-grid-tile colspan="3">
+                    <form [formGroup]="memoryForm">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Description</mat-label>
+                            <textarea matInput formControlName="description"
+                                [cdkTextareaAutosize]="true"></textarea>
+                        </mat-form-field>
+                    </form>
+                </mat-grid-tile>
+                <mat-grid-tile>
                     <mat-form-field appearance="outline">
-                        <mat-label>Title</mat-label>
-                        <input matInput placeholder="Title" formControlName="title">
-                    </mat-form-field>
-                    <mat-form-field appearance="outline" class="form-desc">
-                        <mat-label>Description</mat-label>
-                        <textarea matInput placeholder="Description" formControlName="description" [cdkTextareaAutosize]="true" class="form-desc"></textarea>
-                    </mat-form-field>
-                </form>
-            </div>
-        </mat-grid-tile>
-
-        <mat-grid-tile colspan="1" rowspan="2">
-            <div class="memory-color">
-                <h2>Friends:</h2>
-                <div>
-                    <span style="margin-left: 30px;">Select the friends you want to add and hit "Save"!</span>
-                    <div class="friends-div">
-                        <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet>
-                        <button mat-flat-button class="save" (click)="addFriends()" [disabled]="newFriends"><mat-icon>add</mat-icon>Add</button></div>
-                    <button mat-flat-button color="accent" class="edit-friends" (click)="manageFriends()"><mat-icon>edit</mat-icon>Edit existing friends</button>
-                </div>
-            </div>
-        </mat-grid-tile>
-
-        <mat-grid-tile colspan="1" rowspan="1">
-            <div class="memory-color">
-                <h2>Date:</h2>
-                <mat-form-field appearance="outline">      
-                    <mat-date-range-input  [formGroup]="memoryForm" [rangePicker]="rangePicker">
-                      <input matStartDate formControlName="memory_date" placeholder="Start Date">
-                      <input matEndDate formControlName="memory_end_date" placeholder="End Date">
-                    </mat-date-range-input>
-                    <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-                    <mat-date-range-picker #rangePicker></mat-date-range-picker>
-                </mat-form-field>
-            </div>
-        </mat-grid-tile>
-        <!-- Second Row -->
-        <mat-grid-tile colspan="1" rowspan="1">
-            <div class="memory-color">
-                <h2>Photos</h2>
-                <div class="photo-buttons">
-                    <button mat-flat-button color="accent" (click)="addPhotos()">Add Photos</button>
-                    <button mat-flat-button color="accent" (click)="managePhotos()" style="margin-left: 10px;">Manage Photos</button>
-                </div>
-            </div>
-        </mat-grid-tile>
-        <mat-grid-tile colspan="1" rowspan="1">
-            <div class="memory-color">
-                <h2>Map:</h2>
+                        <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
+                            <input matStartDate formControlName="memory_date" placeholder="Start Date">
+                            <input matEndDate formControlName="memory_end_date" placeholder="End Date">
+                        </mat-date-range-input>
+                        <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+                        <mat-date-range-picker #rangePicker></mat-date-range-picker>
+                    </mat-form-field> </mat-grid-tile>
+            </mat-grid-list>
+            <br><br>
+            <!--<table mat-table [dataSource]="memorydbFriends">  
+          <ng-container matColumnDef="profilePicture">  
+            <th mat-header-cell *matHeaderCellDef> Profile Picture </th>  
+            <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'" alt="Profile Picture" width="30" height="30" class="profile"></td>  
+          </ng-container>  
+      
+          <ng-container matColumnDef="name">  
+            <th mat-header-cell *matHeaderCellDef> Name </th>  
+            <td mat-cell *matCellDef="let user"> {{user.name}} </td>  
+          </ng-container>  
+      
+          <ng-container matColumnDef="birthday">  
+            <th mat-header-cell *matHeaderCellDef> Birthday </th>  
+            <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>  
+          </ng-container>  
+      
+          <ng-container matColumnDef="country">  
+            <th mat-header-cell *matHeaderCellDef> Country </th>  
+            <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}" width="30" height="20"> {{user.country}} </td>  
+          </ng-container>  
+      
+          <ng-container matColumnDef="sharedMemories">  
+            <th mat-header-cell *matHeaderCellDef> Shared Memories </th>  
+            <td mat-cell *matCellDef="let user"> {{user.sharedMemories}} </td>  
+          </ng-container>  
+      
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>  
+        </table>-->
+            <br>
+            <div class="memory-card-empty">
                 <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()">
                     <mat-icon class="add-icon">search</mat-icon>
                     Update Address on Map
                 </button>
             </div>
-        </mat-grid-tile>
-        <!--<mat-grid-tile colspan="1" rowspan="1">
-            <div class="memory-color">
-                <h2>Additional Space:</h2>
-                <span>additional</span>
-            </div>
-        </mat-grid-tile>-->
-    </mat-grid-list>
-</div>
+        </div>
+    </div>
+</section>

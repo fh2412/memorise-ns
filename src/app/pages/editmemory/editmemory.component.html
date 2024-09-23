@@ -17,12 +17,12 @@
     <div class="container">
         <div class="title-row">
             <div class="title">
-            <form [formGroup]="memoryForm" class="full-width">
-                <mat-form-field appearance="outline" class="full-width">
-                    <mat-label>Title</mat-label>
-                    <input matInput formControlName="title">
-                </mat-form-field>
-            </form>
+                <form [formGroup]="memoryForm" class="full-width">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Title</mat-label>
+                        <input matInput formControlName="title">
+                    </mat-form-field>
+                </form>
             </div>
             <div class="buttons">
                 <button mat-stroked-button color="primary" style="background-color: white;" (click)="managePhotos()">
@@ -59,36 +59,43 @@
                     </mat-form-field> </mat-grid-tile>
             </mat-grid-list>
             <br><br>
-            <!--<table mat-table [dataSource]="memorydbFriends">  
-          <ng-container matColumnDef="profilePicture">  
-            <th mat-header-cell *matHeaderCellDef> Profile Picture </th>  
-            <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'" alt="Profile Picture" width="30" height="30" class="profile"></td>  
-          </ng-container>  
-      
-          <ng-container matColumnDef="name">  
-            <th mat-header-cell *matHeaderCellDef> Name </th>  
-            <td mat-cell *matCellDef="let user"> {{user.name}} </td>  
-          </ng-container>  
-      
-          <ng-container matColumnDef="birthday">  
-            <th mat-header-cell *matHeaderCellDef> Birthday </th>  
-            <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>  
-          </ng-container>  
-      
-          <ng-container matColumnDef="country">  
-            <th mat-header-cell *matHeaderCellDef> Country </th>  
-            <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}" width="30" height="20"> {{user.country}} </td>  
-          </ng-container>  
-      
-          <ng-container matColumnDef="sharedMemories">  
-            <th mat-header-cell *matHeaderCellDef> Shared Memories </th>  
-            <td mat-cell *matCellDef="let user"> {{user.sharedMemories}} </td>  
-          </ng-container>  
-      
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>  
-        </table>-->
-            <br>
+            <table mat-table [dataSource]="friends">
+                <ng-container matColumnDef="profilePicture">
+                    <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
+                    <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'"
+                            alt="Profile Picture" width="30" height="30" class="profile"></td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Name </th>
+                    <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="birthday">
+                    <th mat-header-cell *matHeaderCellDef> Birthday </th>
+                    <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="country">
+                    <th mat-header-cell *matHeaderCellDef> Country </th>
+                    <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag"
+                            alt="{{user.country || 'Not Provided'}}" width="30" height="20"> {{user.country}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="sharedMemories">
+                    <th mat-header-cell *matHeaderCellDef> Actions </th>
+                    <td mat-cell *matCellDef="let user">
+                        <button mat-stroked-button color="warn" (click)="removeFriend()">
+                            <mat-icon>person_remove</mat-icon>
+                            Remove
+                        </button>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+            <br><br>
             <div class="memory-card-empty map-wrap">
                 <img class="map-background" src="../../../assets/img/map.PNG" alt="picture of map">
                 <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()"

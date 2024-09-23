@@ -28,7 +28,6 @@ import { SeeAllFirendsDialogComponent } from './components/_dialogs/see-all-frie
 import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
-import { ManageFriendsDialogComponent } from './components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
 import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
@@ -48,7 +47,6 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
     SeeAllFirendsDialogComponent,
     UploadProgressDialogComponent,
     ImageDialogComponent,
-    ManageFriendsDialogComponent,
     InfoDialogComponent,
     ConfirmDialogComponent,
     LinkModalComponent,

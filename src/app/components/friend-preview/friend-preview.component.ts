@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 
@@ -29,10 +28,7 @@ export class FriendPreviewComponent {
 
   async requestFriend(friend: any, methode: string, req: boolean) {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
-    if(methode == "Remove from Memory"){
-      this.onButtonClick();
-    }
-    else if(methode == "Accept"){
+    if(methode == "Accept"){
       this.manageFriedService.acceptFriendRequest(friend.user_id, this.loggedInUserId);
     }
     else if(methode == "Remove" && req == false){
@@ -48,9 +44,5 @@ export class FriendPreviewComponent {
       this.manageFriedService.sendFriendRequest(friend.user_id, this.loggedInUserId);
     }
     this.requested = !this.requested;
-  }
-
-  onButtonClick(): void {
-    this.buttonClicked.emit(this.friend);
   }
 }

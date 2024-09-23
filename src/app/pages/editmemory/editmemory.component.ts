@@ -3,12 +3,12 @@ import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ManageFriendsDialogComponent } from '../../components/_dialogs/manage-friends-dialog/manage-friends-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { LocationService } from '../../services/location.service';
 import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-editmemory',
@@ -16,8 +16,10 @@ import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components
   styleUrl: './editmemory.component.scss'
 })
 export class EditmemoryComponent {
+  loggedInUserId: any;
   memoryId: string = '';
   memory: any;
+  friends: any;
   firebaseId: string = '';
   memoryForm: FormGroup;
   isFormChanged: boolean = true;
@@ -25,7 +27,9 @@ export class EditmemoryComponent {
   newFriends: boolean = true;
   parentSelectedFiles: File[] = [];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private memoryService: MemoryService, private locationService: LocationService, private firebaseService: FileUploadService, private dialog: MatDialog) {
+  displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
+
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService,private memoryService: MemoryService, private locationService: LocationService, private firebaseService: FileUploadService, private dialog: MatDialog) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
       title: [''],
@@ -35,10 +39,13 @@ export class EditmemoryComponent {
   }
 
   async ngOnInit(): Promise<void> {
+    this.loggedInUserId = await this.userService.getLoggedInUserId();
+
     this.route.paramMap.subscribe((params) => {
       this.memoryId = params.get('id')!;
     });
     await this.getMemory();
+    await this.getFriends();
     //this.memoryForm.valueChanges.subscribe(() => {
     //  this.isFormChanged = true;
     //});
@@ -75,6 +82,18 @@ export class EditmemoryComponent {
           memory_date: this.memory.memory_date,
           memory_end_date: this.memory.memory_end_date
         });
+      },
+      (error) => {
+        console.error('Error getting memory:', error);
+      }
+    );
+  }
+
+  getFriends() {
+    this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
+      (response) => {
+        this.friends=response;
+        console.log("Friends: ", this.friends);
       },
       (error) => {
         console.error('Error getting memory:', error);
@@ -123,11 +142,8 @@ export class EditmemoryComponent {
     );
   }
 
-  manageFriends(): void {
-    const dialogRef = this.dialog.open(ManageFriendsDialogComponent, {
-      width: '35%', 
-      data: { memoryId: this.memoryId }
-    });
+  removeFriend(): void {
+
   }
 
   onSelectedFilesChange(files: File[]) {

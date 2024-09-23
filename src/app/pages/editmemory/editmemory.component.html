@@ -15,51 +15,39 @@
 
 <section class="bd-home-section bd-theme-memorise" *ngIf="memory">
     <div class="container">
-        <mat-toolbar>
+        <div class="title-row">
+            <div class="title">
             <form [formGroup]="memoryForm" class="full-width">
-                <mat-form-field appearance="outline" class="full-width" style="margin-top: 5px;">
-                  <mat-label>Title</mat-label>
-                  <input matInput formControlName="title">
+                <mat-form-field appearance="outline" class="full-width">
+                    <mat-label>Title</mat-label>
+                    <input matInput formControlName="title">
                 </mat-form-field>
             </form>
-        </mat-toolbar>
-        <mat-card appearance="outlined" style="overflow: hidden;">
-            <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-                <mat-grid-tile colspan="2" rowspan="2">
-                    <div class="memory-card-empty">Add Pictures</div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <div class="memory-card-empty">Add Pictures</div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <div class="memory-card-empty">Add Pictures</div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <div class="memory-card-empty">Add Pictures</div>
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <div class="memory-card-empty">Add Pictures</div>
-                </mat-grid-tile>
-                <div style="position: absolute; bottom: 24px; right: 24px;">
-                    <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;">
-                        <mat-icon>apps</mat-icon>
-                        Manage Pictures
-                    </button>
-                </div>
-            </mat-grid-list>
-        </mat-card>
+            </div>
+            <div class="buttons">
+                <button mat-stroked-button color="primary" style="background-color: white;" (click)="managePhotos()">
+                    <mat-icon>apps</mat-icon>
+                    Manage Pictures
+                </button>
+                <button mat-flat-button color="primary" (click)="addPhotos()">
+                    <mat-icon>add_photo_alternate</mat-icon>
+                    Add Photos
+                </button>
+            </div>
+        </div>
         <br><br>
         <div style="overflow: hidden;">
             <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
                 <mat-grid-tile colspan="3">
                     <form [formGroup]="memoryForm" class="full-width">
-                      <mat-form-field appearance="outline" class="full-width" style="margin-top: 5px;">
-                        <mat-label>Description</mat-label>
-                        <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18" formControlName="description"></textarea>
-                      </mat-form-field>
+                        <mat-form-field appearance="outline" class="full-width" style="margin-top: 5px;">
+                            <mat-label>Description</mat-label>
+                            <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18"
+                                formControlName="description"></textarea>
+                        </mat-form-field>
                     </form>
-                  </mat-grid-tile>
-                  
+                </mat-grid-tile>
+
                 <mat-grid-tile>
                     <mat-form-field appearance="outline">
                         <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
@@ -103,7 +91,8 @@
             <br>
             <div class="memory-card-empty map-wrap">
                 <img class="map-background" src="../../../assets/img/map.PNG" alt="picture of map">
-                <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()" style="margin-top: 55px;">
+                <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()"
+                    style="margin-top: 55px;">
                     <mat-icon class="add-icon">search</mat-icon>
                     Update Address on Map
                 </button>

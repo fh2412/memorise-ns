@@ -1,10 +1,14 @@
 .memory-card{
     border-radius: 12px;
+    height: 100%;
   }
 
   .tag{
     display: flex; /* Make the content itself a flex container */
     align-items: center;
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
     mat-icon{
       margin-right: 3px;
     }
@@ -32,14 +36,10 @@
     overflow: hidden;
     -webkit-line-clamp: 2; /* For WebKit-based browsers */
     -webkit-box-orient: vertical;
-  
-    /* Add the standard line-clamp for future compatibility */
     line-clamp: 2; /* Standard property (currently not well-supported) */
     box-orient: vertical; /* Standard property */
-  
     text-overflow: ellipsis;
     max-width: 100%;
-    height: 3em; /* Adjust based on your font size to fit two lines */
   }
 
   .truncate-title{

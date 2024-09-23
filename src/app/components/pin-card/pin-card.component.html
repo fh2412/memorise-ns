@@ -1,17 +1,18 @@
 <mat-card class="memory-card" appearance="outlined" *ngIf="memory && memory.title !== ''">
-    <mat-card-content>
-      <mat-card-title-group>
-        <mat-card-title>{{memory.title}}</mat-card-title>
-        <mat-chip color="primary">Public</mat-chip>
-      </mat-card-title-group>
-      <mat-card-subtitle>{{memory.text}}</mat-card-subtitle>
-      <br>
-      <span class="tag">
-        <mat-icon color="primary">circle</mat-icon>
-        Beta Memory
-      </span>
-    </mat-card-content>
+  <mat-card-content>
+    <mat-card-title-group>
+      <div class="truncate-title"><mat-card-title class="truncate">{{memory.title}}</mat-card-title></div>
+      <mat-chip color="primary">Public</mat-chip>
+    </mat-card-title-group>
+    <mat-card-subtitle class="two-line-truncate">{{memory.text}}</mat-card-subtitle>
+    <br>
+    <span class="tag">
+      <mat-icon color="primary">circle</mat-icon>
+      Beta Memory
+    </span>
+  </mat-card-content>
 </mat-card>
+
 
 <mat-card class="memory-card-empty" appearance="outlined" *ngIf="memory && memory.title === ''">
     <p>No favourite Memory added yet</p>

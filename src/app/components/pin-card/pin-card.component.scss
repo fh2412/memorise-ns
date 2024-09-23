@@ -18,3 +18,35 @@
     justify-content: center;
     font-style: italic;
   }
+
+  .truncate {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100%; /* adjust based on container */
+  }
+
+  .two-line-truncate {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2; /* For WebKit-based browsers */
+    -webkit-box-orient: vertical;
+  
+    /* Add the standard line-clamp for future compatibility */
+    line-clamp: 2; /* Standard property (currently not well-supported) */
+    box-orient: vertical; /* Standard property */
+  
+    text-overflow: ellipsis;
+    max-width: 100%;
+    height: 3em; /* Adjust based on your font size to fit two lines */
+  }
+
+  .truncate-title{
+    width: 80%;
+  }
+
+  mat-card-title-group{
+    justify-content: flex-start;
+  }
+  

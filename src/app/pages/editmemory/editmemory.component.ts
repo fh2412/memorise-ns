@@ -19,18 +19,19 @@ export class EditmemoryComponent {
   loggedInUserId: any;
   memoryId: string = '';
   memory: any;
+
   friends: any;
+  friendsToAdd: any[] = [];
   friendsToDelete: any[] = [];
+
   firebaseId: string = '';
   memoryForm: FormGroup;
   isFormChanged: boolean = true;
   emailArray: any;
-  newFriends: boolean = true;
-  parentSelectedFiles: File[] = [];
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService,private memoryService: MemoryService, private locationService: LocationService, private firebaseService: FileUploadService, private dialog: MatDialog) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService, private memoryService: MemoryService, private locationService: LocationService, private firebaseService: FileUploadService, private dialog: MatDialog) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
       title: [''],
@@ -47,23 +48,20 @@ export class EditmemoryComponent {
     });
     await this.getMemory();
     await this.getFriends();
-    //this.memoryForm.valueChanges.subscribe(() => {
-    //  this.isFormChanged = true;
-    //});
   }
 
   async deleteMemory() {
     await this.memoryService.deleteMemoryAndFriends(this.memoryId).subscribe(
       (response) => {
         this.firebaseService.deleteMemorysFolder(this.firebaseId)
-        .subscribe(
-          () => {
-            this.router.navigate(['/home']);
-          },
-          (error) => {
-            console.error('Error deleting folder:', error);
-          }
-        );
+          .subscribe(
+            () => {
+              this.router.navigate(['/home']);
+            },
+            (error) => {
+              console.error('Error deleting folder:', error);
+            }
+          );
       },
       (error) => {
         console.error('Error deleting memory and friends:', error);
@@ -93,7 +91,7 @@ export class EditmemoryComponent {
   getFriends() {
     this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
       (response) => {
-        this.friends=response;
+        this.friends = response;
         console.log("Friends: ", this.friends);
       },
       (error) => {
@@ -106,8 +104,8 @@ export class EditmemoryComponent {
     this.router.navigate(['/home']);
   }
 
-  saveChanges(): void {
-    this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).subscribe(
+  async saveChanges(): Promise<void> {
+    await this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).subscribe(
       (response) => {
         console.log(response); // Handle success response
       },
@@ -115,21 +113,44 @@ export class EditmemoryComponent {
         console.error('Error updating memory:', error); // Handle error
       }
     );
+    await this.updateFriends(this.memoryId);
     this.router.navigate(['/home']);
   }
 
+  updateFriends(memoryId: string) {
+    // Add friends to memory
+    const friendData = { emails: this.friendsToAdd, memoryId: this.memoryId };
+
+    this.memoryService.addFriendToMemory(friendData).subscribe(
+      (friendResponse) => {
+        console.log('Friend added to memory successfully:', friendResponse);
+        window.location.reload();
+      },
+      (friendError) => {
+        console.error('Error adding friend to memory:', friendError);
+        // Handle error (e.g., show an error message to the user)
+      }
+    );
+
+    // Delete friends from memory
+    this.friendsToDelete.forEach(friend => {
+      this.memoryService.deleteFriendsFromMemory(friend.id, memoryId).subscribe(
+        response => {
+          console.log('Friend deleted successfully:', response);
+        },
+        error => {
+          console.error('Error deleting friend:', error);
+        }
+      );
+    });
+  }
+
   onSelectedValuesChange(selectedValues: string[]) {
-    this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
-    if(this.emailArray.length>0){
-      this.newFriends=false;
-    }
-    else{
-      this.newFriends=true;
-    }
+    this.friendsToAdd = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
   }
 
 
-  async addFriends(): Promise<void>{
+  async addFriends(): Promise<void> {
     const friendData = { emails: this.emailArray, memoryId: this.memoryId };
     await this.memoryService.addFriendToMemory(friendData).subscribe(
       (friendResponse) => {
@@ -161,36 +182,31 @@ export class EditmemoryComponent {
     }
   }
 
-  onSelectedFilesChange(files: File[]) {
-    this.parentSelectedFiles = files;
-    // Do whatever you need with the selected files in the parent component
-  }
-
-  addPhotos(){
+  addPhotos() {
     const currentUrl = this.router.url;
     const newUrl = currentUrl + '/addphotos';
     this.router.navigateByUrl(newUrl);
   }
 
-  managePhotos(){
+  managePhotos() {
     this.router.navigate(['/editmemory/managephotos', this.memory.image_url]);
   }
 
-  mapCenter: google.maps.LatLng= new google.maps.LatLng(47.5, 14.2);
+  mapCenter: google.maps.LatLng = new google.maps.LatLng(47.5, 14.2);
   openMapDialog(): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
       data: { mapCenter: this.mapCenter },
       width: '500px',
       height: '542px'
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       this.openInfoDialog();
       if (result) {
-        if(this.memory.location_id == 1){
+        if (this.memory.location_id == 1) {
           this.create_location(result[1]);
         }
-        else{
+        else {
           this.updateLocation(result[1]);
         }
       }
@@ -210,7 +226,7 @@ export class EditmemoryComponent {
     });
   }
 
-  create_location(locationData: any){
+  create_location(locationData: any) {
     this.locationService.createLocation(locationData).subscribe(
       (response: { message: string, locationId: any }) => {
         const location_id = response.locationId[0]?.insertId;
@@ -242,8 +258,8 @@ export class EditmemoryComponent {
 
   onDeleteClick(status: string) {
     const confirmationData: ConfirmationDialogData = {
-      title: 'Confirm '+status,
-      message: 'Are you sure you want to '+status+' this memory?'
+      title: 'Confirm ' + status,
+      message: 'Are you sure you want to ' + status + ' this memory?'
     };
 
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
@@ -253,10 +269,10 @@ export class EditmemoryComponent {
 
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        if(status==='DELETE'){
+        if (status === 'DELETE') {
           this.deleteMemory();
         }
-        else{
+        else {
           this.goToHome();
         }
       }

@@ -1,4 +1,3 @@
-import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject} from '@angular/core';
 import {FormControl } from '@angular/forms';
 import {MatAutocompleteSelectedEvent} from '@angular/material/autocomplete';

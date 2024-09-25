@@ -21,7 +21,7 @@ export class FriendsService {
   }
 
   getMemoriesMissingFriends(memoryId: string, userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}//missingMemory/${memoryId}/${userId}`);
+    return this.http.get<any[]>(`${this.apiUrl}/missingMemory/${memoryId}/${userId}`);
   }
 
   getPendingFriends(userId: string): Observable<any[]> {

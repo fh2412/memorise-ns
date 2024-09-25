@@ -20,6 +20,7 @@ export class EditmemoryComponent {
   memoryId: string = '';
   memory: any;
   friends: any;
+  friendsToDelete: any[] = [];
   firebaseId: string = '';
   memoryForm: FormGroup;
   isFormChanged: boolean = true;
@@ -142,8 +143,22 @@ export class EditmemoryComponent {
     );
   }
 
-  removeFriend(): void {
-
+  removeFriend(user: any) {
+    // Remove the friend from the "friends" array
+    const index = this.friends.indexOf(user);
+    if (index > -1) {
+      this.friends.splice(index, 1);
+      // Add the friend to the "friendsToDelete" array
+      this.friendsToDelete.push(user);
+    }
+  }
+  reverseDelete(user: any) {
+    const index = this.friendsToDelete.indexOf(user);
+    if (index > -1) {
+      this.friendsToDelete.splice(index, 1);
+      // Add the friend to the "friendsToDelete" array
+      this.friends.push(user);
+    }
   }
 
   onSelectedFilesChange(files: File[]) {

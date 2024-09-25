@@ -92,7 +92,6 @@ export class EditmemoryComponent {
     this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
       (response) => {
         this.friends = response;
-        console.log("Friends: ", this.friends);
       },
       (error) => {
         console.error('Error getting memory:', error);
@@ -119,30 +118,33 @@ export class EditmemoryComponent {
 
   updateFriends(memoryId: string) {
     // Add friends to memory
-    const friendData = { emails: this.friendsToAdd, memoryId: this.memoryId };
-
-    this.memoryService.addFriendToMemory(friendData).subscribe(
-      (friendResponse) => {
-        console.log('Friend added to memory successfully:', friendResponse);
-        window.location.reload();
-      },
-      (friendError) => {
-        console.error('Error adding friend to memory:', friendError);
-        // Handle error (e.g., show an error message to the user)
-      }
-    );
-
-    // Delete friends from memory
-    this.friendsToDelete.forEach(friend => {
-      this.memoryService.deleteFriendsFromMemory(friend.id, memoryId).subscribe(
-        response => {
-          console.log('Friend deleted successfully:', response);
+    if(this.friendsToAdd.length>0){
+      const friendData = { emails: this.friendsToAdd, memoryId: this.memoryId };
+      this.memoryService.addFriendToMemory(friendData).subscribe(
+        (friendResponse) => {
+          console.log('Friend added to memory successfully:', friendResponse);
+          window.location.reload();
         },
-        error => {
-          console.error('Error deleting friend:', error);
+        (friendError) => {
+          console.error('Error adding friend to memory:', friendError);
+          // Handle error (e.g., show an error message to the user)
         }
       );
-    });
+    }
+    // Delete friends from memory
+    if(this.friendsToDelete.length>0){
+      this.friendsToDelete.forEach(async friend => {
+
+        await this.memoryService.deleteFriendsFromMemory(friend.user_id, memoryId).subscribe(
+          response => {
+            console.log('Friend deleted successfully: ', friend, response);
+          },
+          error => {
+            console.error('Error deleting friend:', error);
+          }
+        );
+      });
+    }
   }
 
   onSelectedValuesChange(selectedValues: string[]) {

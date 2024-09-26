@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatTableModule} from '@angular/material/table'; 
 import { ImageGalleryComponent } from './image-gallery.component';
+import { BackButtonModule } from "../../../components/back-button/back-button.module";
 
 const routes: Routes = [
   {
@@ -38,7 +39,8 @@ const routes: Routes = [
     MatDividerModule,
     MatButtonModule,
     MatToolbarModule,
-    MatTableModule
+    MatTableModule,
+    BackButtonModule
 ]
 })
 export class ImageGalleryModule { }

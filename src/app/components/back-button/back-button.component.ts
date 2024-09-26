@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-back-button',
@@ -7,11 +7,10 @@ import { Router } from '@angular/router';
   styleUrl: './back-button.component.scss'
 })
 export class BackButtonComponent {
-  constructor(private router: Router){}
-  
+  constructor(private location: Location) {}  
   @Input() text: string = "Back";
 
   cancelCreation(): void{
-    this.router.navigate(['/home']);
+    this.location.back();
   }
 }

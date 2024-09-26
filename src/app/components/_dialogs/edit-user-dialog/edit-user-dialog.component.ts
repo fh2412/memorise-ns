@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 export interface DialogData {
+  instagram: string;
   name: string;
   bio: string;
   dob: string;
@@ -16,7 +17,7 @@ export interface DialogData {
   // Component metadata
   selector: 'edit-user-dialog',
   templateUrl: 'edit-user-dialog.component.html',
-  styleUrls: ['edit-user-dialog.component.css']
+  styleUrls: ['edit-user-dialog.component.scss']
 })
 export class EditUserDialogComponent {
   @Output() updateUserData = new EventEmitter<any>();
@@ -30,7 +31,8 @@ export class EditUserDialogComponent {
         dob: userdata.dob,
         gender: userdata.gender,
         country: userdata.country,
-        username: userdata.username
+        username: userdata.username,
+        instagram: userdata.instagram
       });
       console.log(this.userForm.value);
     }

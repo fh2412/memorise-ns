@@ -18,12 +18,8 @@
         <div matListItemTitle>{{userdb.formatted_dob}}</div>
       </mat-list-item>
       <mat-list-item>
-        <mat-icon matListItemIcon>access_timemat-icon</mat-icon>
-        <div matListItemTitle>Timezone</div>
-      </mat-list-item>
-      <mat-list-item>
         <mat-icon matListItemIcon>public</mat-icon>
-        <div matListItemTitle>instagram</div>
+        <div matListItemTitle>{{userdb.instagram || "not provided"}}</div>
       </mat-list-item>
     </mat-list>
   </div>

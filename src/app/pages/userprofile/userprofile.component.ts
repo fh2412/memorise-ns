@@ -13,6 +13,7 @@ import { PinnedDialogComponent } from '../../components/_dialogs/pinned-dialog/p
 import { MemoryService } from '../../services/memory.service';
 import { pinnedMemoryService } from '../../services/pinnedMemorService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
+import { release } from 'os';
 
 @Component({
   selector: 'app-userprofile',
@@ -210,7 +211,7 @@ export class UserProfileComponent implements OnInit {
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '40%',
-      data: { name: this.user.name, bio: this.user.bio, dob: this.user.dob, gender: this.user.gender, country: this.user.country, username: this.user.username },
+      data: { name: this.user.name, bio: this.user.bio, dob: this.user.dob, gender: this.user.gender, country: this.user.country, username: this.user.username, instagram: this.user.instagram },
     });
     // Subscribe to afterClosed event to handle any actions after the dialog closes
     dialogRef.componentInstance.updateUserData.subscribe((result: any) => {
@@ -223,7 +224,7 @@ export class UserProfileComponent implements OnInit {
             this.user.formatted_dob = result.dob;
             this.user.country = result.country;
             this.user.username = result.username;
-
+            this.user.instagram = result.instagram;
             dialogRef.close();
           },
           (error) => {

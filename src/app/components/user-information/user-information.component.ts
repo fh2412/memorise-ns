@@ -27,6 +27,7 @@ export class UserInformationComponent implements OnInit {
         this.userService.getUserByEmail(this.currentUser.email).subscribe(
           (data) => {
             this.userdb = data;
+            console.log(this.userdb);
           },
           (error: any) => {
             console.error('Error fetching user data:', error);

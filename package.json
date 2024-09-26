@@ -26,7 +26,7 @@
     "@angular/router": "^17.0.0",
     "@angular/ssr": "^17.0.8",
     "@googlemaps/markerclusterer": "^2.5.3",
-    "express": "^4.19.2",
+    "express": "^4.21.0",
     "firebase": "^10.7.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

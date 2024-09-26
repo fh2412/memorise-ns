@@ -1,0 +1,21 @@
+<div *ngFor="let l of layout">
+    <mat-grid-list cols="2" rowHeight="16:9" *ngIf="l.layout=='landscape'">
+        <mat-grid-tile colspan="2">
+            <img src="{{ l.pics[0] }}" alt="Picture">
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list cols="2" rowHeight="16:9" *ngIf="l.layout=='portrait'">
+        <mat-grid-tile rowspan="2"> <img src="{{ l.pics[0] }}" alt="Picture">
+        </mat-grid-tile>
+        <mat-grid-tile rowspan="2"> <img src="{{ l.pics[1] }}" alt="Picture">
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list cols="2" rowHeight="16:9" *ngIf="l.layout=='portrait-landscape'">
+        <mat-grid-tile rowspan="2"> <img src="{{ l.pics[0] }}" alt="Picture">
+        </mat-grid-tile>
+        <mat-grid-tile> <img src="{{ l.pics[1] }}" alt="Picture">
+        </mat-grid-tile>
+        <mat-grid-tile> <img src="{{ l.pics[2] }}" alt="Picture">
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

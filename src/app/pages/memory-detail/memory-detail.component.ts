@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
@@ -8,7 +8,6 @@ import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
 import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { ImageGalleryComponent } from '../../components/image-gallery/image-gallery.component';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 
 
@@ -41,7 +40,7 @@ export class MemoryDetailComponent {
   characterLimit: number = 150;
 
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private bottomSheet: MatBottomSheet) {}
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private bottomSheet: MatBottomSheet) {}
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -162,9 +161,7 @@ export class MemoryDetailComponent {
   }
 
   openGallery() {
-    this.bottomSheet.open(ImageGalleryComponent, {
-      data: { imageUrls: this.images }
-    });
+    this.router.navigate(['memory/', this.memoryID, 'gallery']);
   }
   openFullDescDialog() {
     this.dialog.open(FullDescriptionDialogComponent, {

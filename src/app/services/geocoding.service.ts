@@ -23,6 +23,23 @@ export class GeocodingService {
     });
   }
 
+  geocodeAddress(country: string, city: string, postalCode: string): Promise<GeocoderResponse> {
+    let geocoder = new google.maps.Geocoder();
+    const address = `${postalCode}, ${city}, ${country}`;  // Combine the address parts
+  
+    return new Promise((resolve, reject) => {
+      geocoder.geocode({ 'address': address }, (results, status) => {
+        if (status === google.maps.GeocoderStatus.OK && results) {
+          const response = new GeocoderResponse(status, results);
+          resolve(response);
+        } else {
+          reject(new Error(`Geocoding failed: ${status}`));
+        }
+      });
+    });
+  }
+  
+
   getLocation(term: string): Observable<GeocoderResponse> {
     const url = `https://maps.google.com/maps/api/geocode/json?address=${term}&sensor=false&key=${environment.googleApiKey}`;
     return this.http.get<GeocoderResponse>(url);

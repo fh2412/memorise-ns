@@ -139,6 +139,7 @@ export class MemoryDetailComponent {
     const storage = getStorage();
 
     // Create a reference under which you want to list
+    console.log(storage, '/memories', imageid);
     const listRef = ref(storage, `memories/${imageid}`);
 
     // Find all the prefixes and items.

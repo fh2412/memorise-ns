@@ -36,8 +36,6 @@ export class AddingMemoryComponent {
       lat: [''],
       l_country: [''],
       l_city: [''],
-      l_street: [''],
-      l_housenumer: [''],
       l_postcode: [''],
     });
   }
@@ -77,31 +75,12 @@ export class AddingMemoryComponent {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.formattedAddress = result[0].address_components;
-        if (this.formattedAddress.length == 9) {
-          this.memoryForm.patchValue({
-            l_street: this.formattedAddress[1].long_name,
-            l_housenumer: this.formattedAddress[0].long_name,
-            l_city: this.formattedAddress[2].long_name,
-            l_postcode: this.formattedAddress[7].long_name,
-            l_country: this.formattedAddress[6].long_name,
-          });
-        }
-        else if (this.formattedAddress.length >= 7){
-          this.memoryForm.patchValue({
-            l_street: this.formattedAddress[1].long_name,
-            l_housenumer: this.formattedAddress[0].long_name,
-            l_city: this.formattedAddress[2].long_name,
-            l_postcode: this.formattedAddress[6].long_name,
-            l_country: this.formattedAddress[5].long_name,
-          });
-        }
-        else {
-          this.memoryForm.patchValue({
-            l_city: this.formattedAddress[1].long_name,
-            l_country: this.formattedAddress[4].long_name,
-          });
-        }
+        const address = result[0].address_components;
+        this.memoryForm.patchValue({
+          l_city: this.getAddressComponents(address, 'long', 'locality'),
+          l_postcode: this.getAddressComponents(address, 'long', 'postal_code'),
+          l_country: this.getAddressComponents(address, 'long', 'country'),
+        });
         this.memoryForm.patchValue({
           lat: result[1].lat,
           lng: result[1].lng,
@@ -109,6 +88,19 @@ export class AddingMemoryComponent {
       }
     });
   }
+
+  getAddressComponents(address: any[], length: 'short' | 'long', filter: string): string | undefined {
+    const findType = (type: any) => type.types[0] === filter;
+    const location = address.map(obj => obj);
+    const rr = location.filter(findType)[0];
+  
+    return (
+      length === 'short'
+        ? rr?.short_name
+        : rr?.long_name
+    );
+  }
+  
 
   cancelCreation(): void{
     this.router.navigate(['/home']);

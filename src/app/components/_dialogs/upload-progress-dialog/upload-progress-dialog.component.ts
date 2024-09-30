@@ -3,6 +3,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
 import { LocationService } from '../../../services/location.service';
+import { GeocodingService } from '../../../services/geocoding.service';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -21,6 +22,7 @@ export class UploadProgressDialogComponent implements OnInit {
     private memoryService: MemoryService,
     private locationService: LocationService,
     private dialogRef: MatDialogRef<UploadProgressDialogComponent>,
+    private geocodingService: GeocodingService,
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.files.length).fill(0);
@@ -92,7 +94,7 @@ export class UploadProgressDialogComponent implements OnInit {
     );
   }
 
-  createMemory() {
+  async createMemory() {
     if (this.data.memoryData.valid) {
       const memoryData = this.data.memoryData.value;
       memoryData.firestore_bucket_url = this.data.googleStorageUrl;
@@ -104,8 +106,16 @@ export class UploadProgressDialogComponent implements OnInit {
         this.create_location(memoryData);
       }
       else {
-        memoryData.location_id = 1;
-        this.create_memory(memoryData);
+        if(memoryData.l_city || memoryData.l_country || memoryData.l_postcode){
+          const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
+          memoryData.lat = coords.lat.toString();
+          memoryData.lng = coords.lng.toString();
+          this.create_location(memoryData);
+        }
+        else{
+          memoryData.location_id = 1;
+          this.create_memory(memoryData);
+        }
       }
     } else {
       // Handle form validation errors if needed
@@ -138,6 +148,34 @@ export class UploadProgressDialogComponent implements OnInit {
       }
     );
   }
+
+  async get_geocoords(city: string, postcode: string, country: string): Promise<{ lat: number, lng: number }> {
+    const address = await this.geocodingService.geocodeAddress(country, city, postcode);
+  
+    if (address && address.results && address.results.length > 0) {
+      const geometry = address.results[0].geometry;
+  
+      // If bounds are present, calculate the center of the bounds
+      if (geometry.bounds) {
+        const ne = geometry.bounds.getNorthEast();
+        const sw = geometry.bounds.getSouthWest();
+  
+        const lat = (ne.lat() + sw.lat()) / 2;
+        const lng = (ne.lng() + sw.lng()) / 2;
+  
+        return { lat, lng };  // Return the approximate center of the bounds
+      } else if (geometry.location) {
+        // If bounds are not present, return the location directly
+        return {
+          lat: geometry.location.lat(),
+          lng: geometry.location.lng()
+        };
+      }
+    }
+  
+    throw new Error('Geocoding failed to return results');
+  }
+  
 
   create_location(memoryData: any) {
     this.locationService.createLocation(memoryData).subscribe(

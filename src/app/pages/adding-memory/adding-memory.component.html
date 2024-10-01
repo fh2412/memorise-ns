@@ -13,7 +13,7 @@
 
       <mat-form-field appearance="outline">
         <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
-          <input matStartDate formControlName="memory_date" placeholder="Start Date">
+          <input matStartDate formControlName="memory_date" placeholder="Start Date" required>
           <input matEndDate formControlName="memory_end_date" placeholder="End Date">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>

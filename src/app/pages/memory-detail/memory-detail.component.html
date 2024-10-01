@@ -35,8 +35,8 @@
         <mat-grid-tile colspan="3">
           <div class="full-width" *ngIf="memorydbFriends">
             <h1>Activity in City, Country</h1>
-            <span>{{selectedDate.getDate()}}-{{selectedDate.getMonth()}}-{{selectedDate.getFullYear()}},
-              {{memorydbFriends.length + 1}} people</span>
+            <span>{{selectedDate | date}},
+              {{memorydbFriends?.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory'}}</span>
             <mat-divider></mat-divider>
             <div class="profile-row" *ngIf="memoryCreator">
               <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
@@ -44,11 +44,11 @@
                 <b>{{ memoryCreator.name || 'name' }}</b><br>
                 <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
-              <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
-              <span class="more">+ {{memorydbFriends.length}} more</span>
+              <mat-divider vertical style="height: 4rem; margin-left: 3rem;" *ngIf="memorydbFriends?.length > 0"></mat-divider>
+              <span class="more" *ngIf="memorydbFriends?.length > 0">+ {{memorydbFriends.length}} more</span>
             </div>
             <mat-card class="desc">
-              <mat-card-content>
+              <mat-card-content  *ngIf="memorydb.text.length>0">
                 <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>
                 <div *ngIf="!showMore" class="custom-pre">{{ memorydb.text }}</div>
                 <button *ngIf="showMore" mat-stroked-button color="primary" (click)="openFullDescDialog()">
@@ -56,6 +56,7 @@
                   <mat-icon>chevron_right</mat-icon>
                 </button>
               </mat-card-content>
+              <mat-card-content *ngIf="memorydb.text.length==0">There is no Discription added to your Memory yet! Provide more Information to remember your Adventure forever!</mat-card-content>
             </mat-card>            
           </div>
         </mat-grid-tile>
@@ -64,7 +65,7 @@
         </mat-grid-tile>
       </mat-grid-list>
       <br><br>
-      <table mat-table [dataSource]="memorydbFriends">  
+      <table mat-table [dataSource]="memorydbFriends" *ngIf="memorydbFriends?.length > 0"> 
         <!-- Profile Picture Column -->  
         <ng-container matColumnDef="profilePicture">  
           <th mat-header-cell *matHeaderCellDef> Profile Picture </th>  
@@ -98,6 +99,9 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>  
       </table>
+      <mat-card *ngIf="!memorydbFriends?.length" class="desc">
+        <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is more fun together!</mat-card-content>
+      </mat-card>
       <br>
       <div class="desc" style="height: 300px; border-radius: 0%;" *ngIf="location">
           <ng-container *ngIf="location[0].location_id != '1'">

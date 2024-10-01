@@ -6,6 +6,7 @@ import { UserService } from '../../services/userService';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
+import { LocationService } from '../../services/location.service';
 
 @Component({
   selector: 'app-adding-memory',
@@ -22,7 +23,7 @@ export class AddingMemoryComponent {
   memoryForm: FormGroup;
   userId: string | null | undefined;
   emailArray: any;
-  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService, private router: Router) {
+  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService, private locationService: LocationService, private router: Router) {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId],
       title: ['', Validators.required],
@@ -77,9 +78,9 @@ export class AddingMemoryComponent {
       if (result) {
         const address = result[0].address_components;
         this.memoryForm.patchValue({
-          l_city: this.getAddressComponents(address, 'long', 'locality'),
-          l_postcode: this.getAddressComponents(address, 'long', 'postal_code'),
-          l_country: this.getAddressComponents(address, 'long', 'country'),
+          l_city: this.locationService.getAddressComponents(address, 'long', 'locality'),
+          l_postcode: this.locationService.getAddressComponents(address, 'long', 'postal_code'),
+          l_country: this.locationService.getAddressComponents(address, 'long', 'country'),
         });
         this.memoryForm.patchValue({
           lat: result[1].lat,
@@ -88,19 +89,6 @@ export class AddingMemoryComponent {
       }
     });
   }
-
-  getAddressComponents(address: any[], length: 'short' | 'long', filter: string): string | undefined {
-    const findType = (type: any) => type.types[0] === filter;
-    const location = address.map(obj => obj);
-    const rr = location.filter(findType)[0];
-  
-    return (
-      length === 'short'
-        ? rr?.short_name
-        : rr?.long_name
-    );
-  }
-  
 
   cancelCreation(): void{
     this.router.navigate(['/home']);

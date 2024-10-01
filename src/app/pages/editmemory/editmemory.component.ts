@@ -37,6 +37,11 @@ export class EditmemoryComponent {
       title: [''],
       memory_date: [''],
       memory_end_date: [''],
+      lng: [''],
+      lat: [''],
+      l_country: [''],
+      l_city: [''],
+      l_postcode: [''],
     });
   }
 
@@ -205,11 +210,22 @@ export class EditmemoryComponent {
     dialogRef.afterClosed().subscribe(result => {
       this.openInfoDialog();
       if (result) {
+        const address = result[0].address_components;
+    
+        this.memoryForm.patchValue({
+          l_city: this.locationService.getAddressComponents(address, 'long', 'locality'),
+          l_postcode: this.locationService.getAddressComponents(address, 'long', 'postal_code'),
+          l_country: this.locationService.getAddressComponents(address, 'long', 'country'),
+        });
+        this.memoryForm.patchValue({
+          lat: result[1].lat,
+          lng: result[1].lng,
+        });
         if (this.memory.location_id == 1) {
-          this.create_location(result[1]);
+          this.create_location();
         }
         else {
-          this.updateLocation(result[1]);
+          this.updateLocation();
         }
       }
     });
@@ -228,8 +244,8 @@ export class EditmemoryComponent {
     });
   }
 
-  create_location(locationData: any) {
-    this.locationService.createLocation(locationData).subscribe(
+  create_location() {
+    this.locationService.createLocation(this.memoryForm.value).subscribe(
       (response: { message: string, locationId: any }) => {
         const location_id = response.locationId[0]?.insertId;
         this.memoryService.updateMemoryLocation(this.memory.memory_id, location_id).subscribe(
@@ -247,8 +263,8 @@ export class EditmemoryComponent {
     );
   }
 
-  updateLocation(locationData: any) {
-    this.locationService.updateLocation(this.memory.location_id, locationData)
+  updateLocation() {
+    this.locationService.updateLocation(this.memory.location_id, this.memoryForm.value)
       .subscribe(response => {
         console.log('Location updated:', response);
         // Handle successful update (e.g., display a success message)

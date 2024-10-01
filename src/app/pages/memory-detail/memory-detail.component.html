@@ -15,12 +15,12 @@
     <mat-card appearance="outlined" style="overflow: hidden;">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="2" rowspan="2">
-          <img class="image-size" [src]="images[0]">
+          <img class="image-size" [src]="previewImages[0]">
         </mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="images[1]"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="images[2]"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="images[3]"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="images[4]"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="previewImages[1]"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="previewImages[2]"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="previewImages[3]"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="previewImages[4]"></mat-grid-tile>
         <div style="position: absolute; bottom: 24px; right: 24px;">
           <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;" (click)="openGallery()">
             <mat-icon>apps</mat-icon>

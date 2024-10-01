@@ -30,6 +30,8 @@ export class MemoryDetailComponent {
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];  
   
   images: string[] = [];
+  previewImages: string[] = [];
+
 
   uniqueID: string = "your-unique-id";
   downloadURLs: any;
@@ -137,29 +139,40 @@ export class MemoryDetailComponent {
   
   getImages(imageid: any) {
     const storage = getStorage();
-
+  
     // Create a reference under which you want to list
-    console.log(storage, '/memories', imageid);
     const listRef = ref(storage, `memories/${imageid}`);
-
+  
     // Find all the prefixes and items.
     listAll(listRef)
       .then((res) => {
-        res.prefixes.forEach((folderRef) => {
-        });
         res.items.forEach((itemRef) => {
           getDownloadURL(ref(storage, itemRef.fullPath))
             .then((url) => {
-              this.images.push(url);
+              this.images.push(url); // Keep all the URLs for later usage
+              this.updatePreviewImages(); // Update preview every time a new image is added
             })
             .catch((error) => {
               // Handle any errors
             });
         });
-      }).catch((error) => {
+      })
+      .catch((error) => {
         // Uh-oh, an error occurred!
       });
   }
+  
+  updatePreviewImages() {
+    // Fill previewImages with the first 5 images from 'images'
+    this.previewImages = this.images.slice(0, 5);
+  
+    // If less than 5 images, fill the rest with the placeholder
+    while (this.previewImages.length < 5) {
+      this.previewImages.push('../../../assets/img/placeholder_image.png');
+    }
+  }
+  
+  
 
   openGallery() {
     this.router.navigate(['memory/', this.memoryID, 'gallery']);

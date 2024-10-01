@@ -9,6 +9,7 @@ import { LocationService } from '../../services/location.service';
 import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../services/userService';
+import { pinnedMemoryService } from '../../services/pinnedMemorService';
 
 @Component({
   selector: 'app-editmemory',
@@ -31,7 +32,7 @@ export class EditmemoryComponent {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService, private memoryService: MemoryService, private locationService: LocationService, private firebaseService: FileUploadService, private dialog: MatDialog) {
+  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService, private memoryService: MemoryService, private locationService: LocationService, private pinnedService: pinnedMemoryService,private firebaseService: FileUploadService, private dialog: MatDialog) {
     this.memoryForm = this.formBuilder.group({
       description: [''],
       title: [''],
@@ -280,6 +281,11 @@ export class EditmemoryComponent {
       message: 'Are you sure you want to ' + status + ' this memory?'
     };
 
+    const confirmationPinnedData: ConfirmationDialogData = {
+      title: 'Delete anyways?',
+      message: 'This memory is added in someones Favourite-Memories. Delete anyway?'
+    };
+
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: confirmationData,
@@ -288,7 +294,37 @@ export class EditmemoryComponent {
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
         if (status === 'DELETE') {
-          this.deleteMemory();
+          this.pinnedService.checkMemoryPin(this.memory.memory_id).subscribe(
+            (response) => {
+              if(response.length == 0){
+                this.deleteMemory();
+              }
+              else{
+                const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+                  width: '300px',
+                  data: confirmationPinnedData,
+                });
+
+                dialogRef.afterClosed().subscribe(confirmed => {
+                  if (confirmed) {
+                    if (status === 'DELETE') {
+                      this.pinnedService.deleteMemoryFromAllPins(this.memory.memory_id).subscribe(
+                        () => {
+                          this.deleteMemory();
+                        },
+                        (error) => {
+                          console.error('Error deleting pinned memory:', error);
+                        }
+                      );
+                    }
+                  }
+                });
+              }
+            },
+            (error) => {
+              console.error('Error getting memory:', error);
+            }
+          );
         }
         else {
           this.goToHome();

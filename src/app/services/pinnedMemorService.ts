@@ -33,5 +33,15 @@ export class pinnedMemoryService {
   
     return this.http.delete(url);
   }
+
+  checkMemoryPin(memoryId: string): Observable<any[]> {
+    const url = `${this.apiUrl}/favourite-memorie/${memoryId}`;
+    return this.http.get<any[]>(url);
+  }
+
+  deleteMemoryFromAllPins(memoryId: string): Observable<any[]> {
+    const url = `${this.apiUrl}/favourite-memorie/${memoryId}`;
+    return this.http.delete<any[]>(url);
+  }
   
 }

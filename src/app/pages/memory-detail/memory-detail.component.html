@@ -34,7 +34,7 @@
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
           <div class="full-width" *ngIf="memorydbFriends">
-            <h1>Activity in City, Country</h1>
+            <h1 *ngIf="location">Activity in {{location[0].country}}</h1>
             <span>{{selectedDate | date}},
               {{memorydbFriends?.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory'}}</span>
             <mat-divider></mat-divider>
@@ -87,7 +87,7 @@
         <!-- Country Column -->  
         <ng-container matColumnDef="country">  
           <th mat-header-cell *matHeaderCellDef> Country </th>  
-          <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}" width="30" height="20"> {{user.country}} </td>  
+          <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}" width="30" height="20"></td>  
         </ng-container>  
     
         <!-- Shared Memories Column -->  

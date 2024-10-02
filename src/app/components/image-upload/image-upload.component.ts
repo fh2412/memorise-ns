@@ -6,11 +6,18 @@ import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
 import { Router } from '@angular/router';
 
+export interface Image {
+  url: string;
+  width: number;
+  height: number;
+}
+
 @Component({
   selector: 'app-image-upload',
   templateUrl: './image-upload.component.html',
   styleUrls: ['./image-upload.component.scss']
 })
+
 export class ImageUploadComponent implements OnInit {
   @Input() userId: any = '';
   @Input() memoryId: string = '';
@@ -24,30 +31,48 @@ export class ImageUploadComponent implements OnInit {
   selectedFiles: any[] = [];
   progressInfos: any[] = [];
 
-  previews: string[] = [];
+  previews: Image[] = [];
   imageInfos?: Observable<any>;
   downloadURL: string | undefined;
 
   constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService, private router: Router) { }
 
-
   selectFiles(event: any): void {
     this.progressInfos = [];
     const newFiles = event.target.files;
-    this.selectedFiles = this.selectedFiles || [];
-    Array.prototype.push.apply(this.selectedFiles, newFiles);
-
+  
+    // Combine existing files with new ones (if applicable)
+    this.selectedFiles = this.selectedFiles ? [...this.selectedFiles, ...newFiles] : newFiles;
+  
     this.previews = [];
-    if (this.selectedFiles && this.selectedFiles[0]) {
-      const numberOfFiles = this.selectedFiles.length;
-      for (let i = 0; i < numberOfFiles; i++) {
+    if (this.selectedFiles) {
+      for (const file of this.selectedFiles) {
         const reader = new FileReader();
-
+  
+        // Read image data and handle dimensions
         reader.onload = (e: any) => {
-          this.previews.push(e.target.result);
+          const preview: Image = {
+            url: e.target.result,
+            width: 0,
+            height: 0
+          };
+  
+          // Get image dimensions using FileReader and Image object (combined approach)
+          const img = new Image();
+          img.onload = () => {
+            preview.width = img.width;
+            preview.height = img.height;
+            this.previews.push(preview);
+          };
+          img.src = e.target.result;
         };
-
-        reader.readAsDataURL(this.selectedFiles[i]);
+  
+        reader.onerror = (error: any) => {
+          console.error('Error reading file:', error);
+          // Handle errors gracefully, e.g., display an error message
+        };
+  
+        reader.readAsDataURL(file); // Read as data URL for preview
       }
     }
   }
@@ -60,7 +85,7 @@ export class ImageUploadComponent implements OnInit {
 
   ngOnInit(): void {
     this.imageInfos = this.uploadService.getFiles();
-    if(this.picture_count == 0){
+    if (this.picture_count == 0) {
       this.googleStorageUrl = this.userId.toString() + Date.now().toString();
       console.log("New Memory");
     }
@@ -82,7 +107,7 @@ export class ImageUploadComponent implements OnInit {
 
   removeImage(index: number): void {
     this.previews.splice(index, 1);
-    if(this.previews.length === 0){
+    if (this.previews.length === 0) {
       this.selectedFiles = [];
     }
   }

@@ -4,6 +4,7 @@ import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
 import { LocationService } from '../../../services/location.service';
 import { GeocodingService } from '../../../services/geocoding.service';
+import { Image, ImageFileWithDimensions } from '../../image-upload/image-upload.component';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -17,7 +18,7 @@ export class UploadProgressDialogComponent implements OnInit {
   counter: number = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; files: File[]; memoryData: any; emails: any; picture_count: number; googleStorageUrl: string },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; emails: any; picture_count: number; googleStorageUrl: string },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -25,7 +26,7 @@ export class UploadProgressDialogComponent implements OnInit {
     private geocodingService: GeocodingService,
   ) {
     // Initialize progress array with zeros
-    this.progress = Array(data.files.length).fill(0);
+    this.progress = Array(data.filesWithDimensions.length).fill(0);
   }
 
   ngOnInit() {
@@ -36,13 +37,11 @@ export class UploadProgressDialogComponent implements OnInit {
     const uploadPromises: Promise<void>[] = [];
     console.log("storage url: ", this.data.googleStorageUrl, "picture count", this.data.picture_count);
 
-    this.data.files.forEach((file, index) => {
+    this.data.filesWithDimensions.forEach((file, index) => {
       if (file) {
-        //this.googleStorageUrl = this.data.userId.toString() + Date.now().toString();
         const uploadPromise = new Promise<void>((resolve, reject) => {
           this.storageService.uploadMemoryPicture(this.data.googleStorageUrl, file, this.data.picture_count, index).subscribe(
             (uploadProgress: number | undefined) => {
-              //console.log(`Upload Progress: ${uploadProgress}%`, "picture:", index);
               this.progress[index] = uploadProgress ?? 0;
             },
             error => {
@@ -82,7 +81,7 @@ export class UploadProgressDialogComponent implements OnInit {
 
   updatePicureCount(memoryId: string) {
     const pictureCountData: any = {};
-    pictureCountData.picture_count = this.data.files.length + this.originalCount;
+    pictureCountData.picture_count = this.data.filesWithDimensions.length + this.originalCount;
     this.originalCount = 0;
     this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe(
       (response) => {

@@ -12,6 +12,13 @@ export interface Image {
   height: number;
 }
 
+export interface ImageFileWithDimensions {
+  file: File;
+  width: number;
+  height: number;
+}
+
+
 @Component({
   selector: 'app-image-upload',
   templateUrl: './image-upload.component.html',
@@ -34,8 +41,9 @@ export class ImageUploadComponent implements OnInit {
   previews: Image[] = [];
   imageInfos?: Observable<any>;
   downloadURL: string | undefined;
+  imageFileWithDimensions: ImageFileWithDimensions[] = [];
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private memoryService: MemoryService, private router: Router) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router) { }
 
   selectFiles(event: any): void {
     this.progressInfos = [];
@@ -43,7 +51,7 @@ export class ImageUploadComponent implements OnInit {
   
     // Combine existing files with new ones (if applicable)
     this.selectedFiles = this.selectedFiles ? [...this.selectedFiles, ...newFiles] : newFiles;
-  
+    this.imageFileWithDimensions = []; // Clear previous selections
     this.previews = [];
     if (this.selectedFiles) {
       for (const file of this.selectedFiles) {
@@ -60,8 +68,12 @@ export class ImageUploadComponent implements OnInit {
           // Get image dimensions using FileReader and Image object (combined approach)
           const img = new Image();
           img.onload = () => {
-            preview.width = img.width;
-            preview.height = img.height;
+            const fileWithDimensions: ImageFileWithDimensions = {
+              file: file,
+              width: img.width,
+              height: img.height,
+            };
+            this.imageFileWithDimensions.push(fileWithDimensions);
             this.previews.push(preview);
           };
           img.src = e.target.result;
@@ -96,7 +108,7 @@ export class ImageUploadComponent implements OnInit {
     const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
       width: '300px',
       disableClose: true, // Prevent closing the dialog by clicking outside
-      data: { userId: this.userId, memoryId: this.memoryId, files: filesArray, memoryData: this.memoryData, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl },
+      data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl },
     });
 
     // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

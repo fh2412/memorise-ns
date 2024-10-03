@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable, filter, finalize, forkJoin, map, switchMap } from 'rxjs';
-import { AngularFireStorage, AngularFireUploadTask  } from '@angular/fire/compat/storage';
+import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
+import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class FileUploadService {
 
   private baseUrl = 'http://localhost:8080';
 
-  constructor(private http: HttpClient, private storage: AngularFireStorage) {}
+  constructor(private http: HttpClient, private storage: AngularFireStorage) { }
 
   upload(file: File): Observable<HttpEvent<any>> {
     const formData: FormData = new FormData();
@@ -39,11 +40,31 @@ export class FileUploadService {
     return task.percentageChanges();
   }
 
-  uploadMemoryPicture(memoryId: string, file: File, count: number, index: number): Observable<number | undefined> {
+  /*uploadMemoryPicture(memoryId: string, file: File, count: number, index: number): Observable<number | undefined> {
 
     const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
     const ref = this.storage.ref(path);
     const task: AngularFireUploadTask = ref.put(file);
+
+    // Use Observable to track the upload progress
+    return task.percentageChanges();
+  }*/
+
+  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number): Observable<number | undefined> {
+
+    const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
+    const ref = this.storage.ref(path);
+
+    // Define metadata with custom dimensions
+    const metadata = {
+      customMetadata: {
+        width: file.width.toString(),
+        height: file.height.toString()
+      }
+    };
+
+    // Upload the file with metadata
+    const task: AngularFireUploadTask = ref.put(file.file, metadata);
 
     // Use Observable to track the upload progress
     return task.percentageChanges();
@@ -80,16 +101,16 @@ export class FileUploadService {
         console.error('Error deleting images:', error);
         // Handle potential errors
       });*/
-      const storage = getStorage();
-      // Create a reference to the file to delete
-      const desertRef = ref(storage, imageUrls[0]);
+    const storage = getStorage();
+    // Create a reference to the file to delete
+    const desertRef = ref(storage, imageUrls[0]);
 
-      // Delete the file
-      deleteObject(desertRef).then(() => {
-        console.log("deleted images sucessfully");
-      }).catch((error) => {
-        console.log(error);
-      });
+    // Delete the file
+    deleteObject(desertRef).then(() => {
+      console.log("deleted images sucessfully");
+    }).catch((error) => {
+      console.log(error);
+    });
   }
 
 }

@@ -3,21 +3,13 @@ import { Observable } from 'rxjs';
 import { FileUploadService } from '../../services/file-upload.service';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { MemoryService } from '../../services/memory.service';
 import { Router } from '@angular/router';
-
-export interface Image {
-  url: string;
-  width: number;
-  height: number;
-}
 
 export interface ImageFileWithDimensions {
   file: File;
   width: number;
   height: number;
 }
-
 
 @Component({
   selector: 'app-image-upload',
@@ -38,7 +30,7 @@ export class ImageUploadComponent implements OnInit {
   selectedFiles: any[] = [];
   progressInfos: any[] = [];
 
-  previews: Image[] = [];
+  previews: string[] = [];
   imageInfos?: Observable<any>;
   downloadURL: string | undefined;
   imageFileWithDimensions: ImageFileWithDimensions[] = [];
@@ -59,11 +51,7 @@ export class ImageUploadComponent implements OnInit {
   
         // Read image data and handle dimensions
         reader.onload = (e: any) => {
-          const preview: Image = {
-            url: e.target.result,
-            width: 0,
-            height: 0
-          };
+          const preview: string = e.target.result
   
           // Get image dimensions using FileReader and Image object (combined approach)
           const img = new Image();

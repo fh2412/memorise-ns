@@ -4,7 +4,7 @@ import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
 import { LocationService } from '../../../services/location.service';
 import { GeocodingService } from '../../../services/geocoding.service';
-import { Image, ImageFileWithDimensions } from '../../image-upload/image-upload.component';
+import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
 
 @Component({
   selector: 'app-upload-progress-dialog',

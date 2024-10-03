@@ -40,7 +40,7 @@
     <mat-grid-tile *ngFor="let preview of previews; let i = index" class="image-container">
       <mat-card class="card">
         <div class="image-container">
-          <img class="background-image" [src]="preview.url">
+          <img class="background-image" [src]="preview">
           <button mat-icon-button (click)="removeImage(i)" class="remove-button">
             <mat-icon>close</mat-icon>
           </button>

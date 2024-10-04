@@ -9,6 +9,7 @@ import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
+import { ImageGalleryService } from '../../services/image-gallery.service';
 
 
 export interface ImageWithMetadata {
@@ -36,8 +37,6 @@ export class MemoryDetailComponent {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];  
   
-  images: string[] = [];
-
   uniqueID: string = "your-unique-id";
   downloadURLs: any;
   imagePaths: any;
@@ -48,7 +47,7 @@ export class MemoryDetailComponent {
   imagesWithMetadata: ImageWithMetadata[] = [];
 
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private bottomSheet: MatBottomSheet) {}
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService) {}
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -133,17 +132,7 @@ export class MemoryDetailComponent {
       this.truncatedDescription = this.memorydb.text;
     }
   }
-  
-  openImageDialog(imageSrc: string, index: number): void {
-    const dialogRef = this.dialog.open(ImageDialogComponent, {
-      width: 'auto',
-      height: 'auto',
-      maxWidth: '80vw',
-      data: { images: this.images, initialIndex: index },
-      panelClass: 'custom-dialog-container'
-    });
-  }
-  
+    
   getImages(imageid: any) {
     const storage = getStorage();
   
@@ -181,8 +170,13 @@ export class MemoryDetailComponent {
   }
   
   openGallery() {
-    this.router.navigate(['memory/', this.memoryID, 'gallery']);
+    this.imageDataService.updateImageData(this.imagesWithMetadata);
+    this.router.navigate(
+      ['memory', this.memoryID, 'gallery']
+    );
   }
+  
+
   openFullDescDialog() {
     this.dialog.open(FullDescriptionDialogComponent, {
       data: {

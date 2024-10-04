@@ -1,4 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { ImageGalleryService } from '../../../services/image-gallery.service';
 
 @Component({
   selector: 'app-image-gallery',
@@ -6,8 +8,10 @@ import { Component, Input } from '@angular/core';
   styleUrl: 'image-gallery.component.scss'
 })
 export class ImageGalleryComponent {
-  @Input() landscapePictures: string[] = ['../../../../assets/img/gallery_test/landscape/20230716_073010.jpg', '../../../../assets/img/gallery_test/landscape/20230716_073010.jpg', '../../../../assets/img/gallery_test/landscape/20230716_073010.jpg'];
-  @Input() portraitPictures: string[] = ['../../../../assets/img/gallery_test/portrait/20230708_155529.jpg', '../../../../assets/img/gallery_test/portrait/20230708_155529.jpg', '../../../../assets/img/gallery_test/portrait/20230708_155529.jpg'];
+  //@Input() landscapePictures: string[] = ['../../../../assets/img/gallery_test/landscape/20230716_073010.jpg', '../../../../assets/img/gallery_test/landscape/20230716_073010.jpg', '../../../../assets/img/gallery_test/landscape/20230716_073010.jpg'];
+  //@Input() portraitPictures: string[] = ['../../../../assets/img/gallery_test/portrait/20230708_155529.jpg', '../../../../assets/img/gallery_test/portrait/20230708_155529.jpg', '../../../../assets/img/gallery_test/portrait/20230708_155529.jpg'];
+  landscapePictures: string[] = [];
+  portraitPictures: string[] = [];
   // Define layouts for different picture combinations
   private layouts = [
     { type: 'landscape', lcount: 1, pcount: 0 },
@@ -19,12 +23,26 @@ export class ImageGalleryComponent {
   combinedPictures: { url: string; layout: string }[] = [];
   layout: { pics: string[]; layout: string }[] = [];
 
+  constructor(private imageDataService: ImageGalleryService) {}
+
   ngOnInit() {
+    this.imageDataService.currentImageData.subscribe((images) => {
+      this.splitImages(images); // Split into landscape and portrait
+    });
     this.combinePictures();
   }
 
+  splitImages(images: { url: string; width: number; height: number }[]) {
+    images.forEach((image) => {
+      if (image.width > image.height) {
+        this.landscapePictures.push(image.url);
+      } else {
+        this.portraitPictures.push(image.url);
+      }
+    });
+  }
+
   private combinePictures() {
-    console.log("Count: ", this.landscapePictures.length + this.portraitPictures.length);
     // Iterate over the layouts
     for (const layout of this.layouts) {
       // Calculate the number of pictures needed for the current layout
@@ -47,8 +65,5 @@ export class ImageGalleryComponent {
         this.layout.push({ pics: combinedLayoutPictures, layout: layout.type });
       }
     }
-    console.log(this.combinedPictures);
-    console.log(this.landscapePictures, this.portraitPictures);
-
   }
 }

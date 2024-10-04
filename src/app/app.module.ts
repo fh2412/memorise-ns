@@ -9,7 +9,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment.development';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { BlankComponent } from './mocks/blank/blank.component';
 
 import { MainNavComponent } from './components/mainnav/mainnav.component';
 
@@ -41,7 +40,6 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
 @NgModule({
   declarations: [
     AppComponent,
-    BlankComponent,
     MainNavComponent,
     ChangePasswordDialogComponent,
     SeeAllFirendsDialogComponent,

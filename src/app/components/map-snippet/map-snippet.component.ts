@@ -4,7 +4,7 @@ import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 @Component({
   selector: 'app-map-snippet',
   templateUrl: './map-snippet.component.html',
-  styleUrl: './map-snippet.component.css'
+  styleUrl: './map-snippet.component.scss'
 })
 export class MapSnippetComponent {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;

@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 @Component({
   selector: 'app-choose-location',
   templateUrl: './choose-location.component.html',
-  styleUrl: './choose-location.component.css'
+  styleUrl: './choose-location.component.scss'
 })
 export class ChooseLocationComponent {
   constructor( private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>,) {}

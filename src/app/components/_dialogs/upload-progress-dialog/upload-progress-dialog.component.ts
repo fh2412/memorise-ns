@@ -9,7 +9,7 @@ import { ImageFileWithDimensions } from '../../image-upload/image-upload.compone
 @Component({
   selector: 'app-upload-progress-dialog',
   templateUrl: './upload-progress-dialog.component.html',
-  styleUrl: './upload-progress-dialog.component.css'
+  styleUrl: './upload-progress-dialog.component.scss'
 })
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];

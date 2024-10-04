@@ -9,7 +9,7 @@ import { UserService } from "../../../services/userService";
 @Component({
   selector: 'app-memory-add-friend-dialog',
   templateUrl: './memory-add-friend-dialog.component.html',
-  styleUrl: './memory-add-friend-dialog.component.css'
+  styleUrl: './memory-add-friend-dialog.component.scss'
 })
 export class MemoryAddFriendDialogComponent implements OnInit{
   constructor(public dialogRef: MatDialogRef<MemoryAddFriendDialogComponent>, private friendsService: FriendsService, private userService: UserService) {}

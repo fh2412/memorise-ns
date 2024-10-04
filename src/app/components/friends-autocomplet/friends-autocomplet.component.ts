@@ -11,7 +11,7 @@ import { UserService } from '../../services/userService';
 @Component({
   selector: 'app-friends-autocomplet',
   templateUrl: './friends-autocomplet.component.html',
-  styleUrl: './friends-autocomplet.component.css'
+  styleUrl: './friends-autocomplet.component.scss'
 })
 export class FriendsAutocompletComponent {
   allfriends: string[] = ['Apple', 'Lemon', 'Lime', 'Orange', 'Strawberry'];

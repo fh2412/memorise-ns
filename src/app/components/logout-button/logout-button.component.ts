@@ -7,7 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-logout-button',
   templateUrl: './logout-button.component.html',
-  styleUrls: ['./logout-button.component.css']
+  styleUrls: ['./logout-button.component.scss']
 })
 export class LogoutButtonComponent {
 

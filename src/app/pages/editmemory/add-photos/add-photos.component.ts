@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-add-photos',
   templateUrl: './add-photos.component.html',
-  styleUrl: './add-photos.component.css'
+  styleUrl: './add-photos.component.scss'
 })
 export class AddPhotosComponent {
 

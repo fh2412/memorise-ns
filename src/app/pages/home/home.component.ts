@@ -10,7 +10,7 @@ import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css'
+  styleUrl: './home.component.scss'
 })
 export class HomeComponent {
   filterForm = this._formBuilder.group({

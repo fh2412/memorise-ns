@@ -1,3 +1,4 @@
+<app-back-button [text]="'Back'"></app-back-button>
 <section class="bd-home-section bd-theme-memorise" *ngIf="memorydb">
   <div class="container">
     <mat-toolbar>
@@ -12,15 +13,13 @@
         Edit
       </button>
     </mat-toolbar>
-    <mat-card appearance="outlined" style="overflow: hidden;">
+    <mat-card appearance="outlined" style="overflow: hidden;" *ngIf="imagesWithMetadata">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile colspan="2" rowspan="2">
-          <img class="image-size" [src]="previewImages[0]">
-        </mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="previewImages[1]"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="previewImages[2]"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="previewImages[3]"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="previewImages[4]"></mat-grid-tile>
+        <mat-grid-tile colspan="2" rowspan="2"><img class="image-size" [src]="imagesWithMetadata[0]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[1]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[2]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[3]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[4]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>    
         <div style="position: absolute; bottom: 24px; right: 24px;">
           <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;" (click)="openGallery()">
             <mat-icon>apps</mat-icon>

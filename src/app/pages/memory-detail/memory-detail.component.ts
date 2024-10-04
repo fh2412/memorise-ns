@@ -4,11 +4,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
-import { getStorage, ref, listAll, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
+
+
+export interface ImageWithMetadata {
+  url: string;
+  width: number;
+  height: number;
+}
 
 
 @Component({
@@ -30,8 +37,6 @@ export class MemoryDetailComponent {
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];  
   
   images: string[] = [];
-  previewImages: string[] = [];
-
 
   uniqueID: string = "your-unique-id";
   downloadURLs: any;
@@ -40,6 +45,7 @@ export class MemoryDetailComponent {
   showMore: boolean = false;
   truncatedDescription: string = '';
   characterLimit: number = 150;
+  imagesWithMetadata: ImageWithMetadata[] = [];
 
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private bottomSheet: MatBottomSheet) {}
@@ -50,6 +56,7 @@ export class MemoryDetailComponent {
       this.memoryID = params['id'];
     });
     await this.getMemoryInfo();
+    console.log(this.imagesWithMetadata);
   }
 
   getMemoryInfo(): void {
@@ -142,38 +149,37 @@ export class MemoryDetailComponent {
   
     // Create a reference under which you want to list
     const listRef = ref(storage, `memories/${imageid}`);
-  
+    
     // Find all the prefixes and items.
     listAll(listRef)
       .then((res) => {
-        res.items.forEach((itemRef) => {
+        const imagePromises = res.items.map((itemRef) => 
+          // First, get the download URL
           getDownloadURL(ref(storage, itemRef.fullPath))
             .then((url) => {
-              this.images.push(url); // Keep all the URLs for later usage
-              this.updatePreviewImages(); // Update preview every time a new image is added
+              // Then, get the metadata for dimensions
+              return getMetadata(ref(storage, itemRef.fullPath)).then((metadata) => {
+                const width = parseInt(metadata.customMetadata?.['width'] || '0', 10);
+                const height = parseInt(metadata.customMetadata?.['height'] || '0', 10);
+  
+                // Push both URL and dimensions into the object array
+                this.imagesWithMetadata.push({
+                  url: url,
+                  width: width,
+                  height: height
+                });
+              });
             })
             .catch((error) => {
-              // Handle any errors
-            });
-        });
+              console.error('Error fetching metadata or URL:', error);
+            })
+        );
       })
       .catch((error) => {
-        // Uh-oh, an error occurred!
+        console.error('Error listing items:', error);
       });
   }
   
-  updatePreviewImages() {
-    // Fill previewImages with the first 5 images from 'images'
-    this.previewImages = this.images.slice(0, 5);
-  
-    // If less than 5 images, fill the rest with the placeholder
-    while (this.previewImages.length < 5) {
-      this.previewImages.push('../../../assets/img/placeholder_image.png');
-    }
-  }
-  
-  
-
   openGallery() {
     this.router.navigate(['memory/', this.memoryID, 'gallery']);
   }

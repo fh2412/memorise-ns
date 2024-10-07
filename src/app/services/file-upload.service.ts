@@ -40,16 +40,6 @@ export class FileUploadService {
     return task.percentageChanges();
   }
 
-  /*uploadMemoryPicture(memoryId: string, file: File, count: number, index: number): Observable<number | undefined> {
-
-    const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
-    const ref = this.storage.ref(path);
-    const task: AngularFireUploadTask = ref.put(file);
-
-    // Use Observable to track the upload progress
-    return task.percentageChanges();
-  }*/
-
   uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number): Observable<number | undefined> {
 
     const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;

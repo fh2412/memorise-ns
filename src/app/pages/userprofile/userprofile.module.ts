@@ -15,11 +15,12 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
 import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
-import { MatDialogActions, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const routes: Routes = [
   {
@@ -51,7 +52,7 @@ const routes: Routes = [
     MatCardModule,
     MatChipsModule,
     MatDialogModule,
-
+    MatProgressSpinnerModule,
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,

@@ -58,14 +58,7 @@
     </div>
   </div>
 </section>
-<!--
-<section style="margin-top: 1.5rem;">
-  <div class="container">
-    <mat-card>
-      <div class="level">
-        <h3>Earned Badges</h3>
-        <button mat-stroked-button>See all</button>
-      </div>
-    </mat-card>
-  </div>
-</section>-->
+
+<div *ngIf="isUploading" class="overlay">
+  <mat-spinner class="spinner-container"></mat-spinner>
+</div>

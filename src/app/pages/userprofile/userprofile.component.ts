@@ -29,6 +29,7 @@ export class UserProfileComponent implements OnInit {
     { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Beta Memory', stars: 8, memory_id: 0 },
   ];
   all_memories = [];
+  isUploading: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private pinnedService: pinnedMemoryService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe, private manageFriendService: ManageFriendsService) {
 
@@ -286,22 +287,25 @@ export class UserProfileComponent implements OnInit {
 
   onFileChange(event: any) {
     const file = event.target.files[0];
-
+  
     if (file) {
-      // Usage in a component or service
+      this.isUploading = true; // Start spinner
       this.fileUploadService.uploadProfilePicture(this.user.user_id, file).subscribe(
         (uploadProgress: number | undefined) => {
+          // You can update the progress bar here if you want
           console.log(`Upload Progress: ${uploadProgress}%`);
         },
         error => {
           console.error('Error uploading profile picture:', error);
+          this.isUploading = false; // Stop spinner on error
         },
         async () => {
           const downloadURL = await this.fileUploadService.getProfilePictureUrl(this.user.user_id);
           console.log('Profile picture uploaded successfully. URL:', downloadURL);
-
-          // Now, save the downloadURL in your database
+  
+          // Save the downloadURL in your database
           this.saveProfilePicUrlInDatabase(this.user.user_id, downloadURL);
+          this.isUploading = false; // Stop spinner after completion
         }
       );
     }

@@ -58,7 +58,7 @@
 
   <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
     <form [formGroup]="memoryForm" class="images-form">
-      <app-image-upload [userId]="userId" [memoryData]="memoryForm" [emails]="emailArray"></app-image-upload>
+      <app-image-upload [userId]="userId" [memoryData]="memoryForm" [friends_emails]="emailArray"></app-image-upload>
       <div>
         <button mat-button matStepperPrevious>Back</button>
       </div>

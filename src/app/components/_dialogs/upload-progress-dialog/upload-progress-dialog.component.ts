@@ -18,7 +18,7 @@ export class UploadProgressDialogComponent implements OnInit {
   counter: number = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; emails: any; picture_count: number; googleStorageUrl: string },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; friends_emails: any; picture_count: number; googleStorageUrl: string },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -126,8 +126,9 @@ export class UploadProgressDialogComponent implements OnInit {
     this.memoryService.createMemory(memoryData).subscribe(
       (response: { message: string, memoryId: any }) => {
 
-        const friendData = { emails: this.data.emails, memoryId: response.memoryId[0]?.insertId };
-        if (this.data.emails) {
+        const friendData = { emails: this.data.friends_emails, memoryId: response.memoryId[0]?.insertId };
+        console.log("Friends: ", friendData);
+        if (this.data.friends_emails) {
           this.memoryService.addFriendToMemory(friendData).subscribe(
             (friendResponse) => {
               console.log('Friend added to memory successfully:', friendResponse);
@@ -144,6 +145,21 @@ export class UploadProgressDialogComponent implements OnInit {
       (error) => {
         console.error('Error creating memory:', error);
         // Handle error (e.g., show an error message to the user)
+      }
+    );
+  }
+  
+
+  create_location(memoryData: any) {
+    this.locationService.createLocation(memoryData).subscribe(
+      (response: { message: string, locationId: any }) => {
+        console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
+        memoryData.location_id = response.locationId[0]?.insertId;
+
+        this.create_memory(memoryData);
+      },
+      (locationResponse) => {
+        console.error('Error creating Location:', locationResponse);
       }
     );
   }
@@ -173,20 +189,5 @@ export class UploadProgressDialogComponent implements OnInit {
     }
   
     throw new Error('Geocoding failed to return results');
-  }
-  
-
-  create_location(memoryData: any) {
-    this.locationService.createLocation(memoryData).subscribe(
-      (response: { message: string, locationId: any }) => {
-        console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
-        memoryData.location_id = response.locationId[0]?.insertId;
-
-        this.create_memory(memoryData);
-      },
-      (locationResponse) => {
-        console.error('Error creating Location:', locationResponse);
-      }
-    );
   }
 }

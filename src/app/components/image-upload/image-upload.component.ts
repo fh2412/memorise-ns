@@ -21,8 +21,7 @@ export class ImageUploadComponent implements OnInit {
   @Input() userId: any = '';
   @Input() memoryId: string = '';
   @Input() memoryData: any;
-  @Input() friends: any;
-  @Input() emails: any;
+  @Input() friends_emails: any;
   @Input() picture_count: number = 0;
   @Input() googleStorageUrl: String = "";
 
@@ -96,7 +95,7 @@ export class ImageUploadComponent implements OnInit {
     const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
       width: '300px',
       disableClose: true, // Prevent closing the dialog by clicking outside
-      data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl },
+      data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, friends_emails: this.friends_emails, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl },
     });
 
     // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

@@ -55,7 +55,6 @@ export class MemoryDetailComponent {
       this.memoryID = params['id'];
     });
     await this.getMemoryInfo();
-    console.log(this.imagesWithMetadata);
   }
 
   getMemoryInfo(): void {
@@ -100,7 +99,6 @@ export class MemoryDetailComponent {
           this.memorydbFriends = 'There are no friends added to the memory yet!';
         } else {
           this.memorydbFriends = friendsData;
-          console.log(this.memorydbFriends);
         }
       },
       (error: any) => {

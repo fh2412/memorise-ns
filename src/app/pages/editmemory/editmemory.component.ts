@@ -58,7 +58,7 @@ export class EditmemoryComponent {
 
   async deleteMemory() {
     await this.memoryService.deleteMemoryAndFriends(this.memoryId).subscribe(
-      (response) => {
+      () => {
         this.firebaseService.deleteMemorysFolder(this.firebaseId)
           .subscribe(
             () => {
@@ -177,16 +177,20 @@ export class EditmemoryComponent {
     const index = this.friends.indexOf(user);
     if (index > -1) {
       this.friends.splice(index, 1);
+      this.friends = [...this.friends]; // Trigger change detection by reassigning the array
       // Add the friend to the "friendsToDelete" array
       this.friendsToDelete.push(user);
     }
   }
+  
   reverseDelete(user: any) {
     const index = this.friendsToDelete.indexOf(user);
     if (index > -1) {
       this.friendsToDelete.splice(index, 1);
+      this.friendsToDelete = [...this.friendsToDelete];
       // Add the friend to the "friendsToDelete" array
       this.friends.push(user);
+      this.friends = [...this.friends];
     }
   }
 

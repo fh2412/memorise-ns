@@ -62,7 +62,8 @@
                   <mat-icon>chevron_right</mat-icon>
                 </button>
               </mat-card-content>
-              <mat-card-content *ngIf="memorydb.text.length==0" class="placeholder-text">There is no Discription added to your Memory yet!
+              <mat-card-content *ngIf="memorydb.text.length==0" class="placeholder-text">There is no Discription added
+                to your Memory yet!
                 Provide more Information to remember your Adventure forever!</mat-card-content>
             </mat-card>
           </div>
@@ -113,18 +114,18 @@
           more fun together!</mat-card-content>
       </mat-card>
       <br>
-
-      <ng-container *ngIf="location[0].location_id != '1'">
-        <div class="desc" style="height: 300px; border-radius: 0%;" *ngIf="location">
-          <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="location[0].location_id == '1'">
-        <mat-card class="placeholder-text desc">
-          <mat-card-content>No location data available!</mat-card-content>
-        </mat-card>
-      </ng-container>
-
+      <div *ngIf="location">
+        <ng-container *ngIf="location[0].location_id != '1'">
+          <div class="desc" style="height: 300px; border-radius: 0%;">
+            <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="location[0].location_id == '1'">
+          <mat-card class="placeholder-text desc">
+            <mat-card-content>No location data available!</mat-card-content>
+          </mat-card>
+        </ng-container>
+      </div>
     </div>
   </div>
 </section>

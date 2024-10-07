@@ -68,7 +68,7 @@ export class HomeComponent {
   }
 
   showAll(checked: boolean) {
-    if (checked) {
+    if (checked && this.friendsdata.length>0) {
       this.displaydata = [...this.data, ...this.friendsdata];
     }
     else {

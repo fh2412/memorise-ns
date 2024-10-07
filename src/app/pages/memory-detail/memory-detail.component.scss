@@ -67,6 +67,11 @@ h1{
     font-family: monospace; /* Typische Schriftart eines <pre>-Tags */
     background-color: inherit; /* Falls <pre> eine spezielle Hintergrundfarbe hat */
     margin: 0; /* Standard <pre>-Tag Margin entfernen */
-  }
-  
+  } 
+}
+
+.placeholder-text{
+  border-radius: 12px;
+  background-color: #f0f0f0;
+  font-style: italic;
 }

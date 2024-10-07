@@ -15,13 +15,19 @@
     </mat-toolbar>
     <mat-card appearance="outlined" style="overflow: hidden;" *ngIf="imagesWithMetadata">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile colspan="2" rowspan="2"><img class="image-size" [src]="imagesWithMetadata[0]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[1]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[2]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[3]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
-        <mat-grid-tile><img class="image-size" [src]="imagesWithMetadata[4]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>    
+        <mat-grid-tile colspan="2" rowspan="2"><img class="image-size"
+            [src]="imagesWithMetadata[0]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size"
+            [src]="imagesWithMetadata[1]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size"
+            [src]="imagesWithMetadata[2]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size"
+            [src]="imagesWithMetadata[3]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
+        <mat-grid-tile><img class="image-size"
+            [src]="imagesWithMetadata[4]?.url || '../../../assets/img/placeholder_image.png'"></mat-grid-tile>
         <div style="position: absolute; bottom: 24px; right: 24px;">
-          <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;" (click)="openGallery()">
+          <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;"
+            (click)="openGallery()">
             <mat-icon>apps</mat-icon>
             Show all pictures
           </button>
@@ -43,11 +49,12 @@
                 <b>{{ memoryCreator.name || 'name' }}</b><br>
                 <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
-              <mat-divider vertical style="height: 4rem; margin-left: 3rem;" *ngIf="memorydbFriends?.length > 0"></mat-divider>
+              <mat-divider vertical style="height: 4rem; margin-left: 3rem;"
+                *ngIf="memorydbFriends?.length > 0"></mat-divider>
               <span class="more" *ngIf="memorydbFriends?.length > 0">+ {{memorydbFriends.length}} more</span>
             </div>
             <mat-card class="desc">
-              <mat-card-content  *ngIf="memorydb.text.length>0">
+              <mat-card-content *ngIf="memorydb.text.length>0">
                 <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>
                 <div *ngIf="!showMore" class="custom-pre">{{ memorydb.text }}</div>
                 <button *ngIf="showMore" mat-stroked-button color="primary" (click)="openFullDescDialog()">
@@ -55,8 +62,9 @@
                   <mat-icon>chevron_right</mat-icon>
                 </button>
               </mat-card-content>
-              <mat-card-content *ngIf="memorydb.text.length==0">There is no Discription added to your Memory yet! Provide more Information to remember your Adventure forever!</mat-card-content>
-            </mat-card>            
+              <mat-card-content *ngIf="memorydb.text.length==0" class="placeholder-text">There is no Discription added to your Memory yet!
+                Provide more Information to remember your Adventure forever!</mat-card-content>
+            </mat-card>
           </div>
         </mat-grid-tile>
         <mat-grid-tile>
@@ -64,52 +72,59 @@
         </mat-grid-tile>
       </mat-grid-list>
       <br><br>
-      <table mat-table [dataSource]="memorydbFriends" *ngIf="memorydbFriends?.length > 0"> 
-        <!-- Profile Picture Column -->  
-        <ng-container matColumnDef="profilePicture">  
-          <th mat-header-cell *matHeaderCellDef> Profile Picture </th>  
-          <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'" alt="Profile Picture" width="30" height="30" class="profile"></td>  
-        </ng-container>  
-    
-        <!-- Name Column -->  
-        <ng-container matColumnDef="name">  
-          <th mat-header-cell *matHeaderCellDef> Name </th>  
-          <td mat-cell *matCellDef="let user"> {{user.name}} </td>  
-        </ng-container>  
-    
-        <!-- Birthday Column -->  
-        <ng-container matColumnDef="birthday">  
-          <th mat-header-cell *matHeaderCellDef> Birthday </th>  
-          <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>  
-        </ng-container>  
-    
-        <!-- Country Column -->  
-        <ng-container matColumnDef="country">  
-          <th mat-header-cell *matHeaderCellDef> Country </th>  
-          <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}" width="30" height="20"></td>  
-        </ng-container>  
-    
-        <!-- Shared Memories Column -->  
-        <ng-container matColumnDef="sharedMemories">  
-          <th mat-header-cell *matHeaderCellDef> Shared Memories </th>  
-          <td mat-cell *matCellDef="let user"> {{user.sharedMemories}} </td>  
-        </ng-container>  
-    
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>  
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>  
+      <table mat-table [dataSource]="memorydbFriends" *ngIf="memorydbFriends?.length > 0">
+        <!-- Profile Picture Column -->
+        <ng-container matColumnDef="profilePicture">
+          <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
+          <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'"
+              alt="Profile Picture" width="30" height="30" class="profile"></td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+        </ng-container>
+
+        <!-- Birthday Column -->
+        <ng-container matColumnDef="birthday">
+          <th mat-header-cell *matHeaderCellDef> Birthday </th>
+          <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
+        </ng-container>
+
+        <!-- Country Column -->
+        <ng-container matColumnDef="country">
+          <th mat-header-cell *matHeaderCellDef> Country </th>
+          <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}"
+              width="30" height="20"></td>
+        </ng-container>
+
+        <!-- Shared Memories Column -->
+        <ng-container matColumnDef="sharedMemories">
+          <th mat-header-cell *matHeaderCellDef> Shared Memories </th>
+          <td mat-cell *matCellDef="let user"> {{user.sharedMemories}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
-      <mat-card *ngIf="!memorydbFriends?.length" class="desc">
-        <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is more fun together!</mat-card-content>
+      <mat-card *ngIf="!memorydbFriends?.length" class="placeholder-text desc">
+        <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is
+          more fun together!</mat-card-content>
       </mat-card>
       <br>
-      <div class="desc" style="height: 300px; border-radius: 0%;" *ngIf="location">
-          <ng-container *ngIf="location[0].location_id != '1'">
-            <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
-          </ng-container>
-          <ng-container *ngIf="location[0].location_id == '1'">
-            <p>No location data available!</p>
-          </ng-container>
-       </div>
+
+      <ng-container *ngIf="location[0].location_id != '1'">
+        <div class="desc" style="height: 300px; border-radius: 0%;" *ngIf="location">
+          <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="location[0].location_id == '1'">
+        <mat-card class="placeholder-text desc">
+          <mat-card-content>No location data available!</mat-card-content>
+        </mat-card>
+      </ng-container>
+
     </div>
   </div>
 </section>

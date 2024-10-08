@@ -6,7 +6,6 @@
     border-radius: 8px;
   }
 
-  
 // Container styles
 .profile-picture-container {
   margin: 20px;
@@ -19,39 +18,11 @@
     object-fit: cover; // Ensure the image covers the container without stretching
     border-radius: 50%; // Make the image round
   }
-
-  // Change icon styles
-  .change-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: transparent; // Hide the text by default
-    font-size: 20px; // Adjust the font size as needed
-    opacity: 0; // Initially hide the icon
-    transition: color 0.3s ease, opacity 0.3s ease; // Add transitions for smooth effect
-
-    // Hover effect for the icon
-    .profile-picture-container:hover & {
-      filter: grayscale(100%);
-      opacity: 1; // Make the icon fully visible on hover
-    }
-  }
-  .image-label {
-    cursor: pointer; // Set the cursor to pointer
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
 }
 
-h2 {
-  font-size: 25px;
-}
 button{
   margin-top: 3px;
 }
-
 
 .list-wrapper mat-list-item {
   height: 34px;

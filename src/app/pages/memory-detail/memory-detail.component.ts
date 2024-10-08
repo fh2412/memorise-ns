@@ -7,7 +7,6 @@ import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/ima
 import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '../../services/image-gallery.service';
 

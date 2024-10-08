@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
   form!: FormGroup;
   isLoggingIn = false;
   isRecoveringPassword = false;
+  isRegistering: boolean = false;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -73,4 +74,7 @@ export class LoginComponent implements OnInit {
     })
   }
 
+  toggleRegister() {
+    this.isRegistering = !this.isRegistering;
+  }
 }

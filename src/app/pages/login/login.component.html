@@ -1,6 +1,6 @@
 <main class="login-main">
     <div class="logo"><img src="/assets/img/logo.png" alt="Logo"></div>
-    <form [formGroup]="form" class="login-form">
+    <form *ngIf="!isRegistering" [formGroup]="form" class="login-form">
         <h1 class="headline">Enter with your account</h1>
         <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
@@ -39,9 +39,10 @@
                 test-id="login-loader">
                 <mat-spinner color="accent" diameter="20"></mat-spinner>
             </button>
-            <button mat-stroked-button color="primary" class="reg-button">REGISTER</button>
+            <button mat-stroked-button color="primary" class="reg-button" (click)="toggleRegister()">REGISTER</button>
         </div>
     </form>
+    <app-register *ngIf="isRegistering" (cancelRegistration)="toggleRegister()"></app-register>
 </main>
 <div class="picturediv">
 </div>

@@ -8,7 +8,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment.development';
-import { BrowserAnimationsModule, NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MainNavComponent } from './components/mainnav/mainnav.component';
 
@@ -56,7 +56,6 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
-    NoopAnimationsModule,
     HttpClientModule,
     MatSidenavModule,
     MatIconModule,

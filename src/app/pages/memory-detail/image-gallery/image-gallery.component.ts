@@ -8,20 +8,13 @@ import { ImageGalleryService } from '../../../services/image-gallery.service';
   styleUrl: 'image-gallery.component.scss'
 })
 export class ImageGalleryComponent {
-  //@Input() landscapePictures: string[] = ['../../../../assets/img/gallery_test/landscape/20230716_073010.jpg', '../../../../assets/img/gallery_test/landscape/20230716_073010.jpg', '../../../../assets/img/gallery_test/landscape/20230716_073010.jpg'];
-  //@Input() portraitPictures: string[] = ['../../../../assets/img/gallery_test/portrait/20230708_155529.jpg', '../../../../assets/img/gallery_test/portrait/20230708_155529.jpg', '../../../../assets/img/gallery_test/portrait/20230708_155529.jpg'];
   landscapePictures: string[] = [];
   portraitPictures: string[] = [];
-  // Define layouts for different picture combinations
-  private layouts = [
-    { type: 'landscape', lcount: 1, pcount: 0 },
-    { type: 'portrait', lcount: 0, pcount: 2 },
-    { type: 'portrait-landscape', lcount: 2, pcount: 1 }
-  ];
+  placeholderImage: string = '../../../../assets/img/placeholder_image.png';
 
   // Create an array to store the combined pictures with layout information
   combinedPictures: { url: string; layout: string }[] = [];
-  layout: { pics: string[]; layout: string }[] = [];
+  layout: any[] = [];
 
   constructor(private imageDataService: ImageGalleryService) {}
 
@@ -29,7 +22,9 @@ export class ImageGalleryComponent {
     this.imageDataService.currentImageData.subscribe((images) => {
       this.splitImages(images); // Split into landscape and portrait
     });
-    this.combinePictures();
+    //this.combinePictures();
+    this.layout = this.getLayoutDistribution();
+    console.log(this.layout);
   }
 
   splitImages(images: { url: string; width: number; height: number }[]) {
@@ -42,28 +37,82 @@ export class ImageGalleryComponent {
     });
   }
 
-  private combinePictures() {
-    // Iterate over the layouts
-    for (const layout of this.layouts) {
-      // Calculate the number of pictures needed for the current layout
-      let lpics = layout.lcount;
-      let ppics = layout.pcount;
+  getLayoutDistribution() {
+    let landscapeRemaining = [...this.landscapePictures]; // Clone the arrays to keep track of unused pictures
+    let portraitRemaining = [...this.portraitPictures];
+    let layoutBool = true;
+    const layouts = [];
 
-      // Check if there are enough landscape or portrait pictures
-      if (layout.lcount <= this.landscapePictures.length || layout.pcount <= this.portraitPictures.length) {
-        // Create a new array to store the combined pictures for the current layout
-        const combinedLayoutPictures: string[] = [];
-
-        // Add pictures to the combined layout array
-        for (let i = 0; i < lpics; i++) {
-          combinedLayoutPictures.push(this.landscapePictures.shift()!);
+    // While there are pictures available or placeholders to fill the layouts
+    while (landscapeRemaining.length > 0 || portraitRemaining.length > 0) {
+      // Prioritize layout 3 (1 portrait, 2 landscapes)
+      if (portraitRemaining.length >= 1 && landscapeRemaining.length >= 2) {
+        if(layoutBool){
+          layouts.push({
+            type: 3,
+            portrait: [portraitRemaining.shift()],
+            landscapes: [landscapeRemaining.shift(), landscapeRemaining.shift()],
+          });
+          layoutBool=!layoutBool;
         }
-        for (let i = 0; i < ppics; i++) {
-          combinedLayoutPictures.push(this.portraitPictures.shift()!);
+        else{
+          layouts.push({
+            type: 4,
+            portrait: [portraitRemaining.shift()],
+            landscapes: [landscapeRemaining.shift(), landscapeRemaining.shift()],
+          });
+          layoutBool=!layoutBool;
         }
-        // Add the combined layout pictures to the main array
-        this.layout.push({ pics: combinedLayoutPictures, layout: layout.type });
       }
+      // Layout 2 (2 portraits)
+      else if (portraitRemaining.length >= 2) {
+        layouts.push({
+          type: 2,
+          portraits: [portraitRemaining.shift(), portraitRemaining.shift()],
+        });
+      }
+      // Layout 1 (1 landscape)
+      else if (landscapeRemaining.length >= 1) {
+        layouts.push({
+          type: 1,
+          landscapes: [landscapeRemaining.shift()],
+        });
+      }
+      // Fill with placeholders when necessary
+      else if (landscapeRemaining.length === 0 || portraitRemaining.length === 0) {
+        if (portraitRemaining.length >= 1 && landscapeRemaining.length === 0) {
+          // Fill remaining layout with placeholders
+          layouts.push({
+            type: 3,
+            portrait: [portraitRemaining.shift()],
+            landscapes: [this.placeholderImage, this.placeholderImage],
+          });
+        } else if (portraitRemaining.length < 2 && landscapeRemaining.length === 0) {
+          // Use a placeholder layout with two portrait placeholders
+          layouts.push({
+            type: 2,
+            portraits: [this.placeholderImage, this.placeholderImage],
+          });
+        } else if (landscapeRemaining.length >= 1 && portraitRemaining.length === 0) {
+          // Use landscape with placeholders
+          layouts.push({
+            type: 1,
+            landscapes: [landscapeRemaining.shift()],
+          });
+        }
+      }
+    }
+
+    this.shuffleArray(layouts);
+
+    return layouts;
+  }
+
+  // Fisher-Yates (Knuth) Shuffle algorithm
+  private shuffleArray(array: any[]) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
     }
   }
 }

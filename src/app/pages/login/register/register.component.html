@@ -1,4 +1,4 @@
-<form [formGroup]="registerForm" class="login-form">
+<form [formGroup]="registerForm" class="login-form" *ngIf="!isFirstTimeUser">
     <h1 class="headline">Create an account</h1>
     
     <mat-form-field appearance="outline">
@@ -44,3 +44,4 @@
         </button>
     </div>
 </form>
+<app-welcome-page *ngIf="isFirstTimeUser" [email]="this.registerForm.value.email" [password]="this.registerForm.value.password"></app-welcome-page>

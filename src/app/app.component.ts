@@ -16,7 +16,7 @@ export class AppComponent {
     this.isFirstTimeUser = localStorage.getItem('isFirstTimeUser') === 'true';
     console.log("first time user: ", this.isFirstTimeUser);
     this.afAuth.authState.subscribe(user => {
-      if (user) {
+      if (user && !this.isFirstTimeUser) {
         this.loggedIn = true;
       } else {
         this.loggedIn = false;

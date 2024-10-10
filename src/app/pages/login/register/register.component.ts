@@ -13,10 +13,12 @@ import { UserService } from '../../../services/userService';
 export class RegisterComponent {
   registerForm: FormGroup;
   isSigningIn: boolean = false;
+  isFirstTimeUser: boolean = false;
+
 
   @Output() cancelRegistration = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private router: Router, private snackBar: MatSnackBar, private userService: UserService) {
+  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private snackBar: MatSnackBar, private userService: UserService) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -32,9 +34,10 @@ export class RegisterComponent {
         password: this.registerForm.value.password
       }).subscribe({
         next: async () => {
+          this.isSigningIn = !this.isSigningIn;
           localStorage.setItem('isFirstTimeUser', 'true');
           await this.createUser();
-          this.login();
+          this.isFirstTimeUser = localStorage.getItem('isFirstTimeUser') === 'true';
         },
         error: error => {
           this.isSigningIn = !this.isSigningIn;
@@ -44,23 +47,6 @@ export class RegisterComponent {
         }
       }); 
     }
-  }
-
-  login(){
-    this.authenticationService.signIn({
-      email: this.registerForm.value.email,
-      password: this.registerForm.value.password
-    }).subscribe({
-      next: () => {
-        this.router.navigate(['/welcome']);
-      },
-      error: error => {
-        this.isSigningIn = !this.isSigningIn;
-        this.snackBar.open(error.message, "OK", {
-          duration: 5000
-        })
-      }
-    }); 
   }
 
   async createUser(){

@@ -17,11 +17,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/thank-you/thank-you.module').then(m => m.ThankYouModule),
   },
   {
-    path: 'welcome',
-    loadChildren: () => import('./pages/welcome-page/welcome-page.module').then(m => m.WelcomeModule),
-    canActivate: [authGuard]
-  },
-  {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
     canActivate: [authGuard]

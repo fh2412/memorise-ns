@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { UserService } from '../../../services/userService';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +16,7 @@ export class RegisterComponent {
 
   @Output() cancelRegistration = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private router: Router, private snackBar: MatSnackBar) {
+  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private router: Router, private snackBar: MatSnackBar, private userService: UserService) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
@@ -30,7 +31,9 @@ export class RegisterComponent {
         email: this.registerForm.value.email,
         password: this.registerForm.value.password
       }).subscribe({
-        next: () => {
+        next: async () => {
+          localStorage.setItem('isFirstTimeUser', 'true');
+          await this.createUser();
           this.login();
         },
         error: error => {
@@ -49,10 +52,7 @@ export class RegisterComponent {
       password: this.registerForm.value.password
     }).subscribe({
       next: () => {
-        // Retrieve redirect URL from query params (replace with your logic)
-        const redirectUrl = localStorage.getItem('redirectUrl') || '/';
-        localStorage.removeItem('redirectUrl');
-        this.router.navigate([redirectUrl]);
+        this.router.navigate(['/welcome']);
       },
       error: error => {
         this.isSigningIn = !this.isSigningIn;
@@ -61,5 +61,18 @@ export class RegisterComponent {
         })
       }
     }); 
+  }
+
+  async createUser(){
+    this.userService.createUser(this.registerForm.value.email).subscribe(
+      response => {
+        console.log('User created successfully:', response);
+        // Handle success response (e.g., show a success message or redirect)
+      },
+      error => {
+        console.error('Error creating user:', error);
+        // Handle error response (e.g., show an error message)
+      }
+    );
   }
 }

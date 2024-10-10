@@ -49,4 +49,8 @@ export class UserService {
   searchUsers(searchTerm: string, userId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/search/users/${userId}?term=${searchTerm}`);
   }
+
+  createUser(email: string): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, {email});
+  }
 }

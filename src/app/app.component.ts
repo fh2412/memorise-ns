@@ -9,9 +9,12 @@ import { AngularFireAuth} from '@angular/fire/compat/auth';
 })
 export class AppComponent {
   loggedIn: boolean | undefined;
+  isFirstTimeUser: boolean = false;
 
   constructor(private afAuth: AngularFireAuth) {}
   ngOnInit() {
+    this.isFirstTimeUser = localStorage.getItem('isFirstTimeUser') === 'true';
+    console.log("first time user: ", this.isFirstTimeUser);
     this.afAuth.authState.subscribe(user => {
       if (user) {
         this.loggedIn = true;

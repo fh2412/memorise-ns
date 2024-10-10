@@ -32,9 +32,13 @@
     </mat-form-field>
 
     <div class="action-buttons">
-        <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()">
+        <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()" *ngIf="!isSigningIn">
             REGISTER
         </button>
+        <button mat-raised-button color="primary" class="button-loader" *ngIf="isSigningIn"
+                test-id="login-loader">
+                <mat-spinner color="accent" diameter="20"></mat-spinner>
+            </button>
         <button mat-stroked-button color="primary" class="reg-button" (click)="cancelRegistration.emit()">
             CANCEL
         </button>

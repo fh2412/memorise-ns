@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AuthenticationService } from './services/authentication.service';
+import { Router } from '@angular/router';
+import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +20,6 @@ export class LoginComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private formBuilder: FormBuilder,
     private router: Router,
-    private route: ActivatedRoute,
     private snackBar: MatSnackBar
   ) { }
 

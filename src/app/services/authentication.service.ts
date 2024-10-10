@@ -21,6 +21,16 @@ export class AuthenticationService {
     );
   }
 
+  registerNew(params: SignIn): Observable<any> {
+    return from(this.auth.createUserWithEmailAndPassword(
+      params.email, params.password
+    )).pipe(
+      catchError((error: FirebaseError) => 
+        throwError(() => new Error(this.translateFirebaseErrorMessage(error)))
+      )
+    );
+  }
+
   recoverPassword(email: string): Observable<void> {
     return from(this.auth.sendPasswordResetEmail(email)).pipe(
       catchError((error: FirebaseError) => 

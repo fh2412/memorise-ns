@@ -153,4 +153,10 @@ export class ImageGalleryComponent {
       console.log('Dialog was closed');
     });
   }
+
+  downloadAsZip(): void {
+    const zipFileName = 'images'; // You can change this to any desired file name
+    const imageUrls = this.createImageArrayFromLayouts(this.layout);
+    this.imageDataService.downloadImagesAsZip(imageUrls, zipFileName);
+  }
 }

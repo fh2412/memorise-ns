@@ -51,8 +51,12 @@ export class MemoryService {
 
   updateMemoryLocation(memoryId: number, locationId: number): Observable<any> {
     const url = `${this.apiUrl}/memories/updateMemoryLocation/${memoryId}`;
-    console.log("im service. Route: ",url, memoryId, locationId);
     return this.http.put(url, { locationId }); 
+  }
+
+  updateTitlePic(imageId: string | null, imageUrl: string): Observable<any> {
+    const url = `${this.apiUrl}/memories/updateTitlePic/${imageId}`;
+    return this.http.put(url, { imageUrl }); 
   }
 
   createMemory(memoryData: any): Observable<any> {

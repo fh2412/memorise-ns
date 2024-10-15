@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref } from 'firebase/storage';
 import { FileUploadService } from '../../../services/file-upload.service';
+import { MemoryService } from '../../../services/memory.service';
 
 @Component({
   selector: 'app-manage-photos',
@@ -10,13 +11,13 @@ import { FileUploadService } from '../../../services/file-upload.service';
 })
 export class ManagePhotosComponent {
   imagesToDelete: string[] = [];
-  imageUrl: string | null | undefined;
+  imageUrl: string | null = null;
 
   images: { url: string; isStarred: boolean }[] = []; // Array of image objects
   starredIndex: number | null = null;  // To store the index of the starred image
   hoverIndex: number | null = null;
 
-  constructor(private route: ActivatedRoute, private fileService: FileUploadService, private router: Router) {}
+  constructor(private route: ActivatedRoute, private fileService: FileUploadService, private router: Router, private memoryService: MemoryService) {}
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {
@@ -28,8 +29,8 @@ export class ManagePhotosComponent {
 
   onStar(index: number) {
     if(this.starredIndex != null){
-      console.log("starr: ", index, this.starredIndex, this.images[index].url, this.images[this.starredIndex].url)
-      this.fileService.starImage(index, this.starredIndex, this.images[index].url, this.images[this.starredIndex].url);
+      this.fileService.starImage(index, this.starredIndex, this.images[this.starredIndex].url, this.images[index].url);
+      this.memoryService.updateTitlePic(this.imageUrl, this.images[index].url).subscribe();
       this.starredIndex = index;
     }
   }

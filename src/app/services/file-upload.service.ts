@@ -104,6 +104,7 @@ export class FileUploadService {
       getMetadata(prevImageRef).then((metadata) => {
         const updatedMetadata = { customMetadata: { ...metadata.customMetadata, isStarred: 'false' } };
         updateMetadata(prevImageRef, updatedMetadata);
+        console.log("Unstarred!: ", prevImageRef, updatedMetadata);
       });
     }
   
@@ -112,7 +113,7 @@ export class FileUploadService {
     getMetadata(newImageRef).then((metadata) => {
       const updatedMetadata = { customMetadata: { ...metadata.customMetadata, isStarred: 'true' } };
       updateMetadata(newImageRef, updatedMetadata).then(() => {
-        starredIndex = index;  // Update the local starredIndex
+        console.log("Starred!: ", newImageRef, updatedMetadata);
       });
     });
   }

@@ -1,3 +1,6 @@
+@import '../../memory-detail/image-preview.scss';
+
+
 .header {
     display: flex;
     align-items: center;
@@ -18,16 +21,7 @@
     margin-top: 15px;
     margin-left: 50px;
     margin-right: 50px;
-}
-
-.background-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; // Ensure the image covers the entire container
-  }
-
-mat-grid-tile{
-    border-radius: 10px
+    padding: 5px;
 }
 
 
@@ -69,4 +63,41 @@ mat-grid-tile{
   .images-to-delete-container button mat-icon {
     font-size: 18px; /* Adjust icon size as needed */
     color: #990000; /* Adjust icon color as needed */
+  }
+  
+  .preview {
+    max-width: 30%; 
+    height: auto; 
+    margin: 1%; 
+  }
+  
+  .button-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+   
+  .card{
+    cursor: auto;
+    border-radius: 10px;
+    height: 98%;
+    width: 98%;
+  }
+  
+  .card {
+    transition: border-color 0.3s;
+    border: 2px solid transparent;
+  }
+  
+  .card.hovered {
+    border-color: #FFA500;  // Change border color on hover
+  }
+  
+  .card.starred {
+    border-color: #FFA500;  // Keep border orange for starred card
+  }
+  
+  .starred-icon {
+    color: #FFA500;  // Make the star icon orange for the starred image
   }

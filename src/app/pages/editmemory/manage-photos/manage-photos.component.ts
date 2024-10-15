@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { getDownloadURL, getStorage, listAll, ref, updateMetadata } from 'firebase/storage';
+import { getDownloadURL, getMetadata, getStorage, listAll, ref } from 'firebase/storage';
 import { FileUploadService } from '../../../services/file-upload.service';
 
 @Component({
@@ -9,9 +9,12 @@ import { FileUploadService } from '../../../services/file-upload.service';
   styleUrl: './manage-photos.component.scss'
 })
 export class ManagePhotosComponent {
-  images: string[] = [];
   imagesToDelete: string[] = [];
   imageUrl: string | null | undefined;
+
+  images: { url: string; isStarred: boolean }[] = []; // Array of image objects
+  starredIndex: number | null = null;  // To store the index of the starred image
+  hoverIndex: number | null = null;
 
   constructor(private route: ActivatedRoute, private fileService: FileUploadService, private router: Router) {}
 
@@ -23,62 +26,81 @@ export class ManagePhotosComponent {
   }
 
 
-  onStar(imageUrl: string) {
-    // Add logic to handle starring an image here
-    const storage = getStorage();
-    console.log("storage:", storage);
-    const forestRef = ref(storage, imageUrl);
-    const newMetadata = {
-      cacheControl: 'public,max-age=300',
-      contentType: 'image/jpeg',
-      customElements: {
-        'fav' : true,
-      }
-    };
-        updateMetadata(forestRef, newMetadata)
-      .then((metadata) => {
-        console.log(metadata)
-      }).catch((error) => {
-        // Uh-oh, an error occurred!
-      });
+  onStar(index: number) {
+    if(this.starredIndex != null){
+      console.log("starr: ", index, this.starredIndex, this.images[index].url, this.images[this.starredIndex].url)
+      this.fileService.starImage(index, this.starredIndex, this.images[index].url, this.images[this.starredIndex].url);
+      this.starredIndex = index;
+    }
   }
+  
 
   onDelete(imageUrl: string) {
-    // Add logic to handle deleting an image here
-    this.imagesToDelete.push(imageUrl);
-    this.images = this.images.filter(item => item !== imageUrl);
+    // Find the image object based on the imageUrl
+    const imageToDelete = this.images.find(item => item.url === imageUrl);
+    
+    if (imageToDelete) {
+      // Push the image URL to the array of images to delete
+      this.imagesToDelete.push(imageToDelete.url);
+  
+      // Filter out the deleted image from the images array
+      this.images = this.images.filter(item => item.url !== imageUrl);
+  
+      // Optional: If the deleted image was starred, reset starredIndex
+      if (this.starredIndex !== null && this.images[this.starredIndex]?.url === imageUrl) {
+        this.starredIndex = null; // Reset the starred image if it was deleted
+      }
+    }
   }
 
-  removeFromDeleteList(imageUrl: string){
-    this.images.push(imageUrl);
-    this.imagesToDelete = this.imagesToDelete.filter(item => item !== imageUrl);
-  }
+  removeFromDeleteList(imageUrl: string) {
+    // Find the image object based on the imageUrl in the delete list
+    const imageToRestore = this.imagesToDelete.find(item => item === imageUrl);
+  
+    if (imageToRestore) {
+      // Push the full image object back to the images array
+      const restoredImage = { url: imageUrl, isStarred: false, path: '' }; // Adjust properties if needed
+      this.images.push(restoredImage);
+  
+      // Remove the image from the imagesToDelete array
+      this.imagesToDelete = this.imagesToDelete.filter(item => item !== imageUrl);
+    }
+  }  
 
   getImages(imageid: any) {
     const storage = getStorage();
-
+  
     // Create a reference under which you want to list
     const listRef = ref(storage, `memories/${imageid}`);
+  
     // Find all the prefixes and items.
     listAll(listRef)
       .then((res) => {
-        console.log("res", res);
-        res.prefixes.forEach((folderRef) => {
-          console.log(folderRef);
-        });
         res.items.forEach((itemRef) => {
-          getDownloadURL(ref(storage, itemRef.fullPath))
-            .then((url) => {
-              this.images.push(url);
-            })
-            .catch((error) => {
-              console.log(error);
+          // Get the download URL and metadata
+          const imageRef = ref(storage, itemRef.fullPath);
+          getDownloadURL(imageRef).then((url) => {
+            // Fetch metadata including isStarred
+            getMetadata(imageRef).then((metadata) => {
+              const isStarred = metadata.customMetadata?.['isStarred'] === 'true';
+  
+              // Push the image URL and the isStarred flag
+              this.images.push({ url, isStarred });
+              
+              // Automatically set the starred index if this image is starred
+              if (isStarred) {
+                this.starredIndex = this.images.length - 1; // Set to the correct index
+              }
             });
+          }).catch((error) => {
+            console.log(error);
+          });
         });
       }).catch((error) => {
         console.log(error);
       });
   }
+  
 
   deleteImages(){
     this.fileService.deleteImages(this.imagesToDelete);

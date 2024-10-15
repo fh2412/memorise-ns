@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable, finalize, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
-import { deleteObject, getStorage, ref } from 'firebase/storage';
+import { deleteObject, getMetadata, getStorage, ref, updateMetadata } from 'firebase/storage';
 import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
 
 @Injectable({
@@ -83,15 +83,6 @@ export class FileUploadService {
   }
 
   deleteImages(imageUrls: string[]) {
-    /*const body = { urls: imageUrls };
-    return this.http.post<any>('http://localhost:3000/api/firestore/delete-images', body)
-      .subscribe(response => {
-        console.log('Images deleted:', response);
-        // Clear the imagesToDelete array and update UI
-      }, error => {
-        console.error('Error deleting images:', error);
-        // Handle potential errors
-      });*/
     const storage = getStorage();
     // Create a reference to the file to delete
     const desertRef = ref(storage, imageUrls[0]);
@@ -104,5 +95,26 @@ export class FileUploadService {
     });
   }
 
+  starImage(index: number, starredIndex: number | null, oldStarredImageUrl: string, newStarredImageUrl: string,){
+    const storage = getStorage();
+  
+    // Unstar the previously starred image if there is one
+    if (starredIndex !== null && starredIndex !== index) {
+      const prevImageRef = ref(storage, oldStarredImageUrl);
+      getMetadata(prevImageRef).then((metadata) => {
+        const updatedMetadata = { customMetadata: { ...metadata.customMetadata, isStarred: 'false' } };
+        updateMetadata(prevImageRef, updatedMetadata);
+      });
+    }
+  
+    // Star the new image
+    const newImageRef = ref(storage, newStarredImageUrl);  // Use the full path of the new image
+    getMetadata(newImageRef).then((metadata) => {
+      const updatedMetadata = { customMetadata: { ...metadata.customMetadata, isStarred: 'true' } };
+      updateMetadata(newImageRef, updatedMetadata).then(() => {
+        starredIndex = index;  // Update the local starredIndex
+      });
+    });
+  }
 }
 

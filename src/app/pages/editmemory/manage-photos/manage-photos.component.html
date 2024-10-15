@@ -8,19 +8,28 @@
       Selected</button>
   </div>
 </div>
+
 <div class="body">
-  <mat-grid-list cols="4" rowHeight="1:1">
-    <mat-grid-tile *ngFor="let image of images">
-      <img mat-card-image [src]="image" alt="Image" class="background-image">
-      <button mat-icon-button (click)="onStar(image)" style="position: absolute; top: 5px; right: 5px;"
-        [disabled]="true">
-        <mat-icon>grade</mat-icon>
-      </button>
-      <button mat-icon-button (click)="onDelete(image)" style="position: absolute; bottom: 5px; right: 5px;">
-        <mat-icon>delete</mat-icon>
-      </button>
+  <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
+    <mat-grid-tile *ngFor="let image of images; let i = index">
+      <mat-card class="card" [ngClass]="{'starred': starredIndex === i, 'hovered': hoverIndex === i}">
+        <div class="image-container">
+          <img mat-card-image [src]="image.url" alt="Image" class="background-image">
+          <button mat-icon-button 
+                  (mouseover)="hoverIndex = i" 
+                  (mouseleave)="hoverIndex = null" 
+                  (click)="onStar(i)" 
+                  style="position: absolute; top: 5px; right: 5px;">
+            <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>
+          </button>
+          <button mat-icon-button (click)="onDelete(image.url)" style="position: absolute; bottom: 5px; right: 5px;">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      </mat-card>
     </mat-grid-tile>
   </mat-grid-list>
+  
 
   <div class="images-to-delete-container" *ngIf="imagesToDelete.length > 0">
     <h2>Images to delete:</h2>
@@ -31,6 +40,4 @@
       </button>
     </div>
   </div>
-  
-
 </div>

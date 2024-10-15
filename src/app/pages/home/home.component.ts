@@ -31,7 +31,7 @@ export class HomeComponent {
   selectedValue: string = 'standard'; // Set default value for view
   noMemory: boolean = true;
 
-  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder, private viewSelector: ViewSelecorComponent) {
+  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder) {
     this.openForm = this._formBuilder.group({
       search: '',
       showFriendsMemories: false,
@@ -111,7 +111,6 @@ export class HomeComponent {
       });
     });
   }
-
 
   addMemory() {
     this.router.navigate(['/newmemory']);

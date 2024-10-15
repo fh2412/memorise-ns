@@ -62,7 +62,7 @@ export class UploadProgressDialogComponent implements OnInit {
       console.log("finished upload!");
 
       if (this.data.picture_count == 0) {
-        this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.data.googleStorageUrl);
+        this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.data.googleStorageUrl, this.data.starredIndex);
         this.dialogRef.close(this.data.googleStorageUrl);
         this.createMemory();
       }

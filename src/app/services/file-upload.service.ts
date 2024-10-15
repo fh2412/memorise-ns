@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable, filter, finalize, forkJoin, map, switchMap } from 'rxjs';
+import { Observable, finalize, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { deleteObject, getStorage, ref } from 'firebase/storage';
 import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';

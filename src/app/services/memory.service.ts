@@ -30,10 +30,10 @@ export class MemoryService {
     return this.http.get<any>(`${this.apiUrl}/memories/allMemories/${user_id}`);
   }
 
-  getMemoryTitlePictureUrl(memoryId: string): Promise<string> {
-    const path = `memories/${memoryId}/picture_1.jpg`;
+  getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
+    const path = `memories/${memoryId}/picture_${starredIndex+1}.jpg`;
     const ref = this.storage.ref(path);
-    return ref.getDownloadURL().toPromise();
+    return ref.getDownloadURL().toPromise();    
   }
 
   getMemorysFriends(memory_id: string, user_id: string) {

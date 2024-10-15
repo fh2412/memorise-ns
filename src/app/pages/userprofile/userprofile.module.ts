@@ -21,6 +21,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BackButtonModule } from "../../components/back-button/back-button.module";
 
 const routes: Routes = [
   {
@@ -56,7 +57,8 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
-  ],
+    BackButtonModule
+],
   providers: [DatePipe], // Add DatePipe here if needed
 })
 export class UserProfileModule { }

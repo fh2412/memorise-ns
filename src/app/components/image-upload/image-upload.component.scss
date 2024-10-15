@@ -12,29 +12,28 @@
   align-items: center;
   gap: 10px;
 }
-
-.image-show {
-  width: 100%;
-}
-
-.upload-button{
-  margin-left: 0px;
-}
  
-.remove-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  background-color: rgba($color: #FFA500, $alpha: 0.5);
-  color: black;
-  border: none;
-  cursor: pointer;
-}
-
 .card{
   cursor: auto;
 }
 
 mat-grid-list{
   margin-top: 15px;
+}
+
+.card {
+  transition: border-color 0.3s;
+  border: 2px solid transparent;
+}
+
+.card.hovered {
+  border-color: #FFA500;  // Change border color on hover
+}
+
+.card.starred {
+  border-color: #FFA500;  // Keep border orange for starred card
+}
+
+.starred-icon {
+  color: #FFA500;  // Make the star icon orange for the starred image
 }

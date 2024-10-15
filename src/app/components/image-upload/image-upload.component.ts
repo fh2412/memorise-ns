@@ -34,6 +34,9 @@ export class ImageUploadComponent implements OnInit {
   downloadURL: string | undefined;
   imageFileWithDimensions: ImageFileWithDimensions[] = [];
 
+  starredIndex: number | null = 0;
+  hoverIndex: number | null = null;
+
   constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router) { }
 
   selectFiles(event: any): void {
@@ -78,7 +81,16 @@ export class ImageUploadComponent implements OnInit {
 
   uploadFiles(): void {
     if (this.selectedFiles) {
-      this.openUploadDialog();
+      const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
+        width: '300px',
+        disableClose: true, // Prevent closing the dialog by clicking outside
+        data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, friends_emails: this.friends_emails, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
+      });
+  
+      // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
+      dialogRef.afterClosed().subscribe((result) => {
+        this.router.navigate(['/home']);
+      });
     }
   }
 
@@ -90,24 +102,18 @@ export class ImageUploadComponent implements OnInit {
     }
   }
 
-  openUploadDialog() {
-    const filesArray: File[] = Array.from(this.selectedFiles || []);
-    const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
-      width: '300px',
-      disableClose: true, // Prevent closing the dialog by clicking outside
-      data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, friends_emails: this.friends_emails, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl },
-    });
-
-    // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
-    dialogRef.afterClosed().subscribe((result) => {
-      this.router.navigate(['/home']);
-    });
-  }
-
   removeImage(index: number): void {
     this.previews.splice(index, 1);
     if (this.previews.length === 0) {
       this.selectedFiles = [];
+    }
+  }
+
+  onStar(index: number) {
+    if (this.starredIndex === index) {
+      this.starredIndex = null;  // Unstar the currently starred image
+    } else {
+      this.starredIndex = index;  // Star the new image
     }
   }
 }

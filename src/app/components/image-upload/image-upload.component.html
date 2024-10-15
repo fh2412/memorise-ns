@@ -1,51 +1,40 @@
 <div *ngFor="let progressInfo of progressInfos">
-    <span>{{ progressInfo.fileName }}</span>
-    <mat-progress-bar
-      mode="determinate"
-      [value]="progressInfo.value"
-    ></mat-progress-bar>
+  <span>{{ progressInfo.fileName }}</span>
+  <mat-progress-bar mode="determinate" [value]="progressInfo.value"></mat-progress-bar>
 </div>
-  
-  <div class="button-div">
-    <div>
-      <button mat-raised-button color="primary" (click)="fileInput.click()">
-        <mat-icon>folder</mat-icon>
-        <span>{{ selectedFiles.length > 0 ? 'Add Photos' : 'Select Photos' }}</span>
-        <input
-          #fileInput
-          type="file"
-          accept="image/*"
-          multiple
-          (change)="selectFiles($event)"
-          style="display: none"
-        />
-      </button>
-    </div>
 
-    <div class="upload-button">
-      <button
-        mat-raised-button
-        color="primary"
-        [disabled]="selectedFiles.length <= 0"
-        (click)="uploadFiles()"
-      >
-      <mat-icon>file_upload</mat-icon>
-      <span>Upload</span>
-      </button>
-    </div>
+<div class="button-div">
+  <div>
+    <button mat-raised-button color="primary" (click)="fileInput.click()">
+      <mat-icon>folder</mat-icon>
+      <span>{{ selectedFiles.length > 0 ? 'Add Photos' : 'Select Photos' }}</span>
+      <input #fileInput type="file" accept="image/*" multiple (change)="selectFiles($event)" style="display: none" />
+    </button>
   </div>
 
-  
-  <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
-    <mat-grid-tile *ngFor="let preview of previews; let i = index" class="image-container">
-      <mat-card class="card">
-        <div class="image-container">
-          <img class="background-image" [src]="preview">
-          <button mat-icon-button (click)="removeImage(i)" class="remove-button">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div> 
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
-  
+  <div>
+    <button mat-raised-button color="primary" [disabled]="selectedFiles.length <= 0" (click)="uploadFiles()">
+      <mat-icon>file_upload</mat-icon>
+      <span>Upload</span>
+    </button>
+  </div>
+</div>
+<mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
+  <mat-grid-tile *ngFor="let image of previews; let i = index" class="image-container">
+    <mat-card class="card" [ngClass]="{'starred': starredIndex === i, 'hovered': hoverIndex === i}">
+      <div class="image-container">
+        <img mat-card-image [src]="image" alt="Image" class="background-image">
+        <button mat-icon-button 
+                (mouseover)="hoverIndex = i" 
+                (mouseleave)="hoverIndex = null" 
+                (click)="onStar(i)" 
+                style="position: absolute; top: 5px; right: 5px;">
+          <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>
+        </button>
+        <button mat-icon-button (click)="removeImage(i)" style="position: absolute; bottom: 5px; right: 5px;">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

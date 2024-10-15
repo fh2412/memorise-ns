@@ -104,7 +104,7 @@
             <div style="display: flex;">
                 <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" style="width: 50%; margin-right: 10px;" [memoryId]="memoryId"></app-friends-autocomplet>
                 <mat-card appearance="outlined" class="memory-card-empty" style="width: 50%; margin-left: 10px;">
-                    <span *ngIf="friendsToDelete.length==0">Remove friends from Memory</span>
+                    <span *ngIf="friendsToDelete.length==0">Friends you want to remove will appear here</span>
                     <mat-chip-set #chipGrid aria-label="Enter friends">
                         @for (friend of friendsToDelete; track friend) {
                         <mat-chip-row (removed)="reverseDelete(friend)">

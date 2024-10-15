@@ -14,6 +14,10 @@
     height: 100vh; /* Full height of the viewport */
     margin-top: 20px;
     margin-left: 20px;
+
+    @media (max-width: 1366px) {
+      display: none;
+    }
   }
   
   /* Style for the main content area */
@@ -22,6 +26,11 @@
     padding: 20px;
     padding-top: 40px;
     margin-left: 20%;
+
+    @media (max-width: 1366px) {
+      width: 100%;
+      margin-left: 0px;
+    }
   }
 
   .fixed-fab {

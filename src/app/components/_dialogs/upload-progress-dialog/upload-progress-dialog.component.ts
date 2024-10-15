@@ -18,7 +18,7 @@ export class UploadProgressDialogComponent implements OnInit {
   counter: number = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; friends_emails: any; picture_count: number; googleStorageUrl: string },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; friends_emails: any; picture_count: number; googleStorageUrl: string; starredIndex: number },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -35,12 +35,11 @@ export class UploadProgressDialogComponent implements OnInit {
   async oneByOneUpload() {
     this.counter = 0;
     const uploadPromises: Promise<void>[] = [];
-    console.log("storage url: ", this.data.googleStorageUrl, "picture count", this.data.picture_count);
-
     this.data.filesWithDimensions.forEach((file, index) => {
       if (file) {
+        const isStarred = (index === this.data.starredIndex);
         const uploadPromise = new Promise<void>((resolve, reject) => {
-          this.storageService.uploadMemoryPicture(this.data.googleStorageUrl, file, this.data.picture_count, index).subscribe(
+          this.storageService.uploadMemoryPicture(this.data.googleStorageUrl, file, this.data.picture_count, index, isStarred).subscribe(
             (uploadProgress: number | undefined) => {
               this.progress[index] = uploadProgress ?? 0;
             },

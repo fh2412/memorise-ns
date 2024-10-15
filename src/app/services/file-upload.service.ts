@@ -40,7 +40,7 @@ export class FileUploadService {
     return task.percentageChanges();
   }
 
-  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number): Observable<number | undefined> {
+  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean): Observable<number | undefined> {
 
     const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
     const ref = this.storage.ref(path);
@@ -49,7 +49,8 @@ export class FileUploadService {
     const metadata = {
       customMetadata: {
         width: file.width.toString(),
-        height: file.height.toString()
+        height: file.height.toString(),
+        isStarred: isStarred.toString()
       }
     };
 

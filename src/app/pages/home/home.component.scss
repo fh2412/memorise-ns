@@ -1,22 +1,16 @@
 @use '@angular/material' as mat;
 @import '../../../styles.scss';
 @import '../../../styles/components/page.scss';
-
-
-  .fixed-fab {
-    position: fixed; /* Position the button absolutely */
-    top: 50px; /* Adjust the bottom distance */
-    right: 30px; /* Adjust the right distance */
-    z-index: 1; /* Ensure it's above other elements */
-  }
   
+.header-group {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
   .fullcard {
     height: 100%;
     width: 100%;
-  }
-
-  mat-paginator {
-    margin-top: 15px;
   }
 
   .image{
@@ -36,20 +30,5 @@
     padding-bottom: 50%;
   }
   span{
-    color: mat.get-theme-color($memorise-ns-theme, accent, 500);
-  }
-
-  .filter{
-    width: 150px;
-    height: 30px;
-    margin-right: 140px;
-    margin-top: 10px;
-  }
-
-  .firends-memory-checkbox{
-    margin-left: 50px;
-  }
-
-  .selector{
-    margin-right: 30%;
+    color: $accent;
   }

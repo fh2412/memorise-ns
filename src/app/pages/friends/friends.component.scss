@@ -1,3 +1,5 @@
+@import '../../../styles/components/page.scss';
+
 .friends-container {
   display: flex;
   justify-content: space-between;
@@ -23,30 +25,4 @@ mat-card-content {
 }
 .search{
   margin-left: 0px;
-}
-
-.main{
-  width: 80%;
-}
-
-.header{
-  display: flex;
-  justify-content: space-between;
-  padding-right: 30px;
-}
-
-h1 {
-  font-size: 50px;
-  font-weight: bold;
-  width: 430px;
-}
-.wrapper {
-  display: flex;
-  height: 100vh;
-  margin-top: 35px;
-}
-
-.sticky-sidebar {
-  width: 20%;
-  margin-left: 20px;
 }

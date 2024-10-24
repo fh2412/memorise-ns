@@ -1,40 +1,7 @@
 @use '@angular/material' as mat;
 @import '../../../styles.scss';
+@import '../../../styles/components/page.scss';
 
-/* Apply styles to the wrapper to manage layout */
-.wrapper {
-    display: flex;
-    min-height: 100vh;
-    height: 100%;
-  }
-  
-  /* Style for the sticky sidebar */
-  .sticky-sidebar {
-    width: 20%; /* 1/4 of the screen */
-    position: fixed;
-    top: 0; /* Stick to the top */
-    bottom: 0;
-    height: 100vh; /* Full height of the viewport */
-    margin-top: 20px;
-    margin-left: 20px;
-
-    @media (max-width: 1366px) {
-      display: none;
-    }
-  }
-  
-  /* Style for the main content area */
-  .main-content {
-    flex: 1; /* Take remaining space */
-    padding: 20px;
-    padding-top: 40px;
-    margin-left: 20%;
-
-    @media (max-width: 1366px) {
-      width: 100%;
-      margin-left: 0px;
-    }
-  }
 
   .fixed-fab {
     position: fixed; /* Position the button absolutely */
@@ -72,22 +39,10 @@
     color: mat.get-theme-color($memorise-ns-theme, accent, 500);
   }
 
-  .header{
-    display: flex;
-    justify-content: space-between;
-  }
-
   .filter{
     width: 150px;
     height: 30px;
     margin-right: 140px;
-    margin-top: 10px;
-  }
-
-  h1 {
-    font-size: 50px;
-    font-weight: bold;
-    width: 430px;
     margin-top: 10px;
   }
 

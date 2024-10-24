@@ -1,0 +1,48 @@
+.wrapper {
+    display: flex;
+    min-height: 100vh;
+    height: 100%;
+}
+
+.sticky-sidebar {
+    width: 20%;
+    /* 1/4 of the screen */
+    position: fixed;
+    top: 0;
+    /* Stick to the top */
+    bottom: 0;
+    height: 100vh;
+    /* Full height of the viewport */
+    margin-top: 20px;
+    margin-left: 20px;
+
+    @media (max-width: 1366px) {
+        display: none;
+    }
+}
+
+.main-content {
+    flex: 1;
+    /* Take remaining space */
+    padding: 20px;
+    padding-top: 40px;
+    margin-left: 20%;
+
+    @media (max-width: 1366px) {
+        width: 100%;
+        margin-left: 0px;
+    }
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: bold;
+    width: 430px;
+    margin-top: 10px;
+}

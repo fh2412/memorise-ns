@@ -3,7 +3,6 @@ import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
-import { ImageDialogComponent } from '../../components/_dialogs/image-dialog/image-dialog.component';
 import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
 import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';

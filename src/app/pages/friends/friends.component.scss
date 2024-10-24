@@ -8,26 +8,12 @@
   }
 }
 
-.search-bar,
 .suggestions-card {
   width: 48%; /* Adjust as needed */
   padding: 10px;
 }
 
-mat-divider {
-  margin-top: 15px;
-}
-
-mat-card-content {
+.search-content {
   width: 70%;
   align-items: center;
-  margin-left: 150px;
-}
-.search{
-  margin-left: 0px;
-}
-
-.scrollable-content {
-  max-height: 50vh; /* Set the maximum height to 50% of the viewport height */
-  overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
 }

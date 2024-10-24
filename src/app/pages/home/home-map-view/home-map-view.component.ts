@@ -5,36 +5,9 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-home-map-view',
   templateUrl: './home-map-view.component.html',
-  styleUrl: './home-map-view.component.scss'
 })
 export class HomeMapViewComponent {
   @Input() memories: any[] = [];
-
-    /*const infoWindow = new google.maps.InfoWindow();
-  
-    // Add some markers to the map.
-    const markers = location.map((position, i) => {
-      const label = "";
-      const marker = new google.maps.Marker({
-        position,
-        label,
-      });
-  
-      marker.addListener("click", () => {
-        const memory = this.memories[i];
-        this.infoWindowComponent.memory = memory; // Pass memory data
-        const infoWindowContent = this.infoWindowComponent;
-        //infoWindow.setContent(infoWindowContent);
-        infoWindow.open(map, marker);
-      });
-  
-      return marker;
-    });
-  
-    // Add a marker clusterer to manage the markers.
-    new MarkerClusterer({ markers, map });
-  }
-*/
 
   markers: any[] = [];
 

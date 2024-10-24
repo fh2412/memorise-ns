@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+@import '../../../../styles.scss';
+
 @import '../../memory-detail/image-preview.scss';
 
 
@@ -91,13 +94,13 @@
   }
   
   .card.hovered {
-    border-color: #FFA500;  // Change border color on hover
+    border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
   }
   
   .card.starred {
-    border-color: #FFA500;  // Keep border orange for starred card
+    border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
   }
   
   .starred-icon {
-    color: #FFA500;  // Make the star icon orange for the starred image
+    color: mat.get-theme-color($memorise-ns-theme, accent, 500);
   }

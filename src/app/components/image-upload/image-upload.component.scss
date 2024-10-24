@@ -1,4 +1,7 @@
+@use '@angular/material' as mat;
+
 @import '../../pages/memory-detail/image-preview.scss';
+@import '../../../styles.scss';
 
 .preview {
   max-width: 30%; 
@@ -27,13 +30,14 @@ mat-grid-list{
 }
 
 .card.hovered {
-  background: #FFA500;
+  background: mat.get-theme-color($memorise-ns-theme, accent, 500);
+  ;
 }
 
 .card.starred {
-  border-color: #FFA500;  // Keep border orange for starred card
+  border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
 }
 
 .starred-icon {
-  color: #FFA500;  // Make the star icon orange for the starred image
+  color: mat.get-theme-color($memorise-ns-theme, accent, 500);
 }

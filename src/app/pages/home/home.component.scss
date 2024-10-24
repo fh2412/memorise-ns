@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+@import '../../../styles.scss';
+
 /* Apply styles to the wrapper to manage layout */
 .wrapper {
     display: flex;
@@ -66,7 +69,7 @@
     padding-bottom: 50%;
   }
   span{
-    color: #FFA500;
+    color: mat.get-theme-color($memorise-ns-theme, accent, 500);
   }
 
   .header{

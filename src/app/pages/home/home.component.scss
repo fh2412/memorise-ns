@@ -1,4 +1,6 @@
 @use '@angular/material' as mat;
+@use '../../../styles/components/mixins' as mixins;
+
 @import '../../../styles.scss';
 @import '../../../styles/components/page.scss';
   
@@ -9,8 +11,7 @@
 }
 
   .fullcard {
-    height: 100%;
-    width: 100%;
+    @include mixins.full-size;
   }
 
   .image{

@@ -1,0 +1,8 @@
+@mixin memory-card($height: 500px, $width: auto) {
+  background-color: rgba(209, 209, 209, 0.534); // Keeps the default background color
+  height: $height; // Pass height as a parameter
+  width: $width;   // Pass width as a parameter
+  text-align: center;
+  justify-content: center;
+  font-style: italic;
+}

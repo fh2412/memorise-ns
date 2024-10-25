@@ -1,9 +1,7 @@
-<mat-card class="activity-card" *ngIf="user">
-    <div class="user-details">
+<mat-card appearance="outlined" *ngIf="user">
         <h3>News</h3>
         <p>You got ... activities</p>
         <p>... Memories got created to ...</p>
-      <button mat-stroked-button class="editbutton" (click)="navigateToUserActivities()">View Activities</button>
-    </div>
+      <button mat-stroked-button (click)="navigateToUserActivities()">View Activities</button>
 </mat-card>
 <br>

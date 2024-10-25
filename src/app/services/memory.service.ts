@@ -41,6 +41,11 @@ export class MemoryService {
     return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends`);
   }
 
+  getMemorysFriendsWithShared(memory_id: string, user_id: string) {
+    // Implement the logic to fetch user data from your backend API
+    return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
+  }
+
   updateMemory(memory_id: string, memoryData: any): Observable<any> {
     return this.http.put<any>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
   }

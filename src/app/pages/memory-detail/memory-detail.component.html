@@ -70,8 +70,8 @@
         </mat-grid-tile>
       </mat-grid-list>
       <br><br>
-      <mat-card appearance="outlined">
-        <table mat-table [dataSource]="memorydbFriends" *ngIf="memorydbFriends?.length > 0">
+      <mat-card appearance="outlined" *ngIf="memorydbFriends?.length > 0">
+        <table mat-table [dataSource]="memorydbFriends">
           <!-- Profile Picture Column -->
           <ng-container matColumnDef="profilePicture">
             <th mat-header-cell *matHeaderCellDef> Profile Picture </th>

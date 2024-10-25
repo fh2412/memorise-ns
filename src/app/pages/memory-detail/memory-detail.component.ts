@@ -88,7 +88,9 @@ export class MemoryDetailComponent {
       (friendsData) => {
         if (friendsData.length === 0) {
           // Set a default value when there are no friends
-          this.memorydbFriends = 'There are no friends added to the memory yet!';
+          this.memorydbFriends = 1;
+          console.log("Friends: ", this.memorydbFriends);
+
         } else {
           this.memorydbFriends = friendsData;
           console.log("Friends: ", this.memorydbFriends);

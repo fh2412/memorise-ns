@@ -13,7 +13,6 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {MatProgressBarModule} from '@angular/material/progress-bar'; 
 import { MatListModule } from '@angular/material/list';
-import { MemoryAddFriendDialogComponent } from '../../components/_dialogs/memory-add-friend-dialog/memory-add-friend-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
@@ -32,7 +31,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     AddingMemoryComponent,
-    MemoryAddFriendDialogComponent,
   ],
   imports: [
     CommonModule,

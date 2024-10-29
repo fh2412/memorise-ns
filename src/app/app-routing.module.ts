@@ -24,6 +24,11 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'memory/:id/download',
+    loadChildren: () => import('./pages/memory-detail/image-download/image-download.module').then(m => m.ImageDownloadModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'editmemory/:id',
     loadChildren: () => import('./pages/editmemory/editmemory.module').then(m => m.EditMemoryModule),
     canActivate: [authGuard]

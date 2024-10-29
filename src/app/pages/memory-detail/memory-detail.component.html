@@ -4,9 +4,9 @@
     <mat-toolbar>
       <h1>{{memorydb.title}}</h1>
       <span class="example-spacer"></span>
-      <button mat-stroked-button color="primary" [disabled]="true">
-        <mat-icon>send</mat-icon>
-        Share
+      <button mat-stroked-button color="primary" (click)="openDownload()">
+        <mat-icon>download</mat-icon>
+        Download
       </button>
       <button mat-stroked-button color="primary" [routerLink]="['/editmemory', memoryID]" style="margin-left: 5px;">
         <mat-icon>edit</mat-icon>

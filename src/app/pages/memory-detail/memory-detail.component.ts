@@ -180,6 +180,11 @@ export class MemoryDetailComponent {
     );
   }
 
+  openDownload() {
+    this.router.navigate(
+      ['memory', this.memoryID, 'download']
+    );
+  }
 
   openFullDescDialog() {
     this.dialog.open(FullDescriptionDialogComponent, {

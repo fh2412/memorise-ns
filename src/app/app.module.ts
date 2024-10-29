@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule} from '@angular/fire/compat';
 import { AngularFireAuthModule} from '@angular/fire/compat/auth';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -36,44 +36,37 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    MainNavComponent,
-    ChangePasswordDialogComponent,
-    UploadProgressDialogComponent,
-    ImageDialogComponent,
-    InfoDialogComponent,
-    ConfirmDialogComponent,
-    LinkModalComponent,
-    PinnedDialogComponent,
-    CompanyDialogComponent,
-    FullDescriptionDialogComponent,
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule,
-    HttpClientModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatListModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    FormsModule,
-    MatButtonModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatProgressBarModule,
-    GoogleMapsModule,
-    FriendsPreviewModule,
-    MatCheckboxModule
-  ],
-  providers: [ provideNativeDateAdapter(), { provide: DateAdapter, useClass: MatNativeDateModule },],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        MainNavComponent,
+        ChangePasswordDialogComponent,
+        UploadProgressDialogComponent,
+        ImageDialogComponent,
+        InfoDialogComponent,
+        ConfirmDialogComponent,
+        LinkModalComponent,
+        PinnedDialogComponent,
+        CompanyDialogComponent,
+        FullDescriptionDialogComponent,
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        AngularFireModule.initializeApp(environment.firebase),
+        AngularFireAuthModule,
+        MatSidenavModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatListModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        FormsModule,
+        MatButtonModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatProgressBarModule,
+        GoogleMapsModule,
+        FriendsPreviewModule,
+        MatCheckboxModule], providers: [provideNativeDateAdapter(), { provide: DateAdapter, useClass: MatNativeDateModule }, provideHttpClient(withInterceptorsFromDi()),] })
 export class AppModule { }

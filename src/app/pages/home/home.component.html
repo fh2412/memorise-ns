@@ -2,22 +2,31 @@
     <div class="sticky-sidebar">
         <ng-container *ngIf="this.userdb && this.userdb.user_id">
             <app-stats [userid]="this.userdb.user_id"></app-stats>
-        </ng-container>    
+        </ng-container>
     </div>
     <div class="main-content">
         <div class="header">
-            <h1>YOUR MEMORIES</h1>
-            <app-view-selecor (selectionChanged)="changeView($event)" class="selector"></app-view-selecor>
-            <section class="filter" [formGroup]="filterForm">
-                <mat-checkbox formControlName="showFilter">Show Filter</mat-checkbox>
-            </section>
+            <div class="header-group">
+                <h1>YOUR MEMORIES</h1>
+                <app-view-selecor (selectionChanged)="changeView($event)"></app-view-selecor>
+            </div>
+            <div class="header-group">
+                <section [formGroup]="filterForm">
+                    <mat-checkbox formControlName="showFilter">Show Filter</mat-checkbox>
+                </section>
+                <button mat-raised-button color="accent" (click)="addMemory()">
+                    <mat-icon class="add-icon">add</mat-icon>
+                    Create New
+                </button>
+            </div>
         </div>
         <section [formGroup]="openForm" *ngIf="filterForm.get('showFilter')!.value">
             <mat-form-field appearance="outline">
                 <mat-label>Search</mat-label>
                 <input matInput formControlName="search" (input)="filterItems()">
             </mat-form-field>
-            <mat-checkbox class="firends-memory-checkbox" formControlName="showFriendsMemories" (change)="showAll($event.checked)">Show Friends Memories</mat-checkbox>
+            <mat-checkbox class="firends-memory-checkbox" formControlName="showFriendsMemories"
+                (change)="showAll($event.checked)">Show Friends Memories</mat-checkbox>
         </section>
         <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
             <div *ngIf="selectedValue === 'map'">
@@ -28,18 +37,15 @@
             <div *ngIf="selectedValue === 'standard'">
                 <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">
                     <mat-grid-tile *ngFor="let item of pagedData">
-                        <app-memory-card [cardData]="item" class="fullcard" (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
+                        <app-memory-card [cardData]="item" class="fullcard"
+                            (click)="openDetaildMemorie(item.memory_id)"></app-memory-card>
                     </mat-grid-tile>
                 </mat-grid-list>
 
                 <mat-paginator [length]="data.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
                     (page)="onPageChange($event)"></mat-paginator>
             </div>
-        </div>   
-        <button mat-raised-button color="accent" class="fixed-fab" (click)="addMemory()">
-            <mat-icon class="add-icon">add</mat-icon>
-            Create New
-        </button>
+        </div>
     </div>
 </div>
 
@@ -47,7 +53,8 @@
     <div class="main-content">
         <div class="image-div">
             <img src="/assets/img/no_memories.jpg" class="image">
-            <p>You have not created any <span>MEMORIES</span> yet. Create one now and start <span>MEMORISEING</span>!</p>
+            <p>You have not created any <span>MEMORIES</span> yet. Create one now and start <span>MEMORISEING</span>!
+            </p>
         </div>
     </div>
 </ng-template>

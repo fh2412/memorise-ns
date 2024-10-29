@@ -1,11 +1,7 @@
-h1 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
   .details-form {
     max-width: 400px;
     margin: 0 auto;
+    margin-top: 15px;
   }
   .images-form {
     max-width: 75%;
@@ -16,13 +12,13 @@ h1 {
   mat-form-field {
     width: 100%;
     margin-bottom: 15px;
-    margin-top: 15px;
   }
   
-  button {
-    margin-bottom: 15px;
-  }
-
   .cancel-button{
     margin: 10px;
+  }
+
+  .location-btn{
+    width: 100%;
+    margin-bottom: 15px;
   }

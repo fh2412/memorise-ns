@@ -1,3 +1,5 @@
+@use '../../../styles/components/memory-card-empty' as card-mixin;
+@use '../../../styles/components/mixins' as mixins;
 @import 'image-preview.scss';
 
 .bd-home-section {
@@ -24,8 +26,7 @@
   }
 
 .full-width{
-    width: 100%;
-    height: 100%;
+    @include mixins.full-size();
 }
 
 h1{
@@ -41,14 +42,13 @@ h1{
 }
 
 .profile-image{
+    @include mixins.profile-pic();
     width: 50px;
     margin-right: 0.5rem;
-    border-radius: 50%;
 }
 
 .image-size{
-  width: 100%;
-  height: 100%;
+  @include mixins.full-size();
   object-fit: cover;
 }
 
@@ -58,9 +58,6 @@ h1{
 }
 
 .desc{
-  box-shadow: 0 0 0 0 transparent;
-  border: 1px solid #e0e0e0;
-  border-radius: 12px;
   margin-top: 5px;
   .custom-pre {
     white-space: pre-wrap; /* Beibehaltung von Leerzeichen und Zeilenumbrüchen */
@@ -70,8 +67,6 @@ h1{
   } 
 }
 
-.placeholder-text{
-  border-radius: 12px;
-  background-color: #f0f0f0;
-  font-style: italic;
+.memory-card {
+  @include card-mixin.memory-card(50px, 100%);
 }

@@ -3,7 +3,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 @Component({
   selector: 'app-view-selecor',
   templateUrl: './view-selecor.component.html',
-  styleUrl: './view-selecor.component.scss'
 })
 export class ViewSelecorComponent {
   selectedValue: string = 'standard'; // Set default value

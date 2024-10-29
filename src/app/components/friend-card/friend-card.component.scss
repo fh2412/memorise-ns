@@ -1,13 +1,13 @@
-mat-divider {
-    margin-top: 15px;
-}
-
 mat-card-content {
     width: 70%;
     align-items: center;
-    margin-left: 150px;
 }
 
 mat-card {
     align-items: center;
 }
+
+.scrollable-content {
+    max-height: 50vh; /* Set the maximum height to 50% of the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
+  }

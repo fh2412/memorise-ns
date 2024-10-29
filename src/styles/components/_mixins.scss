@@ -1,0 +1,13 @@
+// _mixins.scss
+@mixin full-size {
+    width: 100%;  // Full viewport width
+    height: 100%; // Full viewport height
+    margin: 0;     // Remove any default margin
+    padding: 0;    // Remove any default padding
+  }
+  
+@mixin profile-pic {
+    @include full-size;
+    border-radius: 50%;
+    object-fit: cover;
+}

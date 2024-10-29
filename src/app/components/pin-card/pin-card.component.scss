@@ -1,5 +1,7 @@
+@use '../../../styles/components/memory-card-empty' as mixins;
+
+
 .memory-card{
-    border-radius: 12px;
     height: 100%;
   }
 
@@ -9,18 +11,10 @@
     position: absolute;
     bottom: 12px;
     left: 12px;
-    mat-icon{
-      margin-right: 3px;
-    }
   }
 
   .memory-card-empty{
-    background-color: rgba(209, 209, 209, 0.534);
-    border-radius: 12px;
-    height: 95%;
-    text-align: center;
-    justify-content: center;
-    font-style: italic;
+    @include mixins.memory-card(95%, 100%);
   }
 
   .truncate {
@@ -28,7 +22,7 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    max-width: 100%; /* adjust based on container */
+    max-width: 100%;
   }
 
   .two-line-truncate {

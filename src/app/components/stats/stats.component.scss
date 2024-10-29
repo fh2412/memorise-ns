@@ -1,7 +1,6 @@
+@use '../../../styles/components/memory-card-empty' as mixins;
+
 .stats-card {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
     margin-top: 15px;
     padding: 15px;
   }
@@ -10,13 +9,9 @@
     padding-left: 20px;
     line-height: 10px;
   }
-  
-  .memory-card-empty{
-    background-color: rgba(209, 209, 209, 0.534);
-    height: 500px;
-    width: 300px;
-    text-align: center;
-    justify-content: center;
-    font-style: italic;
+
+
+  .memory-card-empty {
+    @include mixins.memory-card(500px, 100%); // Custom width (100%) and default height (500px)
     margin-top: 15px;
   }

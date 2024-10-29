@@ -4,6 +4,15 @@ import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
 import { LinkModalComponent } from '../../components/_dialogs/link-modal/link-modal.component';
 
+export interface Friend {
+  user_id: number;
+  name: string;
+  email: string;
+  dob: string;
+  gender: string;
+  profilepic: string | null; // URL of the profile picture (can be null)
+}
+
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
@@ -11,10 +20,9 @@ import { LinkModalComponent } from '../../components/_dialogs/link-modal/link-mo
 })
 
 export class FriendsComponent implements OnInit{
-  friends: any[] = []; // Replace any with the actual type of your friends
-  friendSuggestions: any[] = [];
-  pendingFriends: any[] = [];
-  ingoingFriends: any[] = [];
+  friends: Friend[] = [];
+  pendingFriends: Friend[] = [];
+  ingoingFriends: Friend[] = [];
   loggedInUserId: string | any;
 
   constructor(private dialog: MatDialog, private friendsService: FriendsService, private userService: UserService) {}
@@ -33,16 +41,6 @@ export class FriendsComponent implements OnInit{
       },
       (error) => {
         console.error('Error fetching user friends:', error);
-      }
-    );
-
-    // Fetch friend suggestions
-    this.friendsService.getFriendSuggestions(this.loggedInUserId).subscribe(
-      (suggestions) => {
-        this.friendSuggestions = suggestions;
-      },
-      (error) => {
-        console.error('Error fetching friend suggestions:', error);
       }
     );
 
@@ -65,15 +63,7 @@ export class FriendsComponent implements OnInit{
     );
   }
 
-
-  openSeeAllDialog(): void {
-    //const dialogRef = this.dialog.open(SeeAllDialogComponent, {
-    //  data: { friends: this.friends } // Pass the complete list of friends to the dialog
-    //});
-    console.log("Open Dialog!");
-  }
-
-  openLinkModal(link: string) {
+  openLinkModal() {
     const dialogRef = this.dialog.open(LinkModalComponent, {
       data: { link: 'https://www.memorise.online/invite/' + this.loggedInUserId, text: 'Your Friendcode:' },
       width: '500px',

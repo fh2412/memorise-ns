@@ -8,6 +8,7 @@ import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '../../services/image-gallery.service';
+import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 
 
 export interface ImageWithMetadata {
@@ -181,8 +182,23 @@ export class MemoryDetailComponent {
   }
 
   downloadZip() {
-    //download ZIP here
+    const confirmationData: ConfirmationDialogData = {
+      title: 'Download memories images?',
+      message: 'With clicking "YES" you start the download of this memories images'
+    };
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '450px',
+      data: confirmationData,
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        console.log("Start Download!");
+      }
+    });
   }
+
 
   openFullDescDialog() {
     this.dialog.open(FullDescriptionDialogComponent, {

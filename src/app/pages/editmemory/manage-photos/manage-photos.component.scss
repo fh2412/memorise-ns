@@ -3,6 +3,7 @@
 
 @import '../../memory-detail/image-preview.scss';
 
+$primary: mat.get-theme-color($memorise-ns-theme, accent, 500);
 
 .header {
     display: flex;
@@ -47,9 +48,9 @@
 
   .images-to-delete-container img {
     margin: 0 5px; /* Adjust margin between images */
-    max-width: 100px; /* Set a maximum width for images */
-    max-height: 100%; /* Maintain image aspect ratio */
-    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
   }
 
   .images-to-delete-container button {
@@ -94,13 +95,13 @@
   }
   
   .card.hovered {
-    border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
+    border-color: $primary;
   }
   
   .card.starred {
-    border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
+    border-color: $primary;
   }
   
   .starred-icon {
-    color: mat.get-theme-color($memorise-ns-theme, accent, 500);
+    color: $primary;
   }

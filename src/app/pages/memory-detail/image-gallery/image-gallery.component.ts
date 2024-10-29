@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
 import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { ImageDialogComponent } from '../../../components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';

@@ -12,16 +12,16 @@
   </mat-list>
 
   <p *ngIf="favoriteMemories.length === 0">No favorite memories selected.</p>
-
+  <mat-divider></mat-divider>
   <div class="flex-space-between">
     <h2>All Memories</h2>
     <mat-form-field appearance="outline" class="stretch">
-      <mat-label>Search Memories</mat-label>
-      <input matInput [(ngModel)]="searchText" (keyup)="updateSearch($event)">
+      <input matInput [(ngModel)]="searchText" (keyup)="updateSearch($event)" placeholder="Search...">
     </mat-form-field>
   </div>
+
   <mat-list *ngIf="allMemories.length > 0">
-    <mat-list-item *ngFor="let memory of allMemories">
+    <mat-list-item *ngFor="let memory of filterMemories">
       <mat-checkbox [(ngModel)]="memory.isFavorite" [disabled]="selectedCount >= selectableCount && !memory.isFavorite"
         (change)="updateSelection(memory, $event)">
         {{ memory.name }}

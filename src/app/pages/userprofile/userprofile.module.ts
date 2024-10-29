@@ -57,7 +57,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
-    BackButtonModule
+    BackButtonModule,
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

@@ -15,6 +15,7 @@ export interface Memory {
 export class PinnedDialogComponent {
   favoriteMemories: Memory[] = [];
   allMemories: Memory[] = [];
+  filterMemories: Memory[] = [];
   initFavoriteMemories: Memory[] = [];
   searchText = '';
   selectableCount = 4;
@@ -44,11 +45,20 @@ export class PinnedDialogComponent {
       memory => !this.favoriteMemories.some(favorite => favorite.id === memory.id)
     );
     this.selectedCount = this.favoriteMemories.length;
+    this.filterMemories = this.allMemories;
   }
 
   updateSearch(value: any) {
-    if (value) {
-      this.searchText = value.target.value;
+    const searchText = value.target.value.toLowerCase();
+
+    if (searchText) {
+      // Filter memories based on the search text
+      this.filterMemories = this.allMemories.filter(memory =>
+        memory.name.toLowerCase().includes(searchText)
+      );
+    } else {
+      // Reset to the original array if the search text is empty
+      this.filterMemories = [...this.allMemories];
     }
   }
 
@@ -76,11 +86,13 @@ export class PinnedDialogComponent {
     const index = this.allMemories.findIndex(m => m.id === memory.id);
     if (index > -1) {
       this.allMemories.splice(index, 1);
+      this.filterMemories = [...this.allMemories];
     }
   }
 
   addAllMemories(memory: Memory) {
     this.allMemories.push(memory);
+    this.filterMemories = [...this.allMemories];
   }
 
   getRemainingSelections() {

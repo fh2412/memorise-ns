@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { Memory } from '../../models/memoryInterface.model';
 
 @Component({
   selector: 'app-memory-card',
@@ -8,8 +9,8 @@ import { Router } from '@angular/router';
   styleUrl: './memory-card.component.scss'
 })
 export class MemoryCardComponent {
-  @Input() cardData: any;
-  titleUrl: any;
+  @Input() cardData!: Memory;
+  titleUrl: string | undefined;
   
   constructor(private router: Router, private datePipe: DatePipe) {}
 
@@ -22,16 +23,10 @@ export class MemoryCardComponent {
     if (!date || !end_date) {
       return 'N/A';
     }
-    const parsedDate = new Date(date);
-    const parsedEndDate = new Date(end_date);
-    var from = this.datePipe.transform(parsedDate, 'dd.MM.yyyy') || 'N/A';
-    var to = this.datePipe.transform(parsedEndDate, 'dd.MM.yyyy') || 'N/A';
+    
+    const from = this.datePipe.transform(new Date(date), 'dd.MM.yyyy') || 'N/A';
+    const to = this.datePipe.transform(new Date(end_date), 'dd.MM.yyyy') || 'N/A';
 
-    if(from == to) {
-      return from
-    }
-    else {
-      return from + " - " + to
-    }
+    return from === to ? from : `${from} - ${to}`;
   }
 }

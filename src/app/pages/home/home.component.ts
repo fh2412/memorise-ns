@@ -4,7 +4,6 @@ import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
 import { FormBuilder } from '@angular/forms';
-import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor.component';
 
 
 @Component({

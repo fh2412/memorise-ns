@@ -1,0 +1,11 @@
+@use '../../../../styles/components/mixins' as mixins;
+
+
+.size{
+    height: 400px;
+    width: 400px;
+}
+
+.fullcard {
+    @include mixins.full-size;
+  }

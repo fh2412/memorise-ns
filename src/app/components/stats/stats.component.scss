@@ -12,6 +12,6 @@
 
 
   .memory-card-empty {
-    @include mixins.memory-card(500px, 100%); // Custom width (100%) and default height (500px)
+    @include mixins.memory-card(500px, 100%);
     margin-top: 15px;
   }

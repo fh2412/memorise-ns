@@ -13,7 +13,7 @@ import { MemoryCardComponent } from '../../components/memory-card/memory-card.co
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
-import { ViewSelecorComponent } from '../../components/view-selecor/view-selecor.component';
+import { ViewSelectorComponent } from '../../components/view-selecor/view-selector.component';
 import { MatSelectModule } from '@angular/material/select';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
 import { GoogleMapsModule } from '@angular/google-maps';
@@ -32,11 +32,9 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    //UserInformationComponent,
     StatsComponent,
     MemoryCardComponent,
-    //LogoutButtonComponent,
-    ViewSelecorComponent,
+    ViewSelectorComponent,
     HomeMapViewComponent,
   ],
   imports: [
@@ -58,6 +56,6 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule
   ],
-  providers: [DatePipe, ViewSelecorComponent],
+  providers: [DatePipe, ViewSelectorComponent],
 })
 export class HomeModule { }

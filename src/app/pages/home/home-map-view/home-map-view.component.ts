@@ -1,17 +1,26 @@
 import { Component, Input, ViewChild } from '@angular/core';
-import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import {  MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
+import { Memory } from '../../../models/memoryInterface.model';
+
+
+export interface CustomMarker {
+  position: google.maps.LatLngLiteral;
+  title: string;
+  element?: google.maps.marker.AdvancedMarkerElement;
+}
 
 @Component({
   selector: 'app-home-map-view',
   templateUrl: './home-map-view.component.html',
+  styleUrl: './home-map-view.component.scss'
 })
 export class HomeMapViewComponent {
-  @Input() memories: any[] = [];
+  @Input() memories: Memory[] = [];
 
   markers: any[] = [];
 
-  @ViewChild(MapInfoWindow)infoWindow!: MapInfoWindow;
+  @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
 
   zoom = 5;
   center: google.maps.LatLngLiteral = { lat: 37.7749, lng: -122.4194 };
@@ -21,31 +30,40 @@ export class HomeMapViewComponent {
     disableDoubleClickZoom: true,
     maxZoom: 15,
   };
-  currentmemory: any = '';
+  currentMemory: Memory | null = null;
  
   constructor(private router: Router) {}
 
-  ngOnInit() {
-    const markers: any[] = this.memories.map((memory) => ({
-      lat: parseFloat(memory.latitude), // Convert latitude to number
-      lng: parseFloat(memory.longitude), // Convert longitude to number
-    }));
-    const marker_locations = markers.map((position, i) => {
-      const marker = new google.maps.Marker({
-        position,
-        title: i.toString(),
-      });
-      return marker;
-    });
+  ngOnInit(): void {
+    this.initializeMarkers();
+  }
 
-    this.markers = marker_locations;
-    this.center = { lat: markers[0].lat, lng: markers[0].lng };
+  private initializeMarkers(): void {
+    if (this.memories.length > 0) {
+      this.markers = this.memories.map((memory, index) => new google.maps.Marker({
+        position: {
+          lat: parseFloat(memory.latitude),
+          lng: parseFloat(memory.longitude),
+        },
+        title: index.toString(),
+      }));
+
+      // Set map center to the first marker's position
+      const firstMarkerPosition = this.markers[0].getPosition();
+      if (firstMarkerPosition) {
+        this.center = {
+          lat: firstMarkerPosition.lat(),
+          lng: firstMarkerPosition.lng(),
+        };
+      }
+    }
   }
  
-  openInfoWindow(marker: MapMarker, pos: any) {
-    this.currentmemory = this.memories[pos.title];
+  openInfoWindow(marker: MapMarker, pos: any): void {
+    this.currentMemory = this.memories[+pos.title];
     this.infoWindow.open(marker);
   }
+
   onButtonClick(memory: any) {
     this.router.navigate(['/memory', memory.memory_id]);
   }

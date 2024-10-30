@@ -8,7 +8,7 @@
         <div class="header">
             <div class="header-group">
                 <h1>YOUR MEMORIES</h1>
-                <app-view-selecor (selectionChanged)="changeView($event)"></app-view-selecor>
+                <app-view-selector (selectionChanged)="changeView($event)"></app-view-selector>
             </div>
             <div class="header-group">
                 <section [formGroup]="filterForm">
@@ -32,7 +32,6 @@
             <div *ngIf="selectedValue === 'map'">
                 <app-home-map-view [memories]="data"></app-home-map-view>
             </div>
-            <div *ngIf="selectedValue === 'calendar'">Content for Calendar View</div>
 
             <div *ngIf="selectedValue === 'standard'">
                 <mat-grid-list cols="3" rowHeight="1:1" gutterSize="5">

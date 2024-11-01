@@ -1,156 +1,138 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
-import { FormBuilder } from '@angular/forms';
-
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Memory } from '../../models/memoryInterface.model';
+import { MemoriseUser } from '../../models/userInterface.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
-export class HomeComponent {
-  filterForm = this._formBuilder.group({
-    showFilter: false,
-  });
-  openForm: any;
-  currentUser: any;
-  userdb: any;
-  data: any[] = [];
-  friendsdata: any[] = [];
-  displaydata: any[] = [];
+export class HomeComponent implements OnInit {
+  filterForm: FormGroup;
+  openForm: FormGroup;
+  userdb!: MemoriseUser;
+  userGeneratedMemories: Memory[] = [];
+  friendGeneratedMemories: Memory[] = [];
+  displayMemories: Memory[] = [];
 
-  pageSize = 9; // Number of items per page
-  pageIndex = 0; // Current page index
-  pagedData: any[] = [];
-  filteredItems: any[] = [];
+  pageSize = 9;
+  pageIndex = 0;
+  pagedData: Memory[] = [];
+  filteredItems: Memory[] = [];
 
-  selectedValue: string = 'standard'; // Set default value for view
+  selectedValue: string = 'standard';
   noMemory: boolean = true;
 
-  constructor(private afAuth: AngularFireAuth, private userService: UserService, private router: Router, private memoryService: MemoryService, private _formBuilder: FormBuilder) {
-    this.openForm = this._formBuilder.group({
-      search: '',
-      showFriendsMemories: false,
-    });
+  constructor(
+    private afAuth: AngularFireAuth,
+    private userService: UserService,
+    private router: Router,
+    private memoryService: MemoryService,
+    private _formBuilder: FormBuilder
+  ) {
+    this.filterForm = this._formBuilder.group({ showFilter: false });
+    this.openForm = this._formBuilder.group({ search: '', showFriendsMemories: false });
   }
 
-
-  async ngOnInit() {
-    await this.setUserId();
-    await this.getCreatedMemories();
-    await this.getAddedMemories();
-    this.displaydata = this.data;
-    this.filteredItems = this.displaydata;
-    this.loadData();
+  async ngOnInit(): Promise<void> {
+    try {
+      await this.initializeUserData();
+      await this.loadMemories();
+      this.initializeDataDisplay();
+    } catch (error) {
+      console.error('Initialization error:', error);
+    }
   }
 
-  changeView(newView: string) {
-    this.selectedValue = newView; // Update component state
+  private async initializeUserData(): Promise<void> {
+    const user = await firstValueFrom(this.afAuth.authState);
+    if (!user?.email) throw new Error('No authenticated user found');
+
+    this.userdb = await firstValueFrom(this.userService.getUserByEmail(user.email));
+    if (this.userdb?.user_id) {
+      this.userService.setLoggedInUserId(this.userdb.user_id);
+    }
   }
 
-  onPageChange(event: any) {
+  private async loadMemories(): Promise<void> {
+    try {
+      await this.getCreatedMemories();
+      await this.getAddedMemories();
+    } catch (error) {
+      console.error('Error loading memories:', error);
+    }
+  }
+
+  private initializeDataDisplay(): void {
+    this.displayMemories = [...this.userGeneratedMemories];
+    this.filteredItems = [...this.displayMemories];
+    this.updatePagedData();
+  }
+
+  changeView(newView: string): void {
+    this.selectedValue = newView;
+  }
+
+  onPageChange(event: any): void {
     this.pageIndex = event.pageIndex;
-    this.loadData();
+    this.updatePagedData();
   }
 
-  filterItems() {
-    if (!this.noMemory) {
-      const searchTerm = this.openForm.get('search').value.toLowerCase();
-      this.filteredItems = this.displaydata.filter(item =>
-        item.title.toLowerCase().includes(searchTerm)
-      );
-      this.loadData();
-    }
+  filterItems(): void {
+    const searchTerm = this.openForm.get('search')?.value?.toLowerCase() || '';
+    this.filteredItems = this.noMemory
+      ? []
+      : this.displayMemories.filter(item => item.title.toLowerCase().includes(searchTerm));
+    this.updatePagedData();
   }
 
-  showAll(checked: boolean) {
-    if (checked && this.friendsdata.length>0) {
-      this.displaydata = [...this.data, ...this.friendsdata];
-    }
-    else {
-      this.displaydata = this.data;
-    }
-    if (this.openForm.get('search').value.toLowerCase()) {
+  showAll(checked: boolean): void {
+    this.displayMemories = checked && this.friendGeneratedMemories.length > 0
+      ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
+      : [...this.userGeneratedMemories];
+
+    if (this.openForm.get('search')?.value) {
       this.filterItems();
-    }
-    else {
-      this.filteredItems = this.displaydata;
-      this.loadData();
-    }
-  }
-
-  private async loadData() {
-    if (!this.noMemory) {
-      const startIndex = this.pageIndex * this.pageSize;
-      const endIndex = startIndex + this.pageSize;
-      this.pagedData = this.filteredItems.slice(startIndex, endIndex);
+    } else {
+      this.filteredItems = [...this.displayMemories];
+      this.updatePagedData();
     }
   }
 
-  async setUserId(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.afAuth.authState.subscribe(user => {
-        this.currentUser = user;
-        this.userService.getUserByEmail(this.currentUser.email).subscribe(
-          (data) => {
-            this.userdb = data;
-            if (this.userdb) {
-              this.userService.setLoggedInUserId(this.userdb.user_id);
-            }
-            resolve();  // Resolve the Promise when the operation is complete
-          },
-          (error: any) => {
-            console.error('Error fetching user data:', error);
-            reject(error);  // Reject the Promise if there is an error
-          }
-        );
-      });
-    });
+  private updatePagedData(): void {
+    const startIndex = this.pageIndex * this.pageSize;
+    this.pagedData = this.filteredItems.slice(startIndex, startIndex + this.pageSize);
   }
 
-  addMemory() {
+  private async getCreatedMemories(): Promise<void> {
+    try {
+      const data = await firstValueFrom(this.memoryService.getCreatedMemory(this.userdb.user_id));
+      this.userGeneratedMemories = data.message === "You haven't created any memories yet!" ? [] : data;
+      this.noMemory = this.userGeneratedMemories.length === 0;
+    } catch (error) {
+      console.error('Error fetching user-created memories:', error);
+    }
+  }
+
+  private async getAddedMemories(): Promise<void> {
+    try {
+      this.friendGeneratedMemories = await firstValueFrom(this.memoryService.getAddedMemories(this.userdb.user_id));
+    } catch (error) {
+      console.error("Error fetching friend's memories data:", error);
+    }
+  }
+
+  addMemory(): void {
     this.router.navigate(['/newmemory']);
   }
 
-  openDetaildMemorie(memoryid: string) {
-    this.router.navigate(['memory/', memoryid]);
-  }
-
-  async getCreatedMemories(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.memoryService.getCreatedMemory(this.userdb.user_id).subscribe(
-        (data) => {
-          if (data.message != 'You haven\'t created any memories yet!') {
-            this.data = data;
-            this.noMemory = false;
-          }
-          else {
-            this.noMemory = true;
-          }
-          resolve();
-        },
-        (status: 200) => {
-          reject(status);
-        }
-      );
-    });
-  }
-
-  async getAddedMemories(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      this.memoryService.getAddedMemories(this.userdb.user_id).subscribe(
-        (data) => {
-          this.friendsdata = data;
-          resolve();
-        },
-        (error: any) => {
-          console.error('Error fetching createdMemory data:', error);
-          reject(error);  // Reject the Promise if there is an error
-        }
-      );
-    });
+  openDetailedMemory(memoryId: number): void {
+    this.router.navigate(['memory/', memoryId]);
   }
 }

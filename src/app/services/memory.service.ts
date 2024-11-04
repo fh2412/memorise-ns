@@ -11,7 +11,7 @@ export class MemoryService {
 
   constructor(private http: HttpClient, private storage: AngularFireStorage) {}
 
-  getMemory(memory_id: string) {
+  getMemory(memory_id: number) {
     // Implement the logic to fetch user data from your backend API
     return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}`);
   }
@@ -41,7 +41,7 @@ export class MemoryService {
     return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends`);
   }
 
-  getMemorysFriendsWithShared(memory_id: string, user_id: string) {
+  getMemorysFriendsWithShared(memory_id: number, user_id: string) {
     // Implement the logic to fetch user data from your backend API
     return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
   }

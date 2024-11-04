@@ -11,7 +11,7 @@ export class AddPhotosComponent {
 
   constructor(private memoryService: MemoryService, private activatedRoute: ActivatedRoute){}
 
-  memoryId: string = "1";
+  memoryId: number = 1;
   firebasePath: any;
   pictureCount: number = 0;
   loaded: boolean = false;

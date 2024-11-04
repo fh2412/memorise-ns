@@ -18,16 +18,15 @@ export interface ImageFileWithDimensions {
 })
 
 export class ImageUploadComponent implements OnInit {
-  @Input() userId: any = '';
+  @Input() userId: string = '';
   @Input() memoryId: string = '';
   @Input() memoryData: any;
-  @Input() friends_emails: any;
+  @Input() friends_emails: string[] = [];
   @Input() picture_count: number = 0;
   @Input() googleStorageUrl: String = "";
 
 
-  selectedFiles: any[] = [];
-  progressInfos: any[] = [];
+  selectedFiles: File[] = [];
 
   previews: string[] = [];
   imageInfos?: Observable<any>;
@@ -39,8 +38,16 @@ export class ImageUploadComponent implements OnInit {
 
   constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router) { }
 
+  ngOnInit(): void {
+    console.log("Memory Data: ", this.memoryData);
+    this.imageInfos = this.uploadService.getFiles();
+    if (this.picture_count == 0) {
+      this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+      console.log("New Memory");
+    }
+  }
+
   selectFiles(event: any): void {
-    this.progressInfos = [];
     const newFiles = event.target.files;
   
     // Combine existing files with new ones (if applicable)
@@ -91,14 +98,6 @@ export class ImageUploadComponent implements OnInit {
       dialogRef.afterClosed().subscribe((result) => {
         this.router.navigate(['/home']);
       });
-    }
-  }
-
-  ngOnInit(): void {
-    this.imageInfos = this.uploadService.getFiles();
-    if (this.picture_count == 0) {
-      this.googleStorageUrl = this.userId.toString() + Date.now().toString();
-      console.log("New Memory");
     }
   }
 

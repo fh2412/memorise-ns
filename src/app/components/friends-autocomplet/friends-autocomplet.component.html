@@ -2,24 +2,29 @@
   <mat-form-field appearance="outline">
     <mat-label>Add Friends to Memory</mat-label>
     <div class="friend-chips-container">
-    <mat-chip-grid #chipGrid aria-label="friend selection">
-      @for (friend of friends; track friend) {
-      <mat-chip-row (removed)="remove(friend)">
-        {{friend}}
-        <button matChipRemove [attr.aria-label]="'remove ' + friend">
-          <mat-icon>cancel</mat-icon>
-        </button>
-      </mat-chip-row>
-      }
-    </mat-chip-grid>
+      <mat-chip-grid #chipGrid aria-label="friend selection">
+        <mat-chip-row *ngFor="let friend of friends;" (removed)="remove(friend)">
+          {{ friend }}
+          <button matChipRemove [attr.aria-label]="'remove ' + friend">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      </mat-chip-grid>
     </div>
-    <input placeholder="Type friends name..." #friendInput [formControl]="friendCtrl" [matChipInputFor]="chipGrid"
-      [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-      (matChipInputTokenEnd)="add($event)" />
+    
+    <input 
+      placeholder="Type friend's name..." 
+      #friendInput 
+      [formControl]="friendCtrl" 
+      [matChipInputFor]="chipGrid"
+      [matAutocomplete]="auto"
+      (matChipInputTokenEnd)="add($event)" 
+    />
+    
     <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-      @for (friend of filteredfriends | async; track friend) {
-      <mat-option [value]="friend">{{friend}}</mat-option>
-      }
+      <mat-option *ngFor="let friend of filteredfriends | async;" [value]="friend">
+        {{ friend }}
+      </mat-option>
     </mat-autocomplete>
   </mat-form-field>
 </form>

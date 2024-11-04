@@ -77,7 +77,7 @@ export class EditmemoryComponent {
   }
 
   getMemory() {
-    this.memoryService.getMemory(this.memoryId).subscribe(
+    this.memoryService.getMemory(Number(this.memoryId)).subscribe(
       (response) => {
         this.firebaseId = response.image_url;
         this.memory = response;

@@ -15,4 +15,3 @@ export interface Memory {
     title_pic: string;
     username: string;
   }
-  

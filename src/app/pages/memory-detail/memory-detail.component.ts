@@ -9,6 +9,7 @@ import { LocationService } from '../../services/location.service';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '../../services/image-gallery.service';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { Memory } from '../../models/memoryInterface.model';
 
 
 export interface ImageWithMetadata {
@@ -24,8 +25,8 @@ export interface ImageWithMetadata {
   styleUrl: 'memory-detail.component.scss'
 })
 export class MemoryDetailComponent {
-  memorydb: any;
-  memoryID: any;
+  memorydb!: Memory;
+  memoryID: number = 0;
   memoryCreator: any;
   loggedInUserId: string | any;
   memorydbFriends: any;

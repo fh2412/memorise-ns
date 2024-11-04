@@ -113,7 +113,6 @@
           more fun together!</mat-card-content>
       </mat-card>
       <br>
-      <div *ngIf="location">
         <ng-container  *ngIf="location != null">
           <div class="desc" style="height: 300px; border-radius: 0%;">
             <app-map-snippet [lng]="location.longitude" [lat]="location.latitude"></app-map-snippet>
@@ -125,6 +124,5 @@
           </mat-card>
         </ng-container>
       </div>
-    </div>
   </div>
 </section>

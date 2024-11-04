@@ -6,9 +6,20 @@ export interface MemoriseUser {
     bio: string;
     country: string;
     gender: string;
-    formatted_dob: string; // Assumes date formatted as "dd/mm/yyyy"
+    formatted_dob: string;
+    dob: string;
     instagram: string;
     location_id: number;
     profilepic: string;
+  }
+  
+
+  export interface Friend {
+    country: string | null;
+    dob: Date | null;
+    name: string;
+    profilepic: string | null;
+    sharedMemoriesCount: number;
+    user_id: number;
   }
   

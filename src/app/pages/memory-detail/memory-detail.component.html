@@ -35,9 +35,9 @@
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
           <div class="full-width" *ngIf="memorydbFriends">
-            <h1 *ngIf="location">Activity in {{location[0].country}}</h1>
+            <h1 *ngIf="location">Activity in {{location.country}}</h1>
             <span>{{selectedDate | date}},
-              {{memorydbFriends?.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory'}}</span>
+              {{memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory'}}</span>
             <mat-divider></mat-divider>
             <div class="profile-row" *ngIf="memoryCreator">
               <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
@@ -46,8 +46,8 @@
                 <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
               <mat-divider vertical style="height: 4rem; margin-left: 3rem;"
-                *ngIf="memorydbFriends?.length > 0"></mat-divider>
-              <span class="more" *ngIf="memorydbFriends?.length > 0">+ {{memorydbFriends.length}} more</span>
+                *ngIf="memorydbFriends.length > 0"></mat-divider>
+              <span class="more" *ngIf="memorydbFriends.length > 0">+ {{memorydbFriends.length}} more</span>
             </div>
             <mat-card appearance="outlined" class="desc">
               <mat-card-content *ngIf="memorydb.text.length>0">
@@ -70,7 +70,7 @@
         </mat-grid-tile>
       </mat-grid-list>
       <br><br>
-      <mat-card appearance="outlined" *ngIf="memorydbFriends?.length > 0">
+      <mat-card appearance="outlined" *ngIf="memorydbFriends != null">
         <table mat-table [dataSource]="memorydbFriends">
           <!-- Profile Picture Column -->
           <ng-container matColumnDef="profilePicture">
@@ -114,12 +114,12 @@
       </mat-card>
       <br>
       <div *ngIf="location">
-        <ng-container *ngIf="location[0].location_id != '1'">
+        <ng-container  *ngIf="location != null">
           <div class="desc" style="height: 300px; border-radius: 0%;">
-            <app-map-snippet [lng]="location[0].longitude" [lat]="location[0].latitude"></app-map-snippet>
+            <app-map-snippet [lng]="location.longitude" [lat]="location.latitude"></app-map-snippet>
           </div>
         </ng-container>
-        <ng-container *ngIf="location[0].location_id == '1'">
+        <ng-container *ngIf="location == null">
           <mat-card class="memory-card" appearance="outlined">
             <mat-card-content>No location data available!</mat-card-content>
           </mat-card>

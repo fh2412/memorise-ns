@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Memory } from '../models/memoryInterface.model';
 
 @Injectable({
   providedIn: 'root'
@@ -34,14 +35,14 @@ export class pinnedMemoryService {
     return this.http.delete(url);
   }
 
-  checkMemoryPin(memoryId: string): Observable<any[]> {
+  checkMemoryPin(memoryId: number): Observable<Memory[]> {
     const url = `${this.apiUrl}/favourite-memorie/${memoryId}`;
-    return this.http.get<any[]>(url);
+    return this.http.get<Memory[]>(url);
   }
 
-  deleteMemoryFromAllPins(memoryId: string): Observable<any[]> {
+  deleteMemoryFromAllPins(memoryId: number): Observable<Memory[]> {
     const url = `${this.apiUrl}/favourite-memorie/${memoryId}`;
-    return this.http.delete<any[]>(url);
+    return this.http.delete<Memory[]>(url);
   }
   
 }

@@ -10,6 +10,8 @@ import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/i
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../services/userService';
 import { pinnedMemoryService } from '../../services/pinnedMemorService';
+import { Memory } from '../../models/memoryInterface.model';
+import { Friend } from '../../models/userInterface.model';
 
 @Component({
   selector: 'app-editmemory',
@@ -17,18 +19,16 @@ import { pinnedMemoryService } from '../../services/pinnedMemorService';
   styleUrl: './editmemory.component.scss'
 })
 export class EditmemoryComponent {
-  loggedInUserId: any;
+  loggedInUserId: string  = '';
   memoryId: string = '';
-  memory: any;
+  memory!: Memory;
 
-  friends: any;
-  friendsToAdd: any[] = [];
-  friendsToDelete: any[] = [];
+  friends: Friend[] = [];
+  friendsToAdd: string[] = [];
+  friendsToDelete: Friend[] = [];
 
   firebaseId: string = '';
   memoryForm: FormGroup;
-  isFormChanged: boolean = true;
-  emailArray: any;
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
@@ -47,7 +47,7 @@ export class EditmemoryComponent {
   }
 
   async ngOnInit(): Promise<void> {
-    this.loggedInUserId = await this.userService.getLoggedInUserId();
+    this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
 
     this.route.paramMap.subscribe((params) => {
       this.memoryId = params.get('id')!;
@@ -157,22 +157,7 @@ export class EditmemoryComponent {
     this.friendsToAdd = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
   }
 
-
-  async addFriends(): Promise<void> {
-    const friendData = { emails: this.emailArray, memoryId: this.memoryId };
-    await this.memoryService.addFriendToMemory(friendData).subscribe(
-      (friendResponse) => {
-        console.log('Friend added to memory successfully:', friendResponse);
-        window.location.reload();
-      },
-      (friendError) => {
-        console.error('Error adding friend to memory:', friendError);
-        // Handle error (e.g., show an error message to the user)
-      }
-    );
-  }
-
-  removeFriend(user: any) {
+  removeFriend(user: Friend) {
     // Remove the friend from the "friends" array
     const index = this.friends.indexOf(user);
     if (index > -1) {
@@ -183,7 +168,7 @@ export class EditmemoryComponent {
     }
   }
   
-  reverseDelete(user: any) {
+  reverseDelete(user: Friend) {
     const index = this.friendsToDelete.indexOf(user);
     if (index > -1) {
       this.friendsToDelete.splice(index, 1);
@@ -237,14 +222,13 @@ export class EditmemoryComponent {
   }
 
   openInfoDialog() {
-    console.log("OPEN DIALOG");
     const dialogData: InfoDialogData = {
       text: 'Location got sucessfully updated!',
       buttonText: 'Ok'
     };
 
-    const dialogRef = this.dialog.open(InfoDialogComponent, {
-      width: '250px',
+    this.dialog.open(InfoDialogComponent, {
+      width: '400px',
       data: dialogData,
     });
   }
@@ -252,6 +236,7 @@ export class EditmemoryComponent {
   create_location() {
     this.locationService.createLocation(this.memoryForm.value).subscribe(
       (response: { message: string, locationId: any }) => {
+        console.log("LocationId: ", response.locationId);
         const location_id = response.locationId[0]?.insertId;
         this.memoryService.updateMemoryLocation(this.memory.memory_id, location_id).subscribe(
           (response) => {

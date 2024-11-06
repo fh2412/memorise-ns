@@ -1,10 +1,8 @@
-<h1 mat-dialog-title>
-    Description
-    <button mat-icon-button mat-dialog-close class="close-button">
-      <mat-icon>close</mat-icon>
-    </button>
-  </h1>
-  <div mat-dialog-content>
-    <div class="custom-pre">{{ data.description }}</div>
-  </div>
-  
+<h1 mat-dialog-title>Description</h1>
+<button mat-icon-button mat-dialog-close class="close-button">
+  <mat-icon>close</mat-icon>
+</button>
+
+<mat-dialog-content class="mat-dialog-container">
+  <p class="custom-pre">{{ data.description }}</p>
+</mat-dialog-content>

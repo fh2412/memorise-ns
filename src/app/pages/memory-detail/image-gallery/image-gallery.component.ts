@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { ImageDialogComponent } from '../../../components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -6,145 +6,128 @@ import { MatDialog } from '@angular/material/dialog';
 @Component({
   selector: 'app-image-gallery',
   templateUrl: './image-gallery.component.html',
-  styleUrl: 'image-gallery.component.scss'
+  styleUrls: ['./image-gallery.component.scss']
 })
-export class ImageGalleryComponent {
+export class ImageGalleryComponent implements OnInit {
   landscapePictures: string[] = [];
   portraitPictures: string[] = [];
   placeholderImage: string = '../../../../assets/img/placeholder_image.png';
+  layout: any[] = [];
   allPictures: string[] = [];
 
-  layout: any[] = [];
-
-  constructor(private imageDataService: ImageGalleryService, private dialog: MatDialog) {}
+  constructor(
+    private imageDataService: ImageGalleryService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {
-      this.splitImages(images); // Split into landscape and portrait
+      this.splitImagesByOrientation(images);
+      this.layout = this.generateLayoutDistribution();
     });
-    //this.combinePictures();
-    this.layout = this.getLayoutDistribution();
   }
 
-  splitImages(images: { url: string; width: number; height: number }[]) {
+  private splitImagesByOrientation(images: { url: string; width: number; height: number }[]): void {
     images.forEach((image) => {
-      if (image.width > image.height) {
-        this.landscapePictures.push(image.url);
-      } else {
-        this.portraitPictures.push(image.url);
-      }
+      (image.width > image.height ? this.landscapePictures : this.portraitPictures).push(image.url);
     });
   }
 
-  getLayoutDistribution() {
-    let landscapeRemaining = [...this.landscapePictures]; // Clone the arrays to keep track of unused pictures
-    let portraitRemaining = [...this.portraitPictures];
-    let layoutBool = true;
+  private generateLayoutDistribution(): any[] {
     const layouts = [];
+    const landscapeStack = [...this.landscapePictures];
+    const portraitStack = [...this.portraitPictures];
+    let alternateLayout = true;
 
-    // While there are pictures available or placeholders to fill the layouts
-    while (landscapeRemaining.length > 0 || portraitRemaining.length > 0) {
-      // Prioritize layout 3 (1 portrait, 2 landscapes)
-      if (portraitRemaining.length >= 1 && landscapeRemaining.length >= 2) {
-        if(layoutBool){
-          layouts.push({
-            type: 3,
-            portrait: [portraitRemaining.shift()],
-            landscapes: [landscapeRemaining.shift(), landscapeRemaining.shift()],
-          });
-          layoutBool=!layoutBool;
-        }
-        else{
-          layouts.push({
-            type: 4,
-            portrait: [portraitRemaining.shift()],
-            landscapes: [landscapeRemaining.shift(), landscapeRemaining.shift()],
-          });
-          layoutBool=!layoutBool;
-        }
-      }
-      // Layout 2 (2 portraits)
-      else if (portraitRemaining.length >= 2) {
-        layouts.push({
-          type: 2,
-          portraits: [portraitRemaining.shift(), portraitRemaining.shift()],
-        });
-      }
-      // Layout 1 (1 landscape)
-      else if (landscapeRemaining.length >= 1) {
-        layouts.push({
-          type: 1,
-          landscapes: [landscapeRemaining.shift()],
-        });
-      }
-      // Fill with placeholders when necessary
-      else if (landscapeRemaining.length === 0 || portraitRemaining.length === 0) {
-        if (portraitRemaining.length >= 1 && landscapeRemaining.length === 0) {
-          // Fill remaining layout with placeholders
-          layouts.push({
-            type: 3,
-            portrait: [portraitRemaining.shift()],
-            landscapes: [this.placeholderImage, this.placeholderImage],
-          });
-        } else if (portraitRemaining.length < 2 && landscapeRemaining.length === 0) {
-          // Use a placeholder layout with two portrait placeholders
-          layouts.push({
-            type: 2,
-            portraits: [this.placeholderImage, this.placeholderImage],
-          });
-        } else if (landscapeRemaining.length >= 1 && portraitRemaining.length === 0) {
-          // Use landscape with placeholders
-          layouts.push({
-            type: 1,
-            landscapes: [landscapeRemaining.shift()],
-          });
-        }
+    while (landscapeStack.length || portraitStack.length) {
+      if (portraitStack.length >= 1 && landscapeStack.length >= 2) {
+        layouts.push(this.createLayout(alternateLayout ? 3 : 4, portraitStack, landscapeStack));
+        alternateLayout = !alternateLayout;
+      } else if (portraitStack.length >= 2) {
+        layouts.push(this.createLayout(2, portraitStack));
+      } else if (landscapeStack.length >= 1) {
+        layouts.push(this.createLayout(1, landscapeStack));
+      } else {
+        layouts.push(this.createPlaceholderLayout(portraitStack, landscapeStack));
       }
     }
 
     this.shuffleArray(layouts);
-
     return layouts;
   }
 
-  // Fisher-Yates (Knuth) Shuffle algorithm
-  private shuffleArray(array: any[]) {
+  private createLayout(type: number, portraitStack: string[], landscapeStack?: string[]): any {
+    if (type === 3 || type === 4) {
+      return {
+        type,
+        portrait: portraitStack.length > 0 ? [portraitStack.shift()!] : [this.placeholderImage],
+        landscapes: landscapeStack?.length ? [landscapeStack.shift()!, landscapeStack.shift()!] : [this.placeholderImage, this.placeholderImage]
+      };
+    } else if (type === 2) {
+      return {
+        type,
+        portraits: portraitStack.length > 1 ? [portraitStack.shift()!, portraitStack.shift()!] : [this.placeholderImage, this.placeholderImage]
+      };
+    } else {
+      return {
+        type,
+        landscapes: landscapeStack?.length ? [landscapeStack.shift()!] : [this.placeholderImage]
+      };
+    }
+  }
+  
+
+  private createPlaceholderLayout(portraitStack: string[], landscapeStack: string[]): any {
+    if (portraitStack.length >= 1 && landscapeStack.length === 0) {
+      return {
+        type: 3,
+        portrait: [portraitStack.shift()],
+        landscapes: [this.placeholderImage, this.placeholderImage],
+      };
+    } else if (portraitStack.length < 2 && landscapeStack.length === 0) {
+      return {
+        type: 2,
+        portraits: [this.placeholderImage, this.placeholderImage],
+      };
+    } else {
+      return {
+        type: 1,
+        landscapes: [landscapeStack.shift()],
+      };
+    }
+  }
+
+  private shuffleArray(array: any[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+      [array[i], array[j]] = [array[j], array[i]];
     }
   }
 
   private createImageArrayFromLayouts(layouts: any[]): string[] {
-    const imageArray: string[] = [];
-
-    layouts.forEach(layout => {
-      if (layout.type === 1) {
-        // Layout 1: One landscape image
-        imageArray.push(layout.landscapes[0]);
-      } else if (layout.type === 2) {
-        // Layout 2: Two portrait images
-        imageArray.push(layout.portraits[0], layout.portraits[1]);
-      } else if (layout.type === 3) {
-        // Layout 3: One portrait and two landscape images
-        imageArray.push(layout.portrait[0], layout.landscapes[0], layout.landscapes[1]);
-      } else if (layout.type === 4) {
-        // Layout 4: One portrait and two landscape images
-        imageArray.push(layout.landscapes[0], layout.landscapes[1], layout.portrait[0]);
+    return layouts.flatMap((layout) => {
+      switch (layout.type) {
+        case 1:
+          return layout.landscapes;
+        case 2:
+          return layout.portraits;
+        case 3:
+        case 4:
+          return [...layout.portrait, ...layout.landscapes];
+        default:
+          return [];
       }
     });
-
-    return imageArray; // Return the ordered image array
   }
 
-  openImageDialog(indexUrl: string) {
+  openImageDialog(selectedImageUrl: string): void {
     this.allPictures = this.createImageArrayFromLayouts(this.layout);
-    const index = this.allPictures.indexOf(indexUrl);
+    const initialIndex = this.allPictures.indexOf(selectedImageUrl);
 
     const dialogRef = this.dialog.open(ImageDialogComponent, {
       data: {
-        images: this.allPictures,  // Pass the array of image URLs
-        initialIndex: index       // Pass the current image index
+        images: this.allPictures,
+        initialIndex
       }
     });
 
@@ -154,8 +137,12 @@ export class ImageGalleryComponent {
   }
 
   downloadAsZip(): void {
-    const zipFileName = 'images'; // You can change this to any desired file name
     const imageUrls = this.createImageArrayFromLayouts(this.layout);
-    this.imageDataService.downloadImagesAsZip(imageUrls, zipFileName);
+    this.imageDataService.downloadImagesAsZip(imageUrls, 'images');
   }
+
+  trackByLayoutType(index: number, layout: any): number {
+    return layout.type;
+  }
+  
 }

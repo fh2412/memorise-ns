@@ -1,83 +1,46 @@
 <app-back-button [text]="'Back'"></app-back-button>
-<!--<button mat-stroked-button class="cancel-button" (click)="downloadAsZip()">
-  <mat-icon>
-    download
-  </mat-icon>
-  Download Images
-</button>-->
 <section class="bd-home-section bd-theme-memorise">
   <div class="container">
-    <div *ngFor="let l of layout">
-      <mat-grid-list cols="1" rowHeight="4:3" *ngIf="l.type==1" gutterSize="8px">
-        <mat-grid-tile>
-          <img src="{{ l.landscapes[0] }}" alt="Picture" (click)="openImageDialog(l.landscapes[0])">
-        </mat-grid-tile>
-      </mat-grid-list>
-      <mat-grid-list cols="2" rowHeight="3:4" *ngIf="l.type==2" gutterSize="8px">
-        <mat-grid-tile> <img src="{{ l.portraits[0] }}" alt="Picture" (click)="openImageDialog(l.portraits[0])">
-        </mat-grid-tile>
-        <mat-grid-tile> <img src="{{ l.portraits[1] }}" alt="Picture" (click)="openImageDialog(l.portraits[1])">
-        </mat-grid-tile>
-      </mat-grid-list>
-      <mat-grid-list cols="17" rowHeight="1:1" *ngIf="l.type==3" gutterSize="8px">
-        <mat-grid-tile rowspan="12" colspan="9">
-          <img src="{{ l.portrait[0] }}" alt="Portrait Image" class="portrait-image" (click)="openImageDialog(l.portrait[0])">
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="6" colspan="8">
-          <img src="{{ l.landscapes[0] }}" alt="Landscape Image 1" class="landscape-image" (click)="openImageDialog(l.landscapes[0])">
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="6" colspan="8">
-          <img src="{{ l.landscapes[1] }}" alt="Landscape Image 2" class="landscape-image" (click)="openImageDialog(l.landscapes[1])">
-        </mat-grid-tile>
-      </mat-grid-list>
-      <mat-grid-list cols="17" rowHeight="1:1" *ngIf="l.type==4" gutterSize="8px">
-        <mat-grid-tile rowspan="6" colspan="8">
-          <img src="{{ l.landscapes[0] }}" alt="Landscape Image 1" class="landscape-image" (click)="openImageDialog(l.landscapes[0])">
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="12" colspan="9">
-          <img src="{{ l.portrait[0] }}" alt="Portrait Image" class="portrait-image" (click)="openImageDialog(l.portrait[0])">
-        </mat-grid-tile>
-        <mat-grid-tile rowspan="6" colspan="8">
-          <img src="{{ l.landscapes[1] }}" alt="Landscape Image 2" class="landscape-image" (click)="openImageDialog(l.landscapes[1])">
-        </mat-grid-tile>
+    <div *ngFor="let l of layout; trackBy: trackByLayoutType">
+      <ng-container [ngSwitch]="l.type">
+        <!-- Layout 1: Single Landscape Image -->
+        <mat-grid-list *ngSwitchCase="1" cols="1" rowHeight="4:3" gutterSize="8px">
+          <mat-grid-tile>
+            <img [src]="l.landscapes[0]" alt="Landscape Image" (click)="openImageDialog(l.landscapes[0])">
+          </mat-grid-tile>
+        </mat-grid-list>
 
-      </mat-grid-list>
-      <div style="height: 8px;"></div>
+        <!-- Layout 2: Two Portrait Images -->
+        <mat-grid-list *ngSwitchCase="2" cols="2" rowHeight="3:4" gutterSize="8px">
+          <mat-grid-tile *ngFor="let portrait of l.portraits">
+            <img [src]="portrait" alt="Portrait Image" (click)="openImageDialog(portrait)">
+          </mat-grid-tile>
+        </mat-grid-list>
+
+        <!-- Layout 3: One Portrait, Two Landscapes (Portrait Left) -->
+        <mat-grid-list *ngSwitchCase="3" cols="17" rowHeight="1:1" gutterSize="8px">
+          <mat-grid-tile rowspan="12" colspan="9">
+            <img [src]="l.portrait[0]" alt="Portrait Image" class="portrait-image" (click)="openImageDialog(l.portrait[0])">
+          </mat-grid-tile>
+          <mat-grid-tile *ngFor="let landscape of l.landscapes" rowspan="6" colspan="8">
+            <img [src]="landscape" alt="Landscape Image" class="landscape-image" (click)="openImageDialog(landscape)">
+          </mat-grid-tile>
+        </mat-grid-list>
+
+        <!-- Layout 4: One Portrait, Two Landscapes (Portrait Right) -->
+        <mat-grid-list *ngSwitchCase="4" cols="17" rowHeight="1:1" gutterSize="8px">
+          <mat-grid-tile rowspan="6" colspan="8">
+            <img [src]="l.landscapes[0]" alt="Landscape Image" class="landscape-image" (click)="openImageDialog(l.landscapes[0])">
+          </mat-grid-tile>
+          <mat-grid-tile rowspan="12" colspan="9">
+            <img [src]="l.portrait[0]" alt="Portrait Image" class="portrait-image" (click)="openImageDialog(l.portrait[0])">
+          </mat-grid-tile>
+          <mat-grid-tile rowspan="6" colspan="8">
+            <img [src]="l.landscapes[1]" alt="Landscape Image" class="landscape-image" (click)="openImageDialog(l.landscapes[1])">
+          </mat-grid-tile>
+        </mat-grid-list>  
+      </ng-container>
+      <div class="layout-spacing"></div>
     </div>
   </div>
 </section>
-
-<!--
-
-<section class="bd-home-section bd-theme-memorise">
-    <div class="container">
-        <div *ngFor="let l of layout">
-            <mat-grid-list cols="1" rowHeight="4:3" *ngIf="l.layout=='landscape'">
-                <mat-grid-tile>
-                    <img src="{{ l.pics[0] }}" alt="Picture">
-                </mat-grid-tile>
-            </mat-grid-list>
-            <mat-grid-list cols="2" rowHeight="3:4" *ngIf="l.layout=='portrait'">
-                <mat-grid-tile> <img src="{{ l.pics[0] }}" alt="Picture">
-                </mat-grid-tile>
-                <mat-grid-tile> <img src="{{ l.pics[1] }}" alt="Picture">
-                </mat-grid-tile>
-            </mat-grid-list>
-            <mat-grid-list cols="17" rowHeight="1:1" *ngIf="l.layout=='portrait-landscape'">
-                <mat-grid-tile rowspan="12" colspan="9">
-                  <img src="{{ l.pics[2] }}" alt="Portrait Image" class="portrait-image">
-                </mat-grid-tile>
-              
-                <mat-grid-tile rowspan="6" colspan="8">
-                  <img src="{{ l.pics[1] }}" alt="Landscape Image 1" class="landscape-image">
-                </mat-grid-tile>
-              
-                <mat-grid-tile rowspan="6" colspan="8">
-                  <img src="{{ l.pics[1] }}" alt="Landscape Image 2" class="landscape-image">
-                </mat-grid-tile>
-              </mat-grid-list>
-        </div>
-    </div>
-</section>
-
--->

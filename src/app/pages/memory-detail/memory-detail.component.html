@@ -34,11 +34,13 @@
     <div style="overflow: hidden;">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
-          <div class="full-width" *ngIf="memorydbFriends">
+          <div class="full-width">
             <h1 *ngIf="location">Activity in {{location.country}}</h1>
-            <span>{{selectedDate | date}},
-              {{memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory'}}</span>
-            <mat-divider></mat-divider>
+            <span>
+              {{ selectedDate | date }},
+              {{ memorydbFriends && memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory' }}
+            </span>
+            
             <div class="profile-row" *ngIf="memoryCreator">
               <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
               <div class="text">
@@ -46,8 +48,8 @@
                 <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
               <mat-divider vertical style="height: 4rem; margin-left: 3rem;"
-                *ngIf="memorydbFriends.length > 0"></mat-divider>
-              <span class="more" *ngIf="memorydbFriends.length > 0">+ {{memorydbFriends.length}} more</span>
+                *ngIf="memorydbFriends"></mat-divider>
+              <span class="more" *ngIf="memorydbFriends">+ {{memorydbFriends.length}} more</span>
             </div>
             <mat-card appearance="outlined" class="desc">
               <mat-card-content *ngIf="memorydb.text.length>0">

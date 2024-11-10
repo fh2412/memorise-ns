@@ -1,26 +1,12 @@
+@use '../../../styles/components/mixins' as mixins;
+@use '../../../styles/components/memory-card-empty.scss' as memory-card-empty-mixin;
+
 .bd-home-section {
-  --spacing: 3rem;
-  --bd-section-vertical: 1rem;
-  --bd-section-horizontal: 1rem;
-  align-items: stretch;
-  background-image: linear-gradient(180deg, hsla(39, 100%, 50%, 0.219), transparent calc(var(--spacing)* 3));
-  background-repeat: repeat-x;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing);
-  overflow: hidden;
-  padding: calc(var(--spacing)* 3) calc(var(--spacing)* 4) calc(var(--spacing)* 3);
-  position: relative;
-  z-index: 1;
+  @include mixins.background-gradient;
 }
 
 .memory-card-empty {
-  background-color: rgba(209, 209, 209, 0.534);
-  text-align: center;
-  width: 100%;
-  height: 100%;
-  justify-content: center;
-  font-style: italic;
+  @include memory-card-empty-mixin.memory-card(100%, 100%);
 }
 
 .header {
@@ -37,7 +23,6 @@
 
   button {
     margin-right: 25px;
-    margin-bottom: 10px;
   }
 }
 
@@ -81,4 +66,22 @@ h1 {
   top: 0;
   width: 100%;
   height: auto;
+}
+
+
+.friend-wrapper {
+  display: flex;
+  gap: 1rem; // Adds spacing between the child components
+}
+
+.friend-wrapper > * {
+  flex: 1 1 50%; // Each child takes up 50% of the available width
+}
+
+.desc-margin{
+  margin-top: 5px;
+}
+
+.button-margin{
+  margin-top: 55px;
 }

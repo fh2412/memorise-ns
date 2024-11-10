@@ -11,3 +11,19 @@
     border-radius: 50%;
     object-fit: cover;
 }
+
+@mixin background-gradient{
+  --spacing: 3rem;
+  --bd-section-vertical: 1rem;
+  --bd-section-horizontal: 1rem;
+  align-items: stretch;
+  background-image: linear-gradient(180deg, hsla(39, 100%, 50%, 0.219), transparent calc(var(--spacing)* 3));
+  background-repeat: repeat-x;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing);
+  overflow: hidden;
+  padding: calc(var(--spacing)* 3) calc(var(--spacing)* 4) calc(var(--spacing)* 3);
+  position: relative;
+  z-index: 1;
+}

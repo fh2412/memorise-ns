@@ -32,8 +32,30 @@ export class EditmemoryComponent {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private route: ActivatedRoute, private userService: UserService, private memoryService: MemoryService, private locationService: LocationService, private pinnedService: pinnedMemoryService,private firebaseService: FileUploadService, private dialog: MatDialog) {
-    this.memoryForm = this.formBuilder.group({
+  mapCenter: google.maps.LatLng = new google.maps.LatLng(47.5, 14.2);
+
+  constructor(
+    private formBuilder: FormBuilder, 
+    private router: Router, 
+    private route: ActivatedRoute, 
+    private userService: UserService, 
+    private memoryService: MemoryService, 
+    private locationService: LocationService, 
+    private pinnedService: pinnedMemoryService,
+    private firebaseService: FileUploadService, 
+    private dialog: MatDialog
+  ) {
+    this.memoryForm = this.initializeMemoryForm();
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
+    this.memoryId = this.route.snapshot.paramMap.get('id') || '';
+    await this.loadMemoryData();
+  }
+
+  initializeMemoryForm(): FormGroup {
+    return this.formBuilder.group({
       description: [''],
       title: [''],
       memory_date: [''],
@@ -46,63 +68,55 @@ export class EditmemoryComponent {
     });
   }
 
-  async ngOnInit(): Promise<void> {
-    this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
+  async loadMemoryData(): Promise<void> {
+    await Promise.all([this.loadMemory(), this.loadFriends()]);
+  }
 
-    this.route.paramMap.subscribe((params) => {
-      this.memoryId = params.get('id')!;
+  loadMemory(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.memoryService.getMemory(Number(this.memoryId)).subscribe(
+        response => {
+          this.memory = response;
+          this.firebaseId = response.image_url;
+          this.memoryForm.patchValue({
+            description: response.text,
+            title: response.title,
+            memory_date: response.memory_date,
+            memory_end_date: response.memory_end_date
+          });
+          resolve();
+        },
+        error => {
+          console.error('Error getting memory:', error);
+          reject(error);
+        }
+      );
     });
-    await this.getMemory();
-    await this.getFriends();
   }
 
-  async deleteMemory() {
-    await this.memoryService.deleteMemoryAndFriends(this.memoryId).subscribe(
-      () => {
-        this.firebaseService.deleteMemorysFolder(this.firebaseId)
-          .subscribe(
-            () => {
-              this.router.navigate(['/home']);
-            },
-            (error) => {
-              console.error('Error deleting folder:', error);
-            }
-          );
-      },
-      (error) => {
-        console.error('Error deleting memory and friends:', error);
-        // Handle error, e.g., show an error message
-      }
-    );
+  loadFriends(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
+        response => {
+          this.friends = response;
+          resolve();
+        },
+        error => {
+          console.error('Error getting friends:', error);
+          reject(error);
+        }
+      );
+    });
   }
 
-  getMemory() {
-    this.memoryService.getMemory(Number(this.memoryId)).subscribe(
-      (response) => {
-        this.firebaseId = response.image_url;
-        this.memory = response;
-        this.memoryForm.patchValue({
-          description: this.memory.text,
-          title: this.memory.title,
-          memory_date: this.memory.memory_date,
-          memory_end_date: this.memory.memory_end_date
-        });
-      },
-      (error) => {
-        console.error('Error getting memory:', error);
-      }
-    );
-  }
-
-  getFriends() {
-    this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
-      (response) => {
-        this.friends = response;
-      },
-      (error) => {
-        console.error('Error getting memory:', error);
-      }
-    );
+  async deleteMemory(): Promise<void> {
+    try {
+      await this.memoryService.deleteMemoryAndFriends(this.memoryId).toPromise();
+      await this.firebaseService.deleteMemorysFolder(this.firebaseId).toPromise();
+      this.router.navigate(['/home']);
+    } catch (error) {
+      console.error('Error deleting memory and friends:', error);
+    }
   }
 
   goToHome(): void {
@@ -110,47 +124,30 @@ export class EditmemoryComponent {
   }
 
   async saveChanges(): Promise<void> {
-    await this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).subscribe(
-      (response) => {
-        console.log(response); // Handle success response
-      },
-      (error) => {
-        console.error('Error updating memory:', error); // Handle error
-      }
-    );
-    await this.updateFriends(this.memoryId);
-    this.router.navigate(['/home']);
+    try {
+      await this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).toPromise();
+      await this.updateFriends();
+      this.router.navigate(['/home']);
+    } catch (error) {
+      console.error('Error updating memory:', error);
+    }
   }
 
-  updateFriends(memoryId: string) {
-    // Add friends to memory
-    if(this.friendsToAdd.length>0){
-      const friendData = { emails: this.friendsToAdd, memoryId: this.memoryId };
-      this.memoryService.addFriendToMemory(friendData).subscribe(
-        (friendResponse) => {
-          console.log('Friend added to memory successfully:', friendResponse);
-          window.location.reload();
-        },
-        (friendError) => {
-          console.error('Error adding friend to memory:', friendError);
-          // Handle error (e.g., show an error message to the user)
-        }
-      );
+  async updateFriends(): Promise<void> {
+    if (this.friendsToAdd.length > 0) {
+      await this.memoryService.addFriendToMemory({ emails: this.friendsToAdd, memoryId: this.memoryId }).toPromise();
+      this.reloadPage();
     }
-    // Delete friends from memory
-    if(this.friendsToDelete.length>0){
-      this.friendsToDelete.forEach(async friend => {
+    
+    if (this.friendsToDelete.length > 0) {
+      await Promise.all(this.friendsToDelete.map(friend => 
+        this.memoryService.deleteFriendsFromMemory(friend.user_id, this.memoryId).toPromise()
+      ));
+    }
+  }
 
-        await this.memoryService.deleteFriendsFromMemory(friend.user_id, memoryId).subscribe(
-          response => {
-            console.log('Friend deleted successfully: ', friend, response);
-          },
-          error => {
-            console.error('Error deleting friend:', error);
-          }
-        );
-      });
-    }
+  reloadPage(): void {
+    window.location.reload();
   }
 
   onSelectedValuesChange(selectedValues: string[]) {
@@ -179,17 +176,14 @@ export class EditmemoryComponent {
     }
   }
 
-  addPhotos() {
-    const currentUrl = this.router.url;
-    const newUrl = currentUrl + '/addphotos';
-    this.router.navigateByUrl(newUrl);
+  navigateToAddPhotos(): void {
+    this.router.navigateByUrl(`${this.router.url}/addphotos`);
   }
 
-  managePhotos() {
+  navigateToManagePhotos(): void {
     this.router.navigate(['/editmemory/managephotos', this.memory.image_url]);
   }
 
-  mapCenter: google.maps.LatLng = new google.maps.LatLng(47.5, 14.2);
   openMapDialog(): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
       data: { mapCenter: this.mapCenter },
@@ -198,27 +192,22 @@ export class EditmemoryComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      this.openInfoDialog();
       if (result) {
-        const address = result[0].address_components;
-    
-        this.memoryForm.patchValue({
-          l_city: this.locationService.getAddressComponents(address, 'long', 'locality'),
-          l_postcode: this.locationService.getAddressComponents(address, 'long', 'postal_code'),
-          l_country: this.locationService.getAddressComponents(address, 'long', 'country'),
-        });
-        this.memoryForm.patchValue({
-          lat: result[1].lat,
-          lng: result[1].lng,
-        });
-        if (this.memory.location_id == 1) {
-          this.create_location();
-        }
-        else {
-          this.updateLocation();
-        }
+        this.updateLocationData(result[0].address_components, result[1]);
       }
     });
+  }
+
+  updateLocationData(address: any[], coordinates: { lat: number, lng: number }): void {
+    this.memoryForm.patchValue({
+      l_city: this.locationService.getAddressComponents(address, 'long', 'locality'),
+      l_postcode: this.locationService.getAddressComponents(address, 'long', 'postal_code'),
+      l_country: this.locationService.getAddressComponents(address, 'long', 'country'),
+      lat: coordinates.lat,
+      lng: coordinates.lng,
+    });
+    
+    this.memory.location_id === 1 ? this.createLocation() : this.updateLocation();
   }
 
   openInfoDialog() {
@@ -233,92 +222,44 @@ export class EditmemoryComponent {
     });
   }
 
-  create_location() {
+  createLocation(): void {
     this.locationService.createLocation(this.memoryForm.value).subscribe(
-      (response: { message: string, locationId: any }) => {
-        console.log("LocationId: ", response.locationId);
-        const location_id = response.locationId[0]?.insertId;
-        this.memoryService.updateMemoryLocation(this.memory.memory_id, location_id).subscribe(
-          (response) => {
-            console.log(response);
-          },
-          (error) => {
-            console.error('Error creating Location:', error);
-          }
-        );
-      },
-      (locationResponse) => {
-        console.error('Error creating Location:', locationResponse);
-      }
+      response => this.memoryService.updateMemoryLocation(this.memory.memory_id, response.locationId[0]?.insertId).subscribe(),
+      error => console.error('Error creating Location:', error)
     );
   }
 
-  updateLocation() {
+  updateLocation(): void {
     this.locationService.updateLocation(this.memory.location_id, this.memoryForm.value)
-      .subscribe(response => {
-        console.log('Location updated:', response);
-        // Handle successful update (e.g., display a success message)
-      }, error => {
-        console.error('Error updating location:', error);
-        // Handle errors (e.g., display an error message)
-      });
+      .subscribe(response => console.log('Location updated:', response), 
+      error => console.error('Error updating location:', error));
   }
 
-  onDeleteClick(status: string) {
-    const confirmationData: ConfirmationDialogData = {
-      title: 'Confirm ' + status,
-      message: 'Are you sure you want to ' + status + ' this memory?'
-    };
+  async confirmDeletion(status: string): Promise<void> {
+    const confirmed = await this.openConfirmationDialog('Confirm ' + status, `Are you sure you want to ${status} this memory?`);
+    if (confirmed && status === 'DELETE') {
+      this.pinnedService.checkMemoryPin(this.memory.memory_id).subscribe(
+        async response => {
+          if (response.length === 0) {
+            await this.deleteMemory();
+          } else {
+            const deleteConfirmed = await this.openConfirmationDialog('Delete anyways?', 'This memory is in someone\'s Favorite Memories. Delete anyway?');
+            if (deleteConfirmed) await this.deleteMemory();
+          }
+        },
+        error => console.error('Error checking pinned memory:', error)
+      );
+    }
+    else if (confirmed && status === 'DISCARD'){
+      this.goToHome();
+    }
+  }
 
-    const confirmationPinnedData: ConfirmationDialogData = {
-      title: 'Delete anyways?',
-      message: 'This memory is added in someones Favourite-Memories. Delete anyway?'
-    };
-
+  openConfirmationDialog(title: string, message: string): Promise<boolean> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
-      data: confirmationData,
+      width: '450px',
+      data: { title, message }
     });
-
-    dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed) {
-        if (status === 'DELETE') {
-          this.pinnedService.checkMemoryPin(this.memory.memory_id).subscribe(
-            (response) => {
-              if(response.length == 0){
-                this.deleteMemory();
-              }
-              else{
-                const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-                  width: '300px',
-                  data: confirmationPinnedData,
-                });
-
-                dialogRef.afterClosed().subscribe(confirmed => {
-                  if (confirmed) {
-                    if (status === 'DELETE') {
-                      this.pinnedService.deleteMemoryFromAllPins(this.memory.memory_id).subscribe(
-                        () => {
-                          this.deleteMemory();
-                        },
-                        (error) => {
-                          console.error('Error deleting pinned memory:', error);
-                        }
-                      );
-                    }
-                  }
-                });
-              }
-            },
-            (error) => {
-              console.error('Error getting memory:', error);
-            }
-          );
-        }
-        else {
-          this.goToHome();
-        }
-      }
-    });
+    return dialogRef.afterClosed().toPromise();
   }
 }

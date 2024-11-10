@@ -6,18 +6,21 @@
 $primary: mat.get-theme-color($memorise-ns-theme, accent, 500);
 
 .header {
+  margin-top: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 35px;
-    h1{
+    .headline{
+      width: 50%;
+      h1{
+        width: 100%;
         font-size: 50px;
         font-weight: bold;
         margin-left: 25px;
+      }
     }
     button{
         margin-right: 25px;
-        margin-bottom: 10px;
     }
 }
 
@@ -94,14 +97,22 @@ $primary: mat.get-theme-color($memorise-ns-theme, accent, 500);
     border: 2px solid transparent;
   }
   
-  .card.hovered {
-    border-color: $primary;
-  }
-  
-  .card.starred {
+  .card.hovered, .ard.starred {
     border-color: $primary;
   }
   
   .starred-icon {
     color: $primary;
+  }
+
+  .position-bottom-right {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+  }
+  
+  .position-top-right {
+    position: absolute;
+    top: 5px;
+    right: 5px;
   }

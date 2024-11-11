@@ -1,19 +1,22 @@
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>{{title}}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content *ngIf="friends.length > 0; else noFriends" class="scrollable-content">
-      <!-- friends-list.component.html -->
-      <mat-list>
-        
-        <ng-container *ngFor="let friend of friends; let last = last">
-          <app-friend-preview [friend]="friend" [requested]="requested" [buttonText]="buttonText" [requestedText]="requestedText" [buttonColor]="buttonColor" [buttonIcon]="buttonIcon"></app-friend-preview>
-          <mat-divider *ngIf="!last"></mat-divider>
-        </ng-container>
-      </mat-list>
-    </mat-card-content>
-    <ng-template #noFriends>
-      <!-- Display "No friends" text when there are no friends -->
-      <p>You got no {{title}} :)</p>
-    </ng-template>
-  </mat-card>
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>{{ title }}</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content *ngIf="friends.length > 0; else noFriends" class="scrollable-content">
+    <mat-list>
+      <ng-container *ngFor="let friend of friends; let last = last">
+        <mat-list-item class="list-item">
+          <app-friend-preview [friend]="friend" [requested]="requested" [buttonText]="buttonText"
+            [requestedText]="requestedText" [buttonColor]="buttonColor" [buttonIcon]="buttonIcon">
+          </app-friend-preview>
+        </mat-list-item>
+        <mat-divider *ngIf="!last"></mat-divider>
+      </ng-container>
+    </mat-list>
+  </mat-card-content>
+
+  <ng-template #noFriends>
+    <p>You have no {{ title }} :)</p>
+  </ng-template>
+</mat-card>

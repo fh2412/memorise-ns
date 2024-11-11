@@ -3,15 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
 import { LinkModalComponent } from '../../components/_dialogs/link-modal/link-modal.component';
+import { Friend } from '../../models/userInterface.model';
 
-export interface Friend {
-  user_id: number;
-  name: string;
-  email: string;
-  dob: string;
-  gender: string;
-  profilepic: string | null; // URL of the profile picture (can be null)
-}
 
 @Component({
   selector: 'app-friends',

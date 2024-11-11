@@ -1,33 +1,44 @@
 import { Component, Input } from '@angular/core';
 import { UserService } from '../../services/userService';
+import { Friend } from '../../models/userInterface.model';
+import { debounceTime, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-friend-search',
   templateUrl: './friend-search.component.html',
-  styleUrl: './friend-search.component.scss'
+  styleUrls: ['./friend-search.component.scss']
 })
 export class FriendSearchComponent {
+  @Input() userId: string = '';
 
-  @Input() userId: string="";
-
-  constructor(private searchService: UserService) { }
-  searchTerm = '';
-  searchResults: any[] = [];
+  searchTerm: string = '';
+  searchResults: Friend[] = [];
   enter: boolean = false;
+  errorMessage: string = '';
+  private searchSubject = new Subject<string>();
 
+  constructor(private searchService: UserService) {
+    this.searchSubject.pipe(debounceTime(300)).subscribe(() => this.searchFriend());
+  }
 
-  searchFriend() {
-    if (!this.searchTerm) {
-      return;
-    }
+  onSearchTermChange(term: string): void {
+    this.searchTerm = term;
+    this.searchSubject.next(term);
+  }
+
+  searchFriend(): void {
+    if (!this.searchTerm) return;
     this.enter = true;
-
-    this.searchService.searchUsers(this.searchTerm, this.userId)
-      .subscribe(results => {
+    this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
+      (results) => {
         this.searchResults = results;
-      }, error => {
-        console.error(error);
-        // Handle errors (display error message to the user)
-      });
+        console.log(this.searchResults);
+        this.errorMessage = ''; // Clear error on successful response
+      },
+      (error) => {
+        console.error('Error searching for friends:', error);
+        this.errorMessage = 'Failed to fetch search results. Please try again.';
+      }
+    );
   }
 }

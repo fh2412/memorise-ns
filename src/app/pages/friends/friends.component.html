@@ -15,21 +15,13 @@
       <mat-tab label="Friends/Suggestions">
         <div class="friends-container">
           <div class="suggestions-card" *ngIf="friends">
-            <app-friend-card [friends]="pendingFriends" [title]="'Your Friends'" [requested]='false'
-              [buttonText]="'Remove'" [requestedText]="'Undo'" [buttonColor]="'warn'"
-              [buttonIcon]="'person_remove'"></app-friend-card>
+            <app-friend-card [friends]="friends" [title]="'Your Friends'" [requested]='false' [buttonText]="'Remove'"
+              [requestedText]="'Undo'" [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-card>
           </div>
 
           <!-- Right side: Suggestions Card -->
           <div class="suggestions-card">
-            <mat-card>
-              <mat-card-header>
-                <mat-card-title>Search for new Friends</mat-card-title>
-              </mat-card-header>
-              <mat-card-content class="search-content">
-                <app-friend-search [userId]="loggedInUserId"></app-friend-search>
-              </mat-card-content>
-            </mat-card>
+              <app-friend-search [userId]="loggedInUserId"></app-friend-search>
           </div>
         </div>
       </mat-tab>

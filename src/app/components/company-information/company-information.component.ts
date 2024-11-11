@@ -3,7 +3,7 @@ import { companyService } from '../../services/company.service';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CompanyDialogComponent } from '../_dialogs/company-dialog/company-dialog.component';
-import { LinkModalComponent } from '../_dialogs/link-modal/link-modal.component';
+import { ShareFriendCodeDialogComponent } from '../_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 
 @Component({
   selector: 'app-company-information',
@@ -103,7 +103,7 @@ export class CompanyInformationComponent {
     await this.companyService.generateCode(this.company.id).subscribe(
       response => {
         console.log('Company updated successfully:', response);
-        const dialogRef = this.dialog.open(LinkModalComponent, {
+        const dialogRef = this.dialog.open(ShareFriendCodeDialogComponent, {
           data: { link: response.code, text: 'Your Company Join-Code:' },
           width: '500px',
         });

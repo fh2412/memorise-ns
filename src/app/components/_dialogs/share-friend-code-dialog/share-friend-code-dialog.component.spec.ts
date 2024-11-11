@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LinkModalComponent } from './link-modal.component';
+import { LinkModalComponent } from './share-friend-code-dialog.component';
 
 describe('LinkModalComponent', () => {
   let component: LinkModalComponent;

@@ -30,7 +30,7 @@ import { FriendsPreviewModule } from './components/friend-preview/friend-preview
 import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
-import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.component';
+import { ShareFriendCodeDialogComponent } from './components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinned-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
@@ -45,7 +45,7 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
         ImageDialogComponent,
         InfoDialogComponent,
         ConfirmDialogComponent,
-        LinkModalComponent,
+        ShareFriendCodeDialogComponent,
         PinnedDialogComponent,
         CompanyDialogComponent,
         FullDescriptionDialogComponent,

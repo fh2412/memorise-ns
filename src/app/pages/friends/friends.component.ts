@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
-import { LinkModalComponent } from '../../components/_dialogs/link-modal/link-modal.component';
+import { ShareFriendCodeDialogComponent } from '../../components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 import { Friend } from '../../models/userInterface.model';
 
 
@@ -57,7 +57,7 @@ export class FriendsComponent implements OnInit{
   }
 
   openLinkModal() {
-    const dialogRef = this.dialog.open(LinkModalComponent, {
+    const dialogRef = this.dialog.open(ShareFriendCodeDialogComponent, {
       data: { link: 'https://www.memorise.online/invite/' + this.loggedInUserId, text: 'Your Friendcode:' },
       width: '500px',
     });

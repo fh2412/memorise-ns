@@ -12,6 +12,7 @@ import { UserService } from '../../services/userService';
 import { pinnedMemoryService } from '../../services/pinnedMemorService';
 import { Memory } from '../../models/memoryInterface.model';
 import { Friend } from '../../models/userInterface.model';
+import { MemoriseLocation } from '../../models/location.model';
 
 @Component({
   selector: 'app-editmemory',
@@ -27,12 +28,13 @@ export class EditmemoryComponent {
   friendsToAdd: string[] = [];
   friendsToDelete: Friend[] = [];
 
+  location!: MemoriseLocation;
+
   firebaseId: string = '';
   memoryForm: FormGroup;
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  mapCenter: google.maps.LatLng = new google.maps.LatLng(47.5, 14.2);
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -103,6 +105,21 @@ export class EditmemoryComponent {
         },
         error => {
           console.error('Error getting friends:', error);
+          reject(error);
+        }
+      );
+    });
+  }
+
+  loadLocation(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.locationService.getLocationById(this.memory.location_id).subscribe(
+        response => {
+          this.location = response;
+          resolve();
+        },
+        error => {
+          console.error('Error getting location:', error);
           reject(error);
         }
       );
@@ -184,13 +201,33 @@ export class EditmemoryComponent {
     this.router.navigate(['/editmemory/managephotos', this.memory.image_url]);
   }
 
-  openMapDialog(): void {
+  initialiseMapDialog(): void {
+    if (this.memory.location_id) {
+      // Load location and then open the map dialog
+      this.loadLocationAndOpenDialog();
+    } else {
+      // Open the map dialog with the default mapCenter
+      this.openMapDialog(47, 3);
+    }
+  }
+
+  private loadLocationAndOpenDialog(): void {
+    this.loadLocation().then(() => {
+      // Open dialog after successfully loading the location
+      this.openMapDialog(this.location.latitude, this.location.longitude);
+    }).catch(error => {
+      console.error('Error loading location:', error);
+      // Optionally handle error, e.g., show an alert or fallback
+    });
+  }
+  
+  private openMapDialog(lat: number, long: number): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { mapCenter: this.mapCenter },
+      data: { lat: lat, long: long },
       width: '500px',
       height: '542px'
     });
-
+  
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.updateLocationData(result[0].address_components, result[1]);

@@ -1,7 +1,7 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 import { GeocodingService } from '../../../services/geocoding.service';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 
 @Component({
@@ -10,13 +10,13 @@ import { MatDialogRef } from '@angular/material/dialog';
   styleUrl: './choose-location.component.scss'
 })
 export class ChooseLocationComponent {
-  constructor( private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>,) {}
+  constructor( private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) {}
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
 
-  mapZoom = 7;
-  mapCenter: google.maps.LatLng= new google.maps.LatLng(47.5, 14.2);
+  mapZoom = 5;
+  mapCenter: google.maps.LatLng = new google.maps.LatLng(this.data.lat, this.data.long);
   mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoomControl: true,

@@ -1,13 +1,19 @@
 <div class="row">
     <div class="profile-row">
-        <img src="/assets/img/1.png"> 
+        <img [src]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}"> 
         <div class="text">
-            <b>{{friend.name || "name"}}</b><br><span>{{ formattedDob  }}, {{friend.gender || "gender"}}</span>
-        </div>
+            <b>{{ friend.name || 'Name' }}</b><br>
+            <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>
+          </div>
     </div>
-    <button mat-stroked-button [color]="buttonColor" class="request-button" (click)="requestFriend(friend, buttonText, requested)" [ngClass]="{'enabled' : requested, 'disabled': !requested}">
-        <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
-        {{ requested ? requestedText : buttonText }}
-    </button>
+    <button mat-stroked-button 
+          [color]="buttonColor" 
+          class="request-button" 
+          (click)="requestFriend(buttonText, requested)" 
+          [class.enabled]="requested" 
+          [class.disabled]="!requested">
+    <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
+    {{ requested ? requestedText : buttonText }}
+  </button>
 </div>
    

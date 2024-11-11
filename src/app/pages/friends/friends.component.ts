@@ -16,7 +16,7 @@ export class FriendsComponent implements OnInit{
   friends: Friend[] = [];
   pendingFriends: Friend[] = [];
   ingoingFriends: Friend[] = [];
-  loggedInUserId: string | any;
+  loggedInUserId!: string;
 
   constructor(private dialog: MatDialog, private friendsService: FriendsService, private userService: UserService) {}
 
@@ -26,7 +26,7 @@ export class FriendsComponent implements OnInit{
 
   private async getUserData(){
     // Fetch or set the list of friends
-    this.loggedInUserId = this.userService.getLoggedInUserId();
+    this.loggedInUserId = this.userService.getLoggedInUserId() || '';
     // Fetch user friends
     this.friendsService.getUserFriends(this.loggedInUserId).subscribe(
       (friends) => {

@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router';
-
+import { MemoriseUser } from '../../models/userInterface.model';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-information',
@@ -10,33 +10,41 @@ import { Router } from '@angular/router';
   styleUrls: ['./user-information.component.scss']
 })
 export class UserInformationComponent implements OnInit {
-  userdb: any;
-  currentUser: any;
+  userdb!: MemoriseUser;
+  loggedInUserId: string = '';
 
-  constructor(private userService: UserService, 
-    private afAuth: AngularFireAuth,  
-    private router: Router) {}
+  constructor(
+    private userService: UserService, 
+    private router: Router
+  ) {}
 
-  ngOnInit(): void {
-    this.getUserInfo();
+  async ngOnInit(): Promise<void> {
+    try {
+      this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
+      this.loadUser();
+    } catch (error) {
+      console.error('Error fetching logged in user ID:', error);
+    }
   }
 
-  getUserInfo(): void {
-    this.afAuth.authState.subscribe(user => {
-        this.currentUser = user;
-        this.userService.getUserByEmail(this.currentUser.email).subscribe(
+  private loadUser(): void {
+    if (this.loggedInUserId) {
+      this.userService.getUser(this.loggedInUserId)
+        .pipe(take(1))
+        .subscribe(
           (data) => {
             this.userdb = data;
-            console.log(this.userdb);
           },
-          (error: any) => {
+          (error: Error) => {
             console.error('Error fetching user data:', error);
           }
         );
-    });
+    }
   }
 
-  navigateToUserProfile() {
-    this.router.navigate([`/userprofile/${this.userdb.user_id}`]);
+  navigateToUserProfile(): void {
+    if (this.userdb?.user_id) {
+      this.router.navigate([`/userprofile/${this.userdb.user_id}`]);
+    }
   }
 }

@@ -23,21 +23,25 @@ export class LogoutButtonComponent {
     });
   }
 
-  onLogoutClick() {
+  onLogoutClick(): void {
+    const dialogRef = this.openConfirmationDialog();
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.logout();
+      }
+    });
+  }
+
+  private openConfirmationDialog() {
     const confirmationData: ConfirmationDialogData = {
       title: 'Confirm Logout',
       message: 'Are you sure you want to log out?'
     };
 
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    return this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: confirmationData,
-    });
-
-    dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed) {
-        this.logout();
-      } 
     });
   }
 }

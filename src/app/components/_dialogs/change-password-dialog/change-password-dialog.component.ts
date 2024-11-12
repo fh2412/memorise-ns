@@ -2,8 +2,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePassword } from "firebase/auth";
-
+import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
+import { FirebaseError } from 'firebase/app';
 
 @Component({
   selector: 'app-change-password-dialog',
@@ -11,108 +11,88 @@ import { EmailAuthProvider, getAuth, reauthenticateWithCredential, updatePasswor
   styleUrls: ['./change-password-dialog.component.scss']
 })
 export class ChangePasswordDialogComponent implements OnInit {
-  @Output() updateUserPassword = new EventEmitter<any>();
-  changePasswordForm: FormGroup;
+  @Output() updateUserPassword = new EventEmitter<void>();
+  changePasswordForm!: FormGroup;
   currentUser: any;
-
   errorMessage: string | null = null;
-
-
-
 
   constructor(
     public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
     private afAuth: AngularFireAuth
   ) {
-    this.changePasswordForm = new FormGroup({
-      currentPassword: new FormControl('', Validators.required),
-      newPassword: new FormControl('', [Validators.required, Validators.minLength(6)])
-    });
+    this.initializeForm();
   }
 
   ngOnInit(): void {
     this.afAuth.authState.subscribe(user => {
-      if (user) {
-        this.currentUser = user;
-      } else {
-        this.currentUser = null;
-      }
+      this.currentUser = user;
     });
   }
 
-  submitPassword() {
+  private initializeForm(): void {
+    this.changePasswordForm = new FormGroup({
+      currentPassword: new FormControl('', Validators.required),
+      newPassword: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8)
+      ])
+    });
+  }
+
+  submitPasswordChange(): void {
+    if (!this.currentUser || !this.currentUser.email) return;
+
     const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
     const newPassword = this.changePasswordForm.get('newPassword')?.value;
-    console.log(this.currentUser.email, newPassword, currentPassword);
 
-    this.currentUser.reauthenticateWithCredential(this.currentUser.email, currentPassword)
+    // Client-side password validation
+    if (!this.validateNewPassword(newPassword)) {
+      this.errorMessage = 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.';
+      return;
+    }
+
+    // Reauthenticate and update password
+    reauthenticateWithCredential(
+      this.currentUser,
+      EmailAuthProvider.credential(this.currentUser.email, currentPassword)
+    )
       .then(() => {
-        this.currentUser.updatePassword(newPassword)
-          .then(() => {
-            console.log('Password updated successfully');
-            // Password updated successfully, handle success
-          })
-          .catch((error: any) => {
-            console.error('Error updating password:', error);
-            // Handle error updating password
-          });
+        this.errorMessage = null;
+        return updatePassword(this.currentUser, newPassword);
       })
-      .catch((error: any) => {
-        console.error('Error reauthenticating user:', error);
-        // Handle error reauthenticating user
+      .then(() => {
+        console.log('Password updated successfully!');
+        this.dialogRef.close();
+        this.updateUserPassword.emit();
+      })
+      .catch(error => {
+        this.handleAuthError(error);
       });
+  }
+
+  private handleAuthError(error: FirebaseError): void {
+    if (error.code === 'auth/wrong-password') {
+      this.errorMessage = 'The current password is incorrect.';
+    } else if (error.code === 'auth/weak-password') {
+      this.errorMessage = 'The new password is too weak.';
+    } else {
+      this.errorMessage = 'An error occurred while updating the password.';
+    }
+    console.error('Auth error:', error);
+  }
+
+  closeDialog(): void {
     this.dialogRef.close();
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
-
-
-  changePassword() {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    const newPassword = this.changePasswordForm.get('newPassword')?.value;
-    const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
-
-    if (user && currentPassword && newPassword && user.email != null) {
-      // Validate new password strength (client-side)
-      if (!this.validateNewPassword(newPassword)) {
-        this.errorMessage = 'New password does not meet complexity requirements.';
-        return; // Prevent proceeding with weak password
-      } else {
-        this.errorMessage = null; // Clear previous error if any
-      }
-    
-      // Verify current password using reauthenticateWithCredential
-      reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, currentPassword))
-        .then(() => {
-          this.errorMessage = null; // Clear previous error if any
-          // Current password is correct, proceed with updatePassword
-          updatePassword(user, newPassword)
-            .then(() => {
-              console.log('Password updated successfully!');
-              this.closeDialog(); // Assuming you have a closeDialog function for the modal
-            })
-            .catch((error) => {
-              console.error('Error updating password:', error);
-              this.errorMessage = 'An error occurred while changing password.'; // Generic error message
-            });
-        })
-        .catch((error) => {
-          this.errorMessage = 'Incorrect current password or other error.'; // More generic error
-        });
-      }
-  }
-  
-  // Function to validate new password strength (adjust requirements as needed)
-  validateNewPassword(password: string): boolean {
-    const minLength = 8; // Minimum password length
+  // Password strength validator
+  private validateNewPassword(password: string): boolean {
+    const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
     const hasNumber = /\d/.test(password);
     const hasSymbol = /[^\w\s]/.test(password);
-  
+
     return (
       password.length >= minLength &&
       hasUpperCase &&

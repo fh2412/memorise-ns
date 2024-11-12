@@ -14,6 +14,7 @@ import { MemoryService } from '../../services/memory.service';
 import { pinnedMemoryService } from '../../services/pinnedMemorService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 import { release } from 'os';
+import { Memory } from '../../models/memoryInterface.model';
 
 @Component({
   selector: 'app-userprofile',
@@ -25,9 +26,7 @@ export class UserProfileComponent implements OnInit {
   user: any;
   loggedInUserId: any;
   buttonText: string = 'Edit Profile';
-  pin_memories = [
-    { title: 'Heading Text', description: 'This is the description of the memory in a short', type: 'Beta Memory', stars: 8, memory_id: 0 },
-  ];
+  pin_memories: Memory[] = [];
   all_memories = [];
   isUploading: boolean = false;
 
@@ -175,11 +174,27 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
-  getMemoriesToDisplay() {
+  getMemoriesToDisplay(): Memory[] {
     const displayedMemories = [...this.pin_memories];
-    // Fill remaining slots with placeholder objects
-    for (let i = displayedMemories.length; i < 4; i++) {
-      displayedMemories.push({ title: '', description: '', type: '', stars: 0, memory_id: 0 });
+    const emptyMemory: Memory = {
+      memory_id: 0,
+      user_id: 0,
+      image_url: '',
+      latitude: '',
+      longitude: '',
+      location_id: 0,
+      memory_date: '',
+      memory_end_date: '',
+      picture_count: 0,
+      text: '',
+      title: '',
+      title_pic: '',
+      username: ''
+    };
+
+    // Add empty memory objects until there are exactly 4 items
+    while (displayedMemories.length < 4) {
+      displayedMemories.push(emptyMemory);
     }
     return displayedMemories;
   }
@@ -285,7 +300,7 @@ export class UserProfileComponent implements OnInit {
 
   onFileChange(event: any) {
     const file = event.target.files[0];
-  
+
     if (file) {
       this.isUploading = true; // Start spinner
       this.fileUploadService.uploadProfilePicture(this.user.user_id, file).subscribe(
@@ -300,7 +315,7 @@ export class UserProfileComponent implements OnInit {
         async () => {
           const downloadURL = await this.fileUploadService.getProfilePictureUrl(this.user.user_id);
           console.log('Profile picture uploaded successfully. URL:', downloadURL);
-  
+
           // Save the downloadURL in your database
           this.saveProfilePicUrlInDatabase(this.user.user_id, downloadURL);
           this.isUploading = false; // Stop spinner after completion

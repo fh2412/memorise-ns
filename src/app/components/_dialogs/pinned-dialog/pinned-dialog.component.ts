@@ -26,40 +26,28 @@ export class PinnedDialogComponent {
     public dialogRef: MatDialogRef<PinnedDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { memories: any[], pinned: any[] }
   ) {
-    this.favoriteMemories = this.data.pinned.map(memory => ({
-      name: memory.title,
-      id: memory.memory_id,
-      isFavorite: true,
-    }));
-    this.initFavoriteMemories = this.data.pinned.map(memory => ({
-      name: memory.title,
-      id: memory.memory_id,
-      isFavorite: true,
-    }));
-    this.allMemories = this.data.memories.map(memory => ({
-      name: memory.title,
-      id: memory.memoryId,
-      isFavorite: false,
-    }));
-    this.allMemories = this.allMemories.filter(
-      memory => !this.favoriteMemories.some(favorite => favorite.id === memory.id)
-    );
+    // Initialize memories
+    this.favoriteMemories = this.mapMemories(this.data.pinned, true);
+    this.initFavoriteMemories = [...this.favoriteMemories];
+    this.allMemories = this.mapMemories(this.data.memories, false)
+      .filter(memory => !this.favoriteMemories.some(fav => fav.id === memory.id));
     this.selectedCount = this.favoriteMemories.length;
-    this.filterMemories = this.allMemories;
+    this.filterMemories = [...this.allMemories];
   }
 
-  updateSearch(value: any) {
-    const searchText = value.target.value.toLowerCase();
+  mapMemories(memoryData: any[], isFavorite: boolean): Memory[] {
+    return memoryData.map(memory => ({
+      name: memory.title,
+      id: memory.memory_id || memory.memoryId,
+      isFavorite
+    }));
+  }
 
-    if (searchText) {
-      // Filter memories based on the search text
-      this.filterMemories = this.allMemories.filter(memory =>
-        memory.name.toLowerCase().includes(searchText)
-      );
-    } else {
-      // Reset to the original array if the search text is empty
-      this.filterMemories = [...this.allMemories];
-    }
+  updateSearch(value: string) {
+    const searchText = value.toLowerCase();
+    this.filterMemories = searchText
+      ? this.allMemories.filter(memory => memory.name.toLowerCase().includes(searchText))
+      : [...this.allMemories];
   }
 
   updateSelection(memory: Memory, event: any) {

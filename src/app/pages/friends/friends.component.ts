@@ -5,64 +5,74 @@ import { UserService } from '../../services/userService';
 import { ShareFriendCodeDialogComponent } from '../../components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 import { Friend } from '../../models/userInterface.model';
 
-
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
   styleUrl: './friends.component.scss'
 })
-
-export class FriendsComponent implements OnInit{
+export class FriendsComponent implements OnInit {
   friends: Friend[] = [];
   pendingFriends: Friend[] = [];
   ingoingFriends: Friend[] = [];
   loggedInUserId!: string;
 
-  constructor(private dialog: MatDialog, private friendsService: FriendsService, private userService: UserService) {}
+  constructor(
+    private dialog: MatDialog, 
+    private friendsService: FriendsService, 
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    this.getUserData();
+    this.initializeUserData();
   }
 
-  private async getUserData(){
-    // Fetch or set the list of friends
+  private initializeUserData(): void {
     this.loggedInUserId = this.userService.getLoggedInUserId() || '';
-    // Fetch user friends
+    if (this.loggedInUserId) {
+      this.loadFriendsData();
+    }
+  }
+
+  private loadFriendsData(): void {
+    this.fetchFriends();
+    this.fetchPendingFriends();
+    this.fetchIngoingFriends();
+  }
+
+  private fetchFriends(): void {
     this.friendsService.getUserFriends(this.loggedInUserId).subscribe(
-      (friends) => {
-        this.friends = friends;
-      },
-      (error) => {
-        console.error('Error fetching user friends:', error);
-      }
-    );
-
-    this.friendsService.getPendingFriends(this.loggedInUserId).subscribe(
-      (friends) => {
-        this.pendingFriends = friends;
-      },
-      (error) => {
-        console.error('Error fetching user friends:', error);
-      }
-    );
-
-    this.friendsService.getIngoingFriends(this.loggedInUserId).subscribe(
-      (friends) => {
-        this.ingoingFriends = friends;
-      },
-      (error) => {
-        console.error('Error fetching user friends:', error);
-      }
+      (friends) => this.friends = friends,
+      (error) => this.handleFetchError('user friends', error)
     );
   }
 
-  openLinkModal() {
-    const dialogRef = this.dialog.open(ShareFriendCodeDialogComponent, {
-      data: { link: 'https://www.memorise.online/invite/' + this.loggedInUserId, text: 'Your Friendcode:' },
+  private fetchPendingFriends(): void {
+    this.friendsService.getPendingFriends(this.loggedInUserId).subscribe(
+      (friends) => this.pendingFriends = friends,
+      (error) => this.handleFetchError('pending friends', error)
+    );
+  }
+
+  private fetchIngoingFriends(): void {
+    this.friendsService.getIngoingFriends(this.loggedInUserId).subscribe(
+      (friends) => this.ingoingFriends = friends,
+      (error) => this.handleFetchError('ingoing friends', error)
+    );
+  }
+
+  private handleFetchError(dataType: string, error: any): void {
+    console.error(`Error fetching ${dataType}:`, error);
+  }
+
+  openLinkModal(): void {
+    const inviteLink = this.generateInviteLink(this.loggedInUserId);
+    this.dialog.open(ShareFriendCodeDialogComponent, {
+      data: { link: inviteLink, text: 'Your Friendcode:' },
       width: '500px',
     });
-  
-    dialogRef.afterClosed().subscribe(result => {});
-      
+  }
+
+  private generateInviteLink(userId: string): string {
+    return `https://www.memorise.online/invite/${userId}`;
   }
 }

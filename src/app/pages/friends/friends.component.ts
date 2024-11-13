@@ -14,13 +14,13 @@ export class FriendsComponent implements OnInit {
   friends: Friend[] = [];
   pendingFriends: Friend[] = [];
   ingoingFriends: Friend[] = [];
-  loggedInUserId!: string;
+  loggedInUserId: string | null = null;
 
   constructor(
-    private dialog: MatDialog, 
-    private friendsService: FriendsService, 
+    private dialog: MatDialog,
+    private friendsService: FriendsService,
     private userService: UserService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeUserData();
@@ -34,27 +34,29 @@ export class FriendsComponent implements OnInit {
   }
 
   private loadFriendsData(): void {
-    this.fetchFriends();
-    this.fetchPendingFriends();
-    this.fetchIngoingFriends();
+    if (this.loggedInUserId != null) {
+      this.fetchFriends(this.loggedInUserId);
+      this.fetchPendingFriends(this.loggedInUserId);
+      this.fetchIngoingFriends(this.loggedInUserId);
+    }
   }
 
-  private fetchFriends(): void {
-    this.friendsService.getUserFriends(this.loggedInUserId).subscribe(
+  private fetchFriends(userId: string): void {
+    this.friendsService.getUserFriends(userId).subscribe(
       (friends) => this.friends = friends,
       (error) => this.handleFetchError('user friends', error)
     );
   }
 
-  private fetchPendingFriends(): void {
-    this.friendsService.getPendingFriends(this.loggedInUserId).subscribe(
+  private fetchPendingFriends(userId: string): void {
+    this.friendsService.getPendingFriends(userId).subscribe(
       (friends) => this.pendingFriends = friends,
       (error) => this.handleFetchError('pending friends', error)
     );
   }
 
-  private fetchIngoingFriends(): void {
-    this.friendsService.getIngoingFriends(this.loggedInUserId).subscribe(
+  private fetchIngoingFriends(userId: string): void {
+    this.friendsService.getIngoingFriends(userId).subscribe(
       (friends) => this.ingoingFriends = friends,
       (error) => this.handleFetchError('ingoing friends', error)
     );
@@ -65,11 +67,13 @@ export class FriendsComponent implements OnInit {
   }
 
   openLinkModal(): void {
-    const inviteLink = this.generateInviteLink(this.loggedInUserId);
-    this.dialog.open(ShareFriendCodeDialogComponent, {
-      data: { link: inviteLink, text: 'Your Friendcode:' },
-      width: '500px',
-    });
+    if (this.loggedInUserId != null) {
+      const inviteLink = this.generateInviteLink(this.loggedInUserId);
+      this.dialog.open(ShareFriendCodeDialogComponent, {
+        data: { link: inviteLink, text: 'Your Friendcode:' },
+        width: '500px',
+      });
+    }
   }
 
   private generateInviteLink(userId: string): string {

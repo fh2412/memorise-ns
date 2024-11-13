@@ -13,8 +13,8 @@ import { PinnedDialogComponent } from '../../components/_dialogs/pinned-dialog/p
 import { MemoryService } from '../../services/memory.service';
 import { pinnedMemoryService } from '../../services/pinnedMemorService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
-import { release } from 'os';
 import { Memory } from '../../models/memoryInterface.model';
+import { MemoriseUser } from '../../models/userInterface.model';
 
 @Component({
   selector: 'app-userprofile',
@@ -23,11 +23,11 @@ import { Memory } from '../../models/memoryInterface.model';
 })
 export class UserProfileComponent implements OnInit {
   userId: any;
-  user: any;
+  user!: MemoriseUser;
   loggedInUserId: any;
   buttonText: string = 'Edit Profile';
   pin_memories: Memory[] = [];
-  all_memories = [];
+  all_memories: Memory[] = [];
   isUploading: boolean = false;
 
   constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private pinnedService: pinnedMemoryService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe, private manageFriendService: ManageFriendsService) {
@@ -42,7 +42,6 @@ export class UserProfileComponent implements OnInit {
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
-        this.user.formatted_dob = this.datePipe.transform(this.user.dob, 'dd/MM/yyyy');
         this.checkFriendshipStatus();
       },
       (error) => {

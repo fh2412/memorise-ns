@@ -11,8 +11,7 @@ import { take } from 'rxjs/operators';
 })
 export class UserInformationComponent implements OnInit {
   userdb!: MemoriseUser;
-  loggedInUserId: string = '';
-
+  loggedInUserId: string | null = null;
   constructor(
     private userService: UserService, 
     private router: Router

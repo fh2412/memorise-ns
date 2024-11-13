@@ -9,7 +9,7 @@ import { debounceTime, Subject } from 'rxjs';
   styleUrls: ['./friend-search.component.scss']
 })
 export class FriendSearchComponent {
-  @Input() userId: string = '';
+  @Input() userId: string | null = null;
 
   searchTerm: string = '';
   searchResults: Friend[] = [];
@@ -28,17 +28,19 @@ export class FriendSearchComponent {
 
   searchFriend(): void {
     if (!this.searchTerm) return;
-    this.enter = true;
-    this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
-      (results) => {
-        this.searchResults = results;
-        console.log(this.searchResults);
-        this.errorMessage = ''; // Clear error on successful response
-      },
-      (error) => {
-        console.error('Error searching for friends:', error);
-        this.errorMessage = 'Failed to fetch search results. Please try again.';
-      }
-    );
+    else if (this.userId != null) {
+      this.enter = true;
+      this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
+        (results) => {
+          this.searchResults = results;
+          console.log(this.searchResults);
+          this.errorMessage = ''; // Clear error on successful response
+        },
+        (error) => {
+          console.error('Error searching for friends:', error);
+          this.errorMessage = 'Failed to fetch search results. Please try again.';
+        }
+      );
+    }
   }
 }

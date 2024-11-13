@@ -18,27 +18,27 @@ export class FriendPreviewComponent {
 
   @Output() buttonClicked = new EventEmitter<void>();
   
-  loggedInUserId!: string;
+  loggedInUserId: string | null = null;
 
   constructor(private userService: UserService, private manageFriendsService: ManageFriendsService) {}
 
  
   async requestFriend(action: string, req: boolean): Promise<void> {
     try {
-      this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
-
-      if (action === 'Accept') {
-        await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
-      } else if (action === 'Remove') {
-        req 
-          ? await this.manageFriendsService.addFriendRequest(this.friend.user_id.toString(), this.loggedInUserId)
-          : await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
-      } else if (action === 'Request') {
-        req 
-          ? await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId)
-          : await this.manageFriendsService.sendFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+      this.loggedInUserId = await this.userService.getLoggedInUserId();
+      if(this.loggedInUserId != null){
+        if (action === 'Accept') {
+          await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+        } else if (action === 'Remove') {
+          req 
+            ? await this.manageFriendsService.addFriendRequest(this.friend.user_id.toString(), this.loggedInUserId)
+            : await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+        } else if (action === 'Request') {
+          req 
+            ? await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId)
+            : await this.manageFriendsService.sendFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+        }
       }
-
       this.requested = !this.requested;
       this.buttonClicked.emit();  // Emit the button click event for parent components to listen to
 

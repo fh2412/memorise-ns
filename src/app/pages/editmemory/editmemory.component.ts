@@ -20,7 +20,7 @@ import { MemoriseLocation } from '../../models/location.model';
   styleUrl: './editmemory.component.scss'
 })
 export class EditmemoryComponent {
-  loggedInUserId: string  = '';
+  loggedInUserId: string | null = null;
   memoryId: string = '';
   memory!: Memory;
 
@@ -98,6 +98,7 @@ export class EditmemoryComponent {
 
   loadFriends(): Promise<void> {
     return new Promise((resolve, reject) => {
+      if(this.loggedInUserId != null){
       this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
         response => {
           this.friends = response;
@@ -108,7 +109,8 @@ export class EditmemoryComponent {
           reject(error);
         }
       );
-    });
+      }
+    });  
   }
 
   loadLocation(): Promise<void> {

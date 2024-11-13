@@ -22,107 +22,33 @@ import { MemoriseUser } from '../../models/userInterface.model';
   styleUrl: './userprofile.component.scss'
 })
 export class UserProfileComponent implements OnInit {
-  userId: any;
+  userId!: string;
   user!: MemoriseUser;
-  loggedInUserId: any;
+  loggedInUserId: string | null = null;
+
   buttonText: string = 'Edit Profile';
   pin_memories: Memory[] = [];
   all_memories: Memory[] = [];
   isUploading: boolean = false;
 
-  constructor(private route: ActivatedRoute, private router: Router, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private pinnedService: pinnedMemoryService, private friedService: FriendsService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe, private manageFriendService: ManageFriendsService) {
+  constructor(private route: ActivatedRoute, public dialog: MatDialog, private userService: UserService, private memoryService: MemoryService, private pinnedService: pinnedMemoryService, private _snackBar: MatSnackBar, private fileUploadService: FileUploadService, private datePipe: DatePipe, private manageFriendService: ManageFriendsService) {
 
   }
 
   async ngOnInit() {
-    this.userId = this.route.snapshot.paramMap.get('userId');
+    this.userId = this.route.snapshot.paramMap.get('userId') as string;
     this.loggedInUserId = this.userService.getLoggedInUserId();
     this.getPinnedMemories();
     this.getAllMemories();
     this.userService.getUser(this.userId).subscribe(
       (response) => {
         this.user = response;
-        this.checkFriendshipStatus();
       },
       (error) => {
         console.error('Error fetching user:', error);
         // Handle error, e.g., show an error message
       }
     );
-  }
-
-  showConfirmDialog(title: string, message: string) {
-    const confirmationData: ConfirmationDialogData = {
-      title: title,
-      message: message
-    };
-
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: confirmationData,
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && title == "Offer Friendship") {
-        this.friedService.sendFriendRequest(this.loggedInUserId, this.userId).subscribe(
-          response => {
-            console.log('Friend request sent successfully', response);
-          },
-          error => {
-            console.error('Error sending friend request', error);
-          }
-        );
-      }
-      else if (result && title == "Accept Friend Request") {
-        this.friedService.acceptFriendRequest(this.loggedInUserId, this.userId).subscribe(
-          response => {
-            console.log('Friend added', response);
-          },
-          error => {
-            console.error('Error sending friend request', error);
-          }
-        );
-      }
-    });
-  }
-
-  checkFriendshipStatus() {
-    if (this.loggedInUserId == this.userId) {
-      this.buttonText = "Edit Profile";
-    }
-    else {
-      this.friedService.getFriendsStatus(this.loggedInUserId, this.userId).subscribe(
-        (response) => {
-          const result = response.toString();
-          if (result == 'empty') {
-            this.buttonText = 'Offer Friendship';
-            if (this.router.url.startsWith('/invite')) {
-              this.showConfirmDialog('Offer Friendship', 'Do you want to add ' + this.user.name + ' as your friend?');
-            }
-          }
-          else if (result == 'waiting') {
-            this.buttonText = 'Accept Friend';
-            if (this.router.url.startsWith('/invite')) {
-              this.showConfirmDialog('Accept Friend Request', 'Do you want to accept ' + this.user.name + ' as your friend?');
-            }
-          }
-          else if (result == 'accepted') {
-            this.buttonText = 'Remove Friend';
-            if (this.router.url.startsWith('/invite')) {
-              this.openSnackBar('You guys are already friends!', 'Great!');
-            }
-          }
-          else if (result == 'pending') {
-            this.buttonText = 'Cancle Request';
-            if (this.router.url.startsWith('/invite')) {
-              this.openSnackBar('You already send this user a friend request!', 'Got it!');
-            }
-          }
-        },
-        (error) => {
-          console.error('Error fetching user:', error);
-        }
-      );
-    }
   }
 
   getPinnedMemories() {
@@ -174,28 +100,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   getMemoriesToDisplay(): Memory[] {
-    const displayedMemories = [...this.pin_memories];
-    const emptyMemory: Memory = {
-      memory_id: 0,
-      user_id: 0,
-      image_url: '',
-      latitude: '',
-      longitude: '',
-      location_id: 0,
-      memory_date: '',
-      memory_end_date: '',
-      picture_count: 0,
-      text: '',
-      title: '',
-      title_pic: '',
-      username: ''
-    };
-
-    // Add empty memory objects until there are exactly 4 items
-    while (displayedMemories.length < 4) {
-      displayedMemories.push(emptyMemory);
-    }
-    return displayedMemories;
+    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pin_memories);
   }
 
   openSnackBar(message: string, action: string) {
@@ -203,24 +108,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   profileButtonClick(): void {
-    if (this.buttonText == 'Edit Profile') {
-      this.openEditDialog();
-    }
-    else if (this.buttonText == 'Offer Friendship') {
-      this.manageFriendService.sendFriendRequest(this.userId, this.loggedInUserId);
-      this.openSnackBar('Friend Request send sucessfully!', 'Great!');
-      this.buttonText = 'Cancle Request';
-    }
-    else if (this.buttonText == 'Accept Friend') {
-      this.manageFriendService.acceptFriendRequest(this.userId, this.loggedInUserId);
-      this.openSnackBar('You sucessfully added this user as a Friend!', 'We go memoriesing!');
-      this.buttonText = 'Remove Friend';
-    }
-    else if (this.buttonText == 'Remove Friend' || this.buttonText == 'Cancle Request') {
-      this.manageFriendService.removeFriend(this.userId, this.loggedInUserId);
-      this.openSnackBar('You ended this Friendship', 'Got it!');
-      this.buttonText = 'Offer Friendship';
-    }
+    this.openEditDialog();
   }
 
   openEditDialog(): void {

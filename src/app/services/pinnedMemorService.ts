@@ -16,6 +16,31 @@ export class pinnedMemoryService {
     return this.http.get<any[]>(url);
   }
 
+  getPinnedMemoriesWithPlacholders(pin_memories: Memory[]){
+    const displayedMemories = [...pin_memories];
+    const emptyMemory: Memory = {
+      memory_id: 0,
+      user_id: 0,
+      image_url: '',
+      latitude: '',
+      longitude: '',
+      location_id: 0,
+      memory_date: '',
+      memory_end_date: '',
+      picture_count: 0,
+      text: '',
+      title: '',
+      title_pic: '',
+      username: ''
+    };
+
+    // Add empty memory objects until there are exactly 4 items
+    while (displayedMemories.length < 4) {
+      displayedMemories.push(emptyMemory);
+    }
+    return displayedMemories;
+  }
+
   updatePinnedMemory(userId: string, memoryIdToUpdate: number, updatedMemoryId: number): Observable<any> {
     const url = `${this.apiUrl}/${userId}/favourite-memories/${memoryIdToUpdate}`;
     const body = { memoryId: updatedMemoryId };

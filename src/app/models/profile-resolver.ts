@@ -7,16 +7,14 @@ import { UserService } from '../services/userService';
 @Injectable({
   providedIn: 'root'
 })
-export class UserResolver implements Resolve<any> {
+export class ProfileResolver implements Resolve<any> {
 
   constructor(private userService: UserService, private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
     const userId = route.paramMap.get('userId');
-    const loggedInUserId = this.userService.getLoggedInUserId();
 
-
-    if (!userId || userId != loggedInUserId) {
+    if (!userId) {
       this.router.navigate(['/home']);
       return of(null);
     }

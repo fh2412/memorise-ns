@@ -6,10 +6,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { UserProfileComponent } from './userprofile.component';
 import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
@@ -21,41 +21,32 @@ import { MatSelectModule } from '@angular/material/select';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { OtherUserprofileComponent } from './other-userprofile.component';
 import { PinCardModule } from '../../components/pin-card/pin-card.module';
 
 const routes: Routes = [
   {
     path: '',
-    component: UserProfileComponent
+    component: OtherUserprofileComponent
   }
 ]
 
 @NgModule({
   declarations: [
-    UserProfileComponent,
-    LogoutButtonComponent,
-    EditUserDialogComponent,
+    OtherUserprofileComponent,
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
     MatGridListModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatDividerModule,
     MatButtonModule,
     MatListModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatSelectModule,
+    MatCardModule,
     BackButtonModule,
     PinCardModule
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })
-export class UserProfileModule { }
+export class OtherUserProfileModule { }

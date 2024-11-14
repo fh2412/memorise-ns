@@ -1,7 +1,8 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Memory } from '../../../models/memoryInterface.model';
 
-export interface Memory {
+export interface PinnedMemory {
   name: string;
   id: number;
   isFavorite: boolean;
@@ -13,29 +14,32 @@ export interface Memory {
   styleUrl: './pinned-dialog.component.scss'
 })
 export class PinnedDialogComponent {
-  favoriteMemories: Memory[] = [];
-  allMemories: Memory[] = [];
-  filterMemories: Memory[] = [];
-  initFavoriteMemories: Memory[] = [];
-  searchText = '';
-  selectableCount = 4;
-  selectedCount = 0;
-  hasChangesBool: boolean = false;
+  favoriteMemories: PinnedMemory[] = [];
+  allMemories: PinnedMemory[] = [];
+  filteredMemories: PinnedMemory[] = [];
+  initialFavoriteMemories: PinnedMemory[] = [];
+  searchText: string = '';
+  readonly maxSelectableCount: number = 4;
+  hasChangesFlag: boolean = false;
+  selectedCount: number = 0;
 
   constructor(
     public dialogRef: MatDialogRef<PinnedDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { memories: any[], pinned: any[] }
+    @Inject(MAT_DIALOG_DATA) public data: { memories: Memory[], pinned: Memory[] }
   ) {
-    // Initialize memories
-    this.favoriteMemories = this.mapMemories(this.data.pinned, true);
-    this.initFavoriteMemories = [...this.favoriteMemories];
-    this.allMemories = this.mapMemories(this.data.memories, false)
-      .filter(memory => !this.favoriteMemories.some(fav => fav.id === memory.id));
-    this.selectedCount = this.favoriteMemories.length;
-    this.filterMemories = [...this.allMemories];
+    this.initializeMemories();
   }
 
-  mapMemories(memoryData: any[], isFavorite: boolean): Memory[] {
+  private initializeMemories(): void {
+    this.favoriteMemories = this.transformMemories(this.data.pinned, true);
+    this.initialFavoriteMemories = [...this.favoriteMemories];
+    this.allMemories = this.transformMemories(this.data.memories, false)
+      .filter(memory => !this.favoriteMemories.some(fav => fav.id === memory.id));
+    this.filteredMemories = [...this.allMemories];
+    this.selectedCount = this.favoriteMemories.length;
+  }
+
+  private transformMemories(memoryData: any[], isFavorite: boolean): PinnedMemory[] {
     return memoryData.map(memory => ({
       name: memory.title,
       id: memory.memory_id || memory.memoryId,
@@ -43,59 +47,55 @@ export class PinnedDialogComponent {
     }));
   }
 
-  updateSearch(value: string) {
+  updateSearch(value: string): void {
     const searchText = value.toLowerCase();
-    this.filterMemories = searchText
+    this.filteredMemories = searchText
       ? this.allMemories.filter(memory => memory.name.toLowerCase().includes(searchText))
       : [...this.allMemories];
   }
 
-  updateSelection(memory: Memory, event: any) {
-    memory.isFavorite = event.checked;
-    if (memory.isFavorite && this.selectedCount < 4) {
-      this.favoriteMemories.push(memory);
-      this.removeFromAllMemories(memory);
+  updateSelection(memory: PinnedMemory, isSelected: boolean): void {
+    memory.isFavorite = isSelected;
+    if (isSelected) {
+      this.addFavoriteMemory(memory);
+      this.selectedCount++;
     } else {
-      this.removeFromFavoriteMemories(memory);
-      this.addAllMemories(memory);
+      this.removeFavoriteMemory(memory);
+      this.selectedCount--;
     }
-    this.updateSaveButton();
-    this.selectedCount = this.favoriteMemories.length;
+    this.updateHasChangesFlag();
   }
 
-  removeFromFavoriteMemories(memory: Memory) {
-    const index = this.favoriteMemories.findIndex(m => m.id === memory.id);
-    if (index > -1) {
-      this.favoriteMemories.splice(index, 1);
-    }
-  }
-
-  removeFromAllMemories(memory: Memory) {
-    const index = this.allMemories.findIndex(m => m.id === memory.id);
-    if (index > -1) {
-      this.allMemories.splice(index, 1);
-      this.filterMemories = [...this.allMemories];
+  private addFavoriteMemory(memory: PinnedMemory): void {
+    if (this.favoriteMemories.length < this.maxSelectableCount) {
+      this.favoriteMemories.push(memory);
+      this.removeMemoryFromList(memory, this.allMemories);
+      this.filteredMemories = [...this.allMemories];
     }
   }
 
-  addAllMemories(memory: Memory) {
+  private removeFavoriteMemory(memory: PinnedMemory): void {
+    this.removeMemoryFromList(memory, this.favoriteMemories);
     this.allMemories.push(memory);
-    this.filterMemories = [...this.allMemories];
+    this.filteredMemories = [...this.allMemories];
   }
 
-  getRemainingSelections() {
-    return this.selectableCount - this.selectedCount;
+  private removeMemoryFromList(memory: PinnedMemory, list: PinnedMemory[]): void {
+    const index = list.findIndex(m => m.id === memory.id);
+    if (index > -1) {
+      list.splice(index, 1);
+    }
   }
 
-  updateSaveButton() {
-    this.hasChangesBool = !this.hasChanges();
+  private updateHasChangesFlag(): void {
+    this.hasChangesFlag = !this.hasChanges();
   }
 
-  hasChanges() {
-    return JSON.stringify(this.favoriteMemories) == JSON.stringify(this.initFavoriteMemories);
+  private hasChanges(): boolean {
+    return JSON.stringify(this.favoriteMemories) === JSON.stringify(this.initialFavoriteMemories);
   }
 
-  onSave() {
+  onSave(): void {
     this.dialogRef.close(this.favoriteMemories);
   }
 }

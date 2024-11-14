@@ -1,7 +1,7 @@
 <h1 mat-dialog-title>Edit Pinned Memories</h1>
 
 <mat-dialog-content>
-  <p>Select up to {{ selectableCount }} of your favorite memories</p>
+  <p>Select up to {{ maxSelectableCount }} of your favorite memories</p>
 
   <!-- Favorite Memories Section -->
   <h2>Favorite Memories</h2>
@@ -10,7 +10,7 @@
       <mat-list-item *ngFor="let memory of favoriteMemories">
         <mat-checkbox
           [(ngModel)]="memory.isFavorite"
-          (change)="updateSelection(memory, $event)">
+          (change)="updateSelection(memory, memory.isFavorite)">
           {{ memory.name }}
         </mat-checkbox>
       </mat-list-item>
@@ -36,11 +36,11 @@
 
   <ng-container *ngIf="allMemories.length > 0; else noAllMemories">
     <mat-list>
-      <mat-list-item *ngFor="let memory of filterMemories">
+      <mat-list-item *ngFor="let memory of filteredMemories">
         <mat-checkbox
           [(ngModel)]="memory.isFavorite"
-          [disabled]="selectedCount >= selectableCount && !memory.isFavorite"
-          (change)="updateSelection(memory, $event)">
+          [disabled]="selectedCount >= maxSelectableCount && !memory.isFavorite"
+          (change)="updateSelection(memory, memory.isFavorite)">
           {{ memory.name }}
         </mat-checkbox>
       </mat-list-item>
@@ -55,5 +55,5 @@
 
 <mat-dialog-actions align="end">
   <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-button color="primary" [disabled]="!hasChangesBool" (click)="onSave()">Save</button>
+  <button mat-button color="primary" [disabled]="!hasChangesFlag" (click)="onSave()">Save</button>
 </mat-dialog-actions>

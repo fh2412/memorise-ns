@@ -20,7 +20,7 @@ export interface DialogData {
   styleUrls: ['edit-user-dialog.component.scss']
 })
 export class EditUserDialogComponent {
-  @Output() updateUserData = new EventEmitter<any>();
+  @Output() updateUserData = new EventEmitter<void>();
   userForm: FormGroup;
 
   constructor(private datePipe: DatePipe, public dialogRef: MatDialogRef<EditUserDialogComponent>,

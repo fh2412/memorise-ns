@@ -6,7 +6,7 @@ import { Memory } from '../models/memoryInterface.model';
 @Injectable({
   providedIn: 'root'
 })
-export class pinnedMemoryService {
+export class PinnedMemoryService {
   private apiUrl = 'http://localhost:3000/api/pinned';
 
   constructor(private http: HttpClient) {}

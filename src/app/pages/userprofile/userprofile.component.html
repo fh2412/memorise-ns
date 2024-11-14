@@ -16,7 +16,7 @@
         <mat-card-subtitle>
           <span>{{user.username}}</span> - <span>{{user.gender}}</span>
         </mat-card-subtitle>
-        <button mat-stroked-button class="editbutton" (click)="profileButtonClick()">{{buttonText}}</button>
+        <button mat-stroked-button class="editbutton" (click)="openEditDialog()">Edit Profile</button>
         <mat-list class="list-wrapper">
           <mat-list-item>
             <mat-icon matListItemIcon>location_on</mat-icon>
@@ -32,7 +32,7 @@
           </mat-list-item>
         </mat-list>
         <div class="usersettings">
-          <button mat-stroked-button (click)="openPassowrdChangeDialog()" [disabled]="!(this.loggedInUserId==this.userId)">
+          <button mat-stroked-button (click)="openPasswordChangeDialog()" [disabled]="!(this.loggedInUserId==this.userId)">
             Change PW
           </button>
           <app-logout-button *ngIf="(this.loggedInUserId==this.userId)"></app-logout-button>
@@ -49,7 +49,7 @@
             <h3 class="title is-4 level-left">Pinned Memories</h3>
             <button mat-stroked-button (click)="openPinsDialog()" [disabled]="!(this.loggedInUserId==this.userId)">Customize your pins</button>
           </div>
-          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pin_memories">
+          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pinnedMemories">
             <mat-grid-tile *ngFor="let memory of getMemoriesToDisplay()">
               <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>

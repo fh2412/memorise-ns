@@ -37,7 +37,7 @@
           <div class="level">
             <h3 class="title is-4 level-left">Pinned Memories</h3>
           </div>
-          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pin_memories">
+          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pinnedMemories">
             <mat-grid-tile *ngFor="let memory of getMemoriesToDisplay()">
               <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>

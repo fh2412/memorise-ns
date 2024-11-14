@@ -7,9 +7,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { LocationService } from '../../services/location.service';
 import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/info-dialog/info-dialog.component';
-import { ConfirmDialogComponent, ConfirmationDialogData } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { UserService } from '../../services/userService';
-import { pinnedMemoryService } from '../../services/pinnedMemorService';
+import { PinnedMemoryService } from '../../services/pinnedMemorService';
 import { Memory } from '../../models/memoryInterface.model';
 import { Friend } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
@@ -43,7 +43,7 @@ export class EditmemoryComponent {
     private userService: UserService, 
     private memoryService: MemoryService, 
     private locationService: LocationService, 
-    private pinnedService: pinnedMemoryService,
+    private pinnedService: PinnedMemoryService,
     private firebaseService: FileUploadService, 
     private dialog: MatDialog
   ) {

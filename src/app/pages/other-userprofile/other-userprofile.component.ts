@@ -7,7 +7,7 @@ import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ManageFriendsService } from '../../services/friend-manage.service';
-import { pinnedMemoryService } from '../../services/pinnedMemorService';
+import { PinnedMemoryService } from '../../services/pinnedMemorService';
 import { Memory } from '../../models/memoryInterface.model';
 
 @Component({
@@ -20,10 +20,10 @@ export class OtherUserprofileComponent {
   userId!: string;
   loggedInUserId: string | null = null;
   buttonText: string = 'Send Request';
-  pin_memories: Memory[] = [];
+  pinnedMemories: Memory[] = [];
 
 
-  constructor(private route: ActivatedRoute, private pinnedService: pinnedMemoryService, private userService: UserService, private friendService: FriendsService, public dialog: MatDialog, private router: Router, private _snackBar: MatSnackBar, private manageFriendService: ManageFriendsService) {
+  constructor(private route: ActivatedRoute, private pinnedService: PinnedMemoryService, private userService: UserService, private friendService: FriendsService, public dialog: MatDialog, private router: Router, private _snackBar: MatSnackBar, private manageFriendService: ManageFriendsService) {
 
   }
 
@@ -43,7 +43,7 @@ export class OtherUserprofileComponent {
   getPinnedMemories() {
     this.pinnedService.getPinnedMemories(this.userId).subscribe(
       memories => {
-        this.pin_memories = memories;
+        this.pinnedMemories = memories;
       },
       error => {
         console.error('Error fetching pinned memories:', error);
@@ -52,7 +52,7 @@ export class OtherUserprofileComponent {
   }
 
   getMemoriesToDisplay(): Memory[] {
-    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pin_memories);
+    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
   }
 
   checkFriendshipStatus() {

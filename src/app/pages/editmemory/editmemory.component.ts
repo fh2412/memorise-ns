@@ -144,6 +144,9 @@ export class EditmemoryComponent {
 
   async saveChanges(): Promise<void> {
     try {
+      if(this.memoryForm.value.memory_end_date == null){
+        this.memoryForm.value.memory_end_date = this.memoryForm.value.memory_date;
+      }
       await this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).toPromise();
       await this.updateFriends();
       this.router.navigate(['/home']);

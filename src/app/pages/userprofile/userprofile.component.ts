@@ -1,17 +1,20 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { UserService } from '../../services/userService';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { finalize } from 'rxjs/operators';
+
+import { UserService } from '../../services/userService';
+import { FileUploadService } from '../../services/file-upload.service';
+import { MemoryService } from '../../services/memory.service';
+import { PinnedMemoryService } from '../../services/pinnedMemorService';
+
 import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
 import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-password-dialog/change-password-dialog.component';
-import { FileUploadService } from '../../services/file-upload.service';
 import { PinnedDialogComponent, PinnedMemory } from '../../components/_dialogs/pinned-dialog/pinned-dialog.component';
-import { MemoryService } from '../../services/memory.service';
+
 import { Memory } from '../../models/memoryInterface.model';
 import { MemoriseUser } from '../../models/userInterface.model';
-import { finalize } from 'rxjs/operators';
-import { PinnedMemoryService } from '../../services/pinnedMemorService';
 
 @Component({
   selector: 'app-userprofile',
@@ -28,169 +31,149 @@ export class UserProfileComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    public dialog: MatDialog,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
     private userService: UserService,
     private memoryService: MemoryService,
     private pinnedService: PinnedMemoryService,
-    private _snackBar: MatSnackBar,
     private fileUploadService: FileUploadService
-  ) { }
+  ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;
     this.loggedInUserId = this.userService.getLoggedInUserId();
     this.initializeUserProfile();
   }
 
-  initializeUserProfile() {
+  /** Initializes the user profile by fetching data. */
+  private initializeUserProfile(): void {
     this.fetchUser();
     this.getPinnedMemories();
     this.getAllMemories();
   }
 
-  fetchUser() {
+  /** Fetches user data. */
+  private fetchUser(): void {
     this.userService.getUser(this.userId).subscribe(
       (response) => (this.user = response),
-      (error) => {
-        console.error('Error fetching user:', error);
-        this.openSnackBar('Error fetching user information.', 'Close');
-      }
+      () => this.handleError('Error fetching user information.')
     );
   }
 
-  getPinnedMemories() {
+  /** Retrieves pinned memories for the user. */
+  private getPinnedMemories(): void {
     this.pinnedService.getPinnedMemories(this.userId).subscribe(
       (memories) => (this.pinnedMemories = memories),
-      (error) => {
-        console.error('Error fetching pinned memories:', error);
-        this.openSnackBar('Error fetching pinned memories.', 'Close');
-      }
+      () => this.handleError('Error fetching pinned memories.')
     );
   }
 
-  createPinnedMemoryEntry(memoryId: number) {
-    this.pinnedService.createPinnedMemory(this.userId, memoryId).subscribe(
-      () => {
-        console.log('Pinned memory added successfully!');
-        this.getPinnedMemories(); // Refresh pinned memories
-      },
-      (error: Error) => {
-        console.error('Error adding pinned memory:', error);
-        this.openSnackBar('Error adding pinned memory.', 'Close');
-      }
-    );
-  }
-
-  deletePinnedMemoryEntry(memoryIdToDelete: number) {
-    this.pinnedService.deletePinnedMemory(this.userId, memoryIdToDelete).subscribe(
-      () => {
-        console.log('Pinned memory removed successfully!');
-        this.getPinnedMemories(); // Refresh pinned memories
-      },
-      (error: Error) => {
-        console.error('Error removing pinned memory:', error);
-        this.openSnackBar('Error removing pinned memory.', 'Close');
-      }
-    );
-  }
-
-  getAllMemories() {
+  /** Retrieves all memories for the user. */
+  private getAllMemories(): void {
     this.memoryService.getAllMemories(this.userId).subscribe(
       (memories) => (this.allMemories = memories),
-      (error) => {
-        console.error('Error fetching all memories:', error);
-        this.openSnackBar('Error fetching all memories.', 'Close');
-      }
+      () => this.handleError('Error fetching all memories.')
     );
   }
 
-  comparePinnedMemories(pinMemories: Memory[], result: PinnedMemory[]) {
-    const pinMemoryIds = new Set(pinMemories.map(memory => memory.memory_id));
+  /** Adds a memory to pinned memories. */
+  private createPinnedMemory(memoryId: number): void {
+    this.pinnedService.createPinnedMemory(this.userId, memoryId).subscribe(
+      () => this.refreshPinnedMemories(),
+      () => this.handleError('Error adding pinned memory.')
+    );
+  }
+
+  /** Removes a memory from pinned memories. */
+  private deletePinnedMemory(memoryId: number): void {
+    this.pinnedService.deletePinnedMemory(this.userId, memoryId).subscribe(
+      () => this.refreshPinnedMemories(),
+      () => this.handleError('Error removing pinned memory.')
+    );
+  }
+
+  /** Compares and updates pinned memories based on changes. */
+  private comparePinnedMemories(pinMemories: Memory[], result: PinnedMemory[]): void {
+    const pinIds = new Set(pinMemories.map(memory => memory.memory_id));
     const resultIds = new Set(result.map(item => item.id));
 
-    // Handle deletion: IDs in pin_memories but not in result
-    const deletedIds = Array.from(pinMemoryIds).filter(id => !resultIds.has(id));
-    deletedIds.forEach(id => this.deletePinnedMemoryEntry(id));
+    const deletedIds = Array.from(pinIds).filter(id => !resultIds.has(id));
+    const insertedIds = Array.from(resultIds).filter(id => !pinIds.has(id));
 
-    // Handle insertion: IDs in result but not in pin_memories
-    const insertedIds = Array.from(resultIds).filter(id => !pinMemoryIds.has(id));
-    insertedIds.forEach(id => this.createPinnedMemoryEntry(id));
+    deletedIds.forEach(id => this.deletePinnedMemory(id));
+    insertedIds.forEach(id => this.createPinnedMemory(id));
   }
 
-  onFileChange(event: any) {
+  /** Refreshes the list of pinned memories. */
+  private refreshPinnedMemories(): void {
+    this.getPinnedMemories();
+  }
+
+  /** Uploads a profile picture. */
+  onFileChange(event: any): void {
     const file = event.target.files[0];
-    if (file) {
-      this.isUploading = true;
-      this.fileUploadService.uploadProfilePicture(this.user.user_id, file)
-        .pipe(finalize(() => (this.isUploading = false)))
-        .subscribe(
-          (uploadProgress) => console.log(`Upload Progress: ${uploadProgress}%`),
-          (error) => {
-            console.error('Error uploading profile picture:', error);
-            this.openSnackBar('Error uploading profile picture.', 'Close');
-          },
-          async () => {
-            const downloadURL = await this.fileUploadService.getProfilePictureUrl(this.user.user_id);
-            this.saveProfilePicUrlInDatabase(downloadURL);
-          }
-        );
-    }
+    if (!file) return;
+
+    this.isUploading = true;
+    this.fileUploadService.uploadProfilePicture(this.user.user_id, file)
+      .pipe(finalize(() => (this.isUploading = false)))
+      .subscribe(
+        () => this.updateProfilePicture(),
+        () => this.handleError('Error uploading profile picture.')
+      );
   }
 
-  saveProfilePicUrlInDatabase(profilePicUrl: string) {
-    this.userService.updateUserProfilePic(this.user.user_id, profilePicUrl).subscribe(
-      () => {
-        this.user.profilepic = profilePicUrl; // Update user's profile picture in UI
-        this.openSnackBar('Profile picture updated successfully.', 'Close');
-      },
-      (error) => {
-        console.error('Error saving profile picture URL in the database:', error);
-        this.openSnackBar('Error updating profile picture.', 'Close');
-      }
+  /** Updates the user's profile picture URL. */
+  private updateProfilePicture(): void {
+    this.fileUploadService.getProfilePictureUrl(this.user.user_id).then(
+      (url) => this.saveProfilePictureUrl(url)
     );
   }
 
-  getMemoriesToDisplay(): Memory[] {
-    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
+  /** Saves the new profile picture URL in the database. */
+  private saveProfilePictureUrl(url: string): void {
+    this.userService.updateUserProfilePic(this.user.user_id, url).subscribe(
+      () => {
+        this.user.profilepic = url;
+        this.showSnackBar('Profile picture updated successfully.');
+      },
+      () => this.handleError('Error updating profile picture.')
+    );
   }
 
+  /** Opens the password change dialog. */
   openPasswordChangeDialog(): void {
-    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, {
-      width: '20%',
-    });
-    dialogRef.componentInstance.updateUserPassword.subscribe((result: EventEmitter<void>) => {
-      if (result) {
-        this.openSnackBar('Password change was successfull!', 'Got it!');
-      }
+    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, { width: '20%' });
+    dialogRef.componentInstance.updateUserPassword.subscribe(() => {
+      this.showSnackBar('Password changed successfully!');
     });
   }
 
+  /** Opens the edit user dialog. */
   openEditDialog(): void {
     const dialogRef = this.dialog.open(EditUserDialogComponent, {
       width: '40%',
       data: { ...this.user },
     });
-    dialogRef.componentInstance.updateUserData.subscribe((result: EventEmitter<void>) => {
-      if (result) {
-        this.userService.updateUser(this.user.user_id, result).subscribe(
-          () => {
-            Object.assign(this.user, result); // Update user object
-            this.openSnackBar('Profile updated successfully.', 'Close');
-          },
-          (error) => {
-            console.error('Error updating user:', error);
-            this.openSnackBar('Error updating profile.', 'Close');
-          }
-        );
-      }
+
+    dialogRef.componentInstance.updateUserData.subscribe((updatedUser: MemoriseUser) => {
+      this.userService.updateUser(this.user.user_id, updatedUser).subscribe(
+        () => {
+          Object.assign(this.user, updatedUser);
+          this.showSnackBar('Profile updated successfully.');
+        },
+        () => this.handleError('Error updating profile.')
+      );
     });
   }
 
+  /** Opens the pinned memories dialog. */
   openPinsDialog(): void {
     const dialogRef = this.dialog.open(PinnedDialogComponent, {
       width: '40%',
       data: { memories: this.allMemories, pinned: this.pinnedMemories },
     });
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.comparePinnedMemories(this.pinnedMemories, result);
@@ -198,7 +181,19 @@ export class UserProfileComponent implements OnInit {
     });
   }
 
-  openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, { duration: 3000 });
+  /** Displays a snackbar with a custom message. */
+  private showSnackBar(message: string): void {
+    this.snackBar.open(message, 'Close', { duration: 3000 });
   }
+
+  /** Handles errors and displays a snackbar. */
+  private handleError(message: string): void {
+    console.error(message);
+    this.showSnackBar(message);
+  }
+
+  getMemoriesToDisplay(): Memory[] {
+    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
+  }
+
 }

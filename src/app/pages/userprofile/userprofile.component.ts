@@ -37,7 +37,7 @@ export class UserProfileComponent implements OnInit {
     private memoryService: MemoryService,
     private pinnedService: PinnedMemoryService,
     private fileUploadService: FileUploadService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;
@@ -110,17 +110,20 @@ export class UserProfileComponent implements OnInit {
   }
 
   /** Uploads a profile picture. */
-  onFileChange(event: any): void {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    this.isUploading = true;
-    this.fileUploadService.uploadProfilePicture(this.user.user_id, file)
-      .pipe(finalize(() => (this.isUploading = false)))
-      .subscribe(
-        () => this.updateProfilePicture(),
-        () => this.handleError('Error uploading profile picture.')
-      );
+  onFileChange(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input && input.files) {
+      const file = input.files[0];  // Get the first file
+      if (file) {
+        this.isUploading = true;
+        this.fileUploadService.uploadProfilePicture(this.user.user_id, file)
+          .pipe(finalize(() => (this.isUploading = false)))
+          .subscribe(
+            () => this.updateProfilePicture(),
+            () => this.handleError('Error uploading profile picture.')
+          );
+      }
+    }
   }
 
   /** Updates the user's profile picture URL. */

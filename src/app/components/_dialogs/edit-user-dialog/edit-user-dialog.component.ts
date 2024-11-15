@@ -1,46 +1,41 @@
-import { DatePipe } from '@angular/common';
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-
-export interface DialogData {
-  instagram: string;
-  name: string;
-  bio: string;
-  dob: string;
-  gender: string;
-  country: string;
-  username: string;
-}
+import { MemoriseUser } from '../../../models/userInterface.model';
 
 @Component({
-  // Component metadata
   selector: 'edit-user-dialog',
   templateUrl: 'edit-user-dialog.component.html',
   styleUrls: ['edit-user-dialog.component.scss']
 })
 export class EditUserDialogComponent {
-  @Output() updateUserData = new EventEmitter<void>();
+  @Output() updateUserData = new EventEmitter<MemoriseUser>();  // Emit the full user object
   userForm: FormGroup;
 
-  constructor(private datePipe: DatePipe, public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public userdata: DialogData, private fb: FormBuilder) {
-      this.userForm = this.fb.group({
-        name: userdata.name,
-        bio: userdata.bio,
-        dob: userdata.dob,
-        gender: userdata.gender,
-        country: userdata.country,
-        username: userdata.username,
-        instagram: userdata.instagram
-      });
-      console.log(this.userForm.value);
-    }
+  constructor(
+    public dialogRef: MatDialogRef<EditUserDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public userdata: MemoriseUser,
+    private fb: FormBuilder
+  ) {
+    this.userForm = this.fb.group({
+      name: [userdata.name, Validators.required],  // Added validation
+      bio: [userdata.bio, Validators.maxLength(500)], // Optional, max length for bio
+      dob: [userdata.dob, Validators.required],  // Ensure dob is required
+      gender: [userdata.gender, Validators.required],  // Assuming gender is required
+      country: [userdata.country, Validators.required],  // Assuming country is required
+      username: [userdata.username, Validators.required],
+      instagram: [userdata.instagram, Validators.required], // Instagram URL pattern validation
+    });
+  }
 
   saveChanges() {
-    this.userForm.value.dob = this.datePipe.transform(this.userForm.value.dob, 'dd/MM/yyyy');
-    const updatedUserData = this.userForm.value;
-    this.updateUserData.emit(updatedUserData);
-    //this.dialogRef.close();
+    if (this.userForm.invalid) {
+      console.error('Form is invalid');
+      return;  // Optionally show an error message
+    }
+
+    this.userForm.value.dob.setHours(12, 12, 12, 12);
+    this.updateUserData.emit(this.userForm.value);
+    this.dialogRef.close();
   }
 }

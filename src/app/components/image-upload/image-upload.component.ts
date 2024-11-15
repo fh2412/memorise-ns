@@ -39,11 +39,9 @@ export class ImageUploadComponent implements OnInit {
   constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
-    console.log("Memory Data: ", this.memoryData);
     this.imageInfos = this.uploadService.getFiles();
     if (this.picture_count == 0) {
       this.googleStorageUrl = this.userId.toString() + Date.now().toString();
-      console.log("New Memory");
     }
   }
 

@@ -32,7 +32,7 @@
     </mat-form-field>
 
     <div class="action-buttons">
-        <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()" *ngIf="!isSigningIn">
+        <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="handleFirstTimeUser()" *ngIf="!isSigningIn">
             REGISTER
         </button>
         <button mat-raised-button color="primary" class="button-loader" *ngIf="isSigningIn"
@@ -44,4 +44,4 @@
         </button>
     </div>
 </form>
-<app-welcome-page *ngIf="isFirstTimeUser" [email]="this.registerForm.value.email" [password]="this.registerForm.value.password"></app-welcome-page>
+<app-welcome-page *ngIf="isFirstTimeUser" (closeWelcomePage)="register()"></app-welcome-page>

@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
-import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '../../../services/userService';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -12,53 +12,80 @@ import { UserService } from '../../../services/userService';
 })
 export class RegisterComponent {
   registerForm: FormGroup;
-  isSigningIn: boolean = false;
-  isFirstTimeUser: boolean = false;
-
+  isSigningIn = false;
+  isFirstTimeUser = false;
+  email: string = '';
 
   @Output() cancelRegistration = new EventEmitter<void>();
 
-  constructor(private fb: FormBuilder, private authenticationService: AuthenticationService, private snackBar: MatSnackBar, private userService: UserService) {
+  constructor(
+    private fb: FormBuilder,
+    private authenticationService: AuthenticationService,
+    private snackBar: MatSnackBar,
+    private userService: UserService,
+    private router: Router,
+  ) {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', [Validators.required]]
-    });
+    }, { validators: this.passwordsMatchValidator });
+  }
+
+  private passwordsMatchValidator(form: FormGroup): { passwordsMismatch: boolean } | null {
+    const password = form.get('password')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordsMismatch: true };
   }
 
   register() {
-    this.isSigningIn = !this.isSigningIn;
-    if (this.registerForm.valid) {
-      this.authenticationService.registerNew({
-        email: this.registerForm.value.email,
-        password: this.registerForm.value.password
-      }).subscribe({
-        next: async () => {
-          this.isSigningIn = !this.isSigningIn;
-          localStorage.setItem('isFirstTimeUser', 'true');
-          await this.createUser();
-          this.isFirstTimeUser = localStorage.getItem('isFirstTimeUser') === 'true';
+    if (this.registerForm.invalid) {
+      this.snackBar.open('Please fill out the form correctly.', 'OK', { duration: 5000 });
+    }
+    else {
+      this.toggleSigningIn(true);
+
+      const { email, password } = this.registerForm.value;
+      this.email = this.registerForm.value.email;
+
+      this.authenticationService.registerNew({ email, password }).subscribe({
+        next: () => {
+          this.createUser(email);
         },
-        error: error => {
-          this.isSigningIn = !this.isSigningIn;
-          this.snackBar.open(error.message, "OK", {
-            duration: 5000
-          })
+        error: (error) => {
+          this.toggleSigningIn(false);
+          this.snackBar.open(error.message, 'OK', { duration: 5000 });
         }
-      }); 
+      });
     }
   }
 
-  async createUser(){
-    this.userService.createUser(this.registerForm.value.email).subscribe(
-      response => {
+  private toggleSigningIn(state: boolean): void {
+    this.isSigningIn = state;
+  }
+
+  handleFirstTimeUser(): void {
+    this.isFirstTimeUser = true;
+  }
+
+  closeWelcomePage(): void {
+    this.createUser(this.email);
+    this.isFirstTimeUser = false;
+  }
+
+  private createUser(email: string): void {
+    this.userService.createUser(email).subscribe({
+      next: (response) => {
+        this.toggleSigningIn(false);
+        this.snackBar.open('Registration successful!', 'OK', { duration: 5000 });
+        this.router.navigate(['/home']);
         console.log('User created successfully:', response);
-        // Handle success response (e.g., show a success message or redirect)
       },
-      error => {
+      error: (error) => {
+        this.toggleSigningIn(false);
         console.error('Error creating user:', error);
-        // Handle error response (e.g., show an error message)
+        this.snackBar.open('Failed to complete registration. Please try again.', 'OK', { duration: 5000 });
       }
-    );
+    });
   }
 }

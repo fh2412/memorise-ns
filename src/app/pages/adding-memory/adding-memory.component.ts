@@ -23,16 +23,6 @@ export class AddingMemoryComponent implements OnInit {
   userId: string = '';
   emailArray: string[] = [];
 
-  mapCenter: google.maps.LatLng = new google.maps.LatLng(47.5, 14.2);
-  mapOptions: google.maps.MapOptions = {
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoomControl: true,
-    scrollwheel: true,
-    disableDoubleClickZoom: true,
-    maxZoom: 20,
-    minZoom: 4,
-    streetViewControl: false,
-  };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -76,7 +66,7 @@ export class AddingMemoryComponent implements OnInit {
 
   openMapDialog(): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { mapCenter: this.mapCenter },
+      data: { lat: 47.2, long: 47.2 },
       width: '500px',
       height: '542px'
     });

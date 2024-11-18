@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { Observable } from 'rxjs';
+import { MemoryFormData } from '../models/memoryInterface.model';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +65,7 @@ export class MemoryService {
     return this.http.put(url, { imageUrl }); 
   }
 
-  createMemory(memoryData: any): Observable<any> {
+  createMemory(memoryData: MemoryFormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/memories/createMemory`, memoryData);
   }
 

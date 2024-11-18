@@ -4,6 +4,8 @@ import { FileUploadService } from '../../services/file-upload.service';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/userService';
+import { MemoryFormData } from '../../models/memoryInterface.model';
 
 export interface ImageFileWithDimensions {
   file: File;
@@ -20,7 +22,7 @@ export interface ImageFileWithDimensions {
 export class ImageUploadComponent implements OnInit {
   @Input() userId: string = '';
   @Input() memoryId: string = '';
-  @Input() memoryData: any;
+  @Input() memoryData: MemoryFormData | null = null;
   @Input() friends_emails: string[] = [];
   @Input() picture_count: number = 0;
   @Input() googleStorageUrl: String = "";
@@ -36,12 +38,19 @@ export class ImageUploadComponent implements OnInit {
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router, private userService: UserService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.imageInfos = this.uploadService.getFiles();
     if (this.picture_count == 0) {
       this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+    }
+    if(this.userId == undefined){
+      await this.userService.userId$.subscribe((userId) => {
+        if(userId){
+          this.userId = userId;
+        }
+      });
     }
   }
 

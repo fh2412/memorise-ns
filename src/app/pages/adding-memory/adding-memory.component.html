@@ -75,7 +75,7 @@
     <form [formGroup]="memoryForm" class="images-form">
       
       <!-- Image Upload Component -->
-      <app-image-upload [userId]="userId" [memoryData]="memoryForm" [friends_emails]="emailArray"></app-image-upload>
+      <app-image-upload [userId]="userId" [memoryData]="memoryForm.value" [friends_emails]="emailArray"></app-image-upload>
 
       <!-- Stepper Navigation -->
       <div>

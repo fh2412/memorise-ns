@@ -15,3 +15,19 @@ export interface Memory {
     title_pic: string;
     username: string;
   }
+
+  export interface MemoryFormData {
+    creator_id: string;
+    title: string;
+    description: string;
+    firestore_bucket_url: string;
+    memory_date: Date | null;
+    memory_end_date: Date | null;
+    title_pic: string;
+    location_id: string;
+    lng: string;
+    lat: string;
+    l_country: string;
+    l_city: string;
+    l_postcode: string;
+  }

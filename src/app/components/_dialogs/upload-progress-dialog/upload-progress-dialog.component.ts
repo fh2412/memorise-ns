@@ -5,6 +5,7 @@ import { MemoryService } from '../../../services/memory.service';
 import { LocationService } from '../../../services/location.service';
 import { GeocodingService } from '../../../services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
+import { MemoryFormData } from '../../../models/memoryInterface.model';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -14,11 +15,11 @@ import { ImageFileWithDimensions } from '../../image-upload/image-upload.compone
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
   downloadURL: string | undefined;
-  originalCount: any = 0;
+  originalCount: number = 0;
   counter: number = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; friends_emails: any; picture_count: number; googleStorageUrl: string; starredIndex: number },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: MemoryFormData; friends_emails: string[]; picture_count: number; googleStorageUrl: string; starredIndex: number },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -68,7 +69,7 @@ export class UploadProgressDialogComponent implements OnInit {
       }
       else {
         this.originalCount = this.data.picture_count;
-        this.updatePicureCount(this.data.memoryId);
+        this.updatePictureCount(this.data.memoryId);
         this.dialogRef.close(this.data.googleStorageUrl);
       }
     } catch (error) {
@@ -78,25 +79,29 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
 
-  updatePicureCount(memoryId: string) {
-    const pictureCountData: any = {};
-    pictureCountData.picture_count = this.data.filesWithDimensions.length + this.originalCount;
-    this.originalCount = 0;
-    this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe(
-      (response) => {
-        console.log(response);
-      },
-      (error) => {
-        console.error('Error updating memory:', error);
-      }
-    );
+  updatePictureCount(memoryId: string): void {
+    const pictureCount = this.calculatePictureCount();
+    const pictureCountData = { picture_count: pictureCount };
+  
+    this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe({
+      next: (response) => console.log('Picture count updated successfully:', response),
+      error: (error) => console.error('Error updating picture count:', error),
+    });
   }
+  
+  private calculatePictureCount(): number {
+    const currentCount = this.data.filesWithDimensions?.length || 0;
+    const totalCount = currentCount + this.originalCount;
+    this.originalCount = 0; // Reset original count
+    return totalCount;
+  }
+  
 
   async createMemory() {
-    if (this.data.memoryData.valid) {
-      const memoryData = this.data.memoryData.value;
+    if (this.data.memoryData) {
+      const memoryData = this.data.memoryData;
       memoryData.firestore_bucket_url = this.data.googleStorageUrl;
-      memoryData.title_pic = this.downloadURL;
+      memoryData.title_pic = this.downloadURL || '';
       if (memoryData.memory_end_date == null) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
@@ -111,7 +116,7 @@ export class UploadProgressDialogComponent implements OnInit {
           this.create_location(memoryData);
         }
         else{
-          memoryData.location_id = 1;
+          memoryData.location_id = '1';
           this.create_memory(memoryData);
         }
       }
@@ -121,7 +126,7 @@ export class UploadProgressDialogComponent implements OnInit {
     }
   }
 
-  create_memory(memoryData: any) {
+  create_memory(memoryData: MemoryFormData) {
     this.memoryService.createMemory(memoryData).subscribe(
       (response: { message: string, memoryId: any }) => {
 
@@ -139,7 +144,7 @@ export class UploadProgressDialogComponent implements OnInit {
             }
           );
         }
-        this.updatePicureCount(response.memoryId[0]?.insertId);
+        this.updatePictureCount(response.memoryId[0]?.insertId);
       },
       (error) => {
         console.error('Error creating memory:', error);
@@ -149,7 +154,7 @@ export class UploadProgressDialogComponent implements OnInit {
   }
   
 
-  create_location(memoryData: any) {
+  create_location(memoryData: MemoryFormData) {
     this.locationService.createLocation(memoryData).subscribe(
       (response: { message: string, locationId: any }) => {
         console.log('Location added to memory successfully:', response.locationId[0]?.insertId);

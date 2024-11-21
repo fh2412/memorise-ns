@@ -141,7 +141,9 @@ export class MemoryDetailComponent {
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
-        console.log("Start Download!");
+        const urls = this.imagesWithMetadata.map(image => image.url);
+        const zipFileName = `${this.memorydb.title}_${new Date().toISOString().split('T')[0]}`;
+        this.imageDataService.downloadImagesAsZip(urls, zipFileName);
       }
     });
   }

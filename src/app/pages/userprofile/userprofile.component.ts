@@ -45,6 +45,7 @@ export class UserProfileComponent implements OnInit {
     this.initializeUserProfile();
   }
 
+
   /** Initializes the user profile by fetching data. */
   private initializeUserProfile(): void {
     this.fetchUser();
@@ -172,16 +173,21 @@ export class UserProfileComponent implements OnInit {
 
   /** Opens the pinned memories dialog. */
   openPinsDialog(): void {
-    const dialogRef = this.dialog.open(PinnedDialogComponent, {
-      width: '40%',
-      data: { memories: this.allMemories, pinned: this.pinnedMemories },
-    });
+    if(this.allMemories.length == undefined){
+      this.showSnackBar('You must first add Memories before you can pin some!');
+    }
+    else{
+      const dialogRef = this.dialog.open(PinnedDialogComponent, {
+        width: '40%',
+        data: { memories: this.allMemories, pinned: this.pinnedMemories },
+      });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.comparePinnedMemories(this.pinnedMemories, result);
-      }
-    });
+      dialogRef.afterClosed().subscribe((result) => {
+        if (result) {
+          this.comparePinnedMemories(this.pinnedMemories, result);
+        }
+      });
+    }
   }
 
   /** Displays a snackbar with a custom message. */

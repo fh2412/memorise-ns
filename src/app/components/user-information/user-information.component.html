@@ -1,11 +1,11 @@
 <mat-card class="user-card" appearance="outlined" *ngIf="userdb">
   <div class="profile-picture-container">
-    <img [src]="userdb.profilepic" alt="Profile Picture" class="profile-picture">
+    <img [src]="userdb.profilepic || '/assets/img/1.png'" alt="Profile Picture" class="profile-picture">
   </div>
   <div class="user-details">
-    <mat-card-title>{{ userdb.name }}</mat-card-title>
+    <mat-card-title>{{ userdb.name || 'No Name Provided' }}</mat-card-title>
     <mat-card-subtitle>
-      <span>{{ userdb.username }}</span> - <span>{{ userdb.gender }}</span>
+      <span>{{ userdb.username || 'username' }}</span> - <span>{{ userdb.gender || 'gender'}}</span>
     </mat-card-subtitle>
     <button mat-stroked-button class="editbutton" (click)="navigateToUserProfile()">
       View Profile
@@ -13,15 +13,15 @@
     <mat-list class="list-wrapper">
       <mat-list-item>
         <mat-icon matListItemIcon aria-label="Location">location_on</mat-icon>
-        <div matListItemTitle>{{ userdb.country }}</div>
+        <div matListItemTitle>{{ userdb.country || 'not provided'}}</div>
       </mat-list-item>
       <mat-list-item>
         <mat-icon matListItemIcon aria-label="Date of Birth">calendar_today</mat-icon>
-        <div matListItemTitle>{{ userdb.dob | date }}</div>
+        <div matListItemTitle>{{ (userdb.dob | date) || 'not provided' }}</div>
       </mat-list-item>
       <mat-list-item>
         <mat-icon matListItemIcon aria-label="Instagram">public</mat-icon>
-        <div matListItemTitle>{{ userdb.instagram || "not provided" }}</div>
+        <div matListItemTitle>{{ userdb.instagram || 'not provided' }}</div>
       </mat-list-item>
     </mat-list>
   </div>

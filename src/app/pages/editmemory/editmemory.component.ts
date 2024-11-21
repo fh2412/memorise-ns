@@ -128,8 +128,11 @@ export class EditmemoryComponent {
     });
   }
 
-  async deleteMemory(): Promise<void> {
+  async deleteMemory(favourite: boolean): Promise<void> {
     try {
+      if(favourite){
+        await this.pinnedService.deleteMemoryFromAllPins(Number(this.memoryId)).toPromise();
+      }
       await this.memoryService.deleteMemoryAndFriends(this.memoryId).toPromise();
       await this.firebaseService.deleteMemorysFolder(this.firebaseId).toPromise();
       this.router.navigate(['/home']);
@@ -283,10 +286,10 @@ export class EditmemoryComponent {
       this.pinnedService.checkMemoryPin(this.memory.memory_id).subscribe(
         async response => {
           if (response.length === 0) {
-            await this.deleteMemory();
+            await this.deleteMemory(false);
           } else {
             const deleteConfirmed = await this.openConfirmationDialog('Delete anyways?', 'This memory is in someone\'s Favorite Memories. Delete anyway?');
-            if (deleteConfirmed) await this.deleteMemory();
+            if (deleteConfirmed) await this.deleteMemory(true);
           }
         },
         error => console.error('Error checking pinned memory:', error)

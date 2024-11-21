@@ -65,8 +65,25 @@ export class RegisterComponent {
   }
 
   handleFirstTimeUser(): void {
-    this.isFirstTimeUser = true;
+    const { email } = this.registerForm.value;
+    this.userService.getUserByEmail(email).subscribe({
+      next: () => {
+        // Email exists
+        this.snackBar.open('Email is already in use.', 'OK', { duration: 5000 });
+      },
+      error: (error) => {
+        if (error.status === 404) {
+          // Email does not exist
+          this.isFirstTimeUser = true;
+        } else {
+          // Handle other errors (e.g., network issues)
+          this.snackBar.open('An unexpected error occurred.', 'OK', { duration: 5000 });
+          console.error(error);
+        }
+      }
+    });
   }
+  
 
   closeWelcomePage(): void {
     this.createUser(this.email);

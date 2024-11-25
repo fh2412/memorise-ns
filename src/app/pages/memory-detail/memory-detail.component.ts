@@ -12,6 +12,7 @@ import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components
 import { Memory } from '../../models/memoryInterface.model';
 import { Friend, MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
+import saveAs from 'file-saver';
 
 
 export interface ImageWithMetadata {
@@ -141,9 +142,7 @@ export class MemoryDetailComponent {
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
-        const urls = this.imagesWithMetadata.map(image => image.url);
-        const zipFileName = `${this.memorydb.title}_${new Date().toISOString().split('T')[0]}`;
-        this.imageDataService.downloadImagesAsZip(urls, zipFileName);
+        this.imageDataService.downloadZip(this.memorydb.image_url, this.memorydb.title);
       }
     });
   }

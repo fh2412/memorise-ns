@@ -40,6 +40,7 @@ export class MemoryDetailComponent {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
+  isLoading: boolean = false;
   showMore: boolean = false;
   truncatedDescription: string = '';
   characterLimit: number = 150;
@@ -142,7 +143,10 @@ export class MemoryDetailComponent {
 
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
-        this.imageDataService.downloadZip(this.memorydb.image_url, this.memorydb.title);
+        this.isLoading = true; // Start loading
+        this.imageDataService.downloadZip(this.memorydb.image_url, this.memorydb.title).subscribe(() => {
+        this.isLoading = false; // Stop loading
+      });
       }
     });
   }

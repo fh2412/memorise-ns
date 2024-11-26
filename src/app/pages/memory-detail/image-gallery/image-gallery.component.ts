@@ -136,12 +136,7 @@ export class ImageGalleryComponent implements OnInit {
     });
   }
 
-  downloadAsZip(): void {
-    const imageUrls = this.createImageArrayFromLayouts(this.layout);
-    this.imageDataService.downloadImagesAsZip(imageUrls, 'images');
-  }
-
-  trackByLayoutType(index: number, layout: any): number {
+  trackByLayoutType(layout: any): number {
     return layout.type;
   }
   

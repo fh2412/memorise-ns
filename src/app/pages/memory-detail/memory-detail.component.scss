@@ -1,5 +1,6 @@
 @use '../../../styles/components/memory-card-empty' as card-mixin;
 @use '../../../styles/components/mixins' as mixins;
+@import '../../../styles/components/spinner-overlay.scss';
 @import 'image-preview.scss';
 
 .bd-home-section {

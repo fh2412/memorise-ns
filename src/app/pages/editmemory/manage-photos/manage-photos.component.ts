@@ -4,6 +4,7 @@ import { getDownloadURL, getMetadata, getStorage, listAll, ref } from 'firebase/
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
 import { Location } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-manage-photos',
@@ -22,7 +23,9 @@ export class ManagePhotosComponent implements OnInit {
     private route: ActivatedRoute,
     private fileService: FileUploadService,
     private location: Location,
-    private memoryService: MemoryService
+    private memoryService: MemoryService,
+    private snackBar: MatSnackBar,
+
   ) {}
 
   ngOnInit(): void {
@@ -74,6 +77,7 @@ export class ManagePhotosComponent implements OnInit {
    */
   onStar(index: number) {
     if (this.starredIndex !== null) {
+      this.snackBar.open('Title Picutre changed!', 'Nice', { duration: 3000 });
       this.fileService.starImage(index, this.starredIndex, this.images[this.starredIndex].url, this.images[index].url);
       this.memoryService.updateTitlePic(this.imageUrl, this.images[index].url).subscribe();
       this.starredIndex = index;

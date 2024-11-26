@@ -6,6 +6,7 @@ import { ManagePhotosComponent } from './manage-photos.component';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { BackButtonModule } from "../../../components/back-button/back-button.module";
 
 const routes: Routes = [
   {
@@ -19,12 +20,13 @@ const routes: Routes = [
       ManagePhotosComponent
     ],
     imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        ImageUploadModule,
-        MatGridListModule,
-        MatIconModule,
-        MatButtonModule
-    ]
+    CommonModule,
+    RouterModule.forChild(routes),
+    ImageUploadModule,
+    MatGridListModule,
+    MatIconModule,
+    MatButtonModule,
+    BackButtonModule
+]
 })
 export class ManagePhotosModule { }

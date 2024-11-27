@@ -131,7 +131,7 @@ export class HomeComponent implements OnInit {
   }
 
   addMemory(): void {
-    this.router.navigate(['/newmemory']);
+    this.router.navigate(['/setactivity']);
   }
 
   openDetailedMemory(memoryId: number): void {

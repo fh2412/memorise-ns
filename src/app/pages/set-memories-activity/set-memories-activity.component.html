@@ -21,7 +21,7 @@
         <mat-form-field appearance="outline" class="quick-field">
             <mat-label>Continue with quick Activity...</mat-label>
             <input matInput [(ngModel)]="quickActivity" />
-            <button mat-icon-button matSuffix [disabled]="!quickActivity.trim()">
+            <button mat-icon-button matSuffix [disabled]="!quickActivity.trim()" (click)="addMemory()">
               <mat-icon>arrow_forward</mat-icon>
             </button>
           </mat-form-field>

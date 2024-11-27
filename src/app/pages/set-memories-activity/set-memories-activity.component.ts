@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-set-memories-activity',
@@ -7,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class SetMemoriesActivityComponent {
   quickActivity: string = '';
+
+  constructor(private router: Router) {  }
+
+
+  addMemory(): void {
+    this.router.navigate(['/newmemory']);
+  }
 }

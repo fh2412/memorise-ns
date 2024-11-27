@@ -1,0 +1,30 @@
+<app-back-button style="position: absolute;"></app-back-button>
+<div class="container">
+    <div class="options">
+        <div class="option">
+            <img mat-card-image src="../../../assets/img/no_memories.jpg"
+                alt="A person looking through a lexicon in search of existing activities to do">
+            <button mat-stroked-button color="primary" [disabled]="true">
+                <mat-icon>arrow_forward</mat-icon> Choose existing Activity
+            </button>
+        </div>
+        <mat-divider vertical></mat-divider>
+        <div class="option">
+            <img mat-card-image src="../../../assets/img/new-activity.webp"
+                alt="A person searching the horizon for new optertunities">
+            <button mat-stroked-button color="accent" [disabled]="true">
+                <mat-icon>arrow_forward</mat-icon> Create new Activity
+            </button>
+        </div>
+    </div>
+    <div class="input-field" style="margin-top: 40px;">
+        <mat-form-field appearance="outline" class="quick-field">
+            <mat-label>Continue with quick Activity...</mat-label>
+            <input matInput [(ngModel)]="quickActivity" />
+            <button mat-icon-button matSuffix [disabled]="!quickActivity.trim()">
+              <mat-icon>arrow_forward</mat-icon>
+            </button>
+          </mat-form-field>
+          
+    </div>
+</div>

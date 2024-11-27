@@ -6,6 +6,7 @@ import { LocationService } from '../../../services/location.service';
 import { GeocodingService } from '../../../services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
 import { MemoryFormData } from '../../../models/memoryInterface.model';
+import { ActivityService } from '../../../services/activity.service';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -25,6 +26,7 @@ export class UploadProgressDialogComponent implements OnInit {
     private locationService: LocationService,
     private dialogRef: MatDialogRef<UploadProgressDialogComponent>,
     private geocodingService: GeocodingService,
+    private activityService: ActivityService
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.filesWithDimensions.length).fill(0);
@@ -164,6 +166,17 @@ export class UploadProgressDialogComponent implements OnInit {
       },
       (locationResponse) => {
         console.error('Error creating Location:', locationResponse);
+      }
+    );
+  }
+
+  create_quickactivity(memoryData: MemoryFormData) {
+    this.activityService.createQuickActivity(memoryData.quickActivity).subscribe(
+      (response: { message: string, activityId: number }) => {
+        memoryData.activity_id = response.activityId;
+      },
+      (locationResponse) => {
+        console.error('Error creating quick Activity:', locationResponse);
       }
     );
   }

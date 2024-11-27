@@ -13,6 +13,5 @@ export class SetMemoriesActivityComponent {
 
 
   addMemory(): void {
-    this.router.navigate(['/newmemory']);
-  }
+    this.router.navigate(['/newmemory'], { state: { quickActivity: this.quickActivity } });  }
 }

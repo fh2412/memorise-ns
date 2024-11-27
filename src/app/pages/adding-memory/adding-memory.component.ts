@@ -7,6 +7,7 @@ import { MatDatepicker } from '@angular/material/datepicker';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
 import { LocationService } from '../../services/location.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-adding-memory',
@@ -27,6 +28,7 @@ export class AddingMemoryComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     public dialog: MatDialog,
+    private location: Location,
     public memoryService: MemoryService,
     private userService: UserService,
     private locationService: LocationService,
@@ -46,6 +48,7 @@ export class AddingMemoryComponent implements OnInit {
       l_country: [''],
       l_city: [''],
       l_postcode: [''],
+      quickActivity: ['']
     });
   }
 
@@ -56,6 +59,8 @@ export class AddingMemoryComponent implements OnInit {
       }
     });
     this.memoryForm.patchValue({ creator_id: this.userId });
+    const state = this.location.getState() as { quickActivity: string };
+    this.memoryForm.patchValue({ quickActivity: state?.quickActivity });
   }
 
   onSelectedValuesChange(selectedValues: string[]): void {

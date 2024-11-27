@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
+import { SetMemoriesActivityModule } from './pages/set-memories-activity/set-memories-activity.module';
 
 const routes: Routes = [
   {
@@ -42,6 +43,11 @@ const routes: Routes = [
   {
     path: 'newmemory',
     loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'setactivity',
+    loadChildren: () => import('./pages/set-memories-activity/set-memories-activity.module').then(m => m.SetMemoriesActivityModule),
     canActivate: [authGuard]
   },
   {

@@ -100,85 +100,98 @@ export class UploadProgressDialogComponent implements OnInit {
   
 
   async createMemory() {
-    if (this.data.memoryData) {
-      const memoryData = this.data.memoryData;
+    try {
+      if (!this.data.memoryData) {
+        console.error('Form is not valid. Please fill in all required fields.');
+        return;
+      }
+  
+      const memoryData = { ...this.data.memoryData };
       memoryData.firestore_bucket_url = this.data.googleStorageUrl;
       memoryData.title_pic = this.downloadURL || '';
-      if (memoryData.memory_end_date == null) {
+  
+      if (!memoryData.memory_end_date) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
-      if (memoryData.lat != '' && memoryData.lng != '') {
-        this.create_location(memoryData);
+  
+      if (memoryData.lat && memoryData.lng) {
+        memoryData.location_id = await this.handleLocationCreation(memoryData);
+        console.log("location created!: ", memoryData.location_id);
+      } else if (memoryData.l_city || memoryData.l_country || memoryData.l_postcode) {
+        const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
+        memoryData.lat = coords.lat.toString();
+        memoryData.lng = coords.lng.toString();
+        memoryData.location_id = await this.handleLocationCreation(memoryData);
+        console.log("location created address!: ", memoryData.location_id);
+      } else {
+        memoryData.location_id = '1';
+        console.log("location set to 1 ", memoryData.location_id);
       }
-      else {
-        if(memoryData.l_city || memoryData.l_country || memoryData.l_postcode){
-          const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
-          memoryData.lat = coords.lat.toString();
-          memoryData.lng = coords.lng.toString();
-          this.create_location(memoryData);
-        }
-        else{
-          memoryData.location_id = '1';
-          this.create_memory(memoryData);
-        }
-      }
-    } else {
-      // Handle form validation errors if needed
-      console.error('Form is not valid. Please fill in all required fields.');
+  
+      memoryData.activity_id = await this.handleActivityCreation(memoryData);
+      console.log("activity created!: ", memoryData.activity_id);
+      await this.handleMemoryCreation(memoryData);
+      console.log("Memory Created!");
+    } catch (error) {
+      console.error('Error creating memory:', error);
     }
   }
-
-  create_memory(memoryData: MemoryFormData) {
-    this.memoryService.createMemory(memoryData).subscribe(
-      (response: { message: string, memoryId: any }) => {
-
-        const friendData = { emails: this.data.friends_emails, memoryId: response.memoryId[0]?.insertId };
-        console.log("Friends: ", friendData);
-        if (this.data.friends_emails) {
-          this.memoryService.addFriendToMemory(friendData).subscribe(
-            (friendResponse) => {
-              console.log('Friend added to memory successfully:', friendResponse);
-              // Handle success (e.g., show a success message to the user)
-            },
-            (friendError) => {
-              console.error('Error adding friend to memory:', friendError);
-              // Handle error (e.g., show an error message to the user)
-            }
-          );
-        }
-        this.updatePictureCount(response.memoryId[0]?.insertId);
-      },
-      (error) => {
-        console.error('Error creating memory:', error);
-        // Handle error (e.g., show an error message to the user)
-      }
-    );
+  
+  private handleLocationCreation(memoryData: MemoryFormData): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.locationService.createLocation(memoryData).subscribe(
+        (response: { locationId: any }) => resolve(response.locationId[0]?.insertId),
+        (error) => reject(`Error creating location: ${error}`)
+      );
+    });
   }
   
-
-  create_location(memoryData: MemoryFormData) {
-    this.locationService.createLocation(memoryData).subscribe(
-      (response: { message: string, locationId: any }) => {
-        console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
-        memoryData.location_id = response.locationId[0]?.insertId;
-
-        this.create_memory(memoryData);
-      },
-      (locationResponse) => {
-        console.error('Error creating Location:', locationResponse);
+  private handleActivityCreation(memoryData: MemoryFormData): Promise<number | null> {
+    return new Promise((resolve) => {
+      if (!memoryData.quickActivity) {
+        resolve(null); // No activity creation needed
+        return;
       }
-    );
+  
+      this.activityService.createQuickActivity(memoryData.quickActivity).subscribe(
+        (response: { activityId: any }) => resolve(response.activityId[0]?.insertId),
+        (error) => {
+          console.error('Error creating quick activity:', error);
+          resolve(null); // Fail gracefully
+        }
+      );
+    });
   }
-
-  create_quickactivity(memoryData: MemoryFormData) {
-    this.activityService.createQuickActivity(memoryData.quickActivity).subscribe(
-      (response: { message: string, activityId: number }) => {
-        memoryData.activity_id = response.activityId;
-      },
-      (locationResponse) => {
-        console.error('Error creating quick Activity:', locationResponse);
-      }
-    );
+  
+  private handleMemoryCreation(memoryData: MemoryFormData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.memoryService.createMemory(memoryData).subscribe(
+        async (response: { memoryId: any }) => {
+          const memoryId = response.memoryId[0]?.insertId;
+          console.log('Memory created successfully:', memoryId);
+  
+          if (this.data.friends_emails) {
+            await this.addFriendsToMemory(memoryId, this.data.friends_emails);
+          }
+          this.updatePictureCount(memoryId);
+          resolve();
+        },
+        (error) => reject(`Error creating memory: ${error}`)
+      );
+    });
+  }
+  
+  private addFriendsToMemory(memoryId: string, friendsEmails: string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const friendData = { emails: friendsEmails, memoryId };
+      this.memoryService.addFriendToMemory(friendData).subscribe(
+        () => {
+          console.log('Friends added to memory successfully.');
+          resolve();
+        },
+        (error) => reject(`Error adding friends to memory: ${error}`)
+      );
+    });
   }
 
   async get_geocoords(city: string, postcode: string, country: string): Promise<{ lat: number, lng: number }> {

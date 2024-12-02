@@ -112,9 +112,7 @@ export class HomeComponent implements OnInit {
 
   private async getCreatedMemories(): Promise<void> {
     try {
-      console.log(this.userdb);
       const data = await firstValueFrom(this.memoryService.getCreatedMemory(this.userdb.user_id));
-      console.log(data);
       this.userGeneratedMemories = data.message === "You haven't created any memories yet!" ? [] : data;
       this.noMemory = this.userGeneratedMemories.length === 0;
     } catch (error) {

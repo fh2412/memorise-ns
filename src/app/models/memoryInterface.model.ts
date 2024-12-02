@@ -31,5 +31,5 @@ export interface Memory {
     l_city: string;
     l_postcode: string;
     quickActivity: string;
-    activity_id: number;
+    activity_id: number | null;
   }

@@ -35,7 +35,7 @@
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
           <div class="full-width">
-            <h1 *ngIf="location">Activity in {{location.country}}</h1>
+            <h1 *ngIf="location">{{activity}} in {{location.country}}</h1>
             <span>
               {{ selectedDate | date }},
               {{ memorydbFriends && memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory' }}

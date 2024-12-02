@@ -14,6 +14,7 @@ export interface Memory {
     title: string;
     title_pic: string;
     username: string;
+    activity_id: number;
   }
 
   export interface MemoryFormData {

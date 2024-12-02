@@ -31,7 +31,8 @@ export class PinnedMemoryService {
       text: '',
       title: '',
       title_pic: '',
-      username: ''
+      username: '',
+      activity_id: 1,
     };
 
     // Add empty memory objects until there are exactly 4 items

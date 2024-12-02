@@ -15,4 +15,8 @@ export class ActivityService {
     const body = { title };
     return this.http.post<any>(url, body);
   }
+
+  getActivity(activityId: number){
+    return this.http.get<any>(`${this.apiUrl}/${activityId}`);
+  }
 }

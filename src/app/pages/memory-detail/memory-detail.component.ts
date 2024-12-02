@@ -12,7 +12,7 @@ import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components
 import { Memory } from '../../models/memoryInterface.model';
 import { Friend, MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
-import saveAs from 'file-saver';
+import { ActivityService } from '../../services/activity.service';
 
 
 export interface ImageWithMetadata {
@@ -37,6 +37,7 @@ export class MemoryDetailComponent {
   endDate = new Date(2024, 1, 1);
   dateRange!: DateRange<Date>;
   location: MemoriseLocation | null = null;
+  activity: string = 'Activity';
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
@@ -47,7 +48,7 @@ export class MemoryDetailComponent {
   imagesWithMetadata: ImageWithMetadata[] = [];
 
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService) { }
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private activityService: ActivityService) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -61,6 +62,9 @@ export class MemoryDetailComponent {
     try {
       const memoryData = await this.memoryService.getMemory(this.memoryID).toPromise();
       this.memorydb = memoryData;
+      const activityData = await this.activityService.getActivity(this.memorydb.activity_id).toPromise();
+      this.activity = activityData.title;
+
       this.initializeMemoryDetails();
       
       const friendsData = await this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId).toPromise();

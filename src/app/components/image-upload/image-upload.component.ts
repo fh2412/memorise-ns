@@ -55,6 +55,8 @@ export class ImageUploadComponent implements OnInit {
   }
 
   selectFiles(event: any): void {
+    console.log("Memory Data", this.memoryData);
+
     const newFiles = event.target.files;
   
     // Combine existing files with new ones (if applicable)

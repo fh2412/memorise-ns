@@ -48,7 +48,8 @@ export class AddingMemoryComponent implements OnInit {
       l_country: [''],
       l_city: [''],
       l_postcode: [''],
-      quickActivity: ['']
+      quickActivityTitle: [''],
+      activity_id: [''],
     });
   }
 
@@ -59,8 +60,9 @@ export class AddingMemoryComponent implements OnInit {
       }
     });
     this.memoryForm.patchValue({ creator_id: this.userId });
-    const state = this.location.getState() as { quickActivity: string };
-    this.memoryForm.patchValue({ quickActivity: state?.quickActivity });
+    const state = this.location.getState() as { quickActivity: string; activityId: number };
+    this.memoryForm.patchValue({ quickActivityTitle: state?.quickActivity });
+    this.memoryForm.patchValue({ activity_id: state?.activityId });
   }
 
   onSelectedValuesChange(selectedValues: string[]): void {

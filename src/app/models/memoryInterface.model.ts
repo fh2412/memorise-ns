@@ -31,6 +31,6 @@ export interface Memory {
     l_country: string;
     l_city: string;
     l_postcode: string;
-    quickActivity: string;
+    quickActivityTitle: string;
     activity_id: number | null;
   }

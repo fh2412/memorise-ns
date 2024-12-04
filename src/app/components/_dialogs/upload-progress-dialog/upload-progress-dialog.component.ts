@@ -127,8 +127,11 @@ export class UploadProgressDialogComponent implements OnInit {
         memoryData.location_id = '1';
         console.log("location set to 1 ", memoryData.location_id);
       }
-  
-      memoryData.activity_id = await this.handleActivityCreation(memoryData);
+      console.log("Acitiviy: ", memoryData);
+      if(memoryData.activity_id==1){
+        console.log("Creating new Activity!");
+        memoryData.activity_id = await this.handleActivityCreation(memoryData);
+      }
       console.log("activity created!: ", memoryData.activity_id);
       await this.handleMemoryCreation(memoryData);
       console.log("Memory Created!");
@@ -148,12 +151,12 @@ export class UploadProgressDialogComponent implements OnInit {
   
   private handleActivityCreation(memoryData: MemoryFormData): Promise<number | null> {
     return new Promise((resolve) => {
-      if (!memoryData.quickActivity) {
+      if (!memoryData.quickActivityTitle) {
         resolve(null); // No activity creation needed
         return;
       }
   
-      this.activityService.createQuickActivity(memoryData.quickActivity).subscribe(
+      this.activityService.createQuickActivity(memoryData.quickActivityTitle).subscribe(
         (response: { activityId: any }) => resolve(response.activityId[0]?.insertId),
         (error) => {
           console.error('Error creating quick activity:', error);

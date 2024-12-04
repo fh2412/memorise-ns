@@ -11,7 +11,8 @@ export class SetMemoriesActivityComponent {
 
   constructor(private router: Router) {  }
 
-
   addMemory(): void {
-    this.router.navigate(['/newmemory'], { state: { quickActivity: this.quickActivity } });  }
+    this.router.navigate(['/newmemory'], { state: { quickActivity: this.quickActivity } });
+  }
+
 }

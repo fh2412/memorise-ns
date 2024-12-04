@@ -22,7 +22,7 @@
       }
   
       mat-divider {
-        height: 500px;
+        height: 400px;
       }
     }
 
@@ -31,8 +31,9 @@
         border-radius: 15px;
     }
   }
-
-  .quick-field{
-    width: 60vh;
-  }
   
+  .headline{
+    font-size: 5vh;
+    font-weight: bold;
+    margin-bottom: 80px;
+  }

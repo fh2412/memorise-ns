@@ -63,6 +63,7 @@ export class MemoryDetailComponent {
       const memoryData = await this.memoryService.getMemory(this.memoryID).toPromise();
       this.memorydb = memoryData;
       const activityData = await this.activityService.getActivity(this.memorydb.activity_id).toPromise();
+      console.log("Activtiy Data: ", activityData);
       this.activity = activityData.title;
 
       this.initializeMemoryDetails();

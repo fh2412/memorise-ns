@@ -52,13 +52,9 @@ h1 {
 
   .custom-pre {
     white-space: pre-wrap;
-    /* Beibehaltung von Leerzeichen und Zeilenumbrüchen */
     font-family: monospace;
-    /* Typische Schriftart eines <pre>-Tags */
     background-color: inherit;
-    /* Falls <pre> eine spezielle Hintergrundfarbe hat */
     margin: 0;
-    /* Standard <pre>-Tag Margin entfernen */
   }
 }
 

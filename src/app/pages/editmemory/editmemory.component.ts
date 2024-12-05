@@ -215,7 +215,7 @@ export class EditmemoryComponent {
       this.loadLocationAndOpenDialog();
     } else {
       // Open the map dialog with the default mapCenter
-      this.openMapDialog(47, 3);
+      this.openMapDialog(0, 0);
     }
   }
 

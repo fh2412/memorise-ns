@@ -41,7 +41,6 @@ const routes: Routes = [
         GoogleMapsModule,
         MatButtonModule,
         MatDividerModule,
-        MatFormFieldModule,
         ReactiveFormsModule,
         MatInputModule,
         MatIconModule,
@@ -49,7 +48,7 @@ const routes: Routes = [
         ImageUploadModule,
         MatToolbarModule,
         MatTableModule,
-        MatChipsModule
+        MatChipsModule,
     ]
 })
 export class EditMemoryModule { }

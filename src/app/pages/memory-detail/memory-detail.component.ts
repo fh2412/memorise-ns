@@ -62,11 +62,10 @@ export class MemoryDetailComponent {
     try {
       const memoryData = await this.memoryService.getMemory(this.memoryID).toPromise();
       this.memorydb = memoryData;
-      const activityData = await this.activityService.getActivity(this.memorydb.activity_id).toPromise();
-      console.log("Activtiy Data: ", activityData);
-      this.activity = activityData.title;
 
-      this.initializeMemoryDetails();
+      await this.initializeMemoryDetails();
+      const activityData = await this.activityService.getActivity(this.memorydb.activity_id).toPromise();
+      this.activity = activityData.title;
       
       const friendsData = await this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId).toPromise();
       this.memorydbFriends = friendsData.length ? friendsData : null;
@@ -84,6 +83,7 @@ export class MemoryDetailComponent {
     this.selectedDate = new Date(this.memorydb.memory_date);
     this.endDate = new Date(this.memorydb.memory_end_date);
     this.dateRange = new DateRange(this.selectedDate, this.endDate);
+    console.log(this.dateRange);
     this.getImages(this.memorydb.image_url);
     this.fetchLocationData(this.memorydb.location_id);
   }

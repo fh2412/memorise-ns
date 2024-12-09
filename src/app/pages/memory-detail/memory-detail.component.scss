@@ -5,6 +5,29 @@
 
 .bd-home-section {
   @include mixins.background-gradient;
+  @media (max-width: 1874px) {
+    --spacing: 1rem;
+  }
+}
+
+.small-screen{
+  display: none;
+  @media (max-width: 1614px) {
+    display: block;
+  }
+}
+
+.big-screen{
+  display: block;
+  @media (max-width: 1614px) {
+    display: none;
+  }
+}
+
+.button-text {
+  @media (max-width: 1000px) {
+    display: none;
+  }
 }
 
 .example-spacer {
@@ -49,7 +72,6 @@ h1 {
 
 .desc {
   margin-top: 5px;
-
   .custom-pre {
     white-space: pre-wrap;
     font-family: monospace;

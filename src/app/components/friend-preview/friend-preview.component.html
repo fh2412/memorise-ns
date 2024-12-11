@@ -6,7 +6,7 @@
             <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>
           </div>
     </div>
-    <button mat-stroked-button 
+    <button *ngIf="isLargeScreen" mat-stroked-button 
           [color]="buttonColor" 
           class="request-button" 
           (click)="requestFriend(buttonText, requested)" 
@@ -14,6 +14,14 @@
           [class.disabled]="!requested">
     <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
     {{ requested ? requestedText : buttonText }}
+  </button>
+  <button *ngIf="!isLargeScreen" mat-icon-button 
+          [color]="buttonColor" 
+          class="request-button" 
+          (click)="requestFriend(buttonText, requested)" 
+          [class.enabled]="requested" 
+          [class.disabled]="!requested">
+    <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
   </button>
 </div>
    

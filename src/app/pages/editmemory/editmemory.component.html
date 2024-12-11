@@ -24,16 +24,25 @@
                     </mat-form-field>
                 </form>
             </div>
-            <div class="buttons">
+            <div class="buttons" *ngIf="isLargeScreen">
                 <button mat-stroked-button color="primary" (click)="navigateToManagePhotos()">
-                    <mat-icon>apps</mat-icon>
-                    Manage Pictures
+                  <mat-icon>apps</mat-icon>
+                  Manage Pictures
                 </button>
                 <button mat-flat-button color="primary" (click)="navigateToAddPhotos()">
-                    <mat-icon>add_photo_alternate</mat-icon>
-                    Add Photos
+                  <mat-icon>add_photo_alternate</mat-icon>
+                  Add Photos
                 </button>
-            </div>
+              </div>
+              
+              <div class="icon-buttons" *ngIf="!isLargeScreen">
+                <button mat-fab color="primary" (click)="navigateToManagePhotos()">
+                  <mat-icon>apps</mat-icon>
+                </button>
+                <button mat-fab color="primary" (click)="navigateToAddPhotos()">
+                  <mat-icon>add_photo_alternate</mat-icon>
+                </button>
+              </div>
         </div>
         <br><br>
         <div>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
@@ -35,6 +35,12 @@ export class EditmemoryComponent {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
+  isLargeScreen: boolean = true;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event?: Event): void {
+    this.isLargeScreen = window.innerWidth > 1500;
+  }
 
   constructor(
     private formBuilder: FormBuilder, 
@@ -51,6 +57,7 @@ export class EditmemoryComponent {
   }
 
   async ngOnInit(): Promise<void> {
+    this.onResize();
     this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
     this.memoryId = this.route.snapshot.paramMap.get('id') || '';
     await this.loadMemoryData();

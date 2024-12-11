@@ -11,6 +11,7 @@ import { Friend } from '../../models/userInterface.model';
   styleUrl: './friends.component.scss'
 })
 export class FriendsComponent implements OnInit {
+
   friends: Friend[] = [];
   pendingFriends: Friend[] = [];
   ingoingFriends: Friend[] = [];
@@ -79,4 +80,8 @@ export class FriendsComponent implements OnInit {
   private generateInviteLink(userId: string): string {
     return `https://www.memorise.online/invite/${userId}`;
   }
+
+  viewProfile() {
+    throw new Error('Method not implemented.');
+    }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 import { Friend } from '../../models/userInterface.model';
@@ -19,9 +19,18 @@ export class FriendPreviewComponent {
   @Output() buttonClicked = new EventEmitter<void>();
   
   loggedInUserId: string | null = null;
+  isLargeScreen: boolean = true;
 
   constructor(private userService: UserService, private manageFriendsService: ManageFriendsService) {}
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event?: Event): void {
+    this.isLargeScreen = window.innerWidth > 1500;
+  }
+
+  ngOnInit() {
+    this.onResize(); // Check initial screen size
+  }
  
   async requestFriend(action: string, req: boolean): Promise<void> {
     try {

@@ -6,10 +6,18 @@
   <div class="main-content">
     <div class="header">
       <h1>YOUR FRIENDS</h1>
-      <button mat-raised-button color="accent" class="fixed-fab" (click)="openLinkModal()">
-        <mat-icon class="add-icon">share</mat-icon>
-        Share Friendcode
-      </button>
+      <div class="header-buttons">
+        <button mat-stroked-button class="small-screen-button" (click)="viewProfile()">
+          <mat-icon>
+            arrow_forward_ios
+          </mat-icon>
+          View Profile
+        </button>
+        <button mat-raised-button color="accent" class="fixed-fab" (click)="openLinkModal()">
+          <mat-icon class="add-icon">share</mat-icon>
+          Share Friendcode
+        </button>
+      </div>
     </div>
     <mat-tab-group>
       <mat-tab label="Friends/Suggestions">

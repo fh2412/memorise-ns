@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -35,6 +35,7 @@ import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinne
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
+import { AuthInterceptor } from './services/auth.interceptor';
 
 @NgModule({
     declarations: [
@@ -70,6 +71,15 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
         GoogleMapsModule,
         FriendsPreviewModule,
         MatCheckboxModule],
-    providers: [provideNativeDateAdapter(), { provide: DateAdapter, useClass: MatNativeDateModule }, provideHttpClient(withInterceptorsFromDi()),]
+    providers: [
+        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: MatNativeDateModule },
+        provideHttpClient(withInterceptorsFromDi()),
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+    ]
 })
 export class AppModule { }

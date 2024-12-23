@@ -68,11 +68,7 @@ export class LoginComponent implements OnInit {
   }
 
   private handleLoginSuccess(): void {
-    console.log("setting localstorage!");
     localStorage.setItem('isFirstTimeUser', 'false');
-    console.log(localStorage.getItem('isFirstTimeUser') === 'true');
-
-
     const redirectUrl = localStorage.getItem('redirectUrl') || '/';
     localStorage.removeItem('redirectUrl');
     this.router.navigate([redirectUrl]);

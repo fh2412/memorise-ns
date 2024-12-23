@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { catchError, from, Observable, of, throwError } from 'rxjs';
+import { catchError, from, Observable, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +10,8 @@ import { catchError, from, Observable, of, throwError } from 'rxjs';
 export class AuthenticationService {
 
   constructor(
-    private auth: AngularFireAuth
+    private auth: AngularFireAuth,
+    private http: HttpClient
   ) { }
 
   signIn(params: SignIn): Observable<any> {
@@ -21,14 +24,11 @@ export class AuthenticationService {
     );
   }
 
+
+  private apiUrl = 'http://localhost:3000/api/users';
   registerNew(params: SignIn): Observable<any> {
-    return from(this.auth.createUserWithEmailAndPassword(
-      params.email, params.password
-    )).pipe(
-      catchError((error: FirebaseError) => 
-        throwError(() => new Error(this.translateFirebaseErrorMessage(error)))
-      )
-    );
+    const body = { email: params.email, password: params.password };
+    return this.http.post<any>(`${this.apiUrl}`, body);
   }
 
   recoverPassword(email: string): Observable<void> {

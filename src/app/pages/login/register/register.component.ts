@@ -2,7 +2,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserService } from '../../../services/userService';
 import { Router } from '@angular/router';
 
 @Component({
@@ -22,7 +21,6 @@ export class RegisterComponent {
     private fb: FormBuilder,
     private authenticationService: AuthenticationService,
     private snackBar: MatSnackBar,
-    private userService: UserService,
     private router: Router,
   ) {
     this.registerForm = this.fb.group({
@@ -50,11 +48,11 @@ export class RegisterComponent {
 
       this.authenticationService.registerNew({ email, password }).subscribe({
         next: () => {
-          this.createUser(email);
+          this.isFirstTimeUser = true
         },
         error: (error) => {
           this.toggleSigningIn(false);
-          this.snackBar.open(error.message, 'OK', { duration: 5000 });
+          this.snackBar.open('Email is already in use.', 'OK', { duration: 5000 });
         }
       });
     }
@@ -63,46 +61,16 @@ export class RegisterComponent {
   private toggleSigningIn(state: boolean): void {
     this.isSigningIn = state;
   }
-
-  handleFirstTimeUser(): void {
-    const { email } = this.registerForm.value;
-    this.userService.getUserByEmail(email).subscribe({
-      next: () => {
-        // Email exists
-        this.snackBar.open('Email is already in use.', 'OK', { duration: 5000 });
-      },
-      error: (error) => {
-        if (error.status === 404) {
-          // Email does not exist
-          this.isFirstTimeUser = true;
-        } else {
-          // Handle other errors (e.g., network issues)
-          this.snackBar.open('An unexpected error occurred.', 'OK', { duration: 5000 });
-          console.error(error);
-        }
-      }
-    });
-  }
   
-
   closeWelcomePage(): void {
-    this.createUser(this.email);
-    this.isFirstTimeUser = false;
-  }
-
-  private createUser(email: string): void {
-    this.userService.createUser(email).subscribe({
-      next: (response) => {
+    this.authenticationService.signIn(this.registerForm.value).subscribe({
+      next: () => {
         this.toggleSigningIn(false);
         this.snackBar.open('Registration successful!', 'OK', { duration: 5000 });
         this.router.navigate(['/home']);
-        console.log('User created successfully:', response);
+        this.isFirstTimeUser = false;
       },
-      error: (error) => {
-        this.toggleSigningIn(false);
-        console.error('Error creating user:', error);
-        this.snackBar.open('Failed to complete registration. Please try again.', 'OK', { duration: 5000 });
-      }
+      error: (error) => console.log(error, 'Login failed.')
     });
   }
 }

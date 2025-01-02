@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit {
     const user = await firstValueFrom(this.afAuth.authState);
     if (!user?.email) throw new Error('No authenticated user found');
 
-    this.userdb = await firstValueFrom(this.userService.getUserByEmail(user.email));
+    this.userdb = await firstValueFrom(this.userService.getUser(user.uid));
     if (this.userdb?.user_id) {
       this.userService.setLoggedInUserId(this.userdb.user_id);
     }

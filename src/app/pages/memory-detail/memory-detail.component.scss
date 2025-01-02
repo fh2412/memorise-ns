@@ -58,6 +58,7 @@ h1 {
   @include mixins.profile-pic();
   width: 50px;
   margin-right: 0.5rem;
+  margin-top: 0.2rem;
 }
 
 .image-size {

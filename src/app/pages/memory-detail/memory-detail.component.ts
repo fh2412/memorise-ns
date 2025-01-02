@@ -69,8 +69,9 @@ export class MemoryDetailComponent {
       
       const friendsData = await this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId).toPromise();
       this.memorydbFriends = friendsData.length ? friendsData : null;
-
-      const memoryCreator = await this.userService.getUser(this.loggedInUserId).toPromise();
+      console.log("Memories Friends: ", this.memorydbFriends);
+    
+      const memoryCreator = await this.userService.getUser(this.memorydb.user_id.toString()).toPromise();
       if (memoryCreator.length !== 0) this.memoryCreator = memoryCreator;
 
     } catch (error) {

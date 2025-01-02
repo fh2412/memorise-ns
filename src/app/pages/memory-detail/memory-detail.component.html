@@ -98,8 +98,8 @@
           <!-- Profile Picture Column -->
           <ng-container matColumnDef="profilePicture">
             <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
-            <td mat-cell *matCellDef="let user"> <img [src]="user.profilePicture || '/assets/img/1.png'"
-                alt="Profile Picture" width="30" height="30" class="profile"></td>
+            <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
+                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
           </ng-container>
 
           <!-- Name Column -->

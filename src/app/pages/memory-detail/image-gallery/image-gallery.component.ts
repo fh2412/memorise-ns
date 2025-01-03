@@ -39,16 +39,17 @@ export class ImageGalleryComponent implements OnInit {
     const portraitStack = [...this.portraitPictures];
     let alternateLayout = true;
 
-    while (landscapeStack.length || portraitStack.length) {
+    while (landscapeStack.length > 0 || portraitStack.length > 0) {
       if (portraitStack.length >= 1 && landscapeStack.length >= 2) {
         layouts.push(this.createLayout(alternateLayout ? 3 : 4, portraitStack, landscapeStack));
         alternateLayout = !alternateLayout;
       } else if (portraitStack.length >= 2) {
-        layouts.push(this.createLayout(2, portraitStack));
+        layouts.push(this.createLayout(2, portraitStack, ["place", "holder"]));
       } else if (landscapeStack.length >= 1) {
-        layouts.push(this.createLayout(1, landscapeStack));
+        layouts.push(this.createLayout(1, ["place", "holder"], landscapeStack));
       } else {
         layouts.push(this.createPlaceholderLayout(portraitStack, landscapeStack));
+        break;
       }
     }
 
@@ -56,22 +57,22 @@ export class ImageGalleryComponent implements OnInit {
     return layouts;
   }
 
-  private createLayout(type: number, portraitStack: string[], landscapeStack?: string[]): any {
+  private createLayout(type: number, portraitStack: string[], landscapeStack: string[]): any {
     if (type === 3 || type === 4) {
       return {
         type,
         portrait: portraitStack.length > 0 ? [portraitStack.shift()!] : [this.placeholderImage],
-        landscapes: landscapeStack?.length ? [landscapeStack.shift()!, landscapeStack.shift()!] : [this.placeholderImage, this.placeholderImage]
+        landscapes: landscapeStack.length > 1 ? [landscapeStack.shift()!, landscapeStack.shift()!] : [this.placeholderImage, this.placeholderImage]
       };
     } else if (type === 2) {
       return {
         type,
         portraits: portraitStack.length > 1 ? [portraitStack.shift()!, portraitStack.shift()!] : [this.placeholderImage, this.placeholderImage]
       };
-    } else {
+    } else if (type === 1) {
       return {
         type,
-        landscapes: landscapeStack?.length ? [landscapeStack.shift()!] : [this.placeholderImage]
+        landscapes: landscapeStack.length > 0 ? [landscapeStack.shift()!] : [this.placeholderImage]
       };
     }
   }

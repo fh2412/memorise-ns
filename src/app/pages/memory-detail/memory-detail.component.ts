@@ -69,7 +69,6 @@ export class MemoryDetailComponent {
       
       const friendsData = await this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId).toPromise();
       this.memorydbFriends = friendsData.length ? friendsData : null;
-      console.log("Memories Friends: ", this.memorydbFriends);
     
       const memoryCreator = await this.userService.getUser(this.memorydb.user_id.toString()).toPromise();
       if (memoryCreator.length !== 0) this.memoryCreator = memoryCreator;
@@ -84,7 +83,6 @@ export class MemoryDetailComponent {
     this.selectedDate = new Date(this.memorydb.memory_date);
     this.endDate = new Date(this.memorydb.memory_end_date);
     this.dateRange = new DateRange(this.selectedDate, this.endDate);
-    console.log(this.dateRange);
     this.getImages(this.memorydb.image_url);
     this.fetchLocationData(this.memorydb.location_id);
   }
@@ -118,7 +116,6 @@ export class MemoryDetailComponent {
   private getImages(imageId: string): void {
     const storage = getStorage();
     const listRef = ref(storage, `memories/${imageId}`);
-
     listAll(listRef).then((res) => {
       res.items.forEach((itemRef) => {
         getDownloadURL(ref(storage, itemRef.fullPath))

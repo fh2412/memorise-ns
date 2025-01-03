@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
-import JSZip from 'jszip';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-import { saveAs } from 'file-saver';
 import { ImageWithMetadata } from '../pages/memory-detail/memory-detail.component';
 import { HttpClient } from '@angular/common/http';
 
@@ -18,7 +16,7 @@ export class ImageGalleryService {
 
   // Method to update the data
   updateImageData(images: ImageWithMetadata[]) {
-    this.imageDataSource.next(images); // Update the BehaviorSubject with new data
+    this.imageDataSource.next(images);
   }
 
   downloadImage(url: string): Promise<Blob> {

@@ -112,6 +112,7 @@ export class ImageUploadComponent implements OnInit {
 
   removeImage(index: number): void {
     this.previews.splice(index, 1);
+    this.imageFileWithDimensions.splice(index, 1);
     if (this.previews.length === 0) {
       this.selectedFiles = [];
     }

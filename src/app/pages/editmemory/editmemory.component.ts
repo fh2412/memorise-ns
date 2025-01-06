@@ -158,7 +158,9 @@ export class EditmemoryComponent {
         this.memoryForm.value.memory_end_date = this.memoryForm.value.memory_date;
       }
       await this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).toPromise();
-      await this.updateFriends();
+      if (this.friendsToAdd.length > 0 || this.friendsToDelete.length > 0) {
+        await this.updateFriends();
+      }
       this.router.navigate(['/home']);
     } catch (error) {
       console.error('Error updating memory:', error);

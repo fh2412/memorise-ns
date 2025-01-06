@@ -24,19 +24,19 @@ export class QuickActivityAutocompleteComponent {
 
   states: Activity[] = [
     {
-      id: 2,
+      id: 1,
       name: 'Hiking',
       icon: 'hiking',
       genre: 'Sports',
     },
     {
-      id: 3,
+      id: 2,
       name: 'Vacation',
       icon: 'beach_access',
       genre: 'Free time',
     },
     {
-      id: 4,
+      id: 3,
       name: 'Party',
       icon: 'cake',
       genre: 'Free time',

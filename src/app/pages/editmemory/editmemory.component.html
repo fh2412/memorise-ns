@@ -2,12 +2,10 @@
     <div>
         <h1>EDIT MEMORY</h1>
     </div>
-    <div class="actions">
+    <div>
+        <app-back-button></app-back-button>
         <button mat-flat-button color="primary" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-        <button mat-flat-button class="discard"
-            (click)="confirmDeletion('DISCARD')"><mat-icon>close</mat-icon>DISCARD</button>
-        <button mat-flat-button color="warn"
-            (click)="confirmDeletion('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
+        <button mat-flat-button color="warn" (click)="confirmDeletion('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 

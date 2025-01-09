@@ -148,10 +148,6 @@ export class EditmemoryComponent {
     }
   }
 
-  goToHome(): void {
-    this.router.navigate(['/home']);
-  }
-
   async saveChanges(): Promise<void> {
     try {
       if(this.memoryForm.value.memory_end_date == null){
@@ -303,9 +299,6 @@ export class EditmemoryComponent {
         },
         error => console.error('Error checking pinned memory:', error)
       );
-    }
-    else if (confirmed && status === 'DISCARD'){
-      this.goToHome();
     }
   }
 

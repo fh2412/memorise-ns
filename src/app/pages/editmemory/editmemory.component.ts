@@ -106,16 +106,16 @@ export class EditmemoryComponent {
   loadFriends(): Promise<void> {
     return new Promise((resolve, reject) => {
       if(this.loggedInUserId != null){
-      this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
-        response => {
-          this.friends = response;
-          resolve();
-        },
-        error => {
-          console.error('Error getting friends:', error);
-          reject(error);
-        }
-      );
+        this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
+          response => {
+            this.friends = response;
+            resolve();
+          },
+          error => {
+            console.error('Error getting friends:', error);
+            reject(error);
+          }
+        );
       }
     });  
   }

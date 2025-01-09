@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 
 export interface Country {
   name: string;
   flag: string;
   region: string;
+}
+
+export interface Geocords {
+  lat: number;
+  long: number;
 }
 
 @Injectable({
@@ -26,4 +31,26 @@ export class CountryService {
         }) as Country)) 
       );
   }
+
+  getCountriesGeocords(countryname: string): Observable<Geocords[]> {
+    return this.http.get<any>(`https://restcountries.com/v3.1/name/${countryname}?fields=latlng`)
+      .pipe(
+        map(countries => countries.map((country: { latlng: number[] }) => ({
+          lat: country.latlng[0],
+          long: country.latlng[1]
+        }) as Geocords))
+      );
+  }
+
+  getCountryGeocordsByUserId(userId: string): Observable<Geocords[]> {
+    return this.http.get<any>(`http://localhost:3000/api/users/country/${userId}`)
+      .pipe(
+        switchMap(countryResponse => {
+          const countryName = countryResponse.country; // Assume the response contains a 'country' field
+          return this.getCountriesGeocords(countryName); // Reuse the existing method to get geocoordinates
+        })
+      );
+  }
+  
+  
 }

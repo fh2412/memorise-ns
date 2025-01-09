@@ -1,5 +1,5 @@
 <h2 mat-dialog-title>Update User Data</h2>
-<form [formGroup]="userForm" (ngSubmit)="saveChanges()">
+<form [formGroup]="userForm" (ngSubmit)="saveChanges()" *ngIf="countries">
   <mat-dialog-content class="dialog-content">
     <mat-form-field class="full-width" appearance="outline">
       <mat-label>Name</mat-label>
@@ -23,12 +23,30 @@
       <mat-select formControlName="gender">
         <mat-option value="Male">Male</mat-option>
         <mat-option value="Female">Female</mat-option>
+        <mat-option value="Divers">Divers</mat-option>
       </mat-select>
     </mat-form-field>
     <br>
-    <mat-form-field class="full-width" appearance="outline">
+    <!--<mat-form-field class="full-width" appearance="outline">
       <mat-label>Country</mat-label>
       <input matInput placeholder="Austria" formControlName="country">
+    </mat-form-field>-->
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Country</mat-label>
+      <input matInput
+             aria-label="State"
+             [matAutocomplete]="auto"
+             formControlName="country"
+             >
+      <mat-autocomplete #auto="matAutocomplete">
+        @for (country of filteredCountries | async; track country) {
+          <mat-option [value]="country.name">
+            <mat-icon>{{country.flag}}</mat-icon>
+            <span>{{country.name}}</span> |
+            <small>{{country.region}}</small>
+          </mat-option>
+        }
+      </mat-autocomplete>
     </mat-form-field>
     <br>
     <mat-form-field class="full-width" appearance="outline">

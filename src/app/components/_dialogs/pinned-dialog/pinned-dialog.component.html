@@ -1,38 +1,59 @@
-<h1 mat-dialog-title>Edit pinned memories</h1>
+<h1 mat-dialog-title>Edit Pinned Memories</h1>
+
 <mat-dialog-content>
-  <p>Select up to {{selectableCount}} of your favorite memories</p>
+  <p>Select up to {{ maxSelectableCount }} of your favorite memories</p>
 
+  <!-- Favorite Memories Section -->
   <h2>Favorite Memories</h2>
-  <mat-list *ngIf="favoriteMemories.length > 0">
-    <mat-list-item *ngFor="let memory of favoriteMemories">
-      <mat-checkbox [(ngModel)]="memory.isFavorite" (change)="updateSelection(memory, $event)">
-        {{ memory.name }}
-      </mat-checkbox>
-    </mat-list-item>
-  </mat-list>
+  <ng-container *ngIf="favoriteMemories.length > 0; else noFavorites">
+    <mat-list>
+      <mat-list-item *ngFor="let memory of favoriteMemories">
+        <mat-checkbox
+          [(ngModel)]="memory.isFavorite"
+          (change)="updateSelection(memory, memory.isFavorite)">
+          {{ memory.name }}
+        </mat-checkbox>
+      </mat-list-item>
+    </mat-list>
+  </ng-container>
+  <ng-template #noFavorites>
+    <p>No favorite memories selected.</p>
+  </ng-template>
 
-  <p *ngIf="favoriteMemories.length === 0">No favorite memories selected.</p>
+  <mat-divider></mat-divider>
 
+  <!-- All Memories Section -->
   <div class="flex-space-between">
     <h2>All Memories</h2>
     <mat-form-field appearance="outline" class="stretch">
-      <mat-label>Search Memories</mat-label>
-      <input matInput [(ngModel)]="searchText" (keyup)="updateSearch($event)">
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        (keyup)="updateSearch(searchText)"
+        placeholder="Search memories...">
     </mat-form-field>
   </div>
-  <mat-list *ngIf="allMemories.length > 0">
-    <mat-list-item *ngFor="let memory of allMemories">
-      <mat-checkbox [(ngModel)]="memory.isFavorite" [disabled]="selectedCount >= selectableCount && !memory.isFavorite"
-        (change)="updateSelection(memory, $event)">
-        {{ memory.name }}
-      </mat-checkbox>
-    </mat-list-item>
-  </mat-list>
 
-  <p *ngIf="allMemories.length === 0 && searchText === ''">No memories found.</p>
-  <p *ngIf="allMemories.length === 0 && searchText !== ''">No memories match your search.</p>
+  <ng-container *ngIf="allMemories.length > 0; else noAllMemories">
+    <mat-list>
+      <mat-list-item *ngFor="let memory of filteredMemories">
+        <mat-checkbox
+          [(ngModel)]="memory.isFavorite"
+          [disabled]="selectedCount >= maxSelectableCount && !memory.isFavorite"
+          (change)="updateSelection(memory, memory.isFavorite)">
+          {{ memory.name }}
+        </mat-checkbox>
+      </mat-list-item>
+    </mat-list>
+  </ng-container>
+  
+  <ng-template #noAllMemories>
+    <p *ngIf="searchText === ''">No memories found.</p>
+    <p *ngIf="searchText !== ''">No memories match your search.</p>
+  </ng-template>
 </mat-dialog-content>
-<mat-dialog-actions>
+
+<mat-dialog-actions align="end">
   <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-button [disabled]="!hasChangesBool" (click)="onSave()">Save</button>
+  <button mat-button color="primary" [disabled]="!hasChangesFlag" (click)="onSave()">Save</button>
 </mat-dialog-actions>

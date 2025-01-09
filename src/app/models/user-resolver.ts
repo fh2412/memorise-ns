@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserService } from '../services/userService';
@@ -13,11 +13,14 @@ export class UserResolver implements Resolve<any> {
 
   resolve(route: ActivatedRouteSnapshot): Observable<any> {
     const userId = route.paramMap.get('userId');
-    
-    if (!userId) {
+    const loggedInUserId = this.userService.getLoggedInUserId();
+
+
+    if (!userId || userId != loggedInUserId) {
       this.router.navigate(['/home']);
       return of(null);
     }
+
 
     return this.userService.getUser(userId).pipe(
       map(user => {

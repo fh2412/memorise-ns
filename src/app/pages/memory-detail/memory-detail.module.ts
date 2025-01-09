@@ -14,7 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { BackButtonModule } from "../../components/back-button/back-button.module";
 import { MatToolbarModule } from '@angular/material/toolbar';
-import {MatTableModule} from '@angular/material/table'; 
+import {MatTableModule} from '@angular/material/table';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
     MatButtonModule,
     BackButtonModule,
     MatToolbarModule,
-    MatTableModule
+    MatTableModule,
+    MatProgressSpinnerModule
 ]
 })
 export class MemoryModule { }

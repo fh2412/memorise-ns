@@ -7,29 +7,39 @@ import { MatDatepicker } from '@angular/material/datepicker';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
 import { LocationService } from '../../services/location.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-adding-memory',
   templateUrl: './adding-memory.component.html',
-  styleUrl: './adding-memory.component.scss'
+  styleUrls: ['./adding-memory.component.scss']
 })
-export class AddingMemoryComponent {  
+export class AddingMemoryComponent implements OnInit {  
   
-  @ViewChild('datepicker') datepicker: MatDatepicker<any> | undefined;
-  @ViewChild('rangePicker') rangePicker: MatDatepicker<any> | undefined;
-
+  @ViewChild('datepicker') datepicker?: MatDatepicker<Date>;
+  @ViewChild('rangePicker') rangePicker?: MatDatepicker<Date>;
 
   isRangeSelected = false;
   memoryForm: FormGroup;
-  userId: string | null | undefined;
-  emailArray: any;
-  constructor(private formBuilder: FormBuilder, public dialog: MatDialog, public memoryService: MemoryService, private userService: UserService, private locationService: LocationService, private router: Router) {
+  userId: string = '';
+  emailArray: string[] = [];
+
+
+  constructor(
+    private formBuilder: FormBuilder,
+    public dialog: MatDialog,
+    private location: Location,
+    public memoryService: MemoryService,
+    private userService: UserService,
+    private locationService: LocationService,
+    private router: Router
+  ) {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId],
       title: ['', Validators.required],
       description: [''],
       firestore_bucket_url: [''],
-      memory_date: [null],
+      memory_date: [null, Validators.required],
       memory_end_date: [null],
       title_pic: [''],
       location_id: [''],
@@ -38,59 +48,56 @@ export class AddingMemoryComponent {
       l_country: [''],
       l_city: [''],
       l_postcode: [''],
+      quickActivityTitle: [''],
+      activity_id: [''],
     });
   }
+
   async ngOnInit() {
     await this.userService.userId$.subscribe((userId) => {
-      this.userId = userId;
+      if(userId){
+        this.userId = userId;
+      }
     });
     this.memoryForm.patchValue({ creator_id: this.userId });
+    const state = this.location.getState() as { quickActivity: string; activityId: number };
+    this.memoryForm.patchValue({ quickActivityTitle: state?.quickActivity });
+    this.memoryForm.patchValue({ activity_id: state?.activityId });
   }
 
-  onSelectedValuesChange(selectedValues: string[]) {
-    this.emailArray = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
+  onSelectedValuesChange(selectedValues: string[]): void {
+    this.emailArray = selectedValues
+      .map(str => str.match(/\(([^)]+)\)/)?.[1] || '')
+      .filter(email => email);
   }
-
-
-  mapCenter: google.maps.LatLng= new google.maps.LatLng(47.5, 14.2);
-
-  mapOptions: google.maps.MapOptions = {
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    zoomControl: true,
-    scrollwheel: true,
-    disableDoubleClickZoom: true,
-    maxZoom: 20,
-    minZoom: 4,
-    streetViewControl: false,
-  };
-
-  formattedAddress: any;
-
 
   openMapDialog(): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { mapCenter: this.mapCenter },
+      data: { lat: 47.2, long: 47.2 },
       width: '500px',
       height: '542px'
     });
   
     dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const address = result[0].address_components;
-        this.memoryForm.patchValue({
-          l_city: this.locationService.getAddressComponents(address, 'long', 'locality'),
-          l_postcode: this.locationService.getAddressComponents(address, 'long', 'postal_code'),
-          l_country: this.locationService.getAddressComponents(address, 'long', 'country'),
-        });
-        this.memoryForm.patchValue({
-          lat: result[1].lat,
-          lng: result[1].lng,
-        });
+      if (result && result[0]?.address_components && result[1]?.lat && result[1]?.lng) {
+        this.patchLocationData(result[0].address_components, result[1].lat, result[1].lng);
+      } else {
+        console.error("Incomplete location data received from map dialog.");
       }
     });
   }
 
-  cancelCreation(): void{
+  private patchLocationData(addressComponents: any, lat: number, lng: number): void {
+    this.memoryForm.patchValue({
+      l_city: this.locationService.getAddressComponents(addressComponents, 'long', 'locality'),
+      l_postcode: this.locationService.getAddressComponents(addressComponents, 'long', 'postal_code'),
+      l_country: this.locationService.getAddressComponents(addressComponents, 'long', 'country'),
+      lat,
+      lng
+    });
+  }
+
+  cancelCreation(): void {
     this.router.navigate(['/home']);
   }
 }

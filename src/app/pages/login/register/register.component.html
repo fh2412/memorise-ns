@@ -44,4 +44,4 @@
         </button>
     </div>
 </form>
-<app-welcome-page *ngIf="isFirstTimeUser" [email]="this.registerForm.value.email" [password]="this.registerForm.value.password"></app-welcome-page>
+<app-welcome-page *ngIf="isFirstTimeUser" (closeWelcomePage)="closeWelcomePage()"></app-welcome-page>

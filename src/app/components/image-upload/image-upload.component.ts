@@ -4,6 +4,8 @@ import { FileUploadService } from '../../services/file-upload.service';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/userService';
+import { MemoryFormData } from '../../models/memoryInterface.model';
 
 export interface ImageFileWithDimensions {
   file: File;
@@ -18,16 +20,15 @@ export interface ImageFileWithDimensions {
 })
 
 export class ImageUploadComponent implements OnInit {
-  @Input() userId: any = '';
+  @Input() userId: string = '';
   @Input() memoryId: string = '';
-  @Input() memoryData: any;
-  @Input() friends_emails: any;
+  @Input() memoryData: MemoryFormData | null = null;
+  @Input() friends_emails: string[] = [];
   @Input() picture_count: number = 0;
   @Input() googleStorageUrl: String = "";
 
 
-  selectedFiles: any[] = [];
-  progressInfos: any[] = [];
+  selectedFiles: File[] = [];
 
   previews: string[] = [];
   imageInfos?: Observable<any>;
@@ -37,10 +38,25 @@ export class ImageUploadComponent implements OnInit {
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router) { }
+  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router, private userService: UserService) { }
+
+  async ngOnInit(): Promise<void> {
+    this.imageInfos = this.uploadService.getFiles();
+    if (this.picture_count == 0) {
+      this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+    }
+    if(this.userId == undefined){
+      await this.userService.userId$.subscribe((userId) => {
+        if(userId){
+          this.userId = userId;
+        }
+      });
+    }
+  }
 
   selectFiles(event: any): void {
-    this.progressInfos = [];
+    console.log("Memory Data", this.memoryData);
+
     const newFiles = event.target.files;
   
     // Combine existing files with new ones (if applicable)
@@ -94,16 +110,9 @@ export class ImageUploadComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
-    this.imageInfos = this.uploadService.getFiles();
-    if (this.picture_count == 0) {
-      this.googleStorageUrl = this.userId.toString() + Date.now().toString();
-      console.log("New Memory");
-    }
-  }
-
   removeImage(index: number): void {
     this.previews.splice(index, 1);
+    this.imageFileWithDimensions.splice(index, 1);
     if (this.previews.length === 0) {
       this.selectedFiles = [];
     }

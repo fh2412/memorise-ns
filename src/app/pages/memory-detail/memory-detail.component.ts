@@ -8,6 +8,11 @@ import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '../../services/image-gallery.service';
+import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { Memory } from '../../models/memoryInterface.model';
+import { Friend, MemoriseUser } from '../../models/userInterface.model';
+import { MemoriseLocation } from '../../models/location.model';
+import { ActivityService } from '../../services/activity.service';
 
 
 export interface ImageWithMetadata {
@@ -23,97 +28,71 @@ export interface ImageWithMetadata {
   styleUrl: 'memory-detail.component.scss'
 })
 export class MemoryDetailComponent {
-  memorydb: any;
-  memoryID: any;
-  memoryCreator: any;
-  loggedInUserId: string | any;
-  memorydbFriends: any;
+  memorydb!: Memory;
+  memoryID: number = 0;
+  memoryCreator!: MemoriseUser;
+  loggedInUserId: string | null = null;
+  memorydbFriends: Friend[] | null = [];
   selectedDate = new Date(2024, 1, 1);
   endDate = new Date(2024, 1, 1);
-  dateRange: any;
-  location: any;
+  dateRange!: DateRange<Date>;
+  location: MemoriseLocation | null = null;
+  activity: string = 'Activity';
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
+  isLoading: boolean = false;
   showMore: boolean = false;
   truncatedDescription: string = '';
   characterLimit: number = 150;
   imagesWithMetadata: ImageWithMetadata[] = [];
 
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService) { }
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private activityService: ActivityService) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
-    this.route.params.subscribe(params => {
-      this.memoryID = params['id'];
-    });
+    this.memoryID = this.route.snapshot.params['id'];
     await this.getMemoryInfo();
   }
 
-  getMemoryInfo(): void {
-    const memoryObs = this.memoryService.getMemory(this.memoryID);
-    const friendsObs = this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId);
-    const memoryCreatorObs = this.userService.getUser(this.loggedInUserId);
+  private async getMemoryInfo(): Promise<void> {
+    if (!this.loggedInUserId) return;
 
+    try {
+      const memoryData = await this.memoryService.getMemory(this.memoryID).toPromise();
+      this.memorydb = memoryData;
 
-    memoryObs.subscribe(
-      (memoryData) => {
-        this.memorydb = memoryData;
-        this.truncateDescription();
-        this.selectedDate = new Date(this.memorydb.memory_date);
-        this.endDate = new Date(this.memorydb.memory_end_date);
-        this.dateRange = new DateRange(this.selectedDate, this.endDate);
-        this.getImages(this.memorydb.image_url);
-        const locationObs = this.locationService.getLocationById(this.memorydb.location_id);
-        locationObs.subscribe(
-          (locationData) => {
-            if (locationData.length === 0) {
-              this.location = null;
-            } else {
-              this.location = locationData;
-            }
-          },
-          (error: any) => {
-            console.error('Error fetching friends data:', error);
-          }
-        )
+      await this.initializeMemoryDetails();
+      const activityData = await this.activityService.getActivity(this.memorydb.activity_id).toPromise();
+      this.activity = activityData.title;
+      
+      const friendsData = await this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId).toPromise();
+      this.memorydbFriends = friendsData.length ? friendsData : null;
+    
+      const memoryCreator = await this.userService.getUser(this.memorydb.user_id.toString()).toPromise();
+      if (memoryCreator.length !== 0) this.memoryCreator = memoryCreator;
+
+    } catch (error) {
+      console.error('Error fetching memory data:', error);
+    }
+  }
+
+  private initializeMemoryDetails(): void {
+    this.truncateDescription();
+    this.selectedDate = new Date(this.memorydb.memory_date);
+    this.endDate = new Date(this.memorydb.memory_end_date);
+    this.dateRange = new DateRange(this.selectedDate, this.endDate);
+    this.getImages(this.memorydb.image_url);
+    this.fetchLocationData(this.memorydb.location_id);
+  }
+
+  private fetchLocationData(locationId: number): void {
+    this.locationService.getLocationById(locationId).subscribe(
+      (locationData) => {
+        this.location = locationData.location_id === 1 ? null : locationData;
       },
-      (error: any) => {
-        console.error('Error fetching memory data:', error);
-      }
-    );
-
-    friendsObs.subscribe(
-      (friendsData) => {
-        if (friendsData.length === 0) {
-          // Set a default value when there are no friends
-          this.memorydbFriends = 1;
-          console.log("Friends: ", this.memorydbFriends);
-
-        } else {
-          this.memorydbFriends = friendsData;
-          console.log("Friends: ", this.memorydbFriends);
-        }
-      },
-      (error: any) => {
-        console.error('Error fetching friends data:', error);
-        // Set an error message or handle the error as needed
-        this.memorydbFriends = 'Error fetching friends data';
-      }
-    );
-
-    memoryCreatorObs.subscribe(
-      (userData) => {
-        if (userData.length === 0) {
-          this.memoryCreator = 'There is no creator for this memory';
-        } else {
-          this.memoryCreator = userData;
-        }
-      },
-      (error: any) => {
-        console.error('Error fetching memories creator:', error);
-      }
+      (error: Error) => console.error('Error fetching location data:', error)
     );
   }
 
@@ -126,66 +105,56 @@ export class MemoryDetailComponent {
     }
   }
 
-  get displayImages() {
+  get displayImages(): ImageWithMetadata[] {
     const imagesToShow = [...this.imagesWithMetadata];
-    // Add placeholder entries until the array has exactly 5 items
     while (imagesToShow.length < 5) {
-      imagesToShow.push({
-        url: '../../../assets/img/placeholder_image.png',
-        width: 0,
-        height: 0
-      });
+      imagesToShow.push({ url: '../../../assets/img/placeholder_image.png', width: 0, height: 0 });
     }
     return imagesToShow;
   }
 
-  getImages(imageid: any) {
+  private getImages(imageId: string): void {
     const storage = getStorage();
-    const listRef = ref(storage, `memories/${imageid}`);
-
-    // Find all the prefixes and items.
-    listAll(listRef)
-      .then((res) => {
-        res.items.map((itemRef) =>
-          // First, get the download URL
-          getDownloadURL(ref(storage, itemRef.fullPath))
-            .then((url) => {
-              // Then, get the metadata for dimensions
-              return getMetadata(ref(storage, itemRef.fullPath)).then((metadata) => {
-                const width = parseInt(metadata.customMetadata?.['width'] || '0', 10);
-                const height = parseInt(metadata.customMetadata?.['height'] || '0', 10);
-
-                // Push both URL and dimensions into the object array
-                this.imagesWithMetadata.push({
-                  url: url,
-                  width: width,
-                  height: height
-                });
-              });
-            })
-            .catch((error) => {
-              console.error('Error fetching metadata or URL:', error);
-            })
-        );
-      })
-      .catch((error) => {
-        console.error('Error listing items:', error);
+    const listRef = ref(storage, `memories/${imageId}`);
+    listAll(listRef).then((res) => {
+      res.items.forEach((itemRef) => {
+        getDownloadURL(ref(storage, itemRef.fullPath))
+          .then((url) => getMetadata(ref(storage, itemRef.fullPath)).then((metadata) => {
+            this.imagesWithMetadata.push({
+              url,
+              width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
+              height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
+            });
+          }))
+          .catch((error) => console.error('Error fetching metadata or URL:', error));
       });
+    }).catch((error) => console.error('Error listing items:', error));
   }
 
   openGallery() {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
-    this.router.navigate(
-      ['memory', this.memoryID, 'gallery']
-    );
+    this.router.navigate(['memory', this.memoryID, 'gallery']);
   }
 
+  downloadZip(): void {
+    const confirmationData: ConfirmationDialogData = {
+      title: 'Download memories images?',
+      message: 'With clicking "YES" you start the download of this memories images',
+    };
 
-  openFullDescDialog() {
-    this.dialog.open(FullDescriptionDialogComponent, {
-      data: {
-        description: this.memorydb.text
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.isLoading = true; // Start loading
+        this.imageDataService.downloadZip(this.memorydb.image_url, this.memorydb.title).subscribe(() => {
+        this.isLoading = false; // Stop loading
+      });
       }
     });
+  }
+
+  openFullDescDialog(): void {
+    this.dialog.open(FullDescriptionDialogComponent, { data: { description: this.memorydb.text } });
   }
 }

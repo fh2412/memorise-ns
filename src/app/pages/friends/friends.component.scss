@@ -17,3 +17,17 @@
   width: 70%;
   align-items: center;
 }
+
+.small-screen-button{
+  display: none;
+  @media (max-width: 1366px) {
+    display: block;
+  }
+}
+
+.header-buttons{
+  display: flex;
+  button{
+    margin-left: 10px;
+  }
+}

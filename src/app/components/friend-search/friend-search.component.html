@@ -1,22 +1,49 @@
-<div class="search-container">
-    <mat-form-field appearance="outline">
-      <mat-label>Search Friends</mat-label>
-      <input matInput [(ngModel)]="searchTerm" type="text" placeholder="Enter friend name" (keyup.enter)="searchFriend()">
-    </mat-form-field>
-    <button mat-icon-button (click)="searchFriend()">
-      <mat-icon>search</mat-icon>
-    </button>
-</div>
-<div class="search-results" *ngIf="searchResults.length > 0">
-  <h2>Search Results</h2>
-  <mat-list style="width: 100%;">
-    <ng-container *ngFor="let friend of searchResults.slice(0, 5); let last = last">
-      <app-friend-preview [friend]="friend" [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-preview>
-      <mat-divider *ngIf="!last"></mat-divider>
-    </ng-container>
-  </mat-list>
-</div>
-<div class="no-results" *ngIf="searchResults.length === 0 && searchTerm && enter">
-  <p>No results found for your search.</p>
-</div>
-  
+<mat-card appearance="outlined">
+  <mat-card-header>
+    <mat-card-title>Friend Search</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="search-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Search Friends</mat-label>
+        <input 
+          matInput 
+          [(ngModel)]="searchTerm" 
+          type="text" 
+          placeholder="Enter friend name"
+          (keyup)="onSearchTermChange(searchTerm)">
+      </mat-form-field>
+      <button mat-icon-button (click)="searchFriend()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
+
+    <!-- Display error message if an error occurs -->
+    <div *ngIf="errorMessage" class="error-message">
+      <p>{{ errorMessage }}</p>
+    </div>
+
+    <!-- Search results section -->
+    <div class="search-results" *ngIf="searchResults.length > 0">
+      <h2>Search Results</h2>
+      <mat-list style="width: 100%;">
+        <ng-container *ngFor="let friend of searchResults.slice(0, 5); let last = last">
+          <mat-list-item class="list-item">
+          <app-friend-preview 
+            [friend]="friend" 
+            [buttonText]="'Request'" 
+            [requestedText]="'Requested'"
+            [buttonColor]="'primary'" 
+            [buttonIcon]="'person_add'">
+          </app-friend-preview></mat-list-item>
+          <mat-divider *ngIf="!last"></mat-divider>
+        </ng-container>
+      </mat-list>
+    </div>
+
+    <!-- No results message -->
+    <div class="no-results" *ngIf="searchResults.length === 0 && searchTerm && enter">
+      <p>No results found for your search.</p>
+    </div>
+  </mat-card-content>
+</mat-card>

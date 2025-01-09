@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewSelecorComponent } from './view-selecor.component';
+import { ViewSelectorComponent } from './view-selector.component';
 
 describe('ViewSelecorComponent', () => {
-  let component: ViewSelecorComponent;
-  let fixture: ComponentFixture<ViewSelecorComponent>;
+  let component: ViewSelectorComponent;
+  let fixture: ComponentFixture<ViewSelectorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ViewSelecorComponent]
+      declarations: [ViewSelectorComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(ViewSelecorComponent);
+    fixture = TestBed.createComponent(ViewSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

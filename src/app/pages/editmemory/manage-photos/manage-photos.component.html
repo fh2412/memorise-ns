@@ -1,9 +1,9 @@
 <div class="header">
-  <div>
+  <div class="headline">
     <h1>MANAGE PICTURES</h1>
   </div>
   <div class="actions">
-    <button mat-flat-button class="discard" (click)="goToHome()"><mat-icon>close</mat-icon>DISCARD</button>
+    <app-back-button></app-back-button>
     <button mat-flat-button color="warn" [disabled]="imagesToDelete.length==0" (click)="deleteImages()"><mat-icon>delete</mat-icon>Delete
       Selected</button>
   </div>
@@ -19,10 +19,10 @@
                   (mouseover)="hoverIndex = i" 
                   (mouseleave)="hoverIndex = null" 
                   (click)="onStar(i)" 
-                  style="position: absolute; top: 5px; right: 5px;">
+                  class="position-top-right">
             <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>
           </button>
-          <button mat-icon-button (click)="onDelete(image.url)" style="position: absolute; bottom: 5px; right: 5px;">
+          <button mat-icon-button (click)="onDelete(image.url)" class="position-bottom-right">
             <mat-icon>delete</mat-icon>
           </button>
         </div>

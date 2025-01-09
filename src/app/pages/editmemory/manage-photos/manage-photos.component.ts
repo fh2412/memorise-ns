@@ -1,114 +1,132 @@
-import { Component } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref } from 'firebase/storage';
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
+import { Location } from '@angular/common';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-manage-photos',
   templateUrl: './manage-photos.component.html',
   styleUrl: './manage-photos.component.scss'
 })
-export class ManagePhotosComponent {
+export class ManagePhotosComponent implements OnInit {
   imagesToDelete: string[] = [];
   imageUrl: string | null = null;
 
-  images: { url: string; isStarred: boolean }[] = []; // Array of image objects
-  starredIndex: number | null = null;  // To store the index of the starred image
-  hoverIndex: number | null = null;
+  images: { url: string; isStarred: boolean }[] = []; // Array of image objects with URL and star status
+  starredIndex: number | null = null;  // Index of the currently starred image
+  hoverIndex: number | null = null;    // Index of the currently hovered image
 
-  constructor(private route: ActivatedRoute, private fileService: FileUploadService, private router: Router, private memoryService: MemoryService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private fileService: FileUploadService,
+    private location: Location,
+    private memoryService: MemoryService,
+    private snackBar: MatSnackBar,
+
+  ) {}
 
   ngOnInit(): void {
+    // Retrieve imageUrl from route params
     this.route.paramMap.subscribe(params => {
       this.imageUrl = params.get('imageUrl');
+      this.getImages(this.imageUrl);
     });
-    this.getImages(this.imageUrl);
   }
 
+  /**
+   * Fetch images and metadata from Firebase and set up starred image.
+   * @param imageId The ID of the image folder in Firebase storage.
+   */
+  async getImages(imageId: string | null) {
+    if (!imageId) return;
+    const storage = getStorage();
+    const listRef = ref(storage, `memories/${imageId}`);
+    
+    try {
+      const res = await listAll(listRef);
+      for (const itemRef of res.items) {
+        const imageRef = ref(storage, itemRef.fullPath);
 
+        try {
+          const [url, metadata] = await Promise.all([
+            getDownloadURL(imageRef),
+            getMetadata(imageRef)
+          ]);
+
+          const isStarred = metadata.customMetadata?.['isStarred'] === 'true';
+          this.images.push({ url, isStarred });
+
+          if (isStarred) {
+            this.starredIndex = this.images.length - 1;
+          }
+        } catch (error) {
+          console.error("Error fetching URL or metadata:", error);
+        }
+      }
+    } catch (error) {
+      console.error("Error listing images:", error);
+    }
+  }
+
+  /**
+   * Set the specified image as starred and update on Firebase.
+   * @param index The index of the image to star.
+   */
   onStar(index: number) {
-    if(this.starredIndex != null){
+    if (this.starredIndex !== null) {
+      this.snackBar.open('Title Picutre changed!', 'Nice', { duration: 3000 });
       this.fileService.starImage(index, this.starredIndex, this.images[this.starredIndex].url, this.images[index].url);
       this.memoryService.updateTitlePic(this.imageUrl, this.images[index].url).subscribe();
       this.starredIndex = index;
     }
   }
-  
 
+  /**
+   * Mark image for deletion and remove from display list.
+   * @param imageUrl The URL of the image to delete.
+   */
   onDelete(imageUrl: string) {
-    // Find the image object based on the imageUrl
     const imageToDelete = this.images.find(item => item.url === imageUrl);
     
     if (imageToDelete) {
-      // Push the image URL to the array of images to delete
       this.imagesToDelete.push(imageToDelete.url);
-  
-      // Filter out the deleted image from the images array
       this.images = this.images.filter(item => item.url !== imageUrl);
-  
-      // Optional: If the deleted image was starred, reset starredIndex
+
       if (this.starredIndex !== null && this.images[this.starredIndex]?.url === imageUrl) {
-        this.starredIndex = null; // Reset the starred image if it was deleted
+        this.starredIndex = null;
       }
     }
   }
 
+  /**
+   * Remove image from delete list and restore it in display list.
+   * @param imageUrl The URL of the image to restore.
+   */
   removeFromDeleteList(imageUrl: string) {
-    // Find the image object based on the imageUrl in the delete list
     const imageToRestore = this.imagesToDelete.find(item => item === imageUrl);
   
     if (imageToRestore) {
-      // Push the full image object back to the images array
-      const restoredImage = { url: imageUrl, isStarred: false, path: '' }; // Adjust properties if needed
+      const restoredImage = { url: imageUrl, isStarred: false };
       this.images.push(restoredImage);
-  
-      // Remove the image from the imagesToDelete array
       this.imagesToDelete = this.imagesToDelete.filter(item => item !== imageUrl);
     }
-  }  
-
-  getImages(imageid: any) {
-    const storage = getStorage();
-  
-    // Create a reference under which you want to list
-    const listRef = ref(storage, `memories/${imageid}`);
-  
-    // Find all the prefixes and items.
-    listAll(listRef)
-      .then((res) => {
-        res.items.forEach((itemRef) => {
-          // Get the download URL and metadata
-          const imageRef = ref(storage, itemRef.fullPath);
-          getDownloadURL(imageRef).then((url) => {
-            // Fetch metadata including isStarred
-            getMetadata(imageRef).then((metadata) => {
-              const isStarred = metadata.customMetadata?.['isStarred'] === 'true';
-  
-              // Push the image URL and the isStarred flag
-              this.images.push({ url, isStarred });
-              
-              // Automatically set the starred index if this image is starred
-              if (isStarred) {
-                this.starredIndex = this.images.length - 1; // Set to the correct index
-              }
-            });
-          }).catch((error) => {
-            console.log(error);
-          });
-        });
-      }).catch((error) => {
-        console.log(error);
-      });
   }
-  
 
-  deleteImages(){
+  /**
+   * Delete all marked images permanently.
+   */
+  deleteImages() {
     this.fileService.deleteImages(this.imagesToDelete);
-    this.imagesToDelete=[];
+    this.imagesToDelete = [];
   }
 
+  /**
+   * Navigate to the home page.
+   */
   goToHome(): void {
-    this.router.navigate(['/home']);
+    this.location.back();
   }
 }

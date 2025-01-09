@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { FriendsService } from './friends.service';
-import { UserService } from './userService';
-
 @Injectable({
     providedIn: 'root'
 })
 export class ManageFriendsService {
-    loggedInUserId: any;
 
     constructor(private friendshipService: FriendsService) { }
 

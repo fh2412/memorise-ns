@@ -1,38 +1,40 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MemoryService } from '../../../services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-add-photos',
   templateUrl: './add-photos.component.html',
-  styleUrl: './add-photos.component.scss'
+  styleUrls: ['./add-photos.component.scss'] // Corrected to styleUrls for an array
 })
-export class AddPhotosComponent {
-
-  constructor(private memoryService: MemoryService, private activatedRoute: ActivatedRoute){}
-
-  memoryId: string = "1";
-  firebasePath: any;
+export class AddPhotosComponent implements OnInit {
+  memoryId: number = 1;
+  firebasePath: string = ''; // Type as string if you expect a URL string
   pictureCount: number = 0;
   loaded: boolean = false;
 
+  constructor(
+    private memoryService: MemoryService,
+    private activatedRoute: ActivatedRoute
+  ) {}
+
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {
-      this.memoryId = params['id'];
-      //console.log("MemoryId:", this.memoryId);
+      this.memoryId = +params['id'] || this.memoryId; // Ensures memoryId is a number
+      this.loadMemory();
     });
-    this.loadMemory();
   }
-  loadMemory() {
+
+  loadMemory(): void {
     this.memoryService.getMemory(this.memoryId).subscribe(
-      (response) => {
+      response => {
         this.firebasePath = response.image_url;
-        this.pictureCount = response.picture_count;
-        this.loaded=true;
-        console.log("Add memories count:", response);
+        this.pictureCount = response.picture_count || 0;
+        this.loaded = true;
+        console.log("Memory data loaded:", response);
       },
-      (error) => {
-        console.error('Error getting memory:', error);
+      error => {
+        console.error('Error loading memory:', error);
       }
     );
   }

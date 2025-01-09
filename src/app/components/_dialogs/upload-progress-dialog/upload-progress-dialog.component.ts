@@ -5,6 +5,8 @@ import { MemoryService } from '../../../services/memory.service';
 import { LocationService } from '../../../services/location.service';
 import { GeocodingService } from '../../../services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
+import { MemoryFormData } from '../../../models/memoryInterface.model';
+import { ActivityService } from '../../../services/activity.service';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -14,16 +16,17 @@ import { ImageFileWithDimensions } from '../../image-upload/image-upload.compone
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
   downloadURL: string | undefined;
-  originalCount: any = 0;
+  originalCount: number = 0;
   counter: number = 0;
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: any; friends_emails: any; picture_count: number; googleStorageUrl: string; starredIndex: number },
+    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: MemoryFormData; friends_emails: string[]; picture_count: number; googleStorageUrl: string; starredIndex: number },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
     private dialogRef: MatDialogRef<UploadProgressDialogComponent>,
     private geocodingService: GeocodingService,
+    private activityService: ActivityService
   ) {
     // Initialize progress array with zeros
     this.progress = Array(data.filesWithDimensions.length).fill(0);
@@ -68,7 +71,7 @@ export class UploadProgressDialogComponent implements OnInit {
       }
       else {
         this.originalCount = this.data.picture_count;
-        this.updatePicureCount(this.data.memoryId);
+        this.updatePictureCount(this.data.memoryId);
         this.dialogRef.close(this.data.googleStorageUrl);
       }
     } catch (error) {
@@ -78,89 +81,120 @@ export class UploadProgressDialogComponent implements OnInit {
   }
 
 
-  updatePicureCount(memoryId: string) {
-    const pictureCountData: any = {};
-    pictureCountData.picture_count = this.data.filesWithDimensions.length + this.originalCount;
-    this.originalCount = 0;
-    this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe(
-      (response) => {
-        console.log(response);
-      },
-      (error) => {
-        console.error('Error updating memory:', error);
-      }
-    );
+  updatePictureCount(memoryId: string): void {
+    const pictureCount = this.calculatePictureCount();
+    const pictureCountData = { picture_count: pictureCount };
+  
+    this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe({
+      next: (response) => console.log('Picture count updated successfully:', response),
+      error: (error) => console.error('Error updating picture count:', error),
+    });
   }
-
-  async createMemory() {
-    if (this.data.memoryData.valid) {
-      const memoryData = this.data.memoryData.value;
-      memoryData.firestore_bucket_url = this.data.googleStorageUrl;
-      memoryData.title_pic = this.downloadURL;
-      if (memoryData.memory_end_date == null) {
-        memoryData.memory_end_date = memoryData.memory_date;
-      }
-      if (memoryData.lat != '' && memoryData.lng != '') {
-        this.create_location(memoryData);
-      }
-      else {
-        if(memoryData.l_city || memoryData.l_country || memoryData.l_postcode){
-          const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
-          memoryData.lat = coords.lat.toString();
-          memoryData.lng = coords.lng.toString();
-          this.create_location(memoryData);
-        }
-        else{
-          memoryData.location_id = 1;
-          this.create_memory(memoryData);
-        }
-      }
-    } else {
-      // Handle form validation errors if needed
-      console.error('Form is not valid. Please fill in all required fields.');
-    }
-  }
-
-  create_memory(memoryData: any) {
-    this.memoryService.createMemory(memoryData).subscribe(
-      (response: { message: string, memoryId: any }) => {
-
-        const friendData = { emails: this.data.friends_emails, memoryId: response.memoryId[0]?.insertId };
-        console.log("Friends: ", friendData);
-        if (this.data.friends_emails) {
-          this.memoryService.addFriendToMemory(friendData).subscribe(
-            (friendResponse) => {
-              console.log('Friend added to memory successfully:', friendResponse);
-              // Handle success (e.g., show a success message to the user)
-            },
-            (friendError) => {
-              console.error('Error adding friend to memory:', friendError);
-              // Handle error (e.g., show an error message to the user)
-            }
-          );
-        }
-        this.updatePicureCount(response.memoryId[0]?.insertId);
-      },
-      (error) => {
-        console.error('Error creating memory:', error);
-        // Handle error (e.g., show an error message to the user)
-      }
-    );
+  
+  private calculatePictureCount(): number {
+    const currentCount = this.data.filesWithDimensions?.length || 0;
+    const totalCount = currentCount + this.originalCount;
+    this.originalCount = 0; // Reset original count
+    return totalCount;
   }
   
 
-  create_location(memoryData: any) {
-    this.locationService.createLocation(memoryData).subscribe(
-      (response: { message: string, locationId: any }) => {
-        console.log('Location added to memory successfully:', response.locationId[0]?.insertId);
-        memoryData.location_id = response.locationId[0]?.insertId;
-
-        this.create_memory(memoryData);
-      },
-      (locationResponse) => {
-        console.error('Error creating Location:', locationResponse);
+  async createMemory() {
+    try {
+      if (!this.data.memoryData) {
+        console.error('Form is not valid. Please fill in all required fields.');
+        return;
       }
-    );
+  
+      const memoryData = { ...this.data.memoryData };
+      memoryData.firestore_bucket_url = this.data.googleStorageUrl;
+      memoryData.title_pic = this.downloadURL || '';
+  
+      if (!memoryData.memory_end_date) {
+        memoryData.memory_end_date = memoryData.memory_date;
+      }
+  
+      if (memoryData.lat && memoryData.lng) {
+        memoryData.location_id = await this.handleLocationCreation(memoryData);
+        console.log("location created!: ", memoryData.location_id);
+      } else if (memoryData.l_city || memoryData.l_country || memoryData.l_postcode) {
+        const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
+        memoryData.lat = coords.lat.toString();
+        memoryData.lng = coords.lng.toString();
+        memoryData.location_id = await this.handleLocationCreation(memoryData);
+        console.log("location created address!: ", memoryData.location_id);
+      } else {
+        memoryData.location_id = '1';
+        console.log("location set to 1 ", memoryData.location_id);
+      }
+      console.log("Acitiviy: ", memoryData);
+      if(memoryData.activity_id==1){
+        console.log("Creating new Activity!");
+        memoryData.activity_id = await this.handleActivityCreation(memoryData);
+      }
+      console.log("activity created!: ", memoryData.activity_id);
+      await this.handleMemoryCreation(memoryData);
+      console.log("Memory Created!");
+    } catch (error) {
+      console.error('Error creating memory:', error);
+    }
+  }
+  
+  private handleLocationCreation(memoryData: MemoryFormData): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.locationService.createLocation(memoryData).subscribe(
+        (response: { locationId: any }) => resolve(response.locationId[0]?.insertId),
+        (error) => reject(`Error creating location: ${error}`)
+      );
+    });
+  }
+  
+  private handleActivityCreation(memoryData: MemoryFormData): Promise<number | null> {
+    return new Promise((resolve) => {
+      if (!memoryData.quickActivityTitle) {
+        resolve(null); // No activity creation needed
+        return;
+      }
+  
+      this.activityService.createQuickActivity(memoryData.quickActivityTitle).subscribe(
+        (response: { activityId: any }) => resolve(response.activityId[0]?.insertId),
+        (error) => {
+          console.error('Error creating quick activity:', error);
+          resolve(null); // Fail gracefully
+        }
+      );
+    });
+  }
+  
+  private handleMemoryCreation(memoryData: MemoryFormData): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.memoryService.createMemory(memoryData).subscribe(
+        async (response: { memoryId: any }) => {
+          const memoryId = response.memoryId[0]?.insertId;
+          console.log('Memory created successfully:', memoryId);
+  
+          if (this.data.friends_emails) {
+            await this.addFriendsToMemory(memoryId, this.data.friends_emails);
+          }
+          this.updatePictureCount(memoryId);
+          resolve();
+        },
+        (error) => reject(`Error creating memory: ${error}`)
+      );
+    });
+  }
+  
+  private addFriendsToMemory(memoryId: string, friendsEmails: string[]): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const friendData = { emails: friendsEmails, memoryId };
+      this.memoryService.addFriendToMemory(friendData).subscribe(
+        () => {
+          console.log('Friends added to memory successfully.');
+          resolve();
+        },
+        (error) => reject(`Error adding friends to memory: ${error}`)
+      );
+    });
   }
 
   async get_geocoords(city: string, postcode: string, country: string): Promise<{ lat: number, lng: number }> {

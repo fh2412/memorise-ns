@@ -1,8 +1,3 @@
-<div *ngFor="let progressInfo of progressInfos">
-  <span>{{ progressInfo.fileName }}</span>
-  <mat-progress-bar mode="determinate" [value]="progressInfo.value"></mat-progress-bar>
-</div>
-
 <div class="button-div">
   <div>
     <button mat-raised-button color="primary" (click)="fileInput.click()">

@@ -1,0 +1,8 @@
+<mat-form-field appearance="outline">
+  <mat-label>Select View</mat-label>
+  <mat-select [(value)]="selectedValue" aria-label="Select View" (selectionChange)="onChange(selectedValue)">
+    <mat-option *ngFor="let option of options" [value]="option.value">
+      {{ option.label }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>

@@ -5,9 +5,9 @@
     <div class="actions">
         <button mat-flat-button color="primary" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
         <button mat-flat-button class="discard"
-            (click)="onDeleteClick('DISCARD')"><mat-icon>close</mat-icon>DISCARD</button>
+            (click)="confirmDeletion('DISCARD')"><mat-icon>close</mat-icon>DISCARD</button>
         <button mat-flat-button color="warn"
-            (click)="onDeleteClick('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
+            (click)="confirmDeletion('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 
@@ -24,23 +24,32 @@
                     </mat-form-field>
                 </form>
             </div>
-            <div class="buttons">
-                <button mat-stroked-button color="primary" style="background-color: white;" (click)="managePhotos()">
-                    <mat-icon>apps</mat-icon>
-                    Manage Pictures
+            <div class="buttons" *ngIf="isLargeScreen">
+                <button mat-stroked-button color="primary" (click)="navigateToManagePhotos()">
+                  <mat-icon>apps</mat-icon>
+                  Manage Pictures
                 </button>
-                <button mat-flat-button color="primary" (click)="addPhotos()">
-                    <mat-icon>add_photo_alternate</mat-icon>
-                    Add Photos
+                <button mat-flat-button color="primary" (click)="navigateToAddPhotos()">
+                  <mat-icon>add_photo_alternate</mat-icon>
+                  Add Photos
                 </button>
-            </div>
+              </div>
+              
+              <div class="icon-buttons" *ngIf="!isLargeScreen">
+                <button mat-fab color="primary" (click)="navigateToManagePhotos()">
+                  <mat-icon>apps</mat-icon>
+                </button>
+                <button mat-fab color="primary" (click)="navigateToAddPhotos()">
+                  <mat-icon>add_photo_alternate</mat-icon>
+                </button>
+              </div>
         </div>
         <br><br>
-        <div style="overflow: hidden;">
+        <div>
             <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
                 <mat-grid-tile colspan="3">
                     <form [formGroup]="memoryForm" class="full-width">
-                        <mat-form-field appearance="outline" class="full-width" style="margin-top: 5px;">
+                        <mat-form-field appearance="outline" class="full-width desc-margin">
                             <mat-label>Description</mat-label>
                             <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18"
                                 formControlName="description"></textarea>
@@ -95,15 +104,14 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-card appearance="outlined" *ngIf="friends.length==0" class="memory-card-empty"
-                    style="height: 108px;">
+                <mat-card appearance="outlined" *ngIf="friends.length==0" class="memory-card-empty">
                     <p>No current friends left in the memory</p>
                 </mat-card>
             </div>
             <br>
-            <div style="display: flex;">
-                <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" style="width: 50%; margin-right: 10px;" [memoryId]="memoryId"></app-friends-autocomplet>
-                <mat-card appearance="outlined" class="memory-card-empty" style="width: 50%; margin-left: 10px;">
+            <div class="friend-wrapper">
+                <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet>
+                <mat-card appearance="outlined" class="memory-card-empty">
                     <span *ngIf="friendsToDelete.length==0">Friends you want to remove will appear here</span>
                     <mat-chip-set #chipGrid aria-label="Enter friends">
                         @for (friend of friendsToDelete; track friend) {
@@ -121,8 +129,7 @@
             <br><br>
             <div class="memory-card-empty map-wrap">
                 <img class="map-background" src="../../../assets/img/map.PNG" alt="picture of map">
-                <button mat-raised-button color="accent" class="fixed-fab" (click)="openMapDialog()"
-                    style="margin-top: 55px;">
+                <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()" class="button-margin">
                     <mat-icon class="add-icon">search</mat-icon>
                     Update Address on Map
                 </button>

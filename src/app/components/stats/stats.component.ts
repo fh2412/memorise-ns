@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MemorystatsService } from '../../services/memorystats.service';
+import { forkJoin } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-stats',
@@ -8,9 +10,9 @@ import { MemorystatsService } from '../../services/memorystats.service';
 })
 export class StatsComponent {
   @Input() userid: string = '';
-  memoryCount: any;
-  memoryThisYearCount: any;
-  friendsCount: any;
+  memoryCount: number = 0;
+  memoryThisYearCount: number = 0;
+  friendsCount: number = 0;
 
   constructor (private memorystatsService: MemorystatsService) {}
   
@@ -19,29 +21,21 @@ export class StatsComponent {
   }
 
   getMemoryStats(): void {
-    this.memorystatsService.getMemoryCount(this.userid).subscribe(
-      (data) => {
-        this.memoryCount = data[0].count;
-      },
-      (error: any) => {
-        console.error('Error fetching MemoryCount', error);
-      }
-    );
-    this.memorystatsService.getMemoryCountThisYear(this.userid).subscribe(
-      (data) => {
-        this.memoryThisYearCount = data[0].count;
-      },
-      (error: any) => {
-        console.error('Error fetching MemoryCount', error);
-      }
-    );
-    this.memorystatsService.getFriendsCount(this.userid).subscribe(
-      (data) => {
-        this.friendsCount = data[0].count;
-      },
-      (error: any) => {
-        console.error('Error fetching MemoryCount', error);
-      }
-    );
+    forkJoin({
+      memoryCount: this.memorystatsService.getMemoryCount(this.userid),
+      memoryThisYearCount: this.memorystatsService.getMemoryCountThisYear(this.userid),
+      friendsCount: this.memorystatsService.getFriendsCount(this.userid)
+    })
+    .pipe(
+      catchError(error => {
+        console.error('Error fetching statistics', error);
+        return [];
+      })
+    )
+    .subscribe(({ memoryCount, memoryThisYearCount, friendsCount }) => {
+      this.memoryCount = memoryCount[0]?.count || 0;
+      this.memoryThisYearCount = memoryThisYearCount[0]?.count || 0;
+      this.friendsCount = friendsCount[0]?.count || 0;
+    });
   }
 }

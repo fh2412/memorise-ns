@@ -10,7 +10,7 @@ import { companyService } from '../../services/company.service';
 })
 export class ActivitiesComponent {
   user: any;
-  loggedInUserId: any;
+  loggedInUserId: string | null = null;
   company: any;
 
   constructor(private userService: UserService, private companyService: companyService) {}
@@ -31,15 +31,16 @@ export class ActivitiesComponent {
     }
   }
   getCompany(): void {
-    console.log(this.company);
-    this.companyService.getUserCompany(this.loggedInUserId).subscribe(
-      (response) => {
-        this.company = response;
-      },
-      (error) => {
-        console.log('Error fetching compnay', error);
-      }
-    );
+    if(this.loggedInUserId != null){
+      this.companyService.getUserCompany(this.loggedInUserId).subscribe(
+        (response) => {
+          this.company = response;
+        },
+        (error) => {
+          console.log('Error fetching compnay', error);
+        }
+      );
+    }
   }
   
   addActivity(){

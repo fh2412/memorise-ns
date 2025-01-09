@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AngularFireModule} from '@angular/fire/compat';
-import { AngularFireAuthModule} from '@angular/fire/compat/auth';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { AngularFireModule } from '@angular/fire/compat';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -21,7 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select'; 
+import { MatSelectModule } from '@angular/material/select';
 import { ChangePasswordDialogComponent } from './components/_dialogs/change-password-dialog/change-password-dialog.component';
 import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -30,13 +30,15 @@ import { FriendsPreviewModule } from './components/friend-preview/friend-preview
 import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
-import { LinkModalComponent } from './components/_dialogs/link-modal/link-modal.component';
+import { ShareFriendCodeDialogComponent } from './components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinned-dialog.component';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
+import { AuthInterceptor } from './services/auth.interceptor';
 
-@NgModule({ declarations: [
+@NgModule({
+    declarations: [
         AppComponent,
         MainNavComponent,
         ChangePasswordDialogComponent,
@@ -44,7 +46,7 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
         ImageDialogComponent,
         InfoDialogComponent,
         ConfirmDialogComponent,
-        LinkModalComponent,
+        ShareFriendCodeDialogComponent,
         PinnedDialogComponent,
         CompanyDialogComponent,
         FullDescriptionDialogComponent,
@@ -68,5 +70,16 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
         MatProgressBarModule,
         GoogleMapsModule,
         FriendsPreviewModule,
-        MatCheckboxModule], providers: [provideNativeDateAdapter(), { provide: DateAdapter, useClass: MatNativeDateModule }, provideHttpClient(withInterceptorsFromDi()),] })
+        MatCheckboxModule],
+    providers: [
+        provideNativeDateAdapter(),
+        { provide: DateAdapter, useClass: MatNativeDateModule },
+        provideHttpClient(withInterceptorsFromDi()),
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+    ]
+})
 export class AppModule { }

@@ -1,47 +1,43 @@
 import { Injectable } from '@angular/core';
-import JSZip from 'jszip';
-import { BehaviorSubject } from 'rxjs';
-import { saveAs } from 'file-saver';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { ImageWithMetadata } from '../pages/memory-detail/memory-detail.component';
+import { HttpClient } from '@angular/common/http';
 
-interface ImageData {
-  url: string;
-  width: number;
-  height: number;
-}
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageGalleryService {
-  // BehaviorSubject will hold the current value and emit it to subscribers whenever it changes
-  private imageDataSource = new BehaviorSubject<ImageData[]>([]);
-  currentImageData = this.imageDataSource.asObservable(); // Observable to allow subscription
+  private imageDataSource = new BehaviorSubject<ImageWithMetadata[]>([]);
+  currentImageData = this.imageDataSource.asObservable();
+
+  constructor(private http: HttpClient) {}
+
 
   // Method to update the data
-  updateImageData(images: ImageData[]) {
-    this.imageDataSource.next(images); // Update the BehaviorSubject with new data
+  updateImageData(images: ImageWithMetadata[]) {
+    this.imageDataSource.next(images);
   }
 
   downloadImage(url: string): Promise<Blob> {
     return fetch(url).then((response) => response.blob());
   }
 
-  // Function to download all images and zip them
-  async downloadImagesAsZip(urls: string[], zipFileName: string): Promise<void> {
-    const zip = new JSZip();
-
-    // Download each image and add it to the zip
-    const promises = urls.map(async (url, index) => {
-      const imageBlob = await this.downloadImage(url);
-      zip.file(`image${index + 1}.jpg`, imageBlob);
-    });
-
-    // Wait for all images to be downloaded and added to the zip
-    await Promise.all(promises);
-
-    // Generate the zip and trigger the download
-    zip.generateAsync({ type: 'blob' }).then((zipFile) => {
-      saveAs(zipFile, `${zipFileName}.zip`);
-    });
+  downloadZip(folderName: string, title: string): Observable<Blob> {
+    return this.http
+      .get(`http://localhost:3000/api/firestore/download-zip/${folderName}`, { responseType: 'blob' })
+      .pipe(
+        tap((blob) => {
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${title}.zip`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        })
+      );
   }
+  
 }

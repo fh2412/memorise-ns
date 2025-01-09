@@ -10,7 +10,7 @@
   
   /* Make the dialog slimmer */
   .mat-dialog-container {
-    max-width: 400px; /* Set the max width of the dialog */
+    max-width: 700px; /* Set the max width of the dialog */
     width: 100%;      /* Make it responsive */
   }
   .custom-pre {
@@ -19,4 +19,5 @@
     background-color: inherit; /* Falls <pre> eine spezielle Hintergrundfarbe hat */
     margin: 0; /* Standard <pre>-Tag Margin entfernen */
     padding: 10px;
+    padding-top: 0px;
   }

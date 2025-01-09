@@ -1,6 +1,5 @@
 mat-card-content {
     width: 70%;
-    align-items: center;
 }
 
 mat-card {
@@ -10,4 +9,8 @@ mat-card {
 .scrollable-content {
     max-height: 50vh; /* Set the maximum height to 50% of the viewport height */
     overflow-y: auto; /* Enable vertical scrolling if content exceeds max height */
-  }
+}
+
+.list-item{
+    height: 80px;
+}

@@ -3,20 +3,24 @@
 
 @import '../../memory-detail/image-preview.scss';
 
+$primary: mat.get-theme-color($memorise-ns-theme, accent, 500);
 
 .header {
+  margin-top: 30px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 35px;
-    h1{
+    .headline{
+      width: 50%;
+      h1{
+        width: 100%;
         font-size: 50px;
         font-weight: bold;
         margin-left: 25px;
+      }
     }
     button{
         margin-right: 25px;
-        margin-bottom: 10px;
     }
 }
 
@@ -47,9 +51,9 @@
 
   .images-to-delete-container img {
     margin: 0 5px; /* Adjust margin between images */
-    max-width: 100px; /* Set a maximum width for images */
-    max-height: 100%; /* Maintain image aspect ratio */
-    border-radius: 10px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
   }
 
   .images-to-delete-container button {
@@ -93,14 +97,22 @@
     border: 2px solid transparent;
   }
   
-  .card.hovered {
-    border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
-  }
-  
-  .card.starred {
-    border-color: mat.get-theme-color($memorise-ns-theme, accent, 500);
+  .card.hovered, .ard.starred {
+    border-color: $primary;
   }
   
   .starred-icon {
-    color: mat.get-theme-color($memorise-ns-theme, accent, 500);
+    color: $primary;
+  }
+
+  .position-bottom-right {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+  }
+  
+  .position-top-right {
+    position: absolute;
+    top: 5px;
+    right: 5px;
   }

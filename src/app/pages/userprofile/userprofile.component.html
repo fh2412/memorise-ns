@@ -3,53 +3,58 @@
   <div class="container">
     <div class="columns">
       <div class="profile-section">
-        <div class="profile-picture-container">
-          <label for="fileInput" class="image-label">
-            <img [src]="user.profilepic ? user.profilepic : '../../../assets/img/1.png'" alt="Profile Picture"
-              class="profile-picture">
-            <mat-icon class="change-icon">add_a_photo</mat-icon>
-          </label>
-          <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer"
-            (change)="onFileChange($event)" [disabled]="!(this.loggedInUserId==this.userId)"/>
+        <div>
+          <div class="profile-picture-container">
+            <label for="fileInput" class="image-label">
+              <img [src]="user.profilepic ? user.profilepic : '../../../assets/img/1.png'" alt="Profile Picture"
+                class="profile-picture">
+              <mat-icon class="change-icon">add_a_photo</mat-icon>
+            </label>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer"
+              (change)="onFileChange($event)" [disabled]="!(this.loggedInUserId==this.userId)" />
+          </div>
+          <mat-card-title>{{user.name || 'no name provided'}}</mat-card-title>
+          <mat-card-subtitle>
+            <span>{{user.username}}</span> - <span>{{user.gender}}</span>
+          </mat-card-subtitle>
+          <button mat-stroked-button class="editbutton" (click)="openEditDialog()">Edit Profile</button>
         </div>
-        <mat-card-title>{{user.name}}</mat-card-title>
-        <mat-card-subtitle>
-          <span>{{user.username}}</span> - <span>{{user.gender}}</span>
-        </mat-card-subtitle>
-        <button mat-stroked-button class="editbutton" (click)="profileButtonClick()">{{buttonText}}</button>
-        <mat-list class="list-wrapper">
-          <mat-list-item>
-            <mat-icon matListItemIcon>location_on</mat-icon>
-            <div matListItemTitle>{{user.country}}</div>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon matListItemIcon>calendar_today</mat-icon>
-            <div matListItemTitle>{{user.formatted_dob}}</div>
-          </mat-list-item>
-          <mat-list-item>
-            <mat-icon matListItemIcon>public</mat-icon>
-            <div matListItemTitle>{{user.instagram || "not provided"}}</div>
-          </mat-list-item>
-        </mat-list>
-        <div class="usersettings">
-          <button mat-stroked-button (click)="openPassowrdChangeDialog()" [disabled]="!(this.loggedInUserId==this.userId)">
-            Change PW
-          </button>
-          <app-logout-button *ngIf="(this.loggedInUserId==this.userId)"></app-logout-button>
+        <div class="small-screen-list">
+          <mat-list class="list-wrapper">
+            <mat-list-item>
+              <mat-icon matListItemIcon>location_on</mat-icon>
+              <div matListItemTitle>{{user.country || 'not provided'}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>calendar_today</mat-icon>
+              <div matListItemTitle>{{(user.dob | date) || 'not provided'}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>public</mat-icon>
+              <div matListItemTitle>{{user.instagram || "not provided"}}</div>
+            </mat-list-item>
+          </mat-list>
+          <div class="usersettings">
+            <button mat-stroked-button (click)="openPasswordChangeDialog()"
+              [disabled]="!(this.loggedInUserId==this.userId)">
+              Change PW
+            </button>
+            <app-logout-button *ngIf="(this.loggedInUserId==this.userId)"></app-logout-button>
+          </div>
         </div>
       </div>
       <div class="bio">
         <mat-card appearance="outlined">
           <mat-card-content class="bio-content">
-            <pre>{{ user.bio }}</pre>
+            <pre>{{ user.bio || 'no bio provided'}}</pre>
           </mat-card-content>
         </mat-card>
         <div style="margin-top: 2rem;">
           <div class="level">
             <h3 class="title is-4 level-left">Pinned Memories</h3>
-            <button mat-stroked-button (click)="openPinsDialog()" [disabled]="!(this.loggedInUserId==this.userId)">Customize your pins</button>
+            <button mat-stroked-button (click)="openPinsDialog()">Customize your pins</button>
           </div>
-          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pin_memories">
+          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pinnedMemories">
             <mat-grid-tile *ngFor="let memory of getMemoriesToDisplay()">
               <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>

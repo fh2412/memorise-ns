@@ -1,0 +1,39 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Center vertically */
+  
+    .options {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+  
+      .option {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        button{
+            width: 30vh;
+        }
+      }
+  
+      mat-divider {
+        height: 400px;
+      }
+    }
+
+    img{
+        width: 30vh;
+        border-radius: 15px;
+    }
+  }
+  
+  .headline{
+    font-size: 5vh;
+    font-weight: bold;
+    margin-bottom: 80px;
+  }

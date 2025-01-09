@@ -1,13 +1,19 @@
 <mat-card class="stats-card" appearance="outlined">
-    <h2>MEMORISE STATS</h2>
-     <!-- User Information -->
-    <div class="user-details">
-      <h3>Total Memories: {{memoryCount}}</h3>
-      <p>This year: {{memoryThisYearCount}} </p>
-      <p>Friends: {{friendsCount}}</p>
-    </div>
-  </mat-card>
-    
-  <mat-card class="memory-card-empty" appearance="outlined">
-    <p>Ad placholder</p>
-  </mat-card>
+  <h2>MEMORISE STATS</h2>
+  
+  <!-- User Information with Loading Placeholder -->
+  <div class="user-details" *ngIf="memoryCount !== null && memoryThisYearCount !== null && friendsCount !== null; else loading">
+    <h3>Total Memories: {{ memoryCount }}</h3>
+    <p>This year: {{ memoryThisYearCount }}</p>
+    <p>Friends: {{ friendsCount }}</p>
+  </div>
+
+  <!-- Loading Placeholder -->
+  <ng-template #loading>
+    <p>Loading stats...</p>
+  </ng-template>
+</mat-card>
+
+<mat-card class="memory-card-empty" appearance="outlined">
+  <p>Ad placeholder</p>
+</mat-card>

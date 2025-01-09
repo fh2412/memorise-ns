@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
+import { ProfileResolver } from './models/profile-resolver';
+import { SetMemoriesActivityModule } from './pages/set-memories-activity/set-memories-activity.module';
 
 const routes: Routes = [
   {
@@ -44,21 +46,32 @@ const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'setactivity',
+    loadChildren: () => import('./pages/set-memories-activity/set-memories-activity.module').then(m => m.SetMemoriesActivityModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'friends',
     loadChildren: () => import('./pages/friends/friends.module').then(m => m.FriendsModule),
     canActivate: [authGuard]
   },
   { 
     path: 'invite/:userId', 
-    loadChildren: () => import('./pages/userprofile/userprofile.module').then(m => m.UserProfileModule),
+    loadChildren: () => import('./pages/other-userprofile/other-userprofile.module').then(m => m.OtherUserProfileModule),
     canActivate: [authGuard],
-    resolve: { user: UserResolver }
+    resolve: { user: ProfileResolver }
   },
   { 
     path: 'userprofile/:userId', 
     loadChildren: () => import('./pages/userprofile/userprofile.module').then(m => m.UserProfileModule),
     canActivate: [authGuard],
     resolve: { user: UserResolver }
+  },
+  { 
+    path: 'user/:userId', 
+    loadChildren: () => import('./pages/other-userprofile/other-userprofile.module').then(m => m.OtherUserProfileModule),
+    canActivate: [authGuard],
+    resolve: { user: ProfileResolver }
   },
   {
     path: 'activities',

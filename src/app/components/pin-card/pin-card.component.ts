@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { Memory } from '../../models/memoryInterface.model';
 
 @Component({
   selector: 'app-pin-card',
@@ -6,5 +7,5 @@ import { Component, Input } from '@angular/core';
   styleUrl: './pin-card.component.scss'
 })
 export class PinCardComponent {
-  @Input() memory: any;
+  @Input() memory!: Memory;
 }

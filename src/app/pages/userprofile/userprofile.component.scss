@@ -10,10 +10,21 @@
 .columns {
   display: flex;
   justify-content: space-between;
+  @media (max-width: 1480px) {
+    display: block;
+  }
 }
 
 .list-wrapper mat-list-item {
   height: 34px;
+}
+
+.small-screen-list{
+  @media (max-width: 1480px) {
+    width: 85%;
+    margin: auto;
+    margin-left: 25px
+  }
 }
 
 .level{
@@ -22,6 +33,12 @@
 }
 .profile-section{
   width: 25%;
+  @media (max-width: 1480px) {
+    display: flex;
+    width: 50%;
+    margin: auto;
+    margin-bottom: 30px;
+  }
 }
 .bio{
   width: 80%;
@@ -45,6 +62,12 @@
   justify-content: space-between;
   button{
     width: 55%;
+  }
+  @media (max-width: 1480px) {
+    justify-content: center;
+    button{
+      margin-right: 15px;
+    }
   }
 }
 

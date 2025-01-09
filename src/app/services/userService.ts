@@ -42,7 +42,6 @@ export class UserService {
   updateUserProfilePic(userId: string, profilePicUrl: any): Observable<any> {
     const url = `${this.apiUrl}/profilepic/${userId}`;
     const body = { profilepic: profilePicUrl };
-    console.log(url, body);
     return this.http.put<any>(url, body);
   }
 

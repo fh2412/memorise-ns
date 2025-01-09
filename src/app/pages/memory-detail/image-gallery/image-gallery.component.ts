@@ -79,16 +79,16 @@ export class ImageGalleryComponent implements OnInit {
   
 
   private createPlaceholderLayout(portraitStack: string[], landscapeStack: string[]): any {
-    if (portraitStack.length >= 1 && landscapeStack.length === 0) {
+    if (portraitStack.length === 1 && landscapeStack.length === 1) {
       return {
         type: 3,
         portrait: [portraitStack.shift()],
-        landscapes: [this.placeholderImage, this.placeholderImage],
+        landscapes: [landscapeStack.shift(), this.placeholderImage],
       };
-    } else if (portraitStack.length < 2 && landscapeStack.length === 0) {
+    } else if (portraitStack.length === 1 && landscapeStack.length === 0) {
       return {
         type: 2,
-        portraits: [this.placeholderImage, this.placeholderImage],
+        portraits: [portraitStack.shift(), this.placeholderImage],
       };
     } else {
       return {

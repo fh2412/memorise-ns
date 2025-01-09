@@ -117,8 +117,7 @@
           <!-- Country Column -->
           <ng-container matColumnDef="country">
             <th mat-header-cell *matHeaderCellDef> Country </th>
-            <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}"
-                width="30" height="20"></td>
+            <td mat-cell *matCellDef="let user">{{user.country || 'Not Provided'}}</td>
           </ng-container>
 
           <!-- Shared Memories Column -->

@@ -128,11 +128,11 @@ export class UploadProgressDialogComponent implements OnInit {
         console.log("location set to 1 ", memoryData.location_id);
       }
       console.log("Acitiviy: ", memoryData);
-      if(memoryData.activity_id==1){
+      if(memoryData.activity_id==0){
         console.log("Creating new Activity!");
         memoryData.activity_id = await this.handleActivityCreation(memoryData);
+        console.log("activity created!: ", memoryData.activity_id);
       }
-      console.log("activity created!: ", memoryData.activity_id);
       await this.handleMemoryCreation(memoryData);
       console.log("Memory Created!");
     } catch (error) {

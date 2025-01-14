@@ -106,16 +106,16 @@ export class EditmemoryComponent {
   loadFriends(): Promise<void> {
     return new Promise((resolve, reject) => {
       if(this.loggedInUserId != null){
-      this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
-        response => {
-          this.friends = response;
-          resolve();
-        },
-        error => {
-          console.error('Error getting friends:', error);
-          reject(error);
-        }
-      );
+        this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
+          response => {
+            this.friends = response;
+            resolve();
+          },
+          error => {
+            console.error('Error getting friends:', error);
+            reject(error);
+          }
+        );
       }
     });  
   }
@@ -146,10 +146,6 @@ export class EditmemoryComponent {
     } catch (error) {
       console.error('Error deleting memory and friends:', error);
     }
-  }
-
-  goToHome(): void {
-    this.router.navigate(['/home']);
   }
 
   async saveChanges(): Promise<void> {
@@ -303,9 +299,6 @@ export class EditmemoryComponent {
         },
         error => console.error('Error checking pinned memory:', error)
       );
-    }
-    else if (confirmed && status === 'DISCARD'){
-      this.goToHome();
     }
   }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
-import { Observable, finalize, switchMap } from 'rxjs';
+import { Observable, finalize, last, map, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { deleteObject, getMetadata, getStorage, ref, updateMetadata } from 'firebase/storage';
 import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
@@ -31,13 +31,16 @@ export class FileUploadService {
     return this.http.get(`${this.baseUrl}/files`);
   }
 
-  uploadProfilePicture(userId: string, file: File): Observable<number | undefined> {
+  uploadProfilePicture(userId: string, file: File): Observable<void> {
     const path = `profile-pictures/${userId}/profile.jpg`;
     const ref = this.storage.ref(path);
     const task: AngularFireUploadTask = ref.put(file);
-
-    // Use Observable to track the upload progress
-    return task.percentageChanges();
+  
+    // Track the task and complete the observable only on successful upload
+    return task.snapshotChanges().pipe(
+      last(), // Take only the last emitted value (when the upload is complete)
+      map(() => void 0) // Map the final snapshot to void, as we only care about completion
+    );
   }
 
   uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean): Observable<number | undefined> {

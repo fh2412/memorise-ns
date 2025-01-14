@@ -8,14 +8,15 @@ import { ChooseLocationComponent } from '../../components/_dialogs/choose-locati
 import { Router } from '@angular/router';
 import { LocationService } from '../../services/location.service';
 import { Location } from '@angular/common';
+import { CountryService } from '../../services/restCountries.service';
 
 @Component({
   selector: 'app-adding-memory',
   templateUrl: './adding-memory.component.html',
   styleUrls: ['./adding-memory.component.scss']
 })
-export class AddingMemoryComponent implements OnInit {  
-  
+export class AddingMemoryComponent implements OnInit {
+
   @ViewChild('datepicker') datepicker?: MatDatepicker<Date>;
   @ViewChild('rangePicker') rangePicker?: MatDatepicker<Date>;
 
@@ -27,6 +28,7 @@ export class AddingMemoryComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
+    private countryService: CountryService,
     public dialog: MatDialog,
     private location: Location,
     public memoryService: MemoryService,
@@ -55,7 +57,7 @@ export class AddingMemoryComponent implements OnInit {
 
   async ngOnInit() {
     await this.userService.userId$.subscribe((userId) => {
-      if(userId){
+      if (userId) {
         this.userId = userId;
       }
     });
@@ -72,20 +74,34 @@ export class AddingMemoryComponent implements OnInit {
   }
 
   openMapDialog(): void {
-    const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { lat: 47.2, long: 47.2 },
-      width: '500px',
-      height: '542px'
-    });
-  
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result[0]?.address_components && result[1]?.lat && result[1]?.lng) {
-        this.patchLocationData(result[0].address_components, result[1].lat, result[1].lng);
-      } else {
-        console.error("Incomplete location data received from map dialog.");
+    this.countryService.getCountryGeocordsByUserId(this.userId).subscribe(
+      response => {
+        if (response) {
+          const coords = response; // Assuming response is already the desired Geocords object
+          const dialogRef = this.dialog.open(ChooseLocationComponent, {
+            data: { lat: coords[0].lat, long: coords[0].long },
+            width: '500px',
+            height: '542px'
+          });
+
+          dialogRef.afterClosed().subscribe(result => {
+            if (result && result[0]?.address_components && result[1]?.lat && result[1]?.lng) {
+              this.patchLocationData(result[0].address_components, result[1].lat, result[1].lng);
+            } else {
+              console.error("Incomplete location data received from map dialog.");
+            }
+          });
+        } else {
+          console.error("No coordinates found for the specified country.");
+        }
+      },
+      error => {
+        console.error('Error getting country geocoordinates:', error);
       }
-    });
+    );
   }
+
+
 
   private patchLocationData(addressComponents: any, lat: number, lng: number): void {
     this.memoryForm.patchValue({

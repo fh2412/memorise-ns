@@ -18,6 +18,7 @@ import { ImageUploadModule } from '../../components/image-upload/image-upload.mo
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
+import { BackButtonModule } from "../../components/back-button/back-button.module";
 
 const routes: Routes = [
   {
@@ -31,24 +32,25 @@ const routes: Routes = [
         EditmemoryComponent,
     ],
     imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        MatCardModule,
-        MatFormFieldModule,
-        MatGridListModule,
-        MatDatepickerModule,
-        MatNativeDateModule,
-        GoogleMapsModule,
-        MatButtonModule,
-        MatDividerModule,
-        ReactiveFormsModule,
-        MatInputModule,
-        MatIconModule,
-        FriendsAutocompleteModule,
-        ImageUploadModule,
-        MatToolbarModule,
-        MatTableModule,
-        MatChipsModule,
-    ]
+    CommonModule,
+    RouterModule.forChild(routes),
+    MatCardModule,
+    MatFormFieldModule,
+    MatGridListModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    GoogleMapsModule,
+    MatButtonModule,
+    MatDividerModule,
+    ReactiveFormsModule,
+    MatInputModule,
+    MatIconModule,
+    FriendsAutocompleteModule,
+    ImageUploadModule,
+    MatToolbarModule,
+    MatTableModule,
+    MatChipsModule,
+    BackButtonModule
+]
 })
 export class EditMemoryModule { }

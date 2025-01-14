@@ -117,6 +117,7 @@ export class UserProfileComponent implements OnInit {
       const file = input.files[0];  // Get the first file
       if (file) {
         this.isUploading = true;
+      
         this.fileUploadService.uploadProfilePicture(this.user.user_id, file)
           .pipe(finalize(() => (this.isUploading = false)))
           .subscribe(
@@ -127,7 +128,6 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  /** Updates the user's profile picture URL. */
   private updateProfilePicture(): void {
     this.fileUploadService.getProfilePictureUrl(this.user.user_id).then(
       (url) => this.saveProfilePictureUrl(url)

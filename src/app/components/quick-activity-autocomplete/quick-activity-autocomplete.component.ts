@@ -61,7 +61,7 @@ export class QuickActivityAutocompleteComponent {
       (activity) => activity.name.toLowerCase() === this.quickActivity.trim().toLowerCase()
     );
   
-    const activityId = selectedActivity ? selectedActivity.id : 1;
+    const activityId = selectedActivity ? selectedActivity.id : 0;
   
     this.router.navigate(['/newmemory'], {
       state: { quickActivity: this.quickActivity, activityId },

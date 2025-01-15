@@ -25,7 +25,7 @@ export interface Memory {
     memory_date: Date | null;
     memory_end_date: Date | null;
     title_pic: string;
-    location_id: string;
+    location_id: number;
     lng: string;
     lat: string;
     l_country: string;

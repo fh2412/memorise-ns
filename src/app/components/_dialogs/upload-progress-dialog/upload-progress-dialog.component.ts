@@ -124,7 +124,7 @@ export class UploadProgressDialogComponent implements OnInit {
         memoryData.location_id = await this.handleLocationCreation(memoryData);
         console.log("location created address!: ", memoryData.location_id);
       } else {
-        memoryData.location_id = '1';
+        memoryData.location_id = 1;
         console.log("location set to 1 ", memoryData.location_id);
       }
       console.log("Acitiviy: ", memoryData);
@@ -140,10 +140,10 @@ export class UploadProgressDialogComponent implements OnInit {
     }
   }
   
-  private handleLocationCreation(memoryData: MemoryFormData): Promise<string> {
+  private handleLocationCreation(memoryData: MemoryFormData): Promise<number> {
     return new Promise((resolve, reject) => {
       this.locationService.createLocation(memoryData).subscribe(
-        (response: { locationId: any }) => resolve(response.locationId[0]?.insertId),
+        (response: { locationId: number }) => resolve(response.locationId),
         (error) => reject(`Error creating location: ${error}`)
       );
     });
@@ -153,7 +153,6 @@ export class UploadProgressDialogComponent implements OnInit {
     return new Promise((resolve, reject) => {
       if (!memoryData.quickActivityTitle) {
         resolve(null);
-        console.log("Now Creatin needed!");
         return;
       }
   

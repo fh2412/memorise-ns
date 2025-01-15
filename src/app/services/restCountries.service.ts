@@ -46,8 +46,11 @@ export class CountryService {
     return this.http.get<any>(`http://localhost:3000/api/users/country/${userId}`)
       .pipe(
         switchMap(countryResponse => {
-          const countryName = countryResponse.country; // Assume the response contains a 'country' field
-          return this.getCountriesGeocords(countryName); // Reuse the existing method to get geocoordinates
+          const countryName = countryResponse.country;
+          if(countryName == null){
+            return this.getCountriesGeocords("Austria");
+          }
+          return this.getCountriesGeocords(countryName);
         })
       );
   }

@@ -150,18 +150,16 @@ export class UploadProgressDialogComponent implements OnInit {
   }
   
   private handleActivityCreation(memoryData: MemoryFormData): Promise<number | null> {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       if (!memoryData.quickActivityTitle) {
-        resolve(null); // No activity creation needed
+        resolve(null);
+        console.log("Now Creatin needed!");
         return;
       }
   
       this.activityService.createQuickActivity(memoryData.quickActivityTitle).subscribe(
-        (response: { activityId: any }) => resolve(response.activityId[0]?.insertId),
-        (error) => {
-          console.error('Error creating quick activity:', error);
-          resolve(null); // Fail gracefully
-        }
+        (response: { activityId: number }) => resolve(response.activityId),
+        (error) => reject(`Error creating activity: ${error}`)
       );
     });
   }

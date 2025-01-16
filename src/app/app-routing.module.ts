@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
-import { SetMemoriesActivityModule } from './pages/set-memories-activity/set-memories-activity.module';
 
 const routes: Routes = [
   {

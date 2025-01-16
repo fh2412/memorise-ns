@@ -33,9 +33,9 @@ export class StatsComponent {
       })
     )
     .subscribe(({ memoryCount, memoryThisYearCount, friendsCount }) => {
-      this.memoryCount = memoryCount[0]?.count || 0;
-      this.memoryThisYearCount = memoryThisYearCount[0]?.count || 0;
-      this.friendsCount = friendsCount[0]?.count || 0;
+      this.memoryCount = memoryCount?.count || 0;
+      this.memoryThisYearCount = memoryThisYearCount?.count || 0;
+      this.friendsCount = friendsCount?.count || 0;
     });
   }
 }

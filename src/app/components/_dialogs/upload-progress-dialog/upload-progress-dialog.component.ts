@@ -166,8 +166,8 @@ export class UploadProgressDialogComponent implements OnInit {
   private handleMemoryCreation(memoryData: MemoryFormData): Promise<void> {
     return new Promise((resolve, reject) => {
       this.memoryService.createMemory(memoryData).subscribe(
-        async (response: { memoryId: any }) => {
-          const memoryId = response.memoryId[0]?.insertId;
+        async (response: { memoryId: string }) => {
+          const memoryId = response.memoryId;
           console.log('Memory created successfully:', memoryId);
   
           if (this.data.friends_emails) {

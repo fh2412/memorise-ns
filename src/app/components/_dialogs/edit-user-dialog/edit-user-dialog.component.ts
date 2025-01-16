@@ -55,11 +55,10 @@ export class EditUserDialogComponent {
   saveChanges() {
     if (this.userForm.invalid) {
       console.error('Form is invalid');
-      return;  // Optionally show an error message
+      return;
     }
-    if(this.userForm.value.dob === Date){
-      this.userForm.value.dob.setHours(12, 12, 12, 12);
-    }
+    this.userForm.value.dob.setHours(12, 12, 12, 12);
+
     this.updateUserData.emit(this.userForm.value);
     this.dialogRef.close();
   }

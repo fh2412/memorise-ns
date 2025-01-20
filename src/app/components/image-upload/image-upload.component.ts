@@ -31,7 +31,6 @@ export class ImageUploadComponent implements OnInit {
   selectedFiles: File[] = [];
 
   previews: string[] = [];
-  imageInfos?: Observable<any>;
   downloadURL: string | undefined;
   imageFileWithDimensions: ImageFileWithDimensions[] = [];
 
@@ -41,7 +40,6 @@ export class ImageUploadComponent implements OnInit {
   constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router, private userService: UserService) { }
 
   async ngOnInit(): Promise<void> {
-    this.imageInfos = this.uploadService.getFiles();
     if (this.picture_count == 0) {
       this.googleStorageUrl = this.userId.toString() + Date.now().toString();
     }

@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable, finalize, last, map, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { deleteObject, getMetadata, getStorage, ref, updateMetadata } from 'firebase/storage';
@@ -10,26 +9,8 @@ import { ImageFileWithDimensions } from '../components/image-upload/image-upload
 })
 export class FileUploadService {
 
-  private baseUrl = 'http://localhost:8080';
+  constructor(private storage: AngularFireStorage) { }
 
-  constructor(private http: HttpClient, private storage: AngularFireStorage) { }
-
-  upload(file: File): Observable<HttpEvent<any>> {
-    const formData: FormData = new FormData();
-
-    formData.append('file', file);
-
-    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
-      reportProgress: true,
-      responseType: 'json'
-    });
-
-    return this.http.request(req);
-  }
-
-  getFiles(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/files`);
-  }
 
   uploadProfilePicture(userId: string, file: File): Observable<void> {
     const path = `profile-pictures/${userId}/profile.jpg`;
@@ -44,7 +25,6 @@ export class FileUploadService {
   }
 
   uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean): Observable<number | undefined> {
-
     const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
     const ref = this.storage.ref(path);
 

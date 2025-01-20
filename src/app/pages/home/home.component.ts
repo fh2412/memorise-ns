@@ -20,6 +20,7 @@ export class HomeComponent implements OnInit {
   userGeneratedMemories: Memory[] = [];
   friendGeneratedMemories: Memory[] = [];
   displayMemories: Memory[] = [];
+  showFriendsMemoriesBool: boolean = true;
 
   pageSize = 9;
   pageIndex = 0;
@@ -41,6 +42,9 @@ export class HomeComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
+    const savedState = localStorage.getItem('showFriendsMemories');
+    const showFriendsMemories = savedState === 'true';
+    this.openForm.get('showFriendsMemories')?.setValue(showFriendsMemories);
     try {
       await this.initializeUserData();
       await this.loadMemories();
@@ -93,6 +97,7 @@ export class HomeComponent implements OnInit {
   }
 
   showAll(checked: boolean): void {
+    localStorage.setItem('showFriendsMemories', checked.toString());
     this.displayMemories = checked && this.friendGeneratedMemories.length > 0
       ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
       : [...this.userGeneratedMemories];

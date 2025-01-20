@@ -30,7 +30,6 @@ const routes: Routes = [
     FriendCardComponent,
     FriendSearchComponent,
     UserInformationComponent,
-    //LogoutButtonComponent
   ],
   imports: [
     CommonModule,

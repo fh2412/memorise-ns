@@ -20,7 +20,7 @@ export interface MemoriseUser {
     name: string;
     profilepic: string | null;
     sharedMemoriesCount: number;
-    user_id: number;
+    user_id: string;
     gender: string;
   }
   

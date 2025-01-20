@@ -1,27 +1,18 @@
 <div class="row">
-    <div class="profile-row">
-        <img [src]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}"> 
-        <div class="text">
-            <b>{{ friend.name || 'Name' }}</b><br>
-            <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>
-          </div>
+  <div class="profile-row" (click)="navigateToUserpage(friend.user_id)">
+    <img [src]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}">
+    <div class="text">
+      <b>{{ friend.name || 'Name' }}</b><br>
+      <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>
     </div>
-    <button *ngIf="isLargeScreen" mat-stroked-button 
-          [color]="buttonColor" 
-          class="request-button" 
-          (click)="requestFriend(buttonText, requested)" 
-          [class.enabled]="requested" 
-          [class.disabled]="!requested">
+  </div>
+  <button *ngIf="isLargeScreen" mat-stroked-button [color]="buttonColor" class="request-button"
+    (click)="requestFriend(buttonText, requested)" [class.enabled]="requested" [class.disabled]="!requested">
     <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
     {{ requested ? requestedText : buttonText }}
   </button>
-  <button *ngIf="!isLargeScreen" mat-icon-button 
-          [color]="buttonColor" 
-          class="request-button" 
-          (click)="requestFriend(buttonText, requested)" 
-          [class.enabled]="requested" 
-          [class.disabled]="!requested">
+  <button *ngIf="!isLargeScreen" mat-icon-button [color]="buttonColor" class="request-button"
+    (click)="requestFriend(buttonText, requested)" [class.enabled]="requested" [class.disabled]="!requested">
     <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
   </button>
 </div>
-   

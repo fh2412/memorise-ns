@@ -1,1 +1,10 @@
 @import '../userprofile/userprofile.component.scss';
+
+.profile-picture-container {
+    cursor: auto;
+    .profile-picture {
+        &:hover {
+            filter: none;
+        }
+    }
+}

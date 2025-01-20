@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit {
     try {
       await this.initializeUserData();
       await this.loadMemories();
-      this.initializeDataDisplay();
+      this.initializeDataDisplay(showFriendsMemories);
     } catch (error) {
       console.error('Initialization error:', error);
     }
@@ -73,8 +73,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private initializeDataDisplay(): void {
-    this.displayMemories = [...this.userGeneratedMemories];
+  private initializeDataDisplay(checked: boolean): void {
+    this.displayMemories = checked && this.friendGeneratedMemories.length > 0
+      ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
+      : [...this.userGeneratedMemories];
     this.filteredItems = [...this.displayMemories];
     this.updatePagedData();
   }

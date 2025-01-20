@@ -274,7 +274,7 @@ export class EditmemoryComponent {
 
   createLocation(): void {
     this.locationService.createLocation(this.memoryForm.value).subscribe(
-      response => this.memoryService.updateMemoryLocation(this.memory.memory_id, response.locationId[0]?.insertId).subscribe(),
+      response => this.memoryService.updateMemoryLocation(this.memory.memory_id, response.locationId).subscribe(),
       error => console.error('Error creating Location:', error)
     );
   }

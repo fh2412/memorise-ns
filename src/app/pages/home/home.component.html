@@ -33,7 +33,7 @@
 
         <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
             <div *ngIf="selectedValue === 'map'">
-                <app-home-map-view [memories]="userGeneratedMemories"></app-home-map-view>
+                <app-home-map-view [memories]="displayMemories"></app-home-map-view>
             </div>
 
             <div *ngIf="selectedValue === 'standard'">
@@ -44,7 +44,7 @@
                     </mat-grid-tile>
                 </mat-grid-list>
 
-                <mat-paginator [length]="userGeneratedMemories.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                <mat-paginator [length]="displayMemories.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
                     (page)="onPageChange($event)">
                 </mat-paginator>
             </div>

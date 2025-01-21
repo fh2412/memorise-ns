@@ -1,15 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-export interface Company {
-  [x: string]: any;
-  id?: number;
-  name: string;
-  phone: string;
-  email: string;
-  website: string;
-}
+import { MemoriseCompany } from '../models/company.model';
 
 @Injectable({
   providedIn: 'root'
@@ -31,16 +23,16 @@ export class companyService {
     return this.http.put<any>(`${this.apiUrl}/owner/${user_id}`, {companyId: company_id});
   }
 
-  deleteCompany(company_id: string) {
-    return this.http.delete<any>(`${this.apiUrl}/delete/${company_id}`);
+  deleteCompany(company_id: number) {
+    return this.http.delete<MemoriseCompany>(`${this.apiUrl}/delete/${company_id}`);
   }
   
-  createCompany(id: number, company: Company): Observable<Company> {
-    return this.http.post<Company>(`${this.apiUrl}/create/${id}`, company);
+  createCompany(id: string, company: MemoriseCompany): Observable<MemoriseCompany> {
+    return this.http.post<MemoriseCompany>(`${this.apiUrl}/create/${id}`, company);
   }
 
-  updateCompany(id: number, company: Company): Observable<Company> {
-    return this.http.put<Company>(`${this.apiUrl}/update/${id}`, company);
+  updateCompany(id: number, company: MemoriseCompany): Observable<MemoriseCompany> {
+    return this.http.put<MemoriseCompany>(`${this.apiUrl}/update/${id}`, company);
   }
 
   generateCode(companyId: number){

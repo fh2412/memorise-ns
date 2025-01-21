@@ -18,10 +18,10 @@ export class PinnedDialogComponent {
   allMemories: PinnedMemory[] = [];
   filteredMemories: PinnedMemory[] = [];
   initialFavoriteMemories: PinnedMemory[] = [];
-  searchText: string = '';
+  searchText = '';
   readonly maxSelectableCount: number = 4;
-  hasChangesFlag: boolean = false;
-  selectedCount: number = 0;
+  hasChangesFlag = false;
+  selectedCount = 0;
 
   constructor(
     public dialogRef: MatDialogRef<PinnedDialogComponent>,

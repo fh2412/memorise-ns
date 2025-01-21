@@ -11,7 +11,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class ImageGalleryComponent implements OnInit {
   landscapePictures: string[] = [];
   portraitPictures: string[] = [];
-  placeholderImage: string = '../../../../assets/img/placeholder_image.png';
+  placeholderImage = '../../../../assets/img/placeholder_image.png';
   layout: any[] = [];
   allPictures: string[] = [];
 

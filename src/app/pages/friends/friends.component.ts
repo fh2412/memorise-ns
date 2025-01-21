@@ -4,6 +4,7 @@ import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
 import { ShareFriendCodeDialogComponent } from '../../components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 import { Friend } from '../../models/userInterface.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-friends',
@@ -20,7 +21,8 @@ export class FriendsComponent implements OnInit {
   constructor(
     private dialog: MatDialog,
     private friendsService: FriendsService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -82,6 +84,8 @@ export class FriendsComponent implements OnInit {
   }
 
   viewProfile() {
-    throw new Error('Method not implemented.');
+    if (this.loggedInUserId) {
+      this.router.navigate([`/userprofile/${this.loggedInUserId}`]);
     }
+  }
 }

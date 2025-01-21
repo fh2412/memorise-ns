@@ -11,9 +11,9 @@ export class GeocodingService {
   constructor(private http: HttpClient) {}
 
   geocodeLatLng(location: google.maps.LatLngLiteral): Promise<GeocoderResponse> {
-    let geocoder = new google.maps.Geocoder();
+    const geocoder = new google.maps.Geocoder();
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       geocoder.geocode({ 'location': location }, (results, status) => {
         if(results){
             const response = new GeocoderResponse(status, results);
@@ -24,7 +24,7 @@ export class GeocodingService {
   }
 
   geocodeAddress(country: string, city: string, postalCode: string): Promise<GeocoderResponse> {
-    let geocoder = new google.maps.Geocoder();
+    const geocoder = new google.maps.Geocoder();
     const address = `${postalCode}, ${city}, ${country}`;  // Combine the address parts
   
     return new Promise((resolve, reject) => {

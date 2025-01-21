@@ -10,7 +10,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { QuickActivityAutocompleteComponent } from '../../components/quick-activity-autocomplete/quick-activity-autocomplete.component';
 import { QuickActivityAutocompleteModule } from '../../components/quick-activity-autocomplete/quick-activity-autocomplete.module';
 
 const routes: Routes = [

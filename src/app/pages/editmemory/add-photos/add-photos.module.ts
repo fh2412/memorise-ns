@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { AddPhotosComponent } from './add-photos.component';
 import { ImageUploadModule } from '../../../components/image-upload/image-upload.module';
-import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 import { BackButtonModule } from '../../../components/back-button/back-button.module';
 
 const routes: Routes = [

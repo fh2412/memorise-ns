@@ -9,8 +9,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class ShareFriendCodeDialogComponent implements OnInit {
 
-  link: string = ''; // Link to display in the modal
-  header: string = '';
+  link = ''; // Link to display in the modal
+  header = '';
 
   constructor(private _snackBar: MatSnackBar,
     @Inject(MAT_DIALOG_DATA) private data: any,

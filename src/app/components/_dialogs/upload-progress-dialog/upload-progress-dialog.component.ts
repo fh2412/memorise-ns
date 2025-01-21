@@ -16,8 +16,8 @@ import { ActivityService } from '../../../services/activity.service';
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
   downloadURL: string | undefined;
-  originalCount: number = 0;
-  counter: number = 0;
+  originalCount = 0;
+  counter = 0;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: MemoryFormData; friends_emails: string[]; picture_count: number; googleStorageUrl: string; starredIndex: number },

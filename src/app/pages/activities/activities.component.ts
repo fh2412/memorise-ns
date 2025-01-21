@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { companyService } from '../../services/company.service';
 
@@ -8,7 +8,7 @@ import { companyService } from '../../services/company.service';
   templateUrl: './activities.component.html',
   styleUrl: './activities.component.scss'
 })
-export class ActivitiesComponent {
+export class ActivitiesComponent implements OnInit {
   user: any;
   loggedInUserId: string | null = null;
   company: any;

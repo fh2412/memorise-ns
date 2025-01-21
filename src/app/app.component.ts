@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AngularFireAuth} from '@angular/fire/compat/auth';
 
 
@@ -6,9 +6,9 @@ import { AngularFireAuth} from '@angular/fire/compat/auth';
   selector: 'app-root',
   templateUrl: './app.component.html'
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   loggedIn: boolean | undefined;
-  isFirstTimeUser: boolean = false;
+  isFirstTimeUser = false;
 
   constructor(private afAuth: AngularFireAuth) {}
   ngOnInit() {

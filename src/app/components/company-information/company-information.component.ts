@@ -4,6 +4,7 @@ import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/conf
 import { MatDialog } from '@angular/material/dialog';
 import { CompanyDialogComponent } from '../_dialogs/company-dialog/company-dialog.component';
 import { ShareFriendCodeDialogComponent } from '../_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
+import { MemoriseCompany } from '../../models/company.model';
 
 @Component({
   selector: 'app-company-information',
@@ -14,8 +15,8 @@ export class CompanyInformationComponent {
 
   constructor(private companyService: companyService, private dialog: MatDialog) {}
 
-  @Input() company: any;
-  @Input() userId: any;
+  @Input()company!: MemoriseCompany;
+  @Input() userId!: string;
   confirmationData: ConfirmationDialogData | undefined;
 
   joinCompany() {
@@ -56,13 +57,13 @@ export class CompanyInformationComponent {
             () => {
               console.log("Company deleted!");
             },
-            (error: any) => {
+            (error) => {
               console.log("could not delete company!: ", error);
             }
           )
         }
       },
-      (error: any) => {
+      (error) => {
         console.error('Error deleting User from company: ', error);
       }
     );
@@ -103,7 +104,7 @@ export class CompanyInformationComponent {
     await this.companyService.generateCode(this.company.id).subscribe(
       response => {
         console.log('Company updated successfully:', response);
-        const dialogRef = this.dialog.open(ShareFriendCodeDialogComponent, {
+        this.dialog.open(ShareFriendCodeDialogComponent, {
           data: { link: response.code, text: 'Your Company Join-Code:' },
           width: '500px',
         });

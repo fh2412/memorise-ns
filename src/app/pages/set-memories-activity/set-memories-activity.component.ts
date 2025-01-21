@@ -7,7 +7,7 @@ import { Router } from '@angular/router';
   styleUrl: './set-memories-activity.component.scss'
 })
 export class SetMemoriesActivityComponent {
-  quickActivity: string = '';
+  quickActivity = '';
 
   constructor(private router: Router) {  }
 

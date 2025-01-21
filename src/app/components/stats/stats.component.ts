@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MemorystatsService } from '../../services/memorystats.service';
 import { forkJoin } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -8,11 +8,11 @@ import { catchError } from 'rxjs/operators';
   templateUrl: './stats.component.html',
   styleUrl: './stats.component.scss'
 })
-export class StatsComponent {
-  @Input() userid: string = '';
-  memoryCount: number = 0;
-  memoryThisYearCount: number = 0;
-  friendsCount: number = 0;
+export class StatsComponent implements OnInit {
+  @Input() userid = '';
+  memoryCount = 0;
+  memoryThisYearCount = 0;
+  friendsCount = 0;
 
   constructor (private memorystatsService: MemorystatsService) {}
   

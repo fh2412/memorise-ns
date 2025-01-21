@@ -4,7 +4,7 @@
   </div>
   <div class="actions">
     <app-back-button></app-back-button>
-    <button mat-flat-button color="warn" [disabled]="imagesToDelete.length==0" (click)="deleteImages()"><mat-icon>delete</mat-icon>Delete
+    <button mat-flat-button color="warn" [disabled]="imagesToDelete.length === 0" (click)="deleteImages()"><mat-icon>delete</mat-icon>Delete
       Selected</button>
   </div>
 </div>
@@ -17,7 +17,8 @@
           <img mat-card-image [src]="image.url" alt="Image" class="background-image">
           <button mat-icon-button 
                   (mouseover)="hoverIndex = i" 
-                  (mouseleave)="hoverIndex = null" 
+                  (mouseleave)="hoverIndex = null"
+                  (focus)="true" 
                   (click)="onStar(i)" 
                   class="position-top-right">
             <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>

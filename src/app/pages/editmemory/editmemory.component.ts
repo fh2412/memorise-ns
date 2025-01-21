@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
@@ -19,9 +19,9 @@ import { MemoriseLocation } from '../../models/location.model';
   templateUrl: './editmemory.component.html',
   styleUrl: './editmemory.component.scss'
 })
-export class EditmemoryComponent {
+export class EditmemoryComponent implements OnInit {
   loggedInUserId: string | null = null;
-  memoryId: string = '';
+  memoryId = '';
   memory!: Memory;
 
   friends: Friend[] = [];
@@ -30,15 +30,15 @@ export class EditmemoryComponent {
 
   location!: MemoriseLocation;
 
-  firebaseId: string = '';
+  firebaseId = '';
   memoryForm: FormGroup;
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  isLargeScreen: boolean = true;
+  isLargeScreen = true;
 
   @HostListener('window:resize', ['$event'])
-  onResize(event?: Event): void {
+  onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
   }
 

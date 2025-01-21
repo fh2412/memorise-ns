@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, OnInit } from '@angular/core';
 import {  MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
 import { Memory } from '../../../models/memoryInterface.model';
@@ -15,7 +15,7 @@ export interface CustomMarker {
   templateUrl: './home-map-view.component.html',
   styleUrl: './home-map-view.component.scss'
 })
-export class HomeMapViewComponent {
+export class HomeMapViewComponent implements OnInit {
   @Input() memories: Memory[] = [];
 
   markers: any[] = [];

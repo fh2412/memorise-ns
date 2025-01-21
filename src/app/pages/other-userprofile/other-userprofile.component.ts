@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
@@ -15,11 +15,11 @@ import { Memory } from '../../models/memoryInterface.model';
   templateUrl: './other-userprofile.component.html',
   styleUrl: './other-userprofile.component.scss'
 })
-export class OtherUserprofileComponent {
+export class OtherUserprofileComponent implements OnInit {
   user!: MemoriseUser;
   userId!: string;
   loggedInUserId: string | null = null;
-  buttonText: string = 'Send Request';
+  buttonText = 'Send Request';
   pinnedMemories: Memory[] = [];
 
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
@@ -27,9 +27,9 @@ export interface ImageWithMetadata {
   templateUrl: './memory-detail.component.html',
   styleUrl: 'memory-detail.component.scss'
 })
-export class MemoryDetailComponent {
+export class MemoryDetailComponent implements OnInit {
   memorydb!: Memory;
-  memoryID: number = 0;
+  memoryID = 0;
   memoryCreator!: MemoriseUser;
   loggedInUserId: string | null = null;
   memorydbFriends: Friend[] | null = [];
@@ -37,14 +37,14 @@ export class MemoryDetailComponent {
   endDate = new Date(2024, 1, 1);
   dateRange!: DateRange<Date>;
   location: MemoriseLocation | null = null;
-  activity: string = 'Activity';
+  activity = 'Activity';
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  isLoading: boolean = false;
-  showMore: boolean = false;
-  truncatedDescription: string = '';
-  characterLimit: number = 150;
+  isLoading = false;
+  showMore = false;
+  truncatedDescription = '';
+  characterLimit = 150;
   imagesWithMetadata: ImageWithMetadata[] = [];
 
 

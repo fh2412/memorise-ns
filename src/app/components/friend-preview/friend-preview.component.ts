@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 import { Friend } from '../../models/userInterface.model';
@@ -9,23 +9,23 @@ import { Router } from '@angular/router';
   templateUrl: './friend-preview.component.html',
   styleUrl: './friend-preview.component.scss'
 })
-export class FriendPreviewComponent {
-  @Input() requested: boolean = false;
-  @Input() buttonText: string = 'Request';
-  @Input() requestedText: string = 'Requested';
-  @Input() buttonColor: string = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
-  @Input() buttonIcon: string = 'person_add'; // Use MatButton icon options
+export class FriendPreviewComponent implements OnInit {
+  @Input() requested = false;
+  @Input() buttonText = 'Request';
+  @Input() requestedText = 'Requested';
+  @Input() buttonColor = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
+  @Input() buttonIcon = 'person_add'; // Use MatButton icon options
   @Input() friend!: Friend;
 
   @Output() buttonClicked = new EventEmitter<void>();
 
   loggedInUserId: string | null = null;
-  isLargeScreen: boolean = true;
+  isLargeScreen = true;
 
   constructor(private userService: UserService, private manageFriendsService: ManageFriendsService, private router: Router) { }
 
   @HostListener('window:resize', ['$event'])
-  onResize(event?: Event): void {
+  onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
   }
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, Output, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MemoriseUser } from '../../../models/userInterface.model';
@@ -10,7 +10,7 @@ import { map, Observable, startWith } from 'rxjs';
   templateUrl: 'edit-user-dialog.component.html',
   styleUrls: ['edit-user-dialog.component.scss']
 })
-export class EditUserDialogComponent {
+export class EditUserDialogComponent implements OnInit {
   @Output() updateUserData = new EventEmitter<MemoriseUser>();  // Emit the full user object
   userForm: FormGroup;
   countries: Country[] = [];

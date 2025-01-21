@@ -13,7 +13,7 @@ export class RegisterComponent {
   registerForm: FormGroup;
   isSigningIn = false;
   isFirstTimeUser = false;
-  email: string = '';
+  email = '';
 
   @Output() cancelRegistration = new EventEmitter<void>();
 
@@ -50,7 +50,7 @@ export class RegisterComponent {
         next: () => {
           this.isFirstTimeUser = true
         },
-        error: (error) => {
+        error: () => {
           this.toggleSigningIn(false);
           this.snackBar.open('Email is already in use.', 'OK', { duration: 5000 });
         }

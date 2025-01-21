@@ -1,6 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { FileUploadService } from '../../services/file-upload.service';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -20,12 +18,12 @@ export interface ImageFileWithDimensions {
 })
 
 export class ImageUploadComponent implements OnInit {
-  @Input() userId: string = '';
-  @Input() memoryId: string = '';
+  @Input() userId = '';
+  @Input() memoryId = '';
   @Input() memoryData: MemoryFormData | null = null;
   @Input() friends_emails: string[] = [];
-  @Input() picture_count: number = 0;
-  @Input() googleStorageUrl: String = "";
+  @Input() picture_count = 0;
+  @Input() googleStorageUrl = "";
 
 
   selectedFiles: File[] = [];
@@ -37,7 +35,7 @@ export class ImageUploadComponent implements OnInit {
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
 
-  constructor(private uploadService: FileUploadService, private dialog: MatDialog, private router: Router, private userService: UserService) { }
+  constructor(private dialog: MatDialog, private router: Router, private userService: UserService) { }
 
   async ngOnInit(): Promise<void> {
     if (this.picture_count == 0) {
@@ -83,7 +81,7 @@ export class ImageUploadComponent implements OnInit {
           img.src = e.target.result;
         };
   
-        reader.onerror = (error: any) => {
+        reader.onerror = (error) => {
           console.error('Error reading file:', error);
           // Handle errors gracefully, e.g., display an error message
         };
@@ -102,7 +100,7 @@ export class ImageUploadComponent implements OnInit {
       });
   
       // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
-      dialogRef.afterClosed().subscribe((result) => {
+      dialogRef.afterClosed().subscribe(() => {
         this.router.navigate(['/home']);
       });
     }

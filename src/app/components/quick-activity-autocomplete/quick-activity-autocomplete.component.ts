@@ -20,7 +20,7 @@ export class QuickActivityAutocompleteComponent {
   activityCtrl = new FormControl('');
   filteredStates: Observable<Activity[]>;
 
-  quickActivity: string = '';
+  quickActivity = '';
 
   states: Activity[] = [
     {

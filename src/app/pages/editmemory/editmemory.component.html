@@ -102,7 +102,7 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
                 </table>
-                <mat-card appearance="outlined" *ngIf="friends.length==0" class="memory-card-empty">
+                <mat-card appearance="outlined" *ngIf="friends.length===0" class="memory-card-empty">
                     <p>No current friends left in the memory</p>
                 </mat-card>
             </div>
@@ -110,7 +110,7 @@
             <div class="friend-wrapper">
                 <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet>
                 <mat-card appearance="outlined" class="memory-card-empty">
-                    <span *ngIf="friendsToDelete.length==0">Friends you want to remove will appear here</span>
+                    <span *ngIf="friendsToDelete.length===0">Friends you want to remove will appear here</span>
                     <mat-chip-set #chipGrid aria-label="Enter friends">
                         @for (friend of friendsToDelete; track friend) {
                         <mat-chip-row (removed)="reverseDelete(friend)">

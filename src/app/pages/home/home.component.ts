@@ -20,15 +20,15 @@ export class HomeComponent implements OnInit {
   userGeneratedMemories: Memory[] = [];
   friendGeneratedMemories: Memory[] = [];
   displayMemories: Memory[] = [];
-  showFriendsMemoriesBool: boolean = true;
+  showFriendsMemoriesBool = true;
 
   pageSize = 9;
   pageIndex = 0;
   pagedData: Memory[] = [];
   filteredItems: Memory[] = [];
 
-  selectedValue: string = 'standard';
-  noMemory: boolean = true;
+  selectedValue = 'standard';
+  noMemory = true;
 
   constructor(
     private afAuth: AngularFireAuth,

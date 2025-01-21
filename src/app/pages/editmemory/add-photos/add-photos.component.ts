@@ -8,10 +8,10 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./add-photos.component.scss'] // Corrected to styleUrls for an array
 })
 export class AddPhotosComponent implements OnInit {
-  memoryId: number = 1;
-  firebasePath: string = ''; // Type as string if you expect a URL string
-  pictureCount: number = 0;
-  loaded: boolean = false;
+  memoryId = 1;
+  firebasePath = ''; // Type as string if you expect a URL string
+  pictureCount = 0;
+  loaded = false;
 
   constructor(
     private memoryService: MemoryService,

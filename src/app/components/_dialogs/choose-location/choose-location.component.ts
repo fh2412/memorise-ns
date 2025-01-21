@@ -31,7 +31,7 @@ export class ChooseLocationComponent {
   geocoderWorking = false;
   geolocationWorking = false;
 
-  address: string ='';
+  address ='';
   formattedAddress?: string | null = null;
   locationCoords?: google.maps.LatLng | null = null;
 

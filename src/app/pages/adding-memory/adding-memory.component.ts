@@ -22,7 +22,7 @@ export class AddingMemoryComponent implements OnInit {
 
   isRangeSelected = false;
   memoryForm: FormGroup;
-  userId: string = '';
+  userId = '';
   emailArray: string[] = [];
 
 

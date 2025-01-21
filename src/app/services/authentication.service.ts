@@ -51,12 +51,12 @@ export class AuthenticationService {
 
 }
 
-type SignIn = {
+interface SignIn {
   email: string;
   password: string;
 }
 
-type FirebaseError = {
+interface FirebaseError {
   code: string;
   message: string
-};
+}

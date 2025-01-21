@@ -11,10 +11,10 @@ import { debounceTime, Subject } from 'rxjs';
 export class FriendSearchComponent {
   @Input() userId: string | null = null;
 
-  searchTerm: string = '';
+  searchTerm = '';
   searchResults: Friend[] = [];
-  enter: boolean = false;
-  errorMessage: string = '';
+  enter = false;
+  errorMessage = '';
   private searchSubject = new Subject<string>();
 
   constructor(private searchService: UserService) {

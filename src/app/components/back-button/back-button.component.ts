@@ -8,7 +8,7 @@ import { Location } from '@angular/common';
 })
 export class BackButtonComponent {
   constructor(private location: Location) {}  
-  @Input() text: string = "Back";
+  @Input() text = "Back";
 
   cancelCreation(): void{
     this.location.back();

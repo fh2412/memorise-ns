@@ -27,7 +27,7 @@ export class UserProfileComponent implements OnInit {
   loggedInUserId: string | null = null;
   pinnedMemories: Memory[] = [];
   allMemories: Memory[] = [];
-  isUploading: boolean = false;
+  isUploading = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -137,7 +137,7 @@ export class UserProfileComponent implements OnInit {
   /** Saves the new profile picture URL in the database. */
   private saveProfilePictureUrl(url: string): void {
     this.userService.updateUserProfilePic(this.user.user_id, url).subscribe(
-      (next) => {
+      () => {
         this.user.profilepic = url;
         this.showSnackBar('Profile picture updated successfully.');
       },

@@ -4,5 +4,6 @@ export interface MemoriseCompany {
   phone: string;
   email: string;
   website: string;
+  owner_id: string;
 }
   

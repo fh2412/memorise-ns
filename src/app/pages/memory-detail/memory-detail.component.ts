@@ -13,6 +13,7 @@ import { Memory } from '../../models/memoryInterface.model';
 import { Friend, MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
 import { ActivityService } from '../../services/activity.service';
+import { firstValueFrom } from 'rxjs';
 
 
 export interface ImageWithMetadata {
@@ -60,18 +61,18 @@ export class MemoryDetailComponent implements OnInit {
     if (!this.loggedInUserId) return;
 
     try {
-      const memoryData = await this.memoryService.getMemory(this.memoryID).toPromise();
+      const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryID));
       this.memorydb = memoryData;
 
       await this.initializeMemoryDetails();
-      const activityData = await this.activityService.getActivity(this.memorydb.activity_id).toPromise();
+      const activityData = await firstValueFrom(this.activityService.getActivity(this.memorydb.activity_id));
       this.activity = activityData.title;
       
-      const friendsData = await this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId).toPromise();
+      const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
     
-      const memoryCreator = await this.userService.getUser(this.memorydb.user_id.toString()).toPromise();
-      if (memoryCreator.length !== 0) this.memoryCreator = memoryCreator;
+      const memoryCreator = await firstValueFrom(this.userService.getUser(this.memorydb.user_id.toString()));
+      this.memoryCreator = memoryCreator;
 
     } catch (error) {
       console.error('Error fetching memory data:', error);

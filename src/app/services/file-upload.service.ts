@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, finalize, last, map, switchMap } from 'rxjs';
+import { Observable, finalize, firstValueFrom, last, map, switchMap } from 'rxjs';
 import { AngularFireStorage, AngularFireUploadTask } from '@angular/fire/compat/storage';
 import { deleteObject, getMetadata, getStorage, ref, updateMetadata } from 'firebase/storage';
 import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
@@ -48,7 +48,7 @@ export class FileUploadService {
     const path = `profile-pictures/${userId}/profile.jpg`;
     const ref = this.storage.ref(path);
 
-    return ref.getDownloadURL().toPromise();
+    return firstValueFrom(ref.getDownloadURL());
   }
 
   deleteMemorysFolder(memoryId: string): Observable<void[]> {

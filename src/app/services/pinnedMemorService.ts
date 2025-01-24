@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Memory } from '../models/memoryInterface.model';
+import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,9 @@ export class PinnedMemoryService {
 
   constructor(private http: HttpClient) {}
 
-  getPinnedMemories(userId: string): Observable<any[]> {
+  getPinnedMemories(userId: string): Observable<Memory[]> {
     const url = `${this.apiUrl}/${userId}/favourite-memories`;
-    return this.http.get<any[]>(url);
+    return this.http.get<Memory[]>(url);
   }
 
   getPinnedMemoriesWithPlacholders(pin_memories: Memory[]){
@@ -42,23 +43,23 @@ export class PinnedMemoryService {
     return displayedMemories;
   }
 
-  updatePinnedMemory(userId: string, memoryIdToUpdate: number, updatedMemoryId: number): Observable<any> {
+  updatePinnedMemory(userId: string, memoryIdToUpdate: number, updatedMemoryId: number): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/${userId}/favourite-memories/${memoryIdToUpdate}`;
     const body = { memoryId: updatedMemoryId };
-    return this.http.put(url, body);
+    return this.http.put<UpdateStandardResponse>(url, body);
   }
 
-  createPinnedMemory(userId: string, memoryId: number): Observable<any> {
+  createPinnedMemory(userId: string, memoryId: number): Observable<InsertStandardResult> {
     const url = `${this.apiUrl}/${userId}/favourite-memories`;
     const body = { memoryId }; // Assuming 'memoryId' is the property name
   
-    return this.http.post(url, body);
+    return this.http.post<InsertStandardResult>(url, body);
   }
   
-  deletePinnedMemory(userId: string, memoryIdToDelete: number): Observable<any> {
+  deletePinnedMemory(userId: string, memoryIdToDelete: number): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/${userId}/favourite-memories/${memoryIdToDelete}`;
   
-    return this.http.delete(url);
+    return this.http.delete<DeleteStandardResponse>(url);
   }
 
   checkMemoryPin(memoryId: number): Observable<Memory[]> {

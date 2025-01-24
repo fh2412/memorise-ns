@@ -9,6 +9,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 import { PinnedMemoryService } from '../../services/pinnedMemorService';
 import { Memory } from '../../models/memoryInterface.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-other-userprofile',
@@ -33,7 +34,7 @@ export class OtherUserprofileComponent implements OnInit {
     this.getPinnedMemories();
 
     try {
-      this.user = await this.userService.getUser(this.userId).toPromise();
+      this.user = await firstValueFrom(this.userService.getUser(this.userId));
       this.checkFriendshipStatus();
     } catch (error) {
       console.error('Error fetching user:', error);

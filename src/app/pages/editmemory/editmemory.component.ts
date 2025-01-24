@@ -13,6 +13,7 @@ import { PinnedMemoryService } from '../../services/pinnedMemorService';
 import { Memory } from '../../models/memoryInterface.model';
 import { Friend } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-editmemory',
@@ -138,10 +139,10 @@ export class EditmemoryComponent implements OnInit {
   async deleteMemory(favourite: boolean): Promise<void> {
     try {
       if(favourite){
-        await this.pinnedService.deleteMemoryFromAllPins(Number(this.memoryId)).toPromise();
+        await firstValueFrom(this.pinnedService.deleteMemoryFromAllPins(Number(this.memoryId)));
       }
-      await this.memoryService.deleteMemoryAndFriends(this.memoryId).toPromise();
-      await this.firebaseService.deleteMemorysFolder(this.firebaseId).toPromise();
+      await firstValueFrom(this.memoryService.deleteMemoryAndFriends(this.memoryId));
+      await firstValueFrom(this.firebaseService.deleteMemorysFolder(this.firebaseId));
       this.router.navigate(['/home']);
     } catch (error) {
       console.error('Error deleting memory and friends:', error);
@@ -153,7 +154,7 @@ export class EditmemoryComponent implements OnInit {
       if(this.memoryForm.value.memory_end_date == null){
         this.memoryForm.value.memory_end_date = this.memoryForm.value.memory_date;
       }
-      await this.memoryService.updateMemory(this.memoryId, this.memoryForm.value).toPromise();
+      await firstValueFrom(this.memoryService.updateMemory(this.memoryId, this.memoryForm.value));
       if (this.friendsToAdd.length > 0 || this.friendsToDelete.length > 0) {
         await this.updateFriends();
       }
@@ -165,13 +166,13 @@ export class EditmemoryComponent implements OnInit {
 
   async updateFriends(): Promise<void> {
     if (this.friendsToAdd.length > 0) {
-      await this.memoryService.addFriendToMemory({ emails: this.friendsToAdd, memoryId: this.memoryId }).toPromise();
+      await firstValueFrom(this.memoryService.addFriendToMemory({ emails: this.friendsToAdd, memoryId: this.memoryId }));
       this.reloadPage();
     }
     
     if (this.friendsToDelete.length > 0) {
       await Promise.all(this.friendsToDelete.map(friend => 
-        this.memoryService.deleteFriendsFromMemory(friend.user_id, this.memoryId).toPromise()
+        firstValueFrom(this.memoryService.deleteFriendsFromMemory(friend.user_id, this.memoryId))
       ));
     }
   }
@@ -307,6 +308,6 @@ export class EditmemoryComponent implements OnInit {
       width: '450px',
       data: { title, message }
     });
-    return dialogRef.afterClosed().toPromise();
+    return firstValueFrom(dialogRef.afterClosed());
   }
 }

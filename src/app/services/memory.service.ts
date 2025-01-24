@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
-import { Observable } from 'rxjs';
-import { MemoryFormData } from '../models/memoryInterface.model';
+import { firstValueFrom, Observable } from 'rxjs';
+import { Memory, MemoryFormData } from '../models/memoryInterface.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +12,8 @@ export class MemoryService {
 
   constructor(private http: HttpClient, private storage: AngularFireStorage) {}
 
-  getMemory(memory_id: number) {
-    // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}`);
+  getMemory(memory_id: number): Observable<Memory> {
+    return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
   getCreatedMemory(user_id: string) {
@@ -34,7 +33,7 @@ export class MemoryService {
   getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
     const path = `memories/${memoryId}/picture_${starredIndex+1}.jpg`;
     const ref = this.storage.ref(path);
-    return ref.getDownloadURL().toPromise();    
+    return firstValueFrom(ref.getDownloadURL());    
   }
 
   getMemorysFriends(memory_id: string, user_id: string) {

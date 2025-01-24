@@ -74,10 +74,12 @@ export class HomeComponent implements OnInit {
   }
 
   private initializeDataDisplay(checked: boolean): void {
-    this.displayMemories = checked && this.friendGeneratedMemories.length > 0
-      ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
-      : [...this.userGeneratedMemories];
-    this.filteredItems = [...this.displayMemories];
+    if(!this.noMemory){
+      this.displayMemories = checked && this.friendGeneratedMemories.length > 0
+        ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
+        : [...this.userGeneratedMemories];
+      this.filteredItems = [...this.displayMemories];
+    }
     this.updatePagedData();
   }
 
@@ -120,8 +122,8 @@ export class HomeComponent implements OnInit {
   private async getCreatedMemories(): Promise<void> {
     try {
       const data = await firstValueFrom(this.memoryService.getCreatedMemory(this.userdb.user_id));
-      this.userGeneratedMemories = data.message === "You haven't created any memories yet!" ? [] : data;
-      this.noMemory = this.userGeneratedMemories.length === 0;
+      this.userGeneratedMemories = data;
+      this.noMemory = this.userGeneratedMemories.length === undefined;
     } catch (error) {
       console.error('Error fetching user-created memories:', error);
     }

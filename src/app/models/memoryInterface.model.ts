@@ -34,3 +34,8 @@ export interface Memory {
     quickActivityTitle: string;
     activity_id: number | null;
   }
+
+export interface CreateMemoryResponse {
+  message: string;
+  memoryId: string;
+}

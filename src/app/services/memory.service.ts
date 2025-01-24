@@ -2,7 +2,10 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AngularFireStorage } from '@angular/fire/compat/storage';
 import { firstValueFrom, Observable } from 'rxjs';
-import { Memory, MemoryFormData } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData } from '../models/memoryInterface.model';
+import { Friend } from '../models/userInterface.model';
+import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root'
@@ -18,16 +21,16 @@ export class MemoryService {
 
   getCreatedMemory(user_id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/memories/createdMemories/${user_id}`);
+    return this.http.get<Memory[]>(`${this.apiUrl}/memories/createdMemories/${user_id}`);
   }
 
   getAddedMemories(user_id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/memories/getAddedMemories/${user_id}`);
+    return this.http.get<Memory[]>(`${this.apiUrl}/memories/getAddedMemories/${user_id}`);
   }
 
   getAllMemories(user_id: string) {
-    return this.http.get<any>(`${this.apiUrl}/memories/allMemories/${user_id}`);
+    return this.http.get<Memory[]>(`${this.apiUrl}/memories/allMemories/${user_id}`);
   }
 
   getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
@@ -38,47 +41,47 @@ export class MemoryService {
 
   getMemorysFriends(memory_id: string, user_id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends`);
+    return this.http.get<Friend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends`);
   }
 
   getMemorysFriendsWithShared(memory_id: number, user_id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<any>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
+    return this.http.get<Friend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
   }
 
-  updateMemory(memory_id: string, memoryData: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
+  updateMemory(memory_id: string, memoryData: FormGroup): Observable<UpdateStandardResponse> {
+    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
   }
 
-  updatePictureCount(memory_id: string, pictureCount: any): Observable<any> {
-    return this.http.put<any>(`${this.apiUrl}/memories/picturecount/${memory_id}`, pictureCount);
+  updatePictureCount(memory_id: string, pictureCount: { picture_count: number }): Observable<UpdateStandardResponse> {
+    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/picturecount/${memory_id}`, pictureCount);
   }
 
-  updateMemoryLocation(memoryId: number, locationId: number): Observable<any> {
+  updateMemoryLocation(memoryId: number, locationId: number): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateMemoryLocation/${memoryId}`;
-    return this.http.put(url, { locationId }); 
+    return this.http.put<UpdateStandardResponse>(url, { locationId }); 
   }
 
-  updateTitlePic(imageId: string | null, imageUrl: string): Observable<any> {
+  updateTitlePic(imageId: string | null, imageUrl: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateTitlePic/${imageId}`;
-    return this.http.put(url, { imageUrl }); 
+    return this.http.put<UpdateStandardResponse>(url, { imageUrl }); 
   }
 
-  createMemory(memoryData: MemoryFormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}/memories/createMemory`, memoryData);
+  createMemory(memoryData: MemoryFormData): Observable<CreateMemoryResponse> {
+    return this.http.post<CreateMemoryResponse>(`${this.apiUrl}/memories/createMemory`, memoryData);
   }
 
-  deleteMemoryAndFriends(memoryId: string): Observable<any> {
+  deleteMemoryAndFriends(memoryId: string): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/memories/${memoryId}`;
-    return this.http.delete(url);
+    return this.http.delete<DeleteStandardResponse>(url);
   }
 
-  addFriendToMemory(friendData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/memories/addFriendsToMemory`, friendData);
+  addFriendToMemory(friendData: { emails: string[], memoryId: string }): Observable<InsertStandardResult> {
+    return this.http.post<InsertStandardResult>(`${this.apiUrl}/memories/addFriendsToMemory`, friendData);
   }
 
-  deleteFriendsFromMemory(userId: string, memoryId: string): Observable<any> {
+  deleteFriendsFromMemory(userId: string, memoryId: string): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/memories/${memoryId}/${userId}`;
-    return this.http.delete(url);
+    return this.http.delete<DeleteStandardResponse>(url);
   }
 }

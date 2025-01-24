@@ -21,7 +21,7 @@ export class FriendsAutocompletComponent implements OnInit {
 
   @Input() memoryId = "0";
   @Output() selectedValuesChange = new EventEmitter<string[]>();
-  @ViewChild('friendInput') friendInput: ElementRef<HTMLInputElement> | any;
+  @ViewChild('friendInput') friendInput!: ElementRef<HTMLInputElement>;
 
   announcer = inject(LiveAnnouncer);
   loggedInUserId: string | null = null;

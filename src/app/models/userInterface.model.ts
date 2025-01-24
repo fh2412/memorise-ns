@@ -28,4 +28,11 @@ export interface Friend {
   sharedMemoriesCount: number;
   user_id: string;
   gender: string;
+  email: string;
+}
+
+export interface FriendStatus {
+  user_id1: string;
+  user_id2: string;
+  status: string;
 }

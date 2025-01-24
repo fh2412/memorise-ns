@@ -7,6 +7,7 @@ import { GeocodingService } from '../../../services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
 import { MemoryFormData } from '../../../models/memoryInterface.model';
 import { ActivityService } from '../../../services/activity.service';
+import { CreateLocationResponse } from '../../../models/location.model';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -143,7 +144,7 @@ export class UploadProgressDialogComponent implements OnInit {
   private handleLocationCreation(memoryData: MemoryFormData): Promise<number> {
     return new Promise((resolve, reject) => {
       this.locationService.createLocation(memoryData).subscribe(
-        (response: { locationId: number }) => resolve(response.locationId),
+        (response: CreateLocationResponse) => resolve(response.locationId),
         (error) => reject(`Error creating location: ${error}`)
       );
     });

@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { MemoriseLocation } from '../models/location.model';
+import { CreateLocationResponse, MemoriseLocation } from '../models/location.model';
+import { MemoryFormData } from '../models/memoryInterface.model';
+import { UpdateStandardResponse } from '../models/api-responses.model';
+import { FormGroup } from '@angular/forms';
 
 @Injectable({
   providedIn: 'root',
@@ -15,12 +18,12 @@ export class LocationService {
     return this.http.get<MemoriseLocation>(`${this.apiUrl}/${locationId}`);
   }
   
-  createLocation(locationData: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/createLocation`, locationData);
+  createLocation(locationData: MemoryFormData): Observable<CreateLocationResponse> {
+    return this.http.post<CreateLocationResponse>(`${this.apiUrl}/createLocation`, locationData);
   }
-  updateLocation(locationId: number, locationData: any): Observable<any> {
+  updateLocation(locationId: number, locationData: FormGroup): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/updateLocation/${locationId}`;
-    return this.http.put(url, locationData);
+    return this.http.put<UpdateStandardResponse>(url, locationData);
   }
 
   getAddressComponents(address: any[], length: 'short' | 'long', filter: string): string | undefined {

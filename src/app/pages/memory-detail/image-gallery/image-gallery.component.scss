@@ -13,3 +13,15 @@ img{
 .layout-spacing {
   height: 8px;
 }
+
+.image-button {
+  all: unset; /* Resets button styles */
+  cursor: pointer;
+  display: inline-block;
+}
+
+img {
+  width: 100%;  /* Set image to fit container or adjust as needed */
+  height: auto;
+  display: block;
+}

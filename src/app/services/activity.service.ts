@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CreateActivityResponse, MemoriseActivity } from '../models/activityInterface.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,10 +14,10 @@ export class ActivityService {
   createQuickActivity(title: string){
     const url = `${this.apiUrl}/add-activity`;
     const body = { title };
-    return this.http.post<any>(url, body);
+    return this.http.post<CreateActivityResponse>(url, body);
   }
 
   getActivity(activityId: number){
-    return this.http.get<any>(`${this.apiUrl}/${activityId}`);
+    return this.http.get<MemoriseActivity>(`${this.apiUrl}/${activityId}`);
   }
 }

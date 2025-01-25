@@ -1,19 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { from } from 'rxjs';
+import { Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { getAuth } from 'firebase/auth';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+  intercept<T>(request: HttpRequest<T>, next: HttpHandler): Observable<HttpEvent<T>> {
     const auth = getAuth();
     const user = auth.currentUser;
 
     if (user) {
       return from(user.getIdToken()).pipe(
-        switchMap((token) => {
+        switchMap((token: string) => {
           const clonedRequest = request.clone({
             setHeaders: {
               Authorization: `Bearer ${token}`,
@@ -24,6 +23,6 @@ export class AuthInterceptor implements HttpInterceptor {
       );
     }
 
-    return next.handle(request); // Proceed without token if user is not authenticated
+    return next.handle(request);
   }
 }

@@ -3,16 +3,24 @@ import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { ImageDialogComponent } from '../../../components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 
+interface Layout {
+  type: 1 | 2 | 3 | 4; 
+  portraits?: string[]; // Optional, appears in type 2 or 3
+  landscapes?: string[]; // Optional, appears in all types
+}
+
+
 @Component({
   selector: 'app-image-gallery',
   templateUrl: './image-gallery.component.html',
   styleUrls: ['./image-gallery.component.scss']
 })
+
 export class ImageGalleryComponent implements OnInit {
   landscapePictures: string[] = [];
   portraitPictures: string[] = [];
   placeholderImage = '../../../../assets/img/placeholder_image.png';
-  layout: any[] = [];
+  layout: Layout[] = [];
   allPictures: string[] = [];
 
   constructor(
@@ -33,7 +41,7 @@ export class ImageGalleryComponent implements OnInit {
     });
   }
 
-  private generateLayoutDistribution(): any[] {
+  private generateLayoutDistribution(): Layout[] {
     const layouts = [];
     const landscapeStack = [...this.landscapePictures];
     const portraitStack = [...this.portraitPictures];
@@ -57,11 +65,11 @@ export class ImageGalleryComponent implements OnInit {
     return layouts;
   }
 
-  private createLayout(type: number, portraitStack: string[], landscapeStack: string[]): any {
+  private createLayout(type: number, portraitStack: string[], landscapeStack: string[]): Layout {
     if (type === 3 || type === 4) {
       return {
         type,
-        portrait: portraitStack.length > 0 ? [portraitStack.shift()!] : [this.placeholderImage],
+        portraits: portraitStack.length > 0 ? [portraitStack.shift()!] : [this.placeholderImage],
         landscapes: landscapeStack.length > 1 ? [landscapeStack.shift()!, landscapeStack.shift()!] : [this.placeholderImage, this.placeholderImage]
       };
     } else if (type === 2) {
@@ -69,52 +77,55 @@ export class ImageGalleryComponent implements OnInit {
         type,
         portraits: portraitStack.length > 1 ? [portraitStack.shift()!, portraitStack.shift()!] : [this.placeholderImage, this.placeholderImage]
       };
-    } else if (type === 1) {
+    } else {
       return {
-        type,
+        type: 1,
         landscapes: landscapeStack.length > 0 ? [landscapeStack.shift()!] : [this.placeholderImage]
       };
     }
   }
   
 
-  private createPlaceholderLayout(portraitStack: string[], landscapeStack: string[]): any {
+  private createPlaceholderLayout(portraitStack: string[], landscapeStack: string[]): Layout {
+    const portrait = portraitStack.length > 0 ? portraitStack.shift() : this.placeholderImage;
+    const landscape1 = landscapeStack.length > 0 ? landscapeStack.shift() : this.placeholderImage;
+  
     if (portraitStack.length === 1 && landscapeStack.length === 1) {
       return {
         type: 3,
-        portrait: [portraitStack.shift()],
-        landscapes: [landscapeStack.shift(), this.placeholderImage],
+        portraits: [portrait!],
+        landscapes: [landscape1!, this.placeholderImage],
       };
     } else if (portraitStack.length === 1 && landscapeStack.length === 0) {
       return {
         type: 2,
-        portraits: [portraitStack.shift(), this.placeholderImage],
+        portraits: [portrait!, this.placeholderImage],
       };
     } else {
       return {
         type: 1,
-        landscapes: [landscapeStack.shift()],
+        landscapes: [landscape1!],
       };
     }
   }
-
-  private shuffleArray(array: any[]): void {
+  
+  private shuffleArray(array: Layout[]): void {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }
   }
 
-  private createImageArrayFromLayouts(layouts: any[]): string[] {
+  private createImageArrayFromLayouts(layouts: Layout[]): string[] {
     return layouts.flatMap((layout) => {
       switch (layout.type) {
         case 1:
-          return layout.landscapes;
+          return layout.landscapes!;
         case 2:
-          return layout.portraits;
+          return layout.portraits!;
         case 3:
         case 4:
-          return [...layout.portrait, ...layout.landscapes];
+          return [...layout.portraits!, ...layout.landscapes!];
         default:
           return [];
       }
@@ -137,7 +148,7 @@ export class ImageGalleryComponent implements OnInit {
     });
   }
 
-  trackByLayoutType(layout: any): number {
+  trackByLayoutType(index: number, layout: Layout): number {
     return layout.type;
   }
   

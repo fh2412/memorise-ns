@@ -103,7 +103,6 @@ export class CompanyInformationComponent {
   async openInviteDialog(): Promise<void> {
     await this.companyService.generateCode(this.company.id).subscribe(
       response => {
-        console.log('Company updated successfully:', response);
         this.dialog.open(ShareFriendCodeDialogComponent, {
           data: { link: response.code, text: 'Your Company Join-Code:' },
           width: '500px',

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth} from '@angular/fire/compat/auth';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 
 @Component({
@@ -22,8 +22,6 @@ export class AppComponent implements OnInit {
       }
     });
   }
-
-
 
   title = 'memorise-ns';
 }

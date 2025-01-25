@@ -6,39 +6,72 @@
         <!-- Layout 1: Single Landscape Image -->
         <mat-grid-list *ngSwitchCase="1" cols="1" rowHeight="4:3" gutterSize="8px">
           <mat-grid-tile>
-            <img [src]="l.landscapes[0]" alt="Landscape Image" (click)="openImageDialog(l.landscapes[0])">
+            <button class="image-button" type="button" (click)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)"
+              (keydown.space)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)" tabindex="0"
+              aria-label="View landscape image">
+              <img [src]="l.landscapes?.[0] ?? placeholderImage" alt="Landscape Image">
+            </button>
           </mat-grid-tile>
         </mat-grid-list>
 
         <!-- Layout 2: Two Portrait Images -->
         <mat-grid-list *ngSwitchCase="2" cols="2" rowHeight="3:4" gutterSize="8px">
           <mat-grid-tile *ngFor="let portrait of l.portraits">
-            <img [src]="portrait" alt="Portrait Image" (click)="openImageDialog(portrait)">
+            <button class="image-button" type="button" (click)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(portrait)" (keydown.space)="openImageDialog(portrait)" tabindex="0"
+              aria-label="View landscape image">
+              <img [src]="portrait" alt="Portrait Image">
+            </button>
           </mat-grid-tile>
         </mat-grid-list>
 
         <!-- Layout 3: One Portrait, Two Landscapes (Portrait Left) -->
         <mat-grid-list *ngSwitchCase="3" cols="17" rowHeight="1:1" gutterSize="8px">
           <mat-grid-tile rowspan="12" colspan="9">
-            <img [src]="l.portrait[0]" alt="Portrait Image" class="portrait-image" (click)="openImageDialog(l.portrait[0])">
+            <button class="image-button" type="button" (click)="openImageDialog(l.portraits?.[0] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(l.portraits?.[0] ?? placeholderImage)"
+              (keydown.space)="openImageDialog(l.portraits?.[0] ?? placeholderImage)" tabindex="0"
+              aria-label="View landscape image">
+              <img [src]="l.portraits?.[0] ?? placeholderImage" alt="Landscape Image">
+            </button>
           </mat-grid-tile>
           <mat-grid-tile *ngFor="let landscape of l.landscapes" rowspan="6" colspan="8">
-            <img [src]="landscape" alt="Landscape Image" class="landscape-image" (click)="openImageDialog(landscape)">
+            <button class="image-button" type="button" (click)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(landscape)" (keydown.space)="openImageDialog(landscape)" tabindex="0"
+              aria-label="View landscape image">
+              <img [src]="landscape" alt="Landscape Image">
+            </button>
           </mat-grid-tile>
         </mat-grid-list>
 
         <!-- Layout 4: One Portrait, Two Landscapes (Portrait Right) -->
         <mat-grid-list *ngSwitchCase="4" cols="17" rowHeight="1:1" gutterSize="8px">
           <mat-grid-tile rowspan="6" colspan="8">
-            <img [src]="l.landscapes[0]" alt="Landscape Image" class="landscape-image" (click)="openImageDialog(l.landscapes[0])">
+            <button class="image-button" type="button" (click)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)"
+              (keydown.space)="openImageDialog(l.landscapes?.[0] ?? placeholderImage)" tabindex="0"
+              aria-label="View landscape image">
+              <img [src]="l.landscapes?.[0] ?? placeholderImage" alt="Landscape Image">
+            </button>
           </mat-grid-tile>
           <mat-grid-tile rowspan="12" colspan="9">
-            <img [src]="l.portrait[0]" alt="Portrait Image" class="portrait-image" (click)="openImageDialog(l.portrait[0])">
+            <button class="image-button" type="button" (click)="openImageDialog(l.portraits?.[0] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(l.portraits?.[0] ?? placeholderImage)"
+              (keydown.space)="openImageDialog(l.portraits?.[0] ?? placeholderImage)" tabindex="0"
+              aria-label="View pandscape image">
+              <img [src]="l.portraits?.[0] ?? placeholderImage" alt="Landscape Image">
+            </button>
           </mat-grid-tile>
           <mat-grid-tile rowspan="6" colspan="8">
-            <img [src]="l.landscapes[1]" alt="Landscape Image" class="landscape-image" (click)="openImageDialog(l.landscapes[1])">
+            <button class="image-button" type="button" (click)="openImageDialog(l.landscapes?.[1] ?? placeholderImage)"
+              (keydown.enter)="openImageDialog(l.landscapes?.[1] ?? placeholderImage)"
+              (keydown.space)="openImageDialog(l.landscapes?.[1] ?? placeholderImage)" tabindex="0"
+              aria-label="View landscape image">
+              <img [src]="l.landscapes?.[1] ?? placeholderImage" alt="Landscape Image">
+            </button>
           </mat-grid-tile>
-        </mat-grid-list>  
+        </mat-grid-list>
       </ng-container>
       <div class="layout-spacing"></div>
     </div>

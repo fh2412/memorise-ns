@@ -7,6 +7,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Memory } from '../../models/memoryInterface.model';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-home',
@@ -87,7 +88,7 @@ export class HomeComponent implements OnInit {
     this.selectedValue = newView;
   }
 
-  onPageChange(event: any): void {
+  onPageChange(event: PageEvent): void {
     this.pageIndex = event.pageIndex;
     this.updatePagedData();
   }

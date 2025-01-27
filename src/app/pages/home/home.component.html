@@ -44,7 +44,7 @@
                     </mat-grid-tile>
                 </mat-grid-list>
 
-                <mat-paginator [length]="displayMemories.length" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                <mat-paginator [length]="displayMemories.length || 0" [pageSize]="pageSize" [pageIndex]="pageIndex"
                     (page)="onPageChange($event)">
                 </mat-paginator>
             </div>

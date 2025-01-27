@@ -41,53 +41,53 @@ export class ImageUploadComponent implements OnInit {
     if (this.picture_count == 0) {
       this.googleStorageUrl = this.userId.toString() + Date.now().toString();
     }
-    if(this.userId == undefined){
+    if (this.userId == undefined) {
       await this.userService.userId$.subscribe((userId) => {
-        if(userId){
+        if (userId) {
           this.userId = userId;
         }
       });
     }
   }
 
-  selectFiles(event: any): void {
-    console.log("Memory Data", this.memoryData);
+  selectFiles(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const newFiles = input.files;
 
-    const newFiles = event.target.files;
-  
     // Combine existing files with new ones (if applicable)
-    this.selectedFiles = this.selectedFiles ? [...this.selectedFiles, ...newFiles] : newFiles;
+    this.selectedFiles = newFiles ? [...this.selectedFiles, ...Array.from(newFiles)] : this.selectedFiles;
     this.imageFileWithDimensions = []; // Clear previous selections
     this.previews = [];
-    if (this.selectedFiles) {
-      for (const file of this.selectedFiles) {
+
+    if (newFiles) {
+      Array.from(newFiles).forEach((file: File) => {
         const reader = new FileReader();
-  
+
         // Read image data and handle dimensions
-        reader.onload = (e: any) => {
-          const preview: string = e.target.result
-  
-          // Get image dimensions using FileReader and Image object (combined approach)
+        reader.onload = (e: ProgressEvent<FileReader>) => {
+          const preview = e.target?.result as string;
+
+          // Get image dimensions using FileReader and Image object
           const img = new Image();
           img.onload = () => {
             const fileWithDimensions: ImageFileWithDimensions = {
               file: file,
-              width: img.width,
-              height: img.height,
+              width: img.naturalWidth,
+              height: img.naturalHeight,
             };
             this.imageFileWithDimensions.push(fileWithDimensions);
             this.previews.push(preview);
           };
-          img.src = e.target.result;
+          img.src = preview;
         };
-  
-        reader.onerror = (error) => {
+
+        reader.onerror = (error: ProgressEvent<FileReader>) => {
           console.error('Error reading file:', error);
           // Handle errors gracefully, e.g., display an error message
         };
-  
+
         reader.readAsDataURL(file); // Read as data URL for preview
-      }
+      });
     }
   }
 
@@ -98,7 +98,7 @@ export class ImageUploadComponent implements OnInit {
         disableClose: true, // Prevent closing the dialog by clicking outside
         data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, friends_emails: this.friends_emails, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
       });
-  
+
       // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
       dialogRef.afterClosed().subscribe(() => {
         this.router.navigate(['/home']);

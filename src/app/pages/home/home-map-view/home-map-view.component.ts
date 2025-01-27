@@ -1,5 +1,5 @@
 import { Component, Input, ViewChild, OnInit } from '@angular/core';
-import {  MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
 import { Memory } from '../../../models/memoryInterface.model';
 
@@ -18,7 +18,7 @@ export interface CustomMarker {
 export class HomeMapViewComponent implements OnInit {
   @Input() memories: Memory[] = [];
 
-  markers: any[] = [];
+  markers: CustomMarker[] = [];
 
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
 
@@ -31,8 +31,8 @@ export class HomeMapViewComponent implements OnInit {
     maxZoom: 15,
   };
   currentMemory: Memory | null = null;
- 
-  constructor(private router: Router) {}
+
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
     this.initializeMarkers();
@@ -40,31 +40,31 @@ export class HomeMapViewComponent implements OnInit {
 
   private initializeMarkers(): void {
     if (this.memories.length > 0) {
-      this.markers = this.memories.map((memory, index) => new google.maps.Marker({
-        position: {
-          lat: parseFloat(memory.latitude),
-          lng: parseFloat(memory.longitude),
-        },
-        title: index.toString(),
-      }));
-
-      // Set map center to the first marker's position
-      const firstMarkerPosition = this.markers[0].getPosition();
-      if (firstMarkerPosition) {
-        this.center = {
-          lat: firstMarkerPosition.lat(),
-          lng: firstMarkerPosition.lng(),
+      this.markers = this.memories.map((memory, index): CustomMarker => {
+        return {
+          position: { lat: parseFloat(memory.latitude), lng: parseFloat(memory.longitude) },
+          title: index.toString(),
         };
+      }).filter(marker => marker !== null) as CustomMarker[];
+
+      // Handle the case where there are no valid markers (same logic as before)
+      if (this.markers.length === 0) {
+        console.warn('No valid memories found for markers');
+        return;
       }
+
+      // Set map center to the first valid marker's position
+      const firstMarker = this.markers[0];
+      this.center = { lat: firstMarker.position.lat, lng: firstMarker.position.lng };
     }
   }
- 
-  openInfoWindow(marker: MapMarker, pos: any): void {
+
+  openInfoWindow(marker: MapMarker, pos: CustomMarker): void {
     this.currentMemory = this.memories[+pos.title];
     this.infoWindow.open(marker);
   }
 
-  onButtonClick(memory: any) {
+  onButtonClick(memory: Memory) {
     this.router.navigate(['/memory', memory.memory_id]);
   }
 }

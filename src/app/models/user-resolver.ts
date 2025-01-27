@@ -3,15 +3,16 @@ import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { UserService } from '../services/userService';
+import { MemoriseUser } from './userInterface.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserResolver implements Resolve<any> {
+export class UserResolver implements Resolve<MemoriseUser | null> {
 
   constructor(private userService: UserService, private router: Router) {}
 
-  resolve(route: ActivatedRouteSnapshot): Observable<any> {
+  resolve(route: ActivatedRouteSnapshot): Observable<MemoriseUser | null> {
     const userId = route.paramMap.get('userId');
     const loggedInUserId = this.userService.getLoggedInUserId();
 

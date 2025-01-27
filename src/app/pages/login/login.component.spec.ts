@@ -11,6 +11,7 @@ import { HomeComponent } from '../home/home.component';
 describe('SigninComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let page: any;
   let location: Location;
   let authenticationService: AuthenticationServiceMock;

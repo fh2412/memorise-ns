@@ -40,13 +40,17 @@ export class FriendPreviewComponent implements OnInit {
         if (action === 'Accept') {
           await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
         } else if (action === 'Remove') {
-          req
-            ? await this.manageFriendsService.addFriendRequest(this.friend.user_id.toString(), this.loggedInUserId)
-            : await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+          if (req) {
+            await this.manageFriendsService.addFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+          } else {
+            await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+          }
         } else if (action === 'Request') {
-          req
-            ? await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId)
-            : await this.manageFriendsService.sendFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+          if (req) {
+            await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+          } else {
+            await this.manageFriendsService.sendFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+          }
         }
       }
       this.requested = !this.requested;

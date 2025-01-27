@@ -1,19 +1,19 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { FirebaseError } from 'firebase/app';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 @Component({
   selector: 'app-change-password-dialog',
   templateUrl: './change-password-dialog.component.html',
   styleUrls: ['./change-password-dialog.component.scss']
 })
-export class ChangePasswordDialogComponent implements OnInit {
+export class ChangePasswordDialogComponent {
   @Output() updateUserPassword = new EventEmitter<void>();
   changePasswordForm!: FormGroup;
-  currentUser: any;
   errorMessage: string | null = null;
 
   constructor(
@@ -21,12 +21,6 @@ export class ChangePasswordDialogComponent implements OnInit {
     private afAuth: AngularFireAuth
   ) {
     this.initializeForm();
-  }
-
-  ngOnInit(): void {
-    this.afAuth.authState.subscribe(user => {
-      this.currentUser = user;
-    });
   }
 
   private initializeForm(): void {
@@ -39,8 +33,10 @@ export class ChangePasswordDialogComponent implements OnInit {
     });
   }
 
-  submitPasswordChange(): void {
-    if (!this.currentUser || !this.currentUser.email) return;
+  async submitPasswordChange(): Promise<void> {
+    const currentUser = await firstValueFrom(this.afAuth.authState);
+
+    if (!currentUser || !currentUser.email) return;
 
     const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
     const newPassword = this.changePasswordForm.get('newPassword')?.value;
@@ -53,12 +49,12 @@ export class ChangePasswordDialogComponent implements OnInit {
 
     // Reauthenticate and update password
     reauthenticateWithCredential(
-      this.currentUser,
-      EmailAuthProvider.credential(this.currentUser.email, currentPassword)
+      currentUser,
+      EmailAuthProvider.credential(currentUser.email, currentPassword)
     )
       .then(() => {
         this.errorMessage = null;
-        return updatePassword(this.currentUser, newPassword);
+        updatePassword(currentUser, newPassword);
       })
       .then(() => {
         console.log('Password updated successfully!');
@@ -79,10 +75,6 @@ export class ChangePasswordDialogComponent implements OnInit {
       this.errorMessage = 'An error occurred while updating the password.';
     }
     console.error('Auth error:', error);
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close();
   }
 
   // Password strength validator

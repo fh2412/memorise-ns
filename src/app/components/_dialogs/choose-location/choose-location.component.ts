@@ -2,6 +2,7 @@ import { Component, Inject, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 import { GeocodingService } from '../../../services/geocoding.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { GeocoderResponse } from '../../../models/geocoder-response.model';
 
 
 @Component({
@@ -10,7 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrl: './choose-location.component.scss'
 })
 export class ChooseLocationComponent {
-  constructor( private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) {}
+  constructor(private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) { }
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
@@ -27,32 +28,33 @@ export class ChooseLocationComponent {
     streetViewControl: false,
   };
 
-  fulladdress: any;
+  fulladdress!: GeocoderResponse;
   geocoderWorking = false;
   geolocationWorking = false;
 
-  address ='';
-  formattedAddress?: string | null = null;
-  locationCoords?: google.maps.LatLng | null = null;
+  formattedAddress: string | null = null;
+  locationCoords: google.maps.LatLng | null = null;
 
-  markerOptions: google.maps.MarkerOptions = {draggable: false};
+  markerOptions: google.maps.MarkerOptions = { draggable: false };
   markerPosition!: google.maps.LatLngLiteral;
-  location_details: any[] = [];
 
-  
   addMarker(event: google.maps.MapMouseEvent) {
-    if(event.latLng){
-      this.markerPosition=event.latLng.toJSON();
+    if (event.latLng) {
+      this.markerPosition = event.latLng.toJSON();
     }
   }
 
   async submitAddress() {
-    if(this.markerPosition) {
+    if (this.markerPosition) {
       this.fulladdress = await this.geocodingService.geocodeLatLng(this.markerPosition);
-      console.log(this.fulladdress.results[0]);
-      this.location_details[0] = this.fulladdress.results[0];
-      this.location_details[1] = this.markerPosition;
+      console.log("Full Adress: ", this.fulladdress.results[0]);
+      this.formattedAddress = this.fulladdress.results[0].formatted_address;
     }
-    this.dialogRef.close(this.location_details);
+    this.dialogRef.close(
+      {
+        formattedAddress: this.formattedAddress,
+        markerPosition: this.markerPosition,
+      }
+    );
   }
 }

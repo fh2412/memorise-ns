@@ -26,15 +26,21 @@ export class LocationService {
     return this.http.put<UpdateStandardResponse>(url, locationData);
   }
 
-  getAddressComponents(address: any[], length: 'short' | 'long', filter: string): string | undefined {
-    const findType = (type: any) => type.types[0] === filter;
-    const location = address.map(obj => obj);
-    const rr = location.filter(findType)[0];
+  parseFormattedAddress(formattedAddress: string): { city: string; postalCode: string; country: string } {
+    const postalCodeRegex = /\b\d{4,5}\b/;
+    const countryRegex = /,\s?([^,]+)$/;
+    const cityRegex = /,?\s?(\d{4,5}\s[^\d,]+)/;
   
-    return (
-      length === 'short'
-        ? rr?.short_name
-        : rr?.long_name
-    );
+    // Extract components
+    const postalCodeMatch = formattedAddress.match(postalCodeRegex);
+    const countryMatch = formattedAddress.match(countryRegex);
+    const cityMatch = formattedAddress.match(cityRegex);
+  
+    return {
+      postalCode: postalCodeMatch ? postalCodeMatch[0] : '',
+      country: countryMatch ? countryMatch[1].trim() : '',
+      city: cityMatch ? cityMatch[1].trim() : '',
+    };
   }
+  
 }

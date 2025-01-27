@@ -244,22 +244,30 @@ export class EditmemoryComponent implements OnInit {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.updateLocationData(result[0].address_components, result[1]);
+        this.updateLocationData(result.formattedAddress, result.markerPosition);
       }
     });
   }
 
-  updateLocationData(address: any[], coordinates: { lat: number, lng: number }): void {
+  updateLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
+    const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
+  
     this.memoryForm.patchValue({
-      l_city: this.locationService.getAddressComponents(address, 'long', 'locality'),
-      l_postcode: this.locationService.getAddressComponents(address, 'long', 'postal_code'),
-      l_country: this.locationService.getAddressComponents(address, 'long', 'country'),
+      l_city: addressComponents.city,
+      l_postcode: addressComponents.postalCode,
+      l_country: addressComponents.country,
       lat: coordinates.lat,
       lng: coordinates.lng,
     });
-    
-    this.memory.location_id === 1 ? this.createLocation() : this.updateLocation();
+  
+    if(this.memory.location_id === 1){
+      this.createLocation();
+    }
+    else{
+      this.updateLocation();
+    }
   }
+  
 
   openInfoDialog() {
     const dialogData: InfoDialogData = {

@@ -85,8 +85,8 @@ export class AddingMemoryComponent implements OnInit {
           });
 
           dialogRef.afterClosed().subscribe(result => {
-            if (result && result[0]?.address_components && result[1]?.lat && result[1]?.lng) {
-              this.patchLocationData(result[0].address_components, result[1].lat, result[1].lng);
+            if (result) {
+              this.patchLocationData(result.formattedAddress, result.markerPosition);
             } else {
               console.error("Incomplete location data received from map dialog.");
             }
@@ -103,13 +103,15 @@ export class AddingMemoryComponent implements OnInit {
 
 
 
-  private patchLocationData(addressComponents: any, lat: number, lng: number): void {
+  private patchLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
+    const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
+    
     this.memoryForm.patchValue({
-      l_city: this.locationService.getAddressComponents(addressComponents, 'long', 'locality'),
-      l_postcode: this.locationService.getAddressComponents(addressComponents, 'long', 'postal_code'),
-      l_country: this.locationService.getAddressComponents(addressComponents, 'long', 'country'),
-      lat,
-      lng
+      l_city: addressComponents.city,
+      l_postcode: addressComponents.postalCode,
+      l_country: addressComponents.country,
+      lat: coordinates.lat,
+      lng: coordinates.lng,
     });
   }
 

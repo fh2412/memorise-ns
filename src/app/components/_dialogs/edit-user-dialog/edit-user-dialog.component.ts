@@ -6,7 +6,7 @@ import { Country, CountryService } from '../../../services/restCountries.service
 import { map, Observable, startWith } from 'rxjs';
 
 @Component({
-  selector: 'edit-user-dialog',
+  selector: 'app-edit-user-dialog',
   templateUrl: 'edit-user-dialog.component.html',
   styleUrls: ['edit-user-dialog.component.scss']
 })

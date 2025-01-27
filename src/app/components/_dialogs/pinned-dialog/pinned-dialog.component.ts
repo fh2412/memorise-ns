@@ -39,10 +39,10 @@ export class PinnedDialogComponent {
     this.selectedCount = this.favoriteMemories.length;
   }
 
-  private transformMemories(memoryData: any[], isFavorite: boolean): PinnedMemory[] {
+  private transformMemories(memoryData: Memory[], isFavorite: boolean): PinnedMemory[] {
     return memoryData.map(memory => ({
       name: memory.title,
-      id: memory.memory_id || memory.memoryId,
+      id: memory.memory_id || memory.memory_id,
       isFavorite
     }));
   }

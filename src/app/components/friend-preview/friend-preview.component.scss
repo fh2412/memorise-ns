@@ -2,19 +2,21 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-        margin-right: 15px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 15px;
     }
-    button {
+
+    .request-button {
       height: 45px;
     }
   }
 
-  .profile-row{
+  .profile-row {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -23,4 +25,8 @@
   .enabled {
     opacity: 0.6;
     cursor: pointer;
+  }
+
+  .profile-button {
+    all: unset;
   }

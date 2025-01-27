@@ -11,6 +11,7 @@ export interface MemoriseUser {
   instagram: string;
   location_id: number;
   profilepic: string;
+  company_id: number;
 }
 
 export interface CreateUserResponse {

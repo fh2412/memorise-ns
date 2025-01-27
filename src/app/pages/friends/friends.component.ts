@@ -65,7 +65,7 @@ export class FriendsComponent implements OnInit {
     );
   }
 
-  private handleFetchError(dataType: string, error: any): void {
+  private handleFetchError(dataType: string, error: Error): void {
     console.error(`Error fetching ${dataType}:`, error);
   }
 

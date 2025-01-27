@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { companyService } from '../../services/company.service';
+import { MemoriseUser } from '../../models/userInterface.model';
+import { CompanyData } from '../../components/_dialogs/company-dialog/company-dialog.component';
 
 
 @Component({
@@ -9,9 +11,9 @@ import { companyService } from '../../services/company.service';
   styleUrl: './activities.component.scss'
 })
 export class ActivitiesComponent implements OnInit {
-  user: any;
+  user!: MemoriseUser;
   loggedInUserId: string | null = null;
-  company: any;
+  company!: CompanyData;
 
   constructor(private userService: UserService, private companyService: companyService) {}
   async ngOnInit() {

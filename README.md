@@ -1,6 +1,10 @@
 # MemoriseNs
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8 and is now updated to version 18.2.10.
+
+## Instal Depandancies
+
+Run `npm install` to install all the depandancies needed to run the app.
 
 ## Development server
 

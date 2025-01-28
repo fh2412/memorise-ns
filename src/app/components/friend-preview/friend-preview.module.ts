@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { FriendPreviewComponent } from './friend-preview.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
     CommonModule,
     MatButtonModule,
     MatIconModule,
+    NgOptimizedImage,
 ],
   exports: [FriendPreviewComponent]
 })

@@ -3,7 +3,7 @@
     (keydown.enter)="navigateToUserpage(friend.user_id)" (keydown.space)="navigateToUserpage(friend.user_id)"
     tabindex="0" aria-label="View user profile">
     <div class="profile-row">
-      <img [src]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}">
+      <img [ngSrc]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}" width="60" height="60">
       <div class="text">
         <b>{{ friend.name || 'Name' }}</b><br>
         <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>

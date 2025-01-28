@@ -15,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
     MatIconModule,
     MatProgressBarModule,
     MatGridListModule,
-    MatCardModule
+    MatCardModule,
 ],
   exports: [ImageUploadComponent]
 })

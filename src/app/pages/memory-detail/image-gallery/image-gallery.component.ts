@@ -60,7 +60,6 @@ export class ImageGalleryComponent implements OnInit {
         break;
       }
     }
-
     this.shuffleArray(layouts);
     return layouts;
   }
@@ -87,16 +86,18 @@ export class ImageGalleryComponent implements OnInit {
   
 
   private createPlaceholderLayout(portraitStack: string[], landscapeStack: string[]): Layout {
+    const portraitCount = portraitStack.length;
+    const landscapeCount = landscapeStack.length;
     const portrait = portraitStack.length > 0 ? portraitStack.shift() : this.placeholderImage;
-    const landscape1 = landscapeStack.length > 0 ? landscapeStack.shift() : this.placeholderImage;
-  
-    if (portraitStack.length === 1 && landscapeStack.length === 1) {
+    const landscape = landscapeStack.length > 0 ? landscapeStack.shift() : this.placeholderImage;
+    
+    if (portraitCount === 1 && landscapeCount === 1) {
       return {
         type: 3,
         portraits: [portrait!],
-        landscapes: [landscape1!, this.placeholderImage],
+        landscapes: [landscape!, this.placeholderImage],
       };
-    } else if (portraitStack.length === 1 && landscapeStack.length === 0) {
+    } else if (portraitCount === 1) {
       return {
         type: 2,
         portraits: [portrait!, this.placeholderImage],
@@ -104,13 +105,13 @@ export class ImageGalleryComponent implements OnInit {
     } else {
       return {
         type: 1,
-        landscapes: [landscape1!],
+        landscapes: [landscape!],
       };
     }
   }
   
   private shuffleArray(array: Layout[]): void {
-    for (let i = array.length - 1; i > 0; i--) {
+    for (let i = array.length - 2; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
     }

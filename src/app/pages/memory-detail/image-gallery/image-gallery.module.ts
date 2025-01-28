@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -40,7 +40,8 @@ const routes: Routes = [
     MatButtonModule,
     MatToolbarModule,
     MatTableModule,
-    BackButtonModule
+    BackButtonModule,
+    NgOptimizedImage,
 ]
 })
 export class ImageGalleryModule { }

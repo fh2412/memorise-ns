@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MemoriseCompany } from '../models/company.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
-import { CompanyData } from '../components/_dialogs/company-dialog/company-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +13,7 @@ export class companyService {
   constructor(private http: HttpClient) {}
 
   getUserCompany(user_id: string) {
-    return this.http.get<CompanyData>(`${this.apiUrl}/${user_id}`);
+    return this.http.get<MemoriseCompany>(`${this.apiUrl}/${user_id}`);
   }
 
   leaveCompany(user_id: string) {

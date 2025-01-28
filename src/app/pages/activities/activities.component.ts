@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { companyService } from '../../services/company.service';
 import { MemoriseUser } from '../../models/userInterface.model';
-import { CompanyData } from '../../components/_dialogs/company-dialog/company-dialog.component';
+import { MemoriseCompany } from '../../models/company.model';
 
 
 @Component({
@@ -13,7 +13,7 @@ import { CompanyData } from '../../components/_dialogs/company-dialog/company-di
 export class ActivitiesComponent implements OnInit {
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
-  company!: CompanyData;
+  company!: MemoriseCompany;
 
   constructor(private userService: UserService, private companyService: companyService) {}
   async ngOnInit() {

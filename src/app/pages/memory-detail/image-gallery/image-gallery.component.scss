@@ -3,11 +3,6 @@
 
 .bd-home-section {
   @include mixins.background-gradient;
-
-  }
-
-img{
-    width: 100%;
 }
 
 .layout-spacing {
@@ -15,13 +10,13 @@ img{
 }
 
 .image-button {
-  all: unset; /* Resets button styles */
+  all: unset;
+  /* Resets button styles */
   cursor: pointer;
   display: inline-block;
 }
 
 img {
-  width: 100%;  /* Set image to fit container or adjust as needed */
-  height: auto;
   display: block;
+  object-fit: cover;
 }

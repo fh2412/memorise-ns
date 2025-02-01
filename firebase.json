@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "dist/memorise-ns",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

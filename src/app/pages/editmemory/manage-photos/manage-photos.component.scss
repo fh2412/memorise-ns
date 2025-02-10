@@ -1,9 +1,7 @@
 @use '@angular/material' as mat;
-@import '../../../../styles.scss';
+@import '../../../../styles/themes/variables';
 
 @import '../../memory-detail/image-preview.scss';
-
-$primary: mat.get-theme-color($memorise-ns-theme, accent, 500);
 
 .header {
   margin-top: 30px;
@@ -98,11 +96,11 @@ $primary: mat.get-theme-color($memorise-ns-theme, accent, 500);
   }
   
   .card.hovered, .ard.starred {
-    border-color: $primary;
+    border-color: $accent;
   }
   
   .starred-icon {
-    color: $primary;
+    color: $accent;
   }
 
   .position-bottom-right {

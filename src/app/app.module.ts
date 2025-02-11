@@ -4,6 +4,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { RouterModule } from '@angular/router'; // Import RouterModule
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,6 +37,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { routes } from './app-routing.module'; // Import your routes
 
 @NgModule({
     declarations: [
@@ -51,9 +53,19 @@ import { AuthInterceptor } from './services/auth.interceptor';
         CompanyDialogComponent,
         FullDescriptionDialogComponent,
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
         BrowserAnimationsModule,
-        AppRoutingModule,
+        RouterModule.forRoot(routes, { // Add RouterModule.forRoot with errorHandler
+            errorHandler: (error) => {
+                console.error('Navigation Error:', error);
+                // Example: Redirect to an error page
+                // this.router.navigate(['/error']);  // Requires injecting Router
+                alert("A navigation error occurred. Please try again later."); // Or any other error handling
+            }
+        }),
+        AppRoutingModule, // Keep this AFTER RouterModule.forRoot
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         MatSidenavModule,
@@ -70,10 +82,11 @@ import { AuthInterceptor } from './services/auth.interceptor';
         MatProgressBarModule,
         GoogleMapsModule,
         FriendsPreviewModule,
-        MatCheckboxModule],
+        MatCheckboxModule
+    ],
     providers: [
         provideNativeDateAdapter(),
-        { provide: DateAdapter, useClass: MatNativeDateModule },
+        // { provide: DateAdapter, useClass: MatNativeDateModule },
         provideHttpClient(withInterceptorsFromDi()),
         {
             provide: HTTP_INTERCEPTORS,

@@ -9,9 +9,10 @@ export interface PinnedMemory {
 }
 
 @Component({
-  selector: 'app-pinned-dialog',
-  templateUrl: './pinned-dialog.component.html',
-  styleUrl: './pinned-dialog.component.scss'
+    selector: 'app-pinned-dialog',
+    templateUrl: './pinned-dialog.component.html',
+    styleUrl: './pinned-dialog.component.scss',
+    standalone: false
 })
 export class PinnedDialogComponent {
   favoriteMemories: PinnedMemory[] = [];

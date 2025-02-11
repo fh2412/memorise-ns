@@ -6,9 +6,10 @@ import { Country, CountryService } from '../../../services/restCountries.service
 import { map, Observable, startWith } from 'rxjs';
 
 @Component({
-  selector: 'app-edit-user-dialog',
-  templateUrl: 'edit-user-dialog.component.html',
-  styleUrls: ['edit-user-dialog.component.scss']
+    selector: 'app-edit-user-dialog',
+    templateUrl: 'edit-user-dialog.component.html',
+    styleUrls: ['edit-user-dialog.component.scss'],
+    standalone: false
 })
 export class EditUserDialogComponent implements OnInit {
   @Output() updateUserData = new EventEmitter<MemoriseUser>();  // Emit the full user object

@@ -1,8 +1,9 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-view-selector',
-  templateUrl: './view-selector.component.html',
+    selector: 'app-view-selector',
+    templateUrl: './view-selector.component.html',
+    standalone: false
 })
 export class ViewSelectorComponent {
   selectedValue: 'standard' | 'map' = 'standard';

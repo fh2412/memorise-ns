@@ -7,9 +7,10 @@ import { FirebaseError } from 'firebase/app';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 @Component({
-  selector: 'app-change-password-dialog',
-  templateUrl: './change-password-dialog.component.html',
-  styleUrls: ['./change-password-dialog.component.scss']
+    selector: 'app-change-password-dialog',
+    templateUrl: './change-password-dialog.component.html',
+    styleUrls: ['./change-password-dialog.component.scss'],
+    standalone: false
 })
 export class ChangePasswordDialogComponent {
   @Output() updateUserPassword = new EventEmitter<void>();

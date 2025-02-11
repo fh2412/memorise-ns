@@ -7,9 +7,10 @@ import { Friend } from '../../models/userInterface.model';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-friends',
-  templateUrl: './friends.component.html',
-  styleUrl: './friends.component.scss'
+    selector: 'app-friends',
+    templateUrl: './friends.component.html',
+    styleUrl: './friends.component.scss',
+    standalone: false
 })
 export class FriendsComponent implements OnInit {
 

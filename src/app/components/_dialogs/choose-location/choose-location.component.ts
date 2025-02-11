@@ -6,9 +6,10 @@ import { GeocoderResponse } from '../../../models/geocoder-response.model';
 
 
 @Component({
-  selector: 'app-choose-location',
-  templateUrl: './choose-location.component.html',
-  styleUrl: './choose-location.component.scss'
+    selector: 'app-choose-location',
+    templateUrl: './choose-location.component.html',
+    styleUrl: './choose-location.component.scss',
+    standalone: false
 })
 export class ChooseLocationComponent {
   constructor(private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) { }

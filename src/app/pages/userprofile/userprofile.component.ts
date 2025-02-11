@@ -17,9 +17,10 @@ import { Memory } from '../../models/memoryInterface.model';
 import { MemoriseUser } from '../../models/userInterface.model';
 
 @Component({
-  selector: 'app-userprofile',
-  templateUrl: './userprofile.component.html',
-  styleUrls: ['./userprofile.component.scss']
+    selector: 'app-userprofile',
+    templateUrl: './userprofile.component.html',
+    styleUrls: ['./userprofile.component.scss'],
+    standalone: false
 })
 export class UserProfileComponent implements OnInit {
   userId!: string;

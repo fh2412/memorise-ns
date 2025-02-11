@@ -10,9 +10,10 @@ import { ActivityService } from '../../../services/activity.service';
 import { CreateLocationResponse } from '../../../models/location.model';
 
 @Component({
-  selector: 'app-upload-progress-dialog',
-  templateUrl: './upload-progress-dialog.component.html',
-  styleUrl: './upload-progress-dialog.component.scss'
+    selector: 'app-upload-progress-dialog',
+    templateUrl: './upload-progress-dialog.component.html',
+    styleUrl: './upload-progress-dialog.component.scss',
+    standalone: false
 })
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];

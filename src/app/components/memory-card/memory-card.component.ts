@@ -4,9 +4,10 @@ import { Router } from '@angular/router';
 import { Memory } from '../../models/memoryInterface.model';
 
 @Component({
-  selector: 'app-memory-card',
-  templateUrl: './memory-card.component.html',
-  styleUrl: './memory-card.component.scss'
+    selector: 'app-memory-card',
+    templateUrl: './memory-card.component.html',
+    styleUrl: './memory-card.component.scss',
+    standalone: false
 })
 export class MemoryCardComponent {
   @Input() cardData!: Memory;

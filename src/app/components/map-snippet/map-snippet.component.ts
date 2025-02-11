@@ -2,9 +2,10 @@ import { Component, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/
 import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
 
 @Component({
-  selector: 'app-map-snippet',
-  templateUrl: './map-snippet.component.html',
-  styleUrls: ['./map-snippet.component.scss']
+    selector: 'app-map-snippet',
+    templateUrl: './map-snippet.component.html',
+    styleUrls: ['./map-snippet.component.scss'],
+    standalone: false
 })
 export class MapSnippetComponent implements OnChanges {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;

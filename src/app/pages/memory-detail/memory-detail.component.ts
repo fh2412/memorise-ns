@@ -24,9 +24,10 @@ export interface ImageWithMetadata {
 
 
 @Component({
-  selector: 'app-memory-detail',
-  templateUrl: './memory-detail.component.html',
-  styleUrl: 'memory-detail.component.scss'
+    selector: 'app-memory-detail',
+    templateUrl: './memory-detail.component.html',
+    styleUrl: 'memory-detail.component.scss',
+    standalone: false
 })
 export class MemoryDetailComponent implements OnInit {
   memorydb!: Memory;

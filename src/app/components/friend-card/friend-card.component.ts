@@ -2,9 +2,11 @@ import { Component, Input } from '@angular/core';
 import { Friend } from '../../models/userInterface.model';
 
 @Component({
-  selector: 'app-friend-card',
-  templateUrl: './friend-card.component.html',
-  styleUrls: ['./friend-card.component.scss'] // Fixed typo in styleUrls
+    selector: 'app-friend-card',
+    templateUrl: './friend-card.component.html',
+    styleUrls: ['./friend-card.component.scss'] // Fixed typo in styleUrls
+    ,
+    standalone: false
 })
 export class FriendCardComponent {
   /** Title displayed on the card */

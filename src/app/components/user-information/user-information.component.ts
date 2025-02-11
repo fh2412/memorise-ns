@@ -5,9 +5,10 @@ import { MemoriseUser } from '../../models/userInterface.model';
 import { take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-user-information',
-  templateUrl: './user-information.component.html',
-  styleUrls: ['./user-information.component.scss']
+    selector: 'app-user-information',
+    templateUrl: './user-information.component.html',
+    styleUrls: ['./user-information.component.scss'],
+    standalone: false
 })
 export class UserInformationComponent implements OnInit {
   userdb!: MemoriseUser;

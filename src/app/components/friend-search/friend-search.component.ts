@@ -4,9 +4,10 @@ import { Friend } from '../../models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
 
 @Component({
-  selector: 'app-friend-search',
-  templateUrl: './friend-search.component.html',
-  styleUrls: ['./friend-search.component.scss']
+    selector: 'app-friend-search',
+    templateUrl: './friend-search.component.html',
+    styleUrls: ['./friend-search.component.scss'],
+    standalone: false
 })
 export class FriendSearchComponent {
   @Input() userId: string | null = null;

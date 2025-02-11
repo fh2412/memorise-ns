@@ -7,9 +7,10 @@ import { Location } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-manage-photos',
-  templateUrl: './manage-photos.component.html',
-  styleUrl: './manage-photos.component.scss'
+    selector: 'app-manage-photos',
+    templateUrl: './manage-photos.component.html',
+    styleUrl: './manage-photos.component.scss',
+    standalone: false
 })
 export class ManagePhotosComponent implements OnInit {
   imagesToDelete: string[] = [];

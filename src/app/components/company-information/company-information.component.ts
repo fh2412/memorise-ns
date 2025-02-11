@@ -7,9 +7,10 @@ import { ShareFriendCodeDialogComponent } from '../_dialogs/share-friend-code-di
 import { MemoriseCompany } from '../../models/company.model';
 
 @Component({
-  selector: 'app-company-information',
-  templateUrl: './company-information.component.html',
-  styleUrl: './company-information.component.scss'
+    selector: 'app-company-information',
+    templateUrl: './company-information.component.html',
+    styleUrl: './company-information.component.scss',
+    standalone: false
 })
 export class CompanyInformationComponent {
 

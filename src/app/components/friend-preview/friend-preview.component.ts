@@ -5,9 +5,10 @@ import { Friend } from '../../models/userInterface.model';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-friend-preview',
-  templateUrl: './friend-preview.component.html',
-  styleUrl: './friend-preview.component.scss'
+    selector: 'app-friend-preview',
+    templateUrl: './friend-preview.component.html',
+    styleUrl: './friend-preview.component.scss',
+    standalone: false
 })
 export class FriendPreviewComponent implements OnInit {
   @Input() requested = false;

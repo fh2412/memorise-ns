@@ -22,7 +22,7 @@ export class MapSnippetComponent implements OnChanges {
     minZoom: 4,
     streetViewControl: false,
   };
-  markerOptions: google.maps.MarkerOptions = { draggable: false };
+  options: google.maps.MapOptions = { draggable: false };
 
   mapCenter: google.maps.LatLng | undefined;
   markerPosition!: google.maps.LatLng;

@@ -4,7 +4,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
-import { RouterModule } from '@angular/router'; // Import RouterModule
+import { RouterModule } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -28,7 +28,7 @@ import { UploadProgressDialogComponent } from './components/_dialogs/upload-prog
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
-import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { ShareFriendCodeDialogComponent } from './components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
@@ -65,7 +65,7 @@ import { routes } from './app-routing.module'; // Import your routes
                 alert("A navigation error occurred. Please try again later."); // Or any other error handling
             }
         }),
-        AppRoutingModule, // Keep this AFTER RouterModule.forRoot
+        AppRoutingModule,
         AngularFireModule.initializeApp(environment.firebase),
         AngularFireAuthModule,
         MatSidenavModule,

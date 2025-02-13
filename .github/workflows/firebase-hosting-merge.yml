@@ -8,9 +8,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci  # Faster and ensures package-lock.json consistency
+
+      # Install dependencies
+      - run: npm ci 
+
+      # Install Angular CLI globally
       - run: npm install -g @angular/cli
-      - run: npm run build
+
+      # Create environment.prod.ts dynamically using GitHub Secret
+      - run: |
+          mkdir -p src/environments
+          echo "export const environment = {" > src/environments/environment.prod.ts
+          echo "  production: true," >> src/environments/environment.prod.ts
+          echo "  googleApiKey: '${{ secrets.GOOGLE_MAPS_API_KEY }}'" >> src/environments/environment.prod.ts
+          echo "  firebase: '${{ secrets.FIREBASE_CONFIG }}'" >> src/environments/environment.prod.ts
+          echo "};" >> src/environments/environment.prod.ts
+
+      # Build the project
+      - run: ng build --configuration=production
 
       # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0

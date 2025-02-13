@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { RouterModule } from '@angular/router';
@@ -60,14 +62,10 @@ import { routes } from './app-routing.module'; // Import your routes
         RouterModule.forRoot(routes, { // Add RouterModule.forRoot with errorHandler
             errorHandler: (error) => {
                 console.error('Navigation Error:', error);
-                // Example: Redirect to an error page
-                // this.router.navigate(['/error']);  // Requires injecting Router
-                alert("A navigation error occurred. Please try again later."); // Or any other error handling
+                alert("A navigation error occurred. Please try again later.");
             }
         }),
         AppRoutingModule,
-        AngularFireModule.initializeApp(environment.firebase),
-        AngularFireAuthModule,
         MatSidenavModule,
         MatIconModule,
         MatToolbarModule,
@@ -85,6 +83,9 @@ import { routes } from './app-routing.module'; // Import your routes
         MatCheckboxModule
     ],
     providers: [
+        provideFirebaseApp(() => initializeApp(environment.firebase)), // Initialize Firebase
+        provideAuth(() => getAuth()),
+        provideStorage(() => getStorage()),
         provideNativeDateAdapter(),
         // { provide: DateAdapter, useClass: MatNativeDateModule },
         provideHttpClient(withInterceptorsFromDi()),

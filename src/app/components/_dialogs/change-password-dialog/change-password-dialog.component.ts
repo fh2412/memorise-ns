@@ -1,27 +1,37 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { FirebaseError } from 'firebase/app';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+import { Auth, User, user } from '@angular/fire/auth';
+import { Subscription } from 'rxjs';
 
 @Component({
-    selector: 'app-change-password-dialog',
-    templateUrl: './change-password-dialog.component.html',
-    styleUrls: ['./change-password-dialog.component.scss'],
-    standalone: false
+  selector: 'app-change-password-dialog',
+  templateUrl: './change-password-dialog.component.html',
+  styleUrls: ['./change-password-dialog.component.scss'],
+  standalone: false
 })
-export class ChangePasswordDialogComponent {
+export class ChangePasswordDialogComponent implements OnDestroy {
+  private auth: Auth = inject(Auth);
+  user$ = user(this.auth);
+  userSubscription: Subscription;
+  currentUser!: User;
+
   @Output() updateUserPassword = new EventEmitter<void>();
   changePasswordForm!: FormGroup;
   errorMessage: string | null = null;
 
-  constructor(
-    public dialogRef: MatDialogRef<ChangePasswordDialogComponent>,
-    private afAuth: AngularFireAuth
-  ) {
+  constructor(public dialogRef: MatDialogRef<ChangePasswordDialogComponent>) {
+    this.userSubscription = this.user$.subscribe((aUser: User | null) => {
+      console.log(aUser);
+    })
     this.initializeForm();
+  }
+
+  ngOnDestroy() {
+    this.userSubscription.unsubscribe();
   }
 
   private initializeForm(): void {
@@ -35,9 +45,7 @@ export class ChangePasswordDialogComponent {
   }
 
   async submitPasswordChange(): Promise<void> {
-    const currentUser = await firstValueFrom(this.afAuth.authState);
-
-    if (!currentUser || !currentUser.email) return;
+    if (!this.currentUser || !this.currentUser.email) return;
 
     const currentPassword = this.changePasswordForm.get('currentPassword')?.value;
     const newPassword = this.changePasswordForm.get('newPassword')?.value;
@@ -50,12 +58,12 @@ export class ChangePasswordDialogComponent {
 
     // Reauthenticate and update password
     reauthenticateWithCredential(
-      currentUser,
-      EmailAuthProvider.credential(currentUser.email, currentPassword)
+      this.currentUser,
+      EmailAuthProvider.credential(this.currentUser.email, currentPassword)
     )
       .then(() => {
         this.errorMessage = null;
-        updatePassword(currentUser, newPassword);
+        updatePassword(this.currentUser, newPassword);
       })
       .then(() => {
         console.log('Password updated successfully!');

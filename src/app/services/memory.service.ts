@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { AngularFireStorage } from '@angular/fire/compat/storage';
+import { inject, Injectable } from '@angular/core';
+import { Storage, ref } from '@angular/fire/storage';
 import { firstValueFrom, Observable } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData } from '../models/memoryInterface.model';
 import { Friend } from '../models/userInterface.model';
@@ -12,8 +12,9 @@ import { FormGroup } from '@angular/forms';
 })
 export class MemoryService {
   private apiUrl = 'http://localhost:3000/api'; // Replace with your API endpoint
+  private storage = inject(Storage);
 
-  constructor(private http: HttpClient, private storage: AngularFireStorage) {}
+  constructor(private http: HttpClient) {}
 
   getMemory(memory_id: number): Observable<Memory> {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
@@ -33,10 +34,10 @@ export class MemoryService {
     return this.http.get<Memory[]>(`${this.apiUrl}/memories/allMemories/${user_id}`);
   }
 
-  getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
+  getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): string {
     const path = `memories/${memoryId}/picture_${starredIndex+1}.jpg`;
-    const ref = this.storage.ref(path);
-    return firstValueFrom(ref.getDownloadURL());    
+    const storageRef = ref(this.storage, path);
+    return storageRef.fullPath;    
   }
 
   getMemorysFriends(memory_id: string, user_id: string) {

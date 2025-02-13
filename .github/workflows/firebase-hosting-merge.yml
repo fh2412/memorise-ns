@@ -18,6 +18,11 @@ jobs:
       # Create environment.prod.ts dynamically using GitHub Secret
       - run: |
           mkdir -p src/environments
+          echo "export const environment = {" > src/environments/environment.ts
+          echo "  production: true," >> src/environments/environment.ts
+          echo "  googleApiKey: ''" >> src/environments/environment.ts
+          echo "  firebase: ''" >> src/environments/environment.ts
+          echo "};" >> src/environments/environmen.ts
           echo "export const environment = {" > src/environments/environment.prod.ts
           echo "  production: true," >> src/environments/environment.prod.ts
           echo "  googleApiKey: '${{ secrets.GOOGLE_MAPS_API_KEY }}'" >> src/environments/environment.prod.ts

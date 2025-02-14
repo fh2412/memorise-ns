@@ -1,7 +1,8 @@
 @use '../../../styles/components/mixins' as mixins;
 
-@import '../../../styles/components/page.scss';
-  
+@use '../../../styles/components/page.scss';
+@use '../../../styles/themes/variables';
+
 .header-group {
   display: flex;
   align-items: center;
@@ -29,5 +30,5 @@
     padding-bottom: 50%;
   }
   span{
-    color: $accent;
+    color: variables.$accent;
   }

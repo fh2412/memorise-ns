@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../_dialogs/confirm-dialog/confirm-dialog.component';
@@ -12,7 +12,7 @@ import { ConfirmDialogComponent, ConfirmationDialogData } from '../_dialogs/conf
 })
 export class LogoutButtonComponent {
   constructor(
-    private afAuth: AngularFireAuth,
+    private auth: Auth,
     private router: Router,
     private dialog: MatDialog
   ) {}
@@ -34,7 +34,7 @@ export class LogoutButtonComponent {
    * Logs the user out and navigates to the login page. Handles errors gracefully.
    */
   private logout(): void {
-    this.afAuth.signOut()
+    this.auth.signOut()
       .then(() => {
         this.router.navigate(['/login']);
       })

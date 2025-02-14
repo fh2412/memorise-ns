@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { getAuth } from 'firebase/auth';
+import { getAuth } from '@angular/fire/auth';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {

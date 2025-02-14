@@ -1,10 +1,8 @@
 import { Component, EventEmitter, inject, OnDestroy, Output } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { EmailAuthProvider, reauthenticateWithCredential, updatePassword } from "firebase/auth";
 import { FirebaseError } from 'firebase/app';
-import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
-import { Auth, User, user } from '@angular/fire/auth';
+import { Auth, User, user, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
 
 @Component({

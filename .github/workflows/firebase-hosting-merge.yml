@@ -18,6 +18,7 @@ jobs:
       # Create environment.prod.ts dynamically using GitHub Secret
       - run: |
           mkdir -p src/environments
+          echo "" > src/environments/environment.ts
           echo "${{ secrets.WEBSITE_ENV_STAGE }}" > src/environments/environment.prod.ts
 
 

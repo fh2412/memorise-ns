@@ -18,7 +18,7 @@ jobs:
       # Create environment.prod.ts dynamically using GitHub Secret
       - run: |
           mkdir -p src/environments
-          echo "${{ secrets.WEBSITE_ENV_STAGE }}" > .environment.production.ts
+          echo "${{ secrets.WEBSITE_ENV_STAGE }}" > .environment.prod.ts
 
       # Build the project
       - run: ng build --configuration=production

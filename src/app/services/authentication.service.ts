@@ -3,6 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { catchError, from, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InsertStandardResult } from '../models/api-responses.model';
+import { environment } from '../../environments/environment';
 
 
 @Injectable({
@@ -26,7 +27,7 @@ export class AuthenticationService {
   }
 
 
-  private apiUrl = 'http://localhost:3000/api/users';
+  private apiUrl = `${environment.apiUrl}/users`;
   registerNew(params: SignIn): Observable<InsertStandardResult> {
     const body = { email: params.email, password: params.password };
     return this.http.post<InsertStandardResult>(`${this.apiUrl}`, body);

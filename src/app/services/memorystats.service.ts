@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 interface Count {
   count: number;
@@ -10,7 +11,7 @@ interface Count {
 })
 
 export class MemorystatsService {
-  private apiUrl = 'http://localhost:3000/api'; // Replace with your API endpoint
+  private apiUrl = `${environment.apiUrl}/api`;
 
 
   constructor(private http: HttpClient) { }

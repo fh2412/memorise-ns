@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Country {
   name: string;
@@ -34,6 +35,8 @@ interface UserCountryResponse {
 })
 export class CountryService {
 
+  private apiUrl = `${environment.apiUrl}`;
+
   constructor(private http: HttpClient) { }
 
   getCountries(): Observable<Country[]> {
@@ -60,7 +63,7 @@ export class CountryService {
   }
 
   getCountryGeocordsByUserId(userId: string): Observable<Geocords[]> {
-    return this.http.get<UserCountryResponse>(`http://localhost:3000/api/users/country/${userId}`)
+    return this.http.get<UserCountryResponse>(`${this.apiUrl}/users/country/${userId}`)
       .pipe(
         switchMap(countryResponse => {
           const countryName = countryResponse.country;

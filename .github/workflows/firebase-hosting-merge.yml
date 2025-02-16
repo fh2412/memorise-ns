@@ -19,9 +19,10 @@ jobs:
       - run: |
           mkdir -p src/environments
           echo "" > src/environments/environment.ts
-          echo "${{ secrets.PRODUCTION_ENV }}" > src/environments/environment.prod.ts
-
-
+          cat <<EOF > src/environments/environment.prod.ts
+          ${{ secrets.PRODUCTION_ENV }}
+          EOF
+          
       # Build the project
       - run: ng build --configuration=production
 

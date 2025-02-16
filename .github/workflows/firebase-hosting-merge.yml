@@ -18,12 +18,11 @@ jobs:
       # Create environment.prod.ts dynamically using GitHub Secret
       - run: |
           mkdir -p src/environments
-          echo "export const environment = {" > src/environments/environment.prod.ts
-          echo "  production: true," >> src/environments/environment.prod.ts
-          echo "  googleApiKey: '${{ secrets.GOOGLE_MAPS_API_KEY }}'" >> src/environments/environment.prod.ts
-          echo "  firebase: '${{ secrets.FIREBASE_CONFIG }}'" >> src/environments/environment.prod.ts
-          echo "};" >> src/environments/environment.prod.ts
-
+          echo "" > src/environments/environment.ts
+          cat <<EOF > src/environments/environment.prod.ts
+          ${{ secrets.PRODUCTION_ENV }}
+          EOF
+          
       # Build the project
       - run: ng build --configuration=production
 
@@ -33,4 +32,4 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_MEMORISE_910C3 }}
           channelId: live
-          projectId: memorise-910c3
+          projectId: ${{ secrets.FIREBASE_PROJECTID }}

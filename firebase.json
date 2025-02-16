@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/memorise-ns",
+    "public": "dist/memorise-ns/browser",
     "ignore": [
       "firebase.json",
       "**/.*",

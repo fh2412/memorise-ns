@@ -11,7 +11,7 @@ interface Count {
 })
 
 export class MemorystatsService {
-  private apiUrl = `${environment.apiUrl}/api`;
+  private apiUrl = `${environment.apiUrl}`;
 
 
   constructor(private http: HttpClient) { }

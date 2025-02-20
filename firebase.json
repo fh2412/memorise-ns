@@ -8,8 +8,8 @@
     ],
     "rewrites": [
       {
-        "source": "**", // Catch all requests
-        "destination": "/index.html" // Redirect to index.html
+        "source": "**",
+        "destination": "/index.html"
       }
     ]
   }

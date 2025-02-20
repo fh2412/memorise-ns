@@ -1,16 +1,15 @@
-// friends.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Friend, FriendStatus } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FriendsService {
-  private apiUrl = 'http://localhost:3000/api/friends';
+  private apiUrl = `${environment.apiUrl}/friends`;
 
   constructor(private http: HttpClient) {}
 

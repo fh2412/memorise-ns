@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MemoriseCompany } from '../models/company.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class companyService {
-  private apiUrl = 'http://localhost:3000/api/company';
+  private apiUrl = `${environment.apiUrl}/company`;
 
   constructor(private http: HttpClient) {}
 

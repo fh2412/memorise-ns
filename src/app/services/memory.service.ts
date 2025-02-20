@@ -6,12 +6,13 @@ import { CreateMemoryResponse, Memory, MemoryFormData } from '../models/memoryIn
 import { Friend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemoryService {
-  private apiUrl = 'http://localhost:3000/api'; // Replace with your API endpoint
+  private apiUrl = `${environment.apiUrl}`; // Replace with your API endpoint
   private storage = inject(Storage);
 
   constructor(private http: HttpClient) {}

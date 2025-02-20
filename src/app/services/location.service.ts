@@ -5,12 +5,13 @@ import { CreateLocationResponse, MemoriseLocation } from '../models/location.mod
 import { MemoryFormData } from '../models/memoryInterface.model';
 import { UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationService {
-  private apiUrl = 'http://localhost:3000/api/locations';
+  private apiUrl = `${environment.apiUrl}/locations`;
 
   constructor(private http: HttpClient) {}
 

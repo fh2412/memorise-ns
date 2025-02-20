@@ -3,12 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Memory } from '../models/memoryInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PinnedMemoryService {
-  private apiUrl = 'http://localhost:3000/api/pinned';
+  private apiUrl = `${environment.apiUrl}/pinned`;
 
   constructor(private http: HttpClient) {}
 

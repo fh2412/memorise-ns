@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { ImageWithMetadata } from '../pages/memory-detail/memory-detail.component';
 import { HttpClient } from '@angular/common/http';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -25,7 +25,7 @@ export class ImageGalleryService {
 
   downloadZip(folderName: string, title: string): Observable<Blob> {
     return this.http
-      .get(`http://localhost:3000/api/firestore/download-zip/${folderName}`, { responseType: 'blob' })
+      .get(`${environment.apiUrl}/firestore/download-zip/${folderName}`, { responseType: 'blob' })
       .pipe(
         tap((blob) => {
           const url = URL.createObjectURL(blob);

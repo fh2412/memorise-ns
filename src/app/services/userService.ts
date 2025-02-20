@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CreateUserResponse, Friend, MemoriseUser } from '../models/userInterface.model';
 import { UpdateStandardResponse } from '../models/api-responses.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -24,7 +25,7 @@ export class UserService {
     return storedValue ? JSON.parse(storedValue) : null;
   }
   
-  private apiUrl = 'http://localhost:3000/api/users'; // Replace with your API endpoint
+  private apiUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) {}
 

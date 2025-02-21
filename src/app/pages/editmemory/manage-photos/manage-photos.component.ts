@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { getDownloadURL, getMetadata, getStorage, listAll, ref } from 'firebase/storage';
+import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
 import { Location } from '@angular/common';

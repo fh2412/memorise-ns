@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Storage, ref } from '@angular/fire/storage';
-import { firstValueFrom, Observable } from 'rxjs';
+import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
+import { Observable } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData } from '../models/memoryInterface.model';
 import { Friend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
@@ -35,10 +35,17 @@ export class MemoryService {
     return this.http.get<Memory[]>(`${this.apiUrl}/memories/allMemories/${user_id}`);
   }
 
-  getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): string {
-    const path = `memories/${memoryId}/picture_${starredIndex+1}.jpg`;
+  async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
+    const path = `memories/${memoryId}/picture_${starredIndex + 1}.jpg`;
     const storageRef = ref(this.storage, path);
-    return storageRef.fullPath;    
+    
+    try {
+      const downloadURL = await getDownloadURL(storageRef);
+      return downloadURL; // The download URL of the file
+    } catch (error) {
+      console.error('Error getting download URL:', error);
+      throw error; // You may handle this error accordingly
+    }
   }
 
   getMemorysFriends(memory_id: string, user_id: string) {

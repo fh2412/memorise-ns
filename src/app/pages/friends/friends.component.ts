@@ -81,7 +81,7 @@ export class FriendsComponent implements OnInit {
   }
 
   private generateInviteLink(userId: string): string {
-    return `https://www.memorise.online/invite/${userId}`;
+    return `https://memorise.online/invite/${userId}`;
   }
 
   viewProfile() {

@@ -83,7 +83,7 @@ import { routes } from './app-routing.module'; // Import your routes
         MatCheckboxModule
     ],
     providers: [
-        provideFirebaseApp(() => initializeApp(environment.firebase)), // Initialize Firebase
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
         provideAuth(() => getAuth()),
         provideStorage(() => getStorage()),
         provideNativeDateAdapter(),

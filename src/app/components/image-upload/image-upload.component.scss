@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
-@import '../../../styles/themes/variables';
+@use '../../../styles/themes/variables' as color;
 
-@import '../../pages/memory-detail/image-preview.scss';
+@use '../../pages/memory-detail/image-preview.scss';
 
 .preview {
   max-width: 30%; 
@@ -30,14 +30,14 @@ mat-grid-list{
 }
 
 .card.hovered {
-  background: $accent;
+  background: color.$accent;
   ;
 }
 
 .card.starred {
-  border-color: $accent;
+  border-color: color.$accent;
 }
 
 .starred-icon {
-  color: $accent;
+  color: color.$accent;
 }

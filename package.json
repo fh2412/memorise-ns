@@ -27,7 +27,6 @@
     "@angular/router": "^19.1.5",
     "@angular/ssr": "^19.1.6",
     "@googlemaps/markerclusterer": "^2.5.3",
-    "express": "^4.21.2",
     "file-saver": "^2.0.5",
     "firebase": "^10.7.1",
     "jszip": "^3.10.1",

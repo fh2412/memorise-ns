@@ -1,6 +1,7 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Auth, authState, User } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
+import { environment } from '../environments/environment';
 
 
 @Component({
@@ -8,7 +9,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './app.component.html',
   standalone: false
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements OnDestroy, OnInit {
   private auth: Auth = inject(Auth);
   authState$ = authState(this.auth);
   authStateSubscription: Subscription;
@@ -30,6 +31,23 @@ export class AppComponent implements OnDestroy {
     // when manually subscribing to an observable remember to unsubscribe in ngOnDestroy
     this.authStateSubscription.unsubscribe();
   }
+
+  ngOnInit(): void {
+    this.loadGoogleMaps();
+  }
+
+  private loadGoogleMaps() {
+    if (document.getElementById('google-maps-script')) return;
+
+    const script = document.createElement('script');
+    script.id = 'google-maps-script';
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${environment.googleApiKey}&v=weekly`;
+    script.defer = true;
+    script.async = true;
+
+    document.head.appendChild(script);
+  }
+
 
   title = 'memorise-ns';
 }

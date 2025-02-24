@@ -11,6 +11,9 @@ export class ImageGalleryService {
   private imageDataSource = new BehaviorSubject<ImageWithMetadata[]>([]);
   currentImageData = this.imageDataSource.asObservable();
 
+  private apiUrl = `${environment.apiUrl}`;
+  
+
   constructor(private http: HttpClient) {}
 
 

@@ -1,5 +1,6 @@
-<app-back-button [text]="'Back'"></app-back-button>
 <section class="bd-home-section bd-theme-memorise" *ngIf="memorydb">
+  <app-back-button [text]="'Back'" class="back-button"></app-back-button>
+
   <div>
     <mat-toolbar>
       <h1>{{memorydb.title}}</h1>

@@ -1,5 +1,5 @@
-<app-back-button [text]="'Back'"></app-back-button>
 <section class="bd-home-section bd-theme-memorise">
+  <app-back-button [text]="'Back'" class="back-button"></app-back-button>
   <div class="container">
     <div *ngFor="let l of layout; trackBy: trackByLayoutType">
       <ng-container [ngSwitch]="l.type">

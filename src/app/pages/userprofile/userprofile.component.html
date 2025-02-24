@@ -1,6 +1,6 @@
-<app-back-button [text]="'Back'"></app-back-button>
-<section style="margin-top: 1.5rem;" *ngIf="user">
-  <div class="container">
+<div class="wrapper">
+  <app-back-button [text]="'Back'" class="back-button"></app-back-button>
+  <section style="margin-top: 1.5rem;" *ngIf="user">
     <div class="columns">
       <div class="profile-section">
         <div>
@@ -62,9 +62,8 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
-
+  </section>
+</div>
 <div *ngIf="isUploading" class="overlay">
   <mat-spinner class="spinner-container"></mat-spinner>
 </div>

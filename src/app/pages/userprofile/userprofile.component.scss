@@ -1,16 +1,24 @@
 @use '../../../styles/components/mixins' as mixins;
 @use '../../../styles/components/spinner-overlay.scss';
 
-/* Add your styles here */
-.container {
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  height: 100%;
   margin: 0 auto;
   max-width: 1200px;
-  padding-bottom: 25px;
+}
+
+.back-button {
+  top: 0;
+  left: 0;
+  position: absolute;
 }
 
 .columns {
   display: flex;
   justify-content: space-between;
+
   @media (max-width: 1480px) {
     display: block;
   }
@@ -20,7 +28,7 @@
   height: 34px;
 }
 
-.small-screen-list{
+.small-screen-list {
   @media (max-width: 1480px) {
     width: 85%;
     margin: auto;
@@ -28,12 +36,14 @@
   }
 }
 
-.level{
+.level {
   display: flex;
   justify-content: space-between;
 }
-.profile-section{
+
+.profile-section {
   width: 25%;
+
   @media (max-width: 1480px) {
     display: flex;
     width: 50%;
@@ -41,32 +51,39 @@
     margin-bottom: 30px;
   }
 }
-.bio{
+
+.bio {
   width: 80%;
   margin-left: 5%;
 }
-.editbutton{
+
+.editbutton {
   width: 100%;
 }
 
 .bio-content {
-  height: 160px; /* Adjust height as needed */
+  height: 160px;
+  /* Adjust height as needed */
   overflow-y: auto;
-  display: flex; /* Make the content itself a flex container */
+  display: flex;
+  /* Make the content itself a flex container */
   align-items: center;
   margin-left: 2rem;
 }
 
-.usersettings{
+.usersettings {
   margin-top: 1rem;
   display: flex;
   justify-content: space-between;
-  button{
+
+  button {
     width: 55%;
   }
+
   @media (max-width: 1480px) {
     justify-content: center;
-    button{
+
+    button {
       margin-right: 15px;
     }
   }
@@ -76,7 +93,7 @@
   position: relative;
   cursor: pointer;
   width: 100%;
-  
+
   // Profile picture styles
   .profile-picture {
     @include mixins.profile-pic();
@@ -85,7 +102,8 @@
     // Hover effect
     &:hover {
       filter: grayscale(100%);
-      + .change-icon {
+
+      +.change-icon {
         color: black; // Change color on hover
         opacity: 1; // Make the icon fully visible on hover
       }
@@ -109,6 +127,7 @@
       opacity: 1; // Make the icon fully visible on hover
     }
   }
+
   .image-label {
     cursor: pointer; // Set the cursor to pointer
     display: block;
@@ -117,7 +136,7 @@
   }
 }
 
-.memory-card{
+.memory-card {
   width: 98%;
   height: 95%;
 }

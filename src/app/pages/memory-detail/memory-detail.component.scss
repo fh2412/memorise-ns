@@ -82,3 +82,9 @@ h1 {
 .memory-card {
   @include card-mixin.memory-card(50px, 100%);
 }
+
+.back-button {
+  top: 0;
+  left: 0;
+  position: absolute;
+}

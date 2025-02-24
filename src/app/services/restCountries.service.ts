@@ -35,6 +35,8 @@ interface UserCountryResponse {
 })
 export class CountryService {
 
+  private apiUrl = `${environment.apiUrl}`;
+
   constructor(private http: HttpClient) { }
 
   getCountries(): Observable<Country[]> {

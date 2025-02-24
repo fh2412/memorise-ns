@@ -1,6 +1,5 @@
 @use '@angular/material' as mat;
 @use '../../../styles/themes/variables' as color;
-
 @use '../../pages/memory-detail/image-preview.scss';
 
 .preview {
@@ -31,7 +30,6 @@ mat-grid-list{
 
 .card.hovered {
   background: color.$accent;
-  ;
 }
 
 .card.starred {

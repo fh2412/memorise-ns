@@ -27,7 +27,7 @@ export class UserService {
   }
   
   private apiUrl = `${environment.apiUrl}/users`;
-
+  
   constructor(private http: HttpClient) {}
 
   getUser(id: string) {

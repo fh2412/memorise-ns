@@ -45,12 +45,12 @@ export class HomeComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const savedState = localStorage.getItem('showFriendsMemories');
-    const showFriendsMemories = savedState === 'true';
-    this.openForm.get('showFriendsMemories')?.setValue(showFriendsMemories);
+    this.showFriendsMemoriesBool = savedState === 'true';
+    this.openForm.get('showFriendsMemories')?.setValue(this.showFriendsMemoriesBool);
     try {
       await this.initializeUserData();
       await this.loadMemories();
-      this.initializeDataDisplay(showFriendsMemories);
+      this.initializeDataDisplay(this.showFriendsMemoriesBool);
     } catch (error) {
       console.error('Initialization error:', error);
     }
@@ -69,19 +69,26 @@ export class HomeComponent implements OnInit {
   private async loadMemories(): Promise<void> {
     try {
       await this.getCreatedMemories();
-      await this.getAddedMemories();
+      await this.getAddedMemories(this.showFriendsMemoriesBool);
     } catch (error) {
       console.error('Error loading memories:', error);
     }
   }
 
   private initializeDataDisplay(checked: boolean): void {
-    if(!this.noMemory){
-      this.displayMemories = checked && this.friendGeneratedMemories.length > 0
-        ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
-        : [...this.userGeneratedMemories];
+    if (!this.noMemory) {
+      if (checked && this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
+        this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
+      } else if(checked && this.friendGeneratedMemories.length > 0) {
+        this.displayMemories = [...this.friendGeneratedMemories];
+      } else if(this.userGeneratedMemories.length > 0) {
+        this.displayMemories = [...this.userGeneratedMemories];
+      } else {
+        this.displayMemories = [];
+      }
       this.filteredItems = [...this.displayMemories];
     }
+    
     this.updatePagedData();
   }
 
@@ -104,9 +111,19 @@ export class HomeComponent implements OnInit {
 
   showAll(checked: boolean): void {
     localStorage.setItem('showFriendsMemories', checked.toString());
-    this.displayMemories = checked && this.friendGeneratedMemories.length > 0
-      ? [...this.userGeneratedMemories, ...this.friendGeneratedMemories]
-      : [...this.userGeneratedMemories];
+    this.showFriendsMemoriesBool=checked;
+    if (!this.noMemory || this.friendGeneratedMemories.length>0) {
+      if (checked && this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length) {
+        this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
+      } else if(checked && this.friendGeneratedMemories.length > 0) {
+        this.displayMemories = [...this.friendGeneratedMemories];
+      } else if(!checked && this.userGeneratedMemories.length > 0){
+        this.displayMemories = [...this.userGeneratedMemories];
+      } else{
+        this.displayMemories=[];
+      }
+      this.filteredItems = [...this.displayMemories];
+    }
 
     if (this.openForm.get('search')?.value) {
       this.filterItems();
@@ -125,15 +142,18 @@ export class HomeComponent implements OnInit {
     try {
       const data = await firstValueFrom(this.memoryService.getCreatedMemory(this.userdb.user_id));
       this.userGeneratedMemories = data;
-      this.noMemory = this.userGeneratedMemories.length === undefined;
+      this.noMemory = this.userGeneratedMemories.length === 0;
     } catch (error) {
       console.error('Error fetching user-created memories:', error);
     }
   }
 
-  private async getAddedMemories(): Promise<void> {
+  private async getAddedMemories(showFriendsMemories: boolean): Promise<void> {
     try {
       this.friendGeneratedMemories = await firstValueFrom(this.memoryService.getAddedMemories(this.userdb.user_id));
+      if(this.noMemory === true && showFriendsMemories){
+        this.noMemory = this.userGeneratedMemories.length === 0
+      }
     } catch (error) {
       console.error("Error fetching friend's memories data:", error);
     }

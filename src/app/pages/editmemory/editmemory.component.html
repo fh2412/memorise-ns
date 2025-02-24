@@ -3,7 +3,7 @@
         <h1>EDIT MEMORY</h1>
     </div>
     <div>
-        <app-back-button></app-back-button>
+        <app-back-button [text]="'Cancel'"></app-back-button>
         <button mat-flat-button color="primary" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
         <button mat-flat-button color="warn" (click)="confirmDeletion('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
     </div>

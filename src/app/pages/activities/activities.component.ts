@@ -6,9 +6,10 @@ import { MemoriseCompany } from '../../models/company.model';
 
 
 @Component({
-  selector: 'app-activities',
-  templateUrl: './activities.component.html',
-  styleUrl: './activities.component.scss'
+    selector: 'app-activities',
+    templateUrl: './activities.component.html',
+    styleUrl: './activities.component.scss',
+    standalone: false
 })
 export class ActivitiesComponent implements OnInit {
   user!: MemoriseUser;

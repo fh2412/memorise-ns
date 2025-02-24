@@ -63,7 +63,7 @@ export class CountryService {
   }
 
   getCountryGeocordsByUserId(userId: string): Observable<Geocords[]> {
-    return this.http.get<UserCountryResponse>(`${this.apiUrl}/users/country/${userId}`)
+    return this.http.get<UserCountryResponse>(`${environment.apiUrl}/users/country/${userId}`)
       .pipe(
         switchMap(countryResponse => {
           const countryName = countryResponse.country;

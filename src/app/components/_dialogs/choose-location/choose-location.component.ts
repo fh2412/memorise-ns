@@ -6,9 +6,10 @@ import { GeocoderResponse } from '../../../models/geocoder-response.model';
 
 
 @Component({
-  selector: 'app-choose-location',
-  templateUrl: './choose-location.component.html',
-  styleUrl: './choose-location.component.scss'
+    selector: 'app-choose-location',
+    templateUrl: './choose-location.component.html',
+    styleUrl: './choose-location.component.scss',
+    standalone: false
 })
 export class ChooseLocationComponent {
   constructor(private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) { }
@@ -17,7 +18,8 @@ export class ChooseLocationComponent {
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
 
   mapZoom = 5;
-  mapCenter: google.maps.LatLng = new google.maps.LatLng(this.data.lat, this.data.long);
+  //mapCenter: google.maps.LatLng = new google.maps.LatLng(this.data.lat, this.data.long);
+  mapCenter: google.maps.LatLngLiteral = {lat: this.data.lat, lng: this.data.long};
   mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
     zoomControl: true,

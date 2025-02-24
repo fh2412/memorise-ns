@@ -11,9 +11,10 @@ export interface CustomMarker {
 }
 
 @Component({
-  selector: 'app-home-map-view',
-  templateUrl: './home-map-view.component.html',
-  styleUrl: './home-map-view.component.scss'
+    selector: 'app-home-map-view',
+    templateUrl: './home-map-view.component.html',
+    styleUrl: './home-map-view.component.scss',
+    standalone: false
 })
 export class HomeMapViewComponent implements OnInit {
   @Input() memories: Memory[] = [];

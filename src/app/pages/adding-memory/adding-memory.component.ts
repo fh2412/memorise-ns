@@ -11,9 +11,10 @@ import { Location } from '@angular/common';
 import { CountryService } from '../../services/restCountries.service';
 
 @Component({
-  selector: 'app-adding-memory',
-  templateUrl: './adding-memory.component.html',
-  styleUrls: ['./adding-memory.component.scss']
+    selector: 'app-adding-memory',
+    templateUrl: './adding-memory.component.html',
+    styleUrls: ['./adding-memory.component.scss'],
+    standalone: false
 })
 export class AddingMemoryComponent implements OnInit {
 

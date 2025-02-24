@@ -10,9 +10,10 @@ export interface CompanyData {
 }
 
 @Component({
-  selector: 'app-company-dialog',
-  templateUrl: './company-dialog.component.html',
-  styleUrls: ['./company-dialog.component.scss']
+    selector: 'app-company-dialog',
+    templateUrl: './company-dialog.component.html',
+    styleUrls: ['./company-dialog.component.scss'],
+    standalone: false
 })
 export class CompanyDialogComponent {
   companyForm: FormGroup;

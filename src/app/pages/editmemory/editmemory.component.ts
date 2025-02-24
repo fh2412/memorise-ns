@@ -16,9 +16,10 @@ import { MemoriseLocation } from '../../models/location.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-editmemory',
-  templateUrl: './editmemory.component.html',
-  styleUrl: './editmemory.component.scss'
+    selector: 'app-editmemory',
+    templateUrl: './editmemory.component.html',
+    styleUrl: './editmemory.component.scss',
+    standalone: false
 })
 export class EditmemoryComponent implements OnInit {
   loggedInUserId: string | null = null;

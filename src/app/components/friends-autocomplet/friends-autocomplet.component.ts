@@ -9,9 +9,10 @@ import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
 
 @Component({
-  selector: 'app-friends-autocomplet',
-  templateUrl: './friends-autocomplet.component.html',
-  styleUrls: ['./friends-autocomplet.component.scss']
+    selector: 'app-friends-autocomplet',
+    templateUrl: './friends-autocomplet.component.html',
+    styleUrls: ['./friends-autocomplet.component.scss'],
+    standalone: false
 })
 export class FriendsAutocompletComponent implements OnInit {
   allfriends: string[] = [];

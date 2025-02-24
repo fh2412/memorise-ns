@@ -1,7 +1,5 @@
 @use '../../../styles/components/memory-card-empty' as card-mixin;
 @use '../../../styles/components/mixins' as mixins;
-@import '../../../styles/components/spinner-overlay.scss';
-@import 'image-preview.scss';
 
 .bd-home-section {
   @include mixins.background-gradient;
@@ -83,4 +81,10 @@ h1 {
 
 .memory-card {
   @include card-mixin.memory-card(50px, 100%);
+}
+
+.back-button {
+  top: 0;
+  left: 0;
+  position: absolute;
 }

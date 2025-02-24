@@ -1,7 +1,6 @@
 @use '@angular/material' as mat;
-@import '../../../../styles/themes/variables';
-
-@import '../../memory-detail/image-preview.scss';
+@use '../../../../styles/themes/variables' as color;
+@use '../../memory-detail/image-preview.scss';
 
 .header {
   margin-top: 30px;
@@ -96,11 +95,11 @@
   }
   
   .card.hovered, .ard.starred {
-    border-color: $accent;
+    border-color: color.$accent;
   }
   
   .starred-icon {
-    color: $accent;
+    color: color.$accent;
   }
 
   .position-bottom-right {

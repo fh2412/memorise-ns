@@ -3,7 +3,7 @@ import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MatDialog } from '@angular/material/dialog';
-import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "firebase/storage";
+import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "@angular/fire/storage";
 import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
@@ -24,9 +24,10 @@ export interface ImageWithMetadata {
 
 
 @Component({
-  selector: 'app-memory-detail',
-  templateUrl: './memory-detail.component.html',
-  styleUrl: 'memory-detail.component.scss'
+    selector: 'app-memory-detail',
+    templateUrl: './memory-detail.component.html',
+    styleUrl: 'memory-detail.component.scss',
+    standalone: false
 })
 export class MemoryDetailComponent implements OnInit {
   memorydb!: Memory;
@@ -67,10 +68,10 @@ export class MemoryDetailComponent implements OnInit {
       await this.initializeMemoryDetails();
       const activityData = await firstValueFrom(this.activityService.getActivity(this.memorydb.activity_id));
       this.activity = activityData.title;
-      
+
       const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
-    
+
       const memoryCreator = await firstValueFrom(this.userService.getUser(this.memorydb.user_id.toString()));
       this.memoryCreator = memoryCreator;
 

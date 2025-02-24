@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
@@ -8,11 +7,13 @@ import { Memory } from '../../models/memoryInterface.model';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
+import { Auth } from '@angular/fire/auth';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    standalone: false
 })
 export class HomeComponent implements OnInit {
   filterForm: FormGroup;
@@ -32,7 +33,7 @@ export class HomeComponent implements OnInit {
   noMemory = true;
 
   constructor(
-    private afAuth: AngularFireAuth,
+    private auth: Auth,
     private userService: UserService,
     private router: Router,
     private memoryService: MemoryService,
@@ -56,7 +57,7 @@ export class HomeComponent implements OnInit {
   }
 
   private async initializeUserData(): Promise<void> {
-    const user = await firstValueFrom(this.afAuth.authState);
+    const user = this.auth.currentUser;
     if (!user?.email) throw new Error('No authenticated user found');
 
     this.userdb = await firstValueFrom(this.userService.getUser(user.uid));

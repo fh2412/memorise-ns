@@ -1,8 +1,7 @@
-@use '@angular/material' as mat;
 @use '../../../styles/components/mixins' as mixins;
+@use '../../../styles/components/page.scss';
+@use '../../../styles/themes/variables' as color;
 
-@import '../../../styles/components/page.scss';
-  
 .header-group {
   display: flex;
   align-items: center;
@@ -30,5 +29,5 @@
     padding-bottom: 50%;
   }
   span{
-    color: $accent;
+    color: color.$accent;
   }

@@ -19,7 +19,8 @@ Sunset Purple: #800080
 
 @use 'sass:map';
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 
 
@@ -43,8 +44,6 @@ $memorise-ns-theme: mat.m2-define-light-theme((color: (primary: $memorise-ns-pri
 
 @include mat.all-component-themes($memorise-ns-theme);
 
-/* You can add global styles to this file, and also import other style files */
-
 html,
 body {
   height: 100%;
@@ -55,7 +54,7 @@ body {
 }
 
 h1 {
-  color: map-get(light.$deep-blue-palette, 500);
+  color: map.get(light.$deep-blue-palette, 500);
   font-size: 50px;
   font-weight: bold;
   width: 430px;

@@ -3,9 +3,10 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
-  selector: 'app-link-modal',
-  templateUrl: './share-friend-code-dialog.component.html',
-  styleUrls: ['./share-friend-code-dialog.component.scss']
+    selector: 'app-link-modal',
+    templateUrl: './share-friend-code-dialog.component.html',
+    styleUrls: ['./share-friend-code-dialog.component.scss'],
+    standalone: false
 })
 export class ShareFriendCodeDialogComponent implements OnInit {
 

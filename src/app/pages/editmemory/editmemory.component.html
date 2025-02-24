@@ -3,7 +3,7 @@
         <h1>EDIT MEMORY</h1>
     </div>
     <div>
-        <app-back-button></app-back-button>
+        <app-back-button [text]="'Cancel'"></app-back-button>
         <button mat-flat-button color="primary" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
         <button mat-flat-button color="warn" (click)="confirmDeletion('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
@@ -126,7 +126,7 @@
 
             <br><br>
             <div class="memory-card-empty map-wrap">
-                <img class="map-background" src="../../../assets/img/map.PNG" alt="picture of map">
+                <img class="map-background" src="/assets/img/map.PNG" alt="picture of map">
                 <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()" class="button-margin">
                     <mat-icon class="add-icon">search</mat-icon>
                     Update Address on Map

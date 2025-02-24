@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { provideStorage, getStorage } from '@angular/fire/storage';
+
 import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { RouterModule } from '@angular/router';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,7 +30,7 @@ import { UploadProgressDialogComponent } from './components/_dialogs/upload-prog
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
-import { DateAdapter, MatNativeDateModule, provideNativeDateAdapter } from '@angular/material/core';
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { ShareFriendCodeDialogComponent } from './components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
@@ -36,6 +39,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { routes } from './app-routing.module'; // Import your routes
 
 @NgModule({
     declarations: [
@@ -51,11 +55,17 @@ import { AuthInterceptor } from './services/auth.interceptor';
         CompanyDialogComponent,
         FullDescriptionDialogComponent,
     ],
-    bootstrap: [AppComponent], imports: [BrowserModule,
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
         BrowserAnimationsModule,
+        RouterModule.forRoot(routes, { // Add RouterModule.forRoot with errorHandler
+            errorHandler: (error) => {
+                console.error('Navigation Error:', error);
+                alert("A navigation error occurred. Please try again later.");
+            }
+        }),
         AppRoutingModule,
-        AngularFireModule.initializeApp(environment.firebase),
-        AngularFireAuthModule,
         MatSidenavModule,
         MatIconModule,
         MatToolbarModule,
@@ -70,10 +80,14 @@ import { AuthInterceptor } from './services/auth.interceptor';
         MatProgressBarModule,
         GoogleMapsModule,
         FriendsPreviewModule,
-        MatCheckboxModule],
+        MatCheckboxModule
+    ],
     providers: [
+        provideFirebaseApp(() => initializeApp(environment.firebase)),
+        provideAuth(() => getAuth()),
+        provideStorage(() => getStorage()),
         provideNativeDateAdapter(),
-        { provide: DateAdapter, useClass: MatNativeDateModule },
+        // { provide: DateAdapter, useClass: MatNativeDateModule },
         provideHttpClient(withInterceptorsFromDi()),
         {
             provide: HTTP_INTERCEPTORS,

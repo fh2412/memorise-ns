@@ -12,9 +12,10 @@ import { Memory } from '../../models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-  selector: 'app-other-userprofile',
-  templateUrl: './other-userprofile.component.html',
-  styleUrl: './other-userprofile.component.scss'
+    selector: 'app-other-userprofile',
+    templateUrl: './other-userprofile.component.html',
+    styleUrl: './other-userprofile.component.scss',
+    standalone: false
 })
 export class OtherUserprofileComponent implements OnInit {
   user!: MemoriseUser;

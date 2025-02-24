@@ -1,9 +1,9 @@
 <app-back-button style="position: absolute;"></app-back-button>
 <div class="container">
-    <span class="headline">Tell us about your activity!</span>
+    <!--<span class="headline">Tell us about your activity!</span>
     <div class="options">
         <div class="option">
-            <img mat-card-image src="../../../assets/img/no_memories.jpg"
+            <img mat-card-image src="/assets/img/no_memories.jpg"
                 alt="A person looking through a lexicon in search of existing activities to do">
             <button mat-stroked-button color="primary" [disabled]="true">
                 <mat-icon>arrow_forward</mat-icon> Choose existing Activity
@@ -11,13 +11,20 @@
         </div>
         <mat-divider vertical></mat-divider>
         <div class="option">
-            <img mat-card-image src="../../../assets/img/new-activity.webp"
+            <img mat-card-image src="/assets/img/new-activity.webp"
                 alt="A person searching the horizon for new optertunities">
             <button mat-stroked-button color="accent" [disabled]="true">
                 <mat-icon>arrow_forward</mat-icon> Create new Activity
             </button>
         </div>
-    </div>
+    </div>-->
+
+    <span class="headline-uber">Activities will soon come</span>
+    <span class="headline">to <span style="color: #FFA500;">Memorise</span>!</span>
+    <img mat-card-image src="/assets/img/new-activity.webp" alt="A person searching the horizon for new optertunities">
+    <p style="margin-top: 25px; font-size: 20px">For now please choose an existing quick activity or start with typing your own.</p>
+
+
     <div class="input-field" style="margin-top: 40px;">
         <app-quick-activity-autocomplete></app-quick-activity-autocomplete>        
     </div>

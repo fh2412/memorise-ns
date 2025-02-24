@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth, UserCredential, signInWithEmailAndPassword, sendPasswordResetEmail } from '@angular/fire/auth';
 import { catchError, from, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { InsertStandardResult } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
-
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +11,13 @@ import { environment } from '../../environments/environment';
 export class AuthenticationService {
 
   constructor(
-    private auth: AngularFireAuth,
+    private auth: Auth,
     private http: HttpClient
   ) { }
 
-  signIn(params: SignIn): Observable<firebase.default.auth.UserCredential> {
-    return from(this.auth.signInWithEmailAndPassword(
-      params.email, params.password
+  signIn(params: SignIn): Observable<UserCredential> {
+    return from(signInWithEmailAndPassword(
+      this.auth, params.email, params.password
     )).pipe(
       catchError((error: FirebaseError) => 
         throwError(() => new Error(this.translateFirebaseErrorMessage(error)))
@@ -34,7 +33,7 @@ export class AuthenticationService {
   }
 
   recoverPassword(email: string): Observable<void> {
-    return from(this.auth.sendPasswordResetEmail(email)).pipe(
+    return from(sendPasswordResetEmail(this.auth, email)).pipe(
       catchError((error: FirebaseError) => 
         throwError(() => new Error(this.translateFirebaseErrorMessage(error)))
       )

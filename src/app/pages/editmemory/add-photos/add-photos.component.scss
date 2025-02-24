@@ -1,7 +1,11 @@
-@import "../manage-photos/manage-photos.component.scss";
+@use "../manage-photos/manage-photos.component";
 
 .body{
     margin-top: 15px;
     margin-left: 50px;
     margin-right: 50px;
+}
+
+.back-button{
+    margin-right: 10px;
 }

@@ -20,12 +20,14 @@ export class UserService {
     localStorage.setItem(this.storageKey, JSON.stringify(userId));
     console.log("loggedinUser set to:", this.loggedInUserId);
   }
+  
   getLoggedInUserId(): string | null {
     const storedValue = localStorage.getItem(this.storageKey);
     return storedValue ? JSON.parse(storedValue) : null;
   }
   
   private apiUrl = `${environment.apiUrl}/users`;
+  
   constructor(private http: HttpClient) {}
 
   getUser(id: string) {

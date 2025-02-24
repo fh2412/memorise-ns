@@ -10,7 +10,6 @@ import { environment } from '../../environments/environment';
 })
 export class PinnedMemoryService {
   private apiUrl = `${environment.apiUrl}/pinned`;
-  
 
   constructor(private http: HttpClient) {}
 

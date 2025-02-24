@@ -12,9 +12,10 @@ export interface Activity {
 }
 
 @Component({
-  selector: 'app-quick-activity-autocomplete',
-  templateUrl: './quick-activity-autocomplete.component.html',
-  styleUrl: './quick-activity-autocomplete.component.scss'
+    selector: 'app-quick-activity-autocomplete',
+    templateUrl: './quick-activity-autocomplete.component.html',
+    styleUrl: './quick-activity-autocomplete.component.scss',
+    standalone: false
 })
 export class QuickActivityAutocompleteComponent {
   activityCtrl = new FormControl('');

@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { finalize } from 'rxjs/operators';
 
 import { UserService } from '../../services/userService';
 import { FileUploadService } from '../../services/file-upload.service';
@@ -17,9 +16,10 @@ import { Memory } from '../../models/memoryInterface.model';
 import { MemoriseUser } from '../../models/userInterface.model';
 
 @Component({
-  selector: 'app-userprofile',
-  templateUrl: './userprofile.component.html',
-  styleUrls: ['./userprofile.component.scss']
+    selector: 'app-userprofile',
+    templateUrl: './userprofile.component.html',
+    styleUrls: ['./userprofile.component.scss'],
+    standalone: false
 })
 export class UserProfileComponent implements OnInit {
   userId!: string;
@@ -110,7 +110,7 @@ export class UserProfileComponent implements OnInit {
     this.getPinnedMemories();
   }
 
-  /** Uploads a profile picture. */
+  /** Uploads a profile picture. 
   onFileChange(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input && input.files) {
@@ -126,12 +126,29 @@ export class UserProfileComponent implements OnInit {
           );
       }
     }
+  }*/
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      this.isUploading = true;
+
+      this.fileUploadService.uploadProfilePicture(file, this.user.user_id).subscribe({
+        next: (url) => {
+          this.isUploading = false;
+          this.updateProfilePicture(url);
+        },
+        error: (error) => {
+          console.error('Upload failed', error);
+          this.isUploading = false;
+        }
+      });
+    }
   }
 
-  private updateProfilePicture(): void {
-    this.fileUploadService.getProfilePictureUrl(this.user.user_id).then(
-      (url) => this.saveProfilePictureUrl(url)
-    );
+  private async updateProfilePicture(url: string): Promise<void> {
+    this.saveProfilePictureUrl(url)
   }
 
   /** Saves the new profile picture URL in the database. */

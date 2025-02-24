@@ -1,12 +1,12 @@
-<app-back-button [text]="'Back'"></app-back-button>
-<section style="margin-top: 1.5rem;" *ngIf="user">
-  <div class="container">
+<div class="wrapper">
+  <app-back-button [text]="'Back'" class="back-button"></app-back-button>
+  <section style="margin-top: 1.5rem;" *ngIf="user">
     <div class="columns">
       <div class="profile-section">
         <div>
           <div class="profile-picture-container">
             <label for="fileInput" class="image-label">
-              <img [src]="user.profilepic ? user.profilepic : '../../../assets/img/1.png'" alt="Profile Picture"
+              <img [src]="user.profilepic ? user.profilepic : '/assets/img/1.png'" alt="Profile Picture"
                 class="profile-picture">
               <mat-icon class="change-icon">add_a_photo</mat-icon>
             </label>
@@ -62,9 +62,8 @@
         </div>
       </div>
     </div>
-  </div>
-</section>
-
+  </section>
+</div>
 <div *ngIf="isUploading" class="overlay">
   <mat-spinner class="spinner-container"></mat-spinner>
 </div>

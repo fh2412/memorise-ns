@@ -4,9 +4,10 @@ import { forkJoin } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-stats',
-  templateUrl: './stats.component.html',
-  styleUrl: './stats.component.scss'
+    selector: 'app-stats',
+    templateUrl: './stats.component.html',
+    styleUrl: './stats.component.scss',
+    standalone: false
 })
 export class StatsComponent implements OnInit {
   @Input() userid = '';

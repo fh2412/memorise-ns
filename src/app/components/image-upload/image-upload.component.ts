@@ -12,9 +12,10 @@ export interface ImageFileWithDimensions {
 }
 
 @Component({
-  selector: 'app-image-upload',
-  templateUrl: './image-upload.component.html',
-  styleUrls: ['./image-upload.component.scss']
+    selector: 'app-image-upload',
+    templateUrl: './image-upload.component.html',
+    styleUrls: ['./image-upload.component.scss'],
+    standalone: false
 })
 
 export class ImageUploadComponent implements OnInit {

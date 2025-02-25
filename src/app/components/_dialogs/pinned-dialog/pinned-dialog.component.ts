@@ -32,18 +32,36 @@ export class PinnedDialogComponent {
   }
 
   private initializeMemories(): void {
-    this.favoriteMemories = this.transformMemories(this.data.pinned, true);
+    if (!this.data) {
+      console.error('Memory data is undefined or null');
+      return;
+    }
+  
+    this.favoriteMemories = this.transformMemories(this.data.pinned || [], true);
     this.initialFavoriteMemories = [...this.favoriteMemories];
-    this.allMemories = this.transformMemories(this.data.memories, false)
-      .filter(memory => !this.favoriteMemories.some(fav => fav.id === memory.id));
+    
+    const pinnedIds = new Set(this.favoriteMemories.map(fav => fav.id));
+
+    this.allMemories = (this.data.memories || [])
+      .filter(memory => !pinnedIds.has(memory.memory_id))
+      .map(memory => ({
+        name: memory.title,
+        id: memory.memory_id,
+        isFavorite: false
+      }));
+    
     this.filteredMemories = [...this.allMemories];
     this.selectedCount = this.favoriteMemories.length;
   }
-
+  
   private transformMemories(memoryData: Memory[], isFavorite: boolean): PinnedMemory[] {
+    if (!memoryData || !Array.isArray(memoryData)) {
+      return [];
+    }
+    
     return memoryData.map(memory => ({
       name: memory.title,
-      id: memory.memory_id || memory.memory_id,
+      id: memory.memory_id,
       isFavorite
     }));
   }

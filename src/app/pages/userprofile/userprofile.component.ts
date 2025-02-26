@@ -39,10 +39,11 @@ export class UserProfileComponent implements OnInit {
     private fileUploadService: FileUploadService
   ) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;
     this.loggedInUserId = this.userService.getLoggedInUserId();
-    this.initializeUserProfile();
+    await this.initializeUserProfile();
+    console.log("All Memories: ", this.allMemories);
   }
 
 
@@ -80,7 +81,7 @@ export class UserProfileComponent implements OnInit {
   /** Adds a memory to pinned memories. */
   private createPinnedMemory(memoryId: number): void {
     this.pinnedService.createPinnedMemory(this.userId, memoryId).subscribe(
-      () => this.refreshPinnedMemories(),
+      () => this.getPinnedMemories(),
       () => this.handleError('Error adding pinned memory.')
     );
   }
@@ -88,7 +89,7 @@ export class UserProfileComponent implements OnInit {
   /** Removes a memory from pinned memories. */
   private deletePinnedMemory(memoryId: number): void {
     this.pinnedService.deletePinnedMemory(this.userId, memoryId).subscribe(
-      () => this.refreshPinnedMemories(),
+      () => this.getPinnedMemories(),
       () => this.handleError('Error removing pinned memory.')
     );
   }
@@ -105,29 +106,6 @@ export class UserProfileComponent implements OnInit {
     insertedIds.forEach(id => this.createPinnedMemory(id));
   }
 
-  /** Refreshes the list of pinned memories. */
-  private refreshPinnedMemories(): void {
-    this.getPinnedMemories();
-  }
-
-  /** Uploads a profile picture. 
-  onFileChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input && input.files) {
-      const file = input.files[0];  // Get the first file
-      if (file) {
-        this.isUploading = true;
-      
-        this.fileUploadService.uploadProfilePicture(this.user.user_id, file)
-          .pipe(finalize(() => (this.isUploading = false)))
-          .subscribe(
-            () => this.updateProfilePicture(),
-            () => this.handleError('Error uploading profile picture.')
-          );
-      }
-    }
-  }*/
-
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -137,7 +115,7 @@ export class UserProfileComponent implements OnInit {
       this.fileUploadService.uploadProfilePicture(file, this.user.user_id).subscribe({
         next: (url) => {
           this.isUploading = false;
-          this.updateProfilePicture(url);
+          this.saveProfilePictureUrl(url);
         },
         error: (error) => {
           console.error('Upload failed', error);
@@ -145,10 +123,6 @@ export class UserProfileComponent implements OnInit {
         }
       });
     }
-  }
-
-  private async updateProfilePicture(url: string): Promise<void> {
-    this.saveProfilePictureUrl(url)
   }
 
   /** Saves the new profile picture URL in the database. */
@@ -194,6 +168,7 @@ export class UserProfileComponent implements OnInit {
       this.showSnackBar('You must first add Memories before you can pin some!');
     }
     else{
+      console.log(this.allMemories, this.pinnedMemories);
       const dialogRef = this.dialog.open(PinnedDialogComponent, {
         width: '40%',
         data: { memories: this.allMemories, pinned: this.pinnedMemories },

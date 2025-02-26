@@ -31,7 +31,7 @@ export class MemoryService {
     return this.http.get<Memory[]>(`${this.apiUrl}/memories/getAddedMemories/${user_id}`);
   }
 
-  getAllMemories(user_id: string) {
+  getAllMemories(user_id: string): Observable<Memory[]>{
     return this.http.get<Memory[]>(`${this.apiUrl}/memories/allMemories/${user_id}`);
   }
 

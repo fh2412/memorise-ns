@@ -12,7 +12,7 @@ import { map, Observable, startWith } from 'rxjs';
     standalone: false
 })
 export class EditUserDialogComponent implements OnInit {
-  @Output() updateUserData = new EventEmitter<MemoriseUser>();  // Emit the full user object
+  @Output() updateUserData = new EventEmitter<MemoriseUser>();
   userForm: FormGroup;
   countries: Country[] = [];
   filteredCountries!: Observable<Country[]>;
@@ -58,8 +58,6 @@ export class EditUserDialogComponent implements OnInit {
       console.error('Form is invalid');
       return;
     }
-    this.userForm.value.dob.setHours(12, 12, 12, 12);
-
     this.updateUserData.emit(this.userForm.value);
     this.dialogRef.close();
   }

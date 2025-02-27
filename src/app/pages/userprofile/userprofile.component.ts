@@ -138,7 +138,7 @@ export class UserProfileComponent implements OnInit {
 
   /** Opens the password change dialog. */
   openPasswordChangeDialog(): void {
-    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, { width: '20%' });
+    const dialogRef = this.dialog.open(ChangePasswordDialogComponent, { width: '35%' });
     dialogRef.componentInstance.updateUserPassword.subscribe(() => {
       this.showSnackBar('Password changed successfully!');
     });
@@ -184,7 +184,7 @@ export class UserProfileComponent implements OnInit {
 
   /** Displays a snackbar with a custom message. */
   private showSnackBar(message: string): void {
-    this.snackBar.open(message, 'Close', { duration: 3000 });
+    this.snackBar.open(message, 'Close', { duration: 3000, verticalPosition: 'bottom' });
   }
 
   /** Handles errors and displays a snackbar. */

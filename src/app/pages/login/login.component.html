@@ -1,6 +1,6 @@
 <main class="login-main">
     <div class="logo"><img src="/assets/img/logo_big.png" alt="Logo big"></div>
-    <form *ngIf="!isRegistering" [formGroup]="form" class="login-form">
+    <form *ngIf="!isRegistering" [formGroup]="form" class="login-form" (ngSubmit)="login()">
         <h1 class="headline">Enter with your account</h1>
         <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
@@ -22,7 +22,7 @@
         <div class='aligned-to-right'>
             <button mat-button color="primary" [disabled]="!form.get('email')!.valid"
                 (click)="recoverPassword()" *ngIf="!isActionInProgress"
-                test-id="recover-password-button">
+                test-id="recover-password-button" type="button">
                 Recover password
             </button>
             <button mat-button color="primary" class="button-loader recover-password"
@@ -31,8 +31,8 @@
             </button>
         </div>
         <div class="action-buttons">
-            <button mat-raised-button color="primary" [disabled]="!form.valid" (click)="login()"
-                *ngIf="!isActionInProgress" test-id="login-button">
+            <button mat-raised-button color="primary" [disabled]="!form.valid"
+                *ngIf="!isActionInProgress" test-id="login-button" type="submit">
                 LOGIN
             </button>
             <button mat-raised-button color="primary" class="button-loader" *ngIf="isActionInProgress"

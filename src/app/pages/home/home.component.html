@@ -1,7 +1,7 @@
 <div class="wrapper">
     <div class="sticky-sidebar">
-        <ng-container *ngIf="userdb && userdb.user_id">
-            <app-stats [userid]="userdb.user_id"></app-stats>
+        <ng-container *ngIf="fuid">
+            <app-stats [userid]="fuid"></app-stats>
         </ng-container>
     </div>
     <div class="main-content">

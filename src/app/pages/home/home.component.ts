@@ -19,6 +19,7 @@ export class HomeComponent implements OnInit {
   filterForm: FormGroup;
   openForm: FormGroup;
   userdb!: MemoriseUser;
+  fuid: string | undefined;
   userGeneratedMemories: Memory[] = [];
   friendGeneratedMemories: Memory[] = [];
   displayMemories: Memory[] = [];
@@ -58,6 +59,7 @@ export class HomeComponent implements OnInit {
 
   private async initializeUserData(): Promise<void> {
     const user = this.auth.currentUser;
+    this.fuid = this.auth.currentUser?.uid;
     if (!user?.email) throw new Error('No authenticated user found');
 
     this.userdb = await firstValueFrom(this.userService.getUser(user.uid));

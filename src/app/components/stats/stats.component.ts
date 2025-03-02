@@ -14,6 +14,7 @@ export class StatsComponent implements OnInit {
   memoryCount = 0;
   memoryThisYearCount = 0;
   friendsCount = 0;
+  dbConnection = true;
 
   constructor (private memorystatsService: MemorystatsService) {}
   
@@ -30,6 +31,7 @@ export class StatsComponent implements OnInit {
     .pipe(
       catchError(error => {
         console.error('Error fetching statistics', error);
+        this.dbConnection = false;
         return [];
       })
     )

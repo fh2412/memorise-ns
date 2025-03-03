@@ -1,0 +1,79 @@
+@use '../../../../styles/components/page.scss';
+
+.games-container {
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .header-section {
+    text-align: center;
+    margin-bottom: 32px;    
+  }
+  
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  
+  mat-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  
+    &:not(.disabled-card):hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+  }
+  
+  .disabled-card {
+    opacity: 0.7;
+  }
+  
+  .card-icon-container {
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .game-icon {
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+  }
+  
+  mat-card-content {
+    flex-grow: 1;
+  }
+  
+  mat-card-title {
+    margin-bottom: 12px !important;
+  }
+  
+  mat-card-actions {
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    
+    button {
+      width: 100%;
+    }
+  }
+  
+  // Background colors
+  .primary-bg {
+    background-color: rgba(63, 81, 181, 0.1);
+  }
+  
+  .accent-bg {
+    background-color: rgba(255, 64, 129, 0.1);
+  }
+  
+  .warn-bg {
+    background-color: rgba(244, 67, 54, 0.1);
+  }

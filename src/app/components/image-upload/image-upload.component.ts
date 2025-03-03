@@ -28,6 +28,7 @@ export class ImageUploadComponent implements OnInit {
 
 
   selectedFiles: File[] = [];
+  showStar = false;
 
   previews: string[] = [];
   downloadURL: string | undefined;
@@ -41,6 +42,7 @@ export class ImageUploadComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     if (this.picture_count == 0) {
       this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+      this.showStar = true;
     }
     if (this.userId == undefined) {
       await this.userService.userId$.subscribe((userId) => {
@@ -57,7 +59,7 @@ export class ImageUploadComponent implements OnInit {
 
     // Combine existing files with new ones (if applicable)
     this.selectedFiles = newFiles ? [...this.selectedFiles, ...Array.from(newFiles)] : this.selectedFiles;
-    this.imageFileWithDimensions = []; // Clear previous selections
+    this.imageFileWithDimensions = [];
     this.previews = [];
 
     if (newFiles) {
@@ -116,10 +118,12 @@ export class ImageUploadComponent implements OnInit {
   }
 
   onStar(index: number) {
-    if (this.starredIndex === index) {
-      this.starredIndex = null;  // Unstar the currently starred image
-    } else {
-      this.starredIndex = index;  // Star the new image
+    if(this.showStar){
+      if (this.starredIndex === index) {
+        this.starredIndex = null;  // Unstar the currently starred image
+      } else {
+        this.starredIndex = index;  // Star the new image
+      }
     }
   }
 }

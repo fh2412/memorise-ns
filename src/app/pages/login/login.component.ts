@@ -76,10 +76,14 @@ export class LoginComponent implements OnInit {
   }
 
   private handleError(error: Error, defaultMessage: string): void {
-    const message = error?.message || defaultMessage;
+    const message = error?.message === "Firebase: Error (auth/invalid-credential)."
+      ? "Username or Password is wrong!"
+      : error?.message || defaultMessage;
+  
     this.showSnackBar(message, 'OK');
     this.toggleActionState(false);
   }
+  
 
   private showSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, { duration: 5000 });

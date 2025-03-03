@@ -7,7 +7,7 @@ export interface MemoriseUser {
   country: string;
   gender: string;
   formatted_dob: string;
-  dob: Date;
+  dob: string;
   instagram: string;
   location_id: number;
   profilepic: string;

@@ -7,8 +7,8 @@ export interface Memory {
     latitude: string;
     longitude: string;
     location_id: number;
-    memory_date: string;  // or Date, depending on usage
-    memory_end_date: string;  // or Date
+    memory_date: string;
+    memory_end_date: string;
     picture_count: number;
     text: string;
     title: string;

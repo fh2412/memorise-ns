@@ -17,6 +17,12 @@
   </mat-card-content>
 
   <ng-template #noFriends>
-    <p>You have no {{ title }} :)</p>
+    @if (title === 'Your Friends') {
+      <p>You do not have added any Friends yet :(</p>
+    }
+    @else{
+      <p>You have no {{ title }} :)</p>
+    }
+    
   </ng-template>
 </mat-card>

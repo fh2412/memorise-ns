@@ -1,0 +1,27 @@
+<!-- games.component.html -->
+<div class="games-container">
+    <div class="header-section">
+      <h1>Game Center</h1>
+    </div>
+    
+    <div class="games-grid">
+      <mat-card *ngFor="let game of games" [ngClass]="{'disabled-card': !game.enabled}">
+        <div class="card-icon-container" [ngClass]="game.color + '-bg'">
+          <mat-icon class="game-icon" [color]="game.color">{{game.iconName}}</mat-icon>
+        </div>
+        <mat-card-content>
+          <mat-card-title>{{game.title}}</mat-card-title>
+          <p>{{game.description}}</p>
+        </mat-card-content>
+        <mat-card-actions>
+          <button 
+            mat-raised-button 
+            [color]="game.enabled ? game.color : ''" 
+            [disabled]="!game.enabled"
+            (click)="playGame(game.id)">
+            {{game.enabled ? 'Play Now' : 'Coming Soon'}}
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>

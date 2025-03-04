@@ -39,7 +39,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { AuthInterceptor } from './services/auth.interceptor';
-import { routes } from './app-routing.module'; // Import your routes
+import { routes } from './app-routing.module';
 
 @NgModule({
     declarations: [

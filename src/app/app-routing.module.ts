@@ -77,6 +77,11 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/activities/activites.module').then(m => m.ActivitiesModule),
     canActivate: [authGuard]
   },
+  {
+    path: 'games',
+    loadChildren: () => import('./pages/_games/games-landingpage/games-landingpage.module').then(m => m.GamesModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
 

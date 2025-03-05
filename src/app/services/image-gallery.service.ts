@@ -9,10 +9,7 @@ import { environment } from '../../environments/environment';
 })
 export class ImageGalleryService {
   private imageDataSource = new BehaviorSubject<ImageWithMetadata[]>([]);
-  currentImageData = this.imageDataSource.asObservable();
-
-  private apiUrl = `${environment.apiUrl}`;
-  
+  currentImageData = this.imageDataSource.asObservable();  
 
   constructor(private http: HttpClient) {}
 

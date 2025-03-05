@@ -8,7 +8,6 @@ import { DateRange } from '@angular/material/datepicker';
 import { LocationService } from '../../services/location.service';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '../../services/image-gallery.service';
-import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { Memory } from '../../models/memoryInterface.model';
 import { Friend, MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
@@ -24,10 +23,10 @@ export interface ImageWithMetadata {
 
 
 @Component({
-    selector: 'app-memory-detail',
-    templateUrl: './memory-detail.component.html',
-    styleUrl: 'memory-detail.component.scss',
-    standalone: false
+  selector: 'app-memory-detail',
+  templateUrl: './memory-detail.component.html',
+  styleUrl: 'memory-detail.component.scss',
+  standalone: false
 })
 export class MemoryDetailComponent implements OnInit {
   memorydb!: Memory;
@@ -43,7 +42,6 @@ export class MemoryDetailComponent implements OnInit {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  isLoading = false;
   showMore = false;
   truncatedDescription = '';
   characterLimit = 150;
@@ -138,21 +136,10 @@ export class MemoryDetailComponent implements OnInit {
     this.router.navigate(['memory', this.memoryID, 'gallery']);
   }
 
-  downloadZip(): void {
-    const confirmationData: ConfirmationDialogData = {
-      title: 'Download memories images?',
-      message: 'With clicking "YES" you start the download of this memories images',
-    };
-
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
-
-    dialogRef.afterClosed().subscribe((confirmed) => {
-      if (confirmed) {
-        this.isLoading = true; // Start loading
-        this.imageDataService.downloadZip(this.memorydb.image_url, this.memorydb.title).subscribe(() => {
-        this.isLoading = false; // Stop loading
-      });
-      }
+  openDownloadPage(): void {
+    this.imageDataService.updateImageData(this.imagesWithMetadata);
+    this.router.navigate(['memory', this.memoryID, 'download'], {
+      state: { memory: this.memorydb }
     });
   }
 

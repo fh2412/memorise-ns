@@ -1,0 +1,55 @@
+/* photo-download.component.scss */
+.photo-download-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 20px;
+  }
+  
+  .filter-input {
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .display-mode-toggle {
+    align-self: flex-end;
+  }
+  
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  
+  .photo-card {
+    position: relative;
+    
+    .photo-checkbox {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+    }
+  
+    img {
+      height: 250px;
+      object-fit: cover;
+    }
+  }
+  
+  .photo-table {
+    width: 100%;
+  
+    .thumbnail {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+    }
+  }
+  
+  .action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+  }

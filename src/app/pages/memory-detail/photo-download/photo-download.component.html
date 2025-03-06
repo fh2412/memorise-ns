@@ -1,12 +1,13 @@
-<!-- photo-download.component.html -->
+<div class="header">
+  <div class="headline">
+    <h1>DOWNLOAD PICTURES</h1>
+  </div>
+  <div class="actions">
+    <app-back-button></app-back-button>
+  </div>
+</div>
+
 <div class="photo-download-container">
-    <!-- Filter Input -->
-    <mat-form-field appearance="outline" class="filter-input">
-      <mat-label>Filter by User</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="Search by username">
-      <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
-  
     <!-- Display Mode Toggle -->
     <button mat-icon-button (click)="toggleDisplayMode()" class="display-mode-toggle">
       <mat-icon>{{ displayMode === 'grid' ? 'view_list' : 'grid_view' }}</mat-icon>
@@ -21,13 +22,9 @@
           (change)="selection.toggle(photo)">
         </mat-checkbox>
         <img mat-card-image [src]="photo.url || photo.url" [alt]="photo.url">
-        <mat-card-footer>
-          <p>{{ photo.width }}</p>
-          <p>{{ photo.height }}</p>
-        </mat-card-footer>
       </mat-card>
     </div>
-  
+
     <!-- Table View -->
     <table *ngIf="displayMode === 'table'" mat-table [dataSource]="dataSource" class="photo-table">
       <!-- Checkbox Column -->
@@ -84,4 +81,8 @@
         Download Selected ({{ selection.selected.length }})
       </button>
     </div>
+  </div>
+
+  <div *ngIf="isDownloading" class="overlay">
+    <mat-spinner class="spinner-container"></mat-spinner>
   </div>

@@ -1,14 +1,29 @@
-/* photo-download.component.scss */
+@use '../../../../styles/components/spinner-overlay.scss';
+
+.header {
+  margin-top: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .headline{
+      width: 50%;
+      h1{
+        width: 100%;
+        font-size: 50px;
+        font-weight: bold;
+        margin-left: 25px;
+      }
+    }
+    button{
+        margin-right: 25px;
+    }
+}
+
 .photo-download-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 20px;
-  }
-  
-  .filter-input {
-    width: 100%;
-    max-width: 400px;
   }
   
   .display-mode-toggle {
@@ -23,7 +38,8 @@
   
   .photo-card {
     position: relative;
-    
+    border-radius: 10px;
+
     .photo-checkbox {
       position: absolute;
       top: 10px;
@@ -34,6 +50,7 @@
     img {
       height: 250px;
       object-fit: cover;
+      border-radius: 10px;
     }
   }
   

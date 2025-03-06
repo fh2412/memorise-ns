@@ -13,6 +13,8 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { PhotoDownloadComponent } from './photo-download.component';
 import { RouterModule, Routes } from '@angular/router';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { BackButtonModule } from '../../../components/back-button/back-button.module';
 
 const routes: Routes = [
   {
@@ -32,7 +34,9 @@ const routes: Routes = [
     MatCardModule,
     MatTableModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressSpinnerModule,
+    BackButtonModule
   ],
 })
 export class PhotoDownloadModule { }

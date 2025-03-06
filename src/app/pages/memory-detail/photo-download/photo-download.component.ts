@@ -35,6 +35,7 @@ export class PhotoDownloadComponent implements OnInit {
 
   // Filter predicate
   filterValue = '';
+  isDownloading = false;
 
   constructor(public dialog: MatDialog, private imageDataService: ImageGalleryService, private router: Router) {
     this.dataSource = new MatTableDataSource<ImageWithMetadata>([]);
@@ -50,22 +51,11 @@ export class PhotoDownloadComponent implements OnInit {
     this.imageDataService.currentImageData.subscribe((images) => {
       this.dataSource.data = images;
     });
-    // Setup filter predicate
-    this.dataSource.filterPredicate = (data: ImageWithMetadata, filter: string) => {
-      const searchString = filter;
-      return data.url.toLowerCase().includes(searchString.toLowerCase());
-    };
   }
 
   // Toggle display mode
   toggleDisplayMode() {
     this.displayMode = this.displayMode === 'grid' ? 'table' : 'grid';
-  }
-
-  // Filter photos by user
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = JSON.stringify({ userName: filterValue });
   }
 
   // Check if all items are selected
@@ -102,7 +92,23 @@ export class PhotoDownloadComponent implements OnInit {
 
   // Handle download selected photos
   downloadSelectedPhotos() {
-    // Download logic would be implemented in parent component
-    console.log('Downloading selected photos', this.selection.selected);
+    const confirmationData: ConfirmationDialogData = {
+      title: 'Download memories images?',
+      message: 'With clicking "YES" you start the download of this memories images',
+    };
+
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
+
+    dialogRef.afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.isDownloading = true;
+        this.imageDataService.downloadSelectedZip(this.selection.selected, this.memorydb.title)
+          .subscribe(() => {
+            this.isDownloading = false;
+          }, () => {
+            this.isDownloading = false;
+          });
+      }
+    });
   }
 }

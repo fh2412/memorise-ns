@@ -10,10 +10,10 @@ import { PageEvent } from '@angular/material/paginator';
 import { Auth } from '@angular/fire/auth';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    standalone: false
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  standalone: false
 })
 export class HomeComponent implements OnInit {
   filterForm: FormGroup;
@@ -81,16 +81,16 @@ export class HomeComponent implements OnInit {
     if (!this.noMemory) {
       if (checked && this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
         this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
-      } else if(checked && this.friendGeneratedMemories.length > 0) {
+      } else if (checked && this.friendGeneratedMemories.length > 0) {
         this.displayMemories = [...this.friendGeneratedMemories];
-      } else if(this.userGeneratedMemories.length > 0) {
+      } else if (this.userGeneratedMemories.length > 0) {
         this.displayMemories = [...this.userGeneratedMemories];
       } else {
         this.displayMemories = [];
       }
       this.filteredItems = [...this.displayMemories];
     }
-    
+
     this.updatePagedData();
   }
 
@@ -113,16 +113,24 @@ export class HomeComponent implements OnInit {
 
   showAll(checked: boolean): void {
     localStorage.setItem('showFriendsMemories', checked.toString());
-    this.showFriendsMemoriesBool=checked;
-    if (!this.noMemory || this.friendGeneratedMemories.length>0) {
-      if (checked && this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length) {
-        this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
-      } else if(checked && this.friendGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.friendGeneratedMemories];
-      } else if(!checked && this.userGeneratedMemories.length > 0){
-        this.displayMemories = [...this.userGeneratedMemories];
-      } else{
-        this.displayMemories=[];
+    this.showFriendsMemoriesBool = checked;
+    if (!this.noMemory || this.friendGeneratedMemories.length > 0) {
+      if (checked) {
+        if (this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
+          this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
+        } else if (this.userGeneratedMemories.length > 0) {
+          this.displayMemories = [...this.userGeneratedMemories];
+        }
+        else if (this.friendGeneratedMemories.length > 0) {
+          this.displayMemories = [...this.friendGeneratedMemories];
+        }
+      }
+      else {
+        if (this.userGeneratedMemories.length > 0) {
+          this.displayMemories = [...this.userGeneratedMemories];
+        } else {
+          this.displayMemories = [];
+        }
       }
       this.filteredItems = [...this.displayMemories];
     }
@@ -153,7 +161,7 @@ export class HomeComponent implements OnInit {
   private async getAddedMemories(showFriendsMemories: boolean): Promise<void> {
     try {
       this.friendGeneratedMemories = await firstValueFrom(this.memoryService.getAddedMemories(this.userdb.user_id));
-      if(this.noMemory === true && showFriendsMemories){
+      if (this.noMemory === true && showFriendsMemories) {
         this.noMemory = this.userGeneratedMemories.length === 0
       }
     } catch (error) {

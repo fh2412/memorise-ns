@@ -19,6 +19,8 @@ export interface ImageWithMetadata {
   url: string;
   width: number;
   height: number;
+  created: string;
+  size: number;
 }
 
 
@@ -108,7 +110,7 @@ export class MemoryDetailComponent implements OnInit {
   get displayImages(): ImageWithMetadata[] {
     const imagesToShow = [...this.imagesWithMetadata];
     while (imagesToShow.length < 5) {
-      imagesToShow.push({ url: '../../../assets/img/placeholder_image.png', width: 0, height: 0 });
+      imagesToShow.push({ url: '../../../assets/img/placeholder_image.png', width: 0, height: 0, created: 'new Date', size: 0 });
     }
     return imagesToShow;
   }
@@ -124,7 +126,10 @@ export class MemoryDetailComponent implements OnInit {
               url,
               width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
               height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
+              created: metadata.timeCreated,
+              size: metadata.size,
             });
+            console.log("Metadata: ", metadata);
           }))
           .catch((error) => console.error('Error fetching metadata or URL:', error));
       });

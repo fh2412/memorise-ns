@@ -37,5 +37,5 @@ export interface Memory {
 
 export interface CreateMemoryResponse {
   message: string;
-  memoryId: string;
+  memory_id: string;
 }

@@ -1,1 +1,16 @@
 @use '../../../styles/components/page.scss';
+
+.small-screen-button {
+    display: none;
+    @media (max-width: 1366px) {
+        display: block;
+    }
+}
+
+.header-buttons {
+    display: flex;
+
+    button {
+        margin-left: 10px;
+    }
+}

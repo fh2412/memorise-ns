@@ -1,11 +1,18 @@
 <div class="wrapper" *ngIf="user">
-    <div class="sticky-sidebar">
-        <app-my-activity-information [user]="user"></app-my-activity-information>
-        <app-company-information [company]="company" [userId]="user.user_id"></app-company-information>
-    </div>
-    <div class="main-content">
-      <div class="header">
-        <h1>ACITVITIES</h1>
+  <div class="sticky-sidebar">
+    <app-my-activity-information [user]="user"></app-my-activity-information>
+    <app-company-information [company]="company" [userId]="user.user_id"></app-company-information>
+  </div>
+  <div class="main-content">
+    <div class="header">
+      <h1>ACTIVITIES</h1>
+      <div class="header-buttons">
+        <button mat-stroked-button class="small-screen-button">
+          <mat-icon>
+            arrow_forward_ios
+          </mat-icon>
+          View Activites
+        </button>
         <button mat-raised-button color="accent" (click)="addActivity()">
           <mat-icon class="add-icon">add</mat-icon>
           Add Activity
@@ -13,4 +20,4 @@
       </div>
     </div>
   </div>
-  
+</div>

@@ -43,7 +43,6 @@ export class UserProfileComponent implements OnInit {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;
     this.loggedInUserId = this.userService.getLoggedInUserId();
     await this.initializeUserProfile();
-    console.log("All Memories: ", this.allMemories);
   }
 
 
@@ -168,7 +167,6 @@ export class UserProfileComponent implements OnInit {
       this.showSnackBar('You must first add Memories before you can pin some!');
     }
     else{
-      console.log(this.allMemories, this.pinnedMemories);
       const dialogRef = this.dialog.open(PinnedDialogComponent, {
         width: '40%',
         data: { memories: this.allMemories, pinned: this.pinnedMemories },

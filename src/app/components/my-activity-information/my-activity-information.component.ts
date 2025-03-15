@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { Activity } from '../quick-activity-autocomplete/quick-activity-autocomplete.component';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-my-activity-information',
@@ -13,6 +14,9 @@ export class MyActivityInformationComponent implements OnInit {
 
   activities: Activity[] = [{ id: 1, icon: '🏃', name: 'Running', genre: 'Sport' }];
 
+  constructor(private router: Router){}
+
+
   ngOnInit(): void {
     this.activities.push(
       { id: 2, icon: '🎸', name: 'Playing Guitar', genre: 'Music' },
@@ -22,10 +26,11 @@ export class MyActivityInformationComponent implements OnInit {
   }
 
   getActivityStats() {
-    throw new Error('Method not implemented.');
+    console.log("Here");
   }
 
-  navigateToUserActivities(): void {
-    throw new Error('Method not implemented.');
+  navigateMyActivities() {
+    console.log("Nav to myactivities");
+    this.router.navigate(['activity/overview/', this.user.user_id]);
   }
 }

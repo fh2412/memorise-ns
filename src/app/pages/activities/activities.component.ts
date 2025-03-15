@@ -6,24 +6,24 @@ import { MemoriseCompany } from '../../models/company.model';
 
 
 @Component({
-    selector: 'app-activities',
-    templateUrl: './activities.component.html',
-    styleUrl: './activities.component.scss',
-    standalone: false
+  selector: 'app-activities',
+  templateUrl: './activities.component.html',
+  styleUrl: './activities.component.scss',
+  standalone: false
 })
 export class ActivitiesComponent implements OnInit {
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
   company!: MemoriseCompany;
 
-  constructor(private userService: UserService, private companyService: companyService) {}
+  constructor(private userService: UserService, private companyService: companyService) { }
   async ngOnInit() {
     this.loggedInUserId = this.userService.getLoggedInUserId();
-    if(this.loggedInUserId){
+    if (this.loggedInUserId) {
       this.userService.getUser(this.loggedInUserId).subscribe(
         (response) => {
           this.user = response;
-          if(this.user.company_id){ 
+          if (this.user.company_id) {
             this.getCompany();
           }
         },
@@ -33,8 +33,9 @@ export class ActivitiesComponent implements OnInit {
       );
     }
   }
+  
   getCompany(): void {
-    if(this.loggedInUserId != null){
+    if (this.loggedInUserId != null) {
       this.companyService.getUserCompany(this.loggedInUserId).subscribe(
         (response) => {
           this.company = response;
@@ -45,8 +46,8 @@ export class ActivitiesComponent implements OnInit {
       );
     }
   }
-  
-  addActivity(){
+
+  addActivity() {
     console.log("Add Activity");
   };
 }

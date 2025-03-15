@@ -1,0 +1,53 @@
+<mat-card class="activity-card">
+    <div class="card-background" [style.background-image]="'url(' + backgroundImage + ')'">
+      <div class="overlay">
+        <!-- Top section with location type and price -->
+        <div class="top-section">
+          <div class="location-type" 
+               [matTooltip]="locationTooltip"
+               matTooltipPosition="above">
+            <mat-icon>{{ isOutdoor ? 'wb_sunny' : 'home' }}</mat-icon>
+          </div>
+          <div *ngIf="price" class="price">{{ price | currency }}</div>
+        </div>
+
+        <!-- Middle section for group size -->
+        <div class="group-size">
+          <mat-icon>group</mat-icon>
+          <span>{{ groupSizeMin }}-{{ groupSizeMax }}</span>
+        </div>
+
+        <!-- Bottom section with title and details -->
+        <div class="bottom-section">
+          <h2 class="title">{{ title }}</h2>
+          
+          <div class="stats">
+            <div class="rating">
+              <mat-icon>star</mat-icon>
+              <span>{{ rating }}/5</span>
+            </div>
+            <div class="performed">
+              <mat-icon>event_available</mat-icon>
+              <span>{{ timesPerformed }}x</span>
+            </div>
+          </div>
+
+          <!-- Tags section -->
+          <div class="tags-section" *ngIf="tags && tags.length">
+            <mat-chip-set>
+              <mat-chip *ngFor="let tag of tags" 
+                        [style.background-color]="tag.color || '#e0e0e0'"
+                        [style.color]="tag.color ? '#ffffff' : '#000000'">
+                {{ tag.name }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+
+          <!-- Detail button -->
+          <button mat-raised-button color="primary" class="details-button" (click)="viewDetails()">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </mat-card>

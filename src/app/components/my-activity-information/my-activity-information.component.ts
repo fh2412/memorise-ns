@@ -30,7 +30,8 @@ export class MyActivityInformationComponent implements OnInit {
   }
 
   navigateMyActivities() {
-    console.log("Nav to myactivities");
-    this.router.navigate(['activity/overview/', this.user.user_id]);
+    this.router.navigate(['activity/overview/', this.user.user_id], {
+      state: { userName: this.user.name }
+    });
   }
 }

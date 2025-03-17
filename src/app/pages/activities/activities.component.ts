@@ -3,6 +3,7 @@ import { UserService } from '../../services/userService';
 import { companyService } from '../../services/company.service';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseCompany } from '../../models/company.model';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class ActivitiesComponent implements OnInit {
   loggedInUserId: string | null = null;
   company!: MemoriseCompany;
 
-  constructor(private userService: UserService, private companyService: companyService) { }
+  constructor(private router: Router, private userService: UserService, private companyService: companyService) { }
   async ngOnInit() {
     this.loggedInUserId = this.userService.getLoggedInUserId();
     if (this.loggedInUserId) {
@@ -48,6 +49,6 @@ export class ActivitiesComponent implements OnInit {
   }
 
   addActivity() {
-    console.log("Add Activity");
+    this.router.navigate(['activity/create']);
   };
 }

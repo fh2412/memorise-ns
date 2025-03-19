@@ -1,0 +1,79 @@
+/* activity-creation.component.scss */
+.activity-creation-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.step-content {
+  margin: 20px 0;
+  min-height: 400px;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+}
+
+.form-overlay {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.title-field {
+  flex-grow: 1;
+}
+
+.media-location-section {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.buttons-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 180px;
+}
+
+.location-display {
+  flex-grow: 1;
+}
+
+.sliders-section {
+  margin-bottom: 24px;
+}
+
+.slider-container {
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  mat-slider {
+    width: 100%;
+  }
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 16px;
+}

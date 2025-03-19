@@ -1,31 +1,89 @@
-<mat-stepper #stepper>
-    <mat-step [stepControl]="firstFormGroup" errorMessage="Name is required.">
-      <form [formGroup]="firstFormGroup">
-        <ng-template matStepLabel>Fill out Main Data</ng-template>
-        <mat-form-field>
-          <mat-label>Name</mat-label>
-          <input matInput placeholder="Last name, First name" formControlName="firstCtrl" required>
-        </mat-form-field>
-        <div>
-          <p>Go to a different step to see the error state</p>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-    <mat-step [stepControl]="secondFormGroup" errorMessage="Address is required.">
-      <form [formGroup]="secondFormGroup">
-        <ng-template matStepLabel>Fill out Details</ng-template>
-        <mat-form-field>
-          <mat-label>Address</mat-label>
-          <input matInput placeholder="Ex. 1 Main St, New York, NY" formControlName="secondCtrl"
-                 required>
-        </mat-form-field>
-        <div>
-          <p>Go to a different step to see the error state</p>
-          <button mat-button matStepperPrevious>Back</button>
-          <button mat-button matStepperNext>Next</button>
-        </div>
-      </form>
-    </mat-step>
-  </mat-stepper>
+<!-- activity-creation.component.html -->
+<div class="activity-creation-container">
+  <h1>Create a New Activity</h1>
   
+  <mat-horizontal-stepper [linear]="true" #stepper>
+    <!-- Step 1: Main Information -->
+    <mat-step [stepControl]="activityForm" label="Main Information">
+      <div class="step-content" [style.backgroundImage]="selectedImageUrl ? 'url(' + selectedImageUrl + ')' : 'none'">
+        <div class="form-overlay">
+          <form [formGroup]="activityForm">
+            <!-- Title and Privacy Toggle -->
+            <div class="title-row">
+              <mat-form-field appearance="outline" class="title-field">
+                <mat-label>Activity Title</mat-label>
+                <input matInput formControlName="title" required>
+                <mat-error *ngIf="activityForm.get('title')?.hasError('required')">
+                  Title is required
+                </mat-error>
+              </mat-form-field>
+              
+              <mat-slide-toggle formControlName="isPrivate" color="primary">
+                {{ activityForm.get('isPrivate')?.value ? 'Private' : 'Public' }}
+              </mat-slide-toggle>
+            </div>
+            
+            <!-- Media and Location Section -->
+            <div class="media-location-section">
+              <div class="buttons-column">
+                <button mat-raised-button color="primary" type="button" (click)="addLocation()">
+                  <mat-icon>location_on</mat-icon> Add Location
+                </button>
+                
+                <button mat-raised-button color="accent" type="button" (click)="addPicture()">
+                  <mat-icon>add_photo_alternate</mat-icon> Add Picture
+                </button>
+              </div>
+              
+              <div class="location-display" *ngIf="location">
+                <mat-card>
+                  <mat-card-header>
+                    <mat-icon mat-card-avatar>place</mat-icon>
+                    <mat-card-title>Location</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <p>{{ location }}</p>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            
+            <!-- Sliders -->
+            <div class="sliders-section">
+              <div class="slider-container">
+                <label>Group Size: {{ activityForm.get('groupSize')?.value }}</label>
+                <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                  <input matSliderThumb formControlName="groupSize">
+                </mat-slider>
+              </div>
+              
+              <div class="slider-container">
+                <label>Cost: ${{ activityForm.get('costs')?.value }}</label>
+                <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                  <input matSliderThumb formControlName="costs">
+                </mat-slider>
+              </div>
+            </div>
+            
+            <!-- Navigation Buttons -->
+            <div class="step-navigation">
+              <button mat-button matStepperNext type="button">Next</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-step>
+    
+    <!-- Step 2: Details -->
+    <mat-step label="Details">
+      <div class="step-content">
+        <p>Details content will be added later</p>
+        
+        <div class="step-navigation">
+          <button mat-button matStepperPrevious>Back</button>
+          <button mat-raised-button color="primary" (click)="onSubmit()">Create Activity</button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-horizontal-stepper>
+</div>

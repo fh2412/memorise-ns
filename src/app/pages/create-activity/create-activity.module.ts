@@ -10,6 +10,8 @@ import {MatStepperModule} from '@angular/material/stepper';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BackButtonModule } from '../../components/back-button/back-button.module';
 import { CreateActivityComponent } from './create-activity.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import {MatSliderModule} from '@angular/material/slider'; 
 
 const routes: Routes = [
   {
@@ -33,7 +35,9 @@ const routes: Routes = [
     MatStepperModule,
     ReactiveFormsModule,
     FormsModule,
-    BackButtonModule
+    BackButtonModule,
+    MatSlideToggleModule,
+    MatSliderModule
   ]
 })
 export class CreateActivityModule {}

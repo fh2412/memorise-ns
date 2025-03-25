@@ -1,5 +1,4 @@
 @use '@angular/material' as mat;
-@use '../../../styles/themes/variables' as color;
 @use '../../pages/memory-detail/image-preview.scss';
 
 .preview {
@@ -29,9 +28,9 @@ mat-grid-list{
 }
 
 .card.starred {
-  border-color: color.$accent;
+  border-color: var(--mat-sys-secondary);
 }
 
 .starred-icon {
-  color: color.$accent;
+  color: var(--mat-sys-secondary);
 }

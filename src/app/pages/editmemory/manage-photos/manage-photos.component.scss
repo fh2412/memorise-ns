@@ -1,5 +1,4 @@
 @use '@angular/material' as mat;
-@use '../../../../styles/themes/variables' as color;
 @use '../../memory-detail/image-preview.scss';
 
 .header {
@@ -95,11 +94,11 @@
   }
   
   .card.hovered, .ard.starred {
-    border-color: color.$accent;
+    border-color: var(--mat-sys-secondary);
   }
   
   .starred-icon {
-    color: color.$accent;
+    color: var(--mat-sys-secondary);
   }
 
   .position-bottom-right {

@@ -1,6 +1,5 @@
 @use '../../../styles/components/mixins' as mixins;
 @use '../../../styles/components/page.scss';
-@use '../../../styles/themes/variables' as color;
 
 .header-group {
   display: flex;
@@ -29,5 +28,5 @@
     padding-bottom: 50%;
   }
   span{
-    color: color.$accent;
+    color: var(--mat-sys-secondary);
   }

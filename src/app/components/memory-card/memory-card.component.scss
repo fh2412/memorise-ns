@@ -1,5 +1,4 @@
 @use '../../../styles/components/mixins' as mixins;
-@use '../../../styles/themes/variables' as color;
 
 .card {
   @include mixins.full-size();
@@ -8,7 +7,7 @@
   transition: border 0.3s ease;
 
   &:hover {
-    border: 2px solid color.$primary;
+    border: 2px solid var(--mat-sys-primary);
     .edit-button {
       transform: translateY(0); // Brings button into view smoothly on hover
     }

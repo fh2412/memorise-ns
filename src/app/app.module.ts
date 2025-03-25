@@ -47,13 +47,8 @@ import { routes } from './app-routing.module';
         MainNavComponent,
         ChangePasswordDialogComponent,
         UploadProgressDialogComponent,
-        ImageDialogComponent,
-        InfoDialogComponent,
-        ConfirmDialogComponent,
-        ShareFriendCodeDialogComponent,
         PinnedDialogComponent,
         CompanyDialogComponent,
-        FullDescriptionDialogComponent,
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -80,7 +75,12 @@ import { routes } from './app-routing.module';
         MatProgressBarModule,
         GoogleMapsModule,
         FriendsPreviewModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        ConfirmDialogComponent,
+        FullDescriptionDialogComponent,
+        ImageDialogComponent,
+        InfoDialogComponent,
+        ShareFriendCodeDialogComponent,
     ],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),

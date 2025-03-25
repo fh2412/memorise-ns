@@ -1,5 +1,6 @@
 import { Component, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
 export interface InfoDialogData {
   text: string;
@@ -10,7 +11,10 @@ export interface InfoDialogData {
     selector: 'app-info-dialog',
     templateUrl: './info-dialog.component.html',
     styleUrls: ['./info-dialog.component.scss'],
-    standalone: false
+    imports: [
+      MatButtonModule,
+      MatDialogModule
+    ]
 })
 export class InfoDialogComponent {
 

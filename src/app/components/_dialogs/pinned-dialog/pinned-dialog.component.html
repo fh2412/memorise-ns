@@ -53,7 +53,7 @@
   </ng-template>
 </mat-dialog-content>
 
-<mat-dialog-actions align="end">
+<mat-dialog-actions>
   <button mat-button (click)="dialogRef.close()">Cancel</button>
-  <button mat-button color="primary" [disabled]="!hasChangesFlag" (click)="onSave()">Save</button>
+  <button mat-button [disabled]="!hasChangesFlag" (click)="onSave()">Save</button>
 </mat-dialog-actions>

@@ -4,7 +4,7 @@
   </mat-dialog-content>
   
   <mat-dialog-actions>
-    <button mat-button color="primary" (click)="copyLink()">Copy</button>
-    <button mat-button type="button" (click)="closeModal()">Close</button>
+    <button mat-button (click)="closeModal()">Close</button>
+    <button mat-stroked-button (click)="copyLink()" cdkFocusInitial>Copy</button>
   </mat-dialog-actions>
   

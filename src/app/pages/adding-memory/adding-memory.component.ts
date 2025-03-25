@@ -81,8 +81,6 @@ export class AddingMemoryComponent implements OnInit {
           const coords = response; // Assuming response is already the desired Geocords object
           const dialogRef = this.dialog.open(ChooseLocationComponent, {
             data: { lat: coords[0].lat, long: coords[0].long },
-            width: '500px',
-            height: '542px'
           });
 
           dialogRef.afterClosed().subscribe(result => {

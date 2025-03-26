@@ -1,21 +1,20 @@
-<ng-container *ngIf="memory">
-  <mat-card class="memory-card" appearance="outlined" *ngIf="memory.title">
+@if (memory && memory.title) {
+  <mat-card class="memory-card" appearance="outlined">
     <mat-card-content>
       <mat-card-title-group>
         <div class="truncate-title"><mat-card-title class="truncate">{{memory.title}}</mat-card-title></div>
-        <mat-chip color="primary">Public</mat-chip>
+        <mat-chip>Public</mat-chip>
       </mat-card-title-group>
       <mat-card-subtitle class="two-line-truncate">{{memory.text}}</mat-card-subtitle>
       <span class="tag">
-        <mat-icon color="primary" aria-hidden="true">circle</mat-icon>
+        <mat-icon aria-hidden="true">circle</mat-icon>
         Beta Memory
       </span>
     </mat-card-content>
   </mat-card>
 
-
-  <mat-card class="memory-card-empty" appearance="outlined" *ngIf="!memory.title">
+} @else {
+  <mat-card class="memory-card-empty" appearance="outlined">
     <p>No favourite Memory added yet</p>
   </mat-card>
-
-</ng-container>
+}

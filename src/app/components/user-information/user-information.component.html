@@ -1,4 +1,5 @@
-<mat-card class="user-card" appearance="outlined" *ngIf="userdb">
+@if (userdb) {
+<mat-card class="user-card" appearance="outlined">
   <div class="profile-picture-container">
     <img [src]="userdb.profilepic || '/assets/img/1.png'" alt="Profile Picture" class="profile-picture">
   </div>
@@ -26,3 +27,4 @@
     </mat-list>
   </div>
 </mat-card>
+}

@@ -19,8 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BackButtonComponent } from "../../components/back-button/back-button.component";
-import { PinCardModule } from '../../components/pin-card/pin-card.module';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 
 const routes: Routes = [
   {
@@ -52,7 +52,7 @@ const routes: Routes = [
     MatInputModule,
     MatSelectModule,
     BackButtonComponent,
-    PinCardModule,
+    PinCardComponent,
     MatAutocompleteModule,
     LogoutButtonComponent
 ],

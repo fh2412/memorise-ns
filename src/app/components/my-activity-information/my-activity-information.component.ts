@@ -2,12 +2,17 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { Activity } from '../quick-activity-autocomplete/quick-activity-autocomplete.component';
 import { Router } from '@angular/router';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-my-activity-information',
     templateUrl: './my-activity-information.component.html',
     styleUrl: './my-activity-information.component.scss',
-    standalone: false
+    imports: [
+      MatCardModule,
+      MatButtonModule
+    ]
 })
 export class MyActivityInformationComponent implements OnInit {
   @Input() user!: MemoriseUser;

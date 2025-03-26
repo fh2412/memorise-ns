@@ -24,7 +24,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ActivitiesComponent,
-    MyActivityInformationComponent,
     CompanyInformationComponent
   ],
   imports: [
@@ -42,6 +41,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatListModule,
     MatIconModule,
+    MyActivityInformationComponent,
   ]
 })
 export class ActivitiesModule { }

@@ -1,18 +1,18 @@
 <form class="quick-field">
-    <mat-form-field class="example-full-width" appearance="outline">
+    <mat-form-field class="full-width" appearance="outline">
       <mat-label>Or choose a quick activity</mat-label>
       <input matInput
-             aria-label="State"
+             aria-label="Activity"
              [matAutocomplete]="auto"
              [formControl]="activityCtrl"
              [(ngModel)]="quickActivity"
              >
       <mat-autocomplete #auto="matAutocomplete">
-        @for (state of filteredStates | async; track state) {
-          <mat-option [value]="state.name">
-            <mat-icon>{{state.icon}}</mat-icon>
-            <span>{{state.name}}</span> |
-            <small>{{state.genre}}</small>
+        @for (activity of filteredActivities | async; track activity) {
+          <mat-option [value]="activity.name">
+            <mat-icon>{{activity.icon}}</mat-icon>
+            <span>{{activity.name}}</span> |
+            <small>{{activity.genre}}</small>
           </mat-option>
         }
       </mat-autocomplete>

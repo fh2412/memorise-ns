@@ -25,7 +25,6 @@ export class ChooseLocationComponent {
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
 
   mapZoom = 5;
-  //mapCenter: google.maps.LatLng = new google.maps.LatLng(this.data.lat, this.data.long);
   mapCenter: google.maps.LatLngLiteral = {lat: this.data.lat, lng: this.data.long};
   mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,

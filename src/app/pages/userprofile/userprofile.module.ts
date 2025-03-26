@@ -32,7 +32,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     UserProfileComponent,
-    LogoutButtonComponent,
     EditUserDialogComponent,
   ],
   imports: [
@@ -54,7 +53,8 @@ const routes: Routes = [
     MatSelectModule,
     BackButtonComponent,
     PinCardModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    LogoutButtonComponent
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

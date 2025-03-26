@@ -1,12 +1,5 @@
 .logout-button {
-    background-color: #ff5555;
-    color: white;
-    transition: background-color 0.3s ease;
+    background-color: var(--mat-sys-error);
+    color: var(--mat-sys-on-error);
     font-weight: bold;
-  }
-  
-  /* Hover effect */
-  .logout-button:hover {
-    background-color: #ff3333;
-  }
-  
+  }  

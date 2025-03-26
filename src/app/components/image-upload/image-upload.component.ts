@@ -4,6 +4,12 @@ import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/userService';
 import { MemoryFormData } from '../../models/memoryInterface.model';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 export interface ImageFileWithDimensions {
   file: File;
@@ -12,10 +18,17 @@ export interface ImageFileWithDimensions {
 }
 
 @Component({
-    selector: 'app-image-upload',
-    templateUrl: './image-upload.component.html',
-    styleUrls: ['./image-upload.component.scss'],
-    standalone: false
+  selector: 'app-image-upload',
+  templateUrl: './image-upload.component.html',
+  styleUrls: ['./image-upload.component.scss'],
+  imports: [
+    CommonModule,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatGridListModule,
+    MatCardModule,
+  ]
 })
 
 export class ImageUploadComponent implements OnInit {
@@ -118,7 +131,7 @@ export class ImageUploadComponent implements OnInit {
   }
 
   onStar(index: number) {
-    if(this.showStar){
+    if (this.showStar) {
       if (this.starredIndex === index) {
         this.starredIndex = null;  // Unstar the currently starred image
       } else {

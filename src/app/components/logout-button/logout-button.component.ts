@@ -3,13 +3,18 @@ import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmDialogComponent, ConfirmationDialogData } from '../_dialogs/confirm-dialog/confirm-dialog.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
     selector: 'app-logout-button',
     templateUrl: './logout-button.component.html',
     styleUrls: ['./logout-button.component.scss'],
-    standalone: false
-})
+    imports: [
+      MatIconModule,
+      MatButtonModule
+    ]
+  })
 export class LogoutButtonComponent {
   constructor(
     private auth: Auth,

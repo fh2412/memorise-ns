@@ -22,8 +22,7 @@
         <mat-grid-tile><img class="image-size" [src]="displayImages[3].url" alt="Forth memory picture"></mat-grid-tile>
         <mat-grid-tile><img class="image-size" [src]="displayImages[4].url" alt="Fifth memory picture"></mat-grid-tile>
         <div style="position: absolute; bottom: 24px; right: 24px;">
-          <button mat-stroked-button color="primary" style="border-radius: 7px; background-color: white;"
-            (click)="openGallery()">
+          <button mat-stroked-button (click)="openGallery()" class="show-all-btn">
             <mat-icon>apps</mat-icon>
             Show all pictures
           </button>
@@ -94,7 +93,7 @@
           Provide more Information to remember your Adventure forever!</mat-card-content>
       </mat-card>
       <br><br>
-      <mat-card appearance="outlined" *ngIf="memorydbFriends !== null">
+      <mat-card appearance="outlined" *ngIf="memorydbFriends !== null" style="overflow: hidden;">
         <table mat-table [dataSource]="memorydbFriends">
           <!-- Profile Picture Column -->
           <ng-container matColumnDef="profilePicture">

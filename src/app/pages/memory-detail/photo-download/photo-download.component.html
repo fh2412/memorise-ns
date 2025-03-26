@@ -71,11 +71,11 @@
   
     <!-- Action Buttons -->
     <div class="action-buttons">
-      <button mat-stroked-button color="primary" (click)="downloadAllPhotos()">
+      <button mat-stroked-button (click)="downloadAllPhotos()">
         <mat-icon>download</mat-icon>
         <span class="button-text">Download all</span>
       </button>
-      <button mat-raised-button color="accent" 
+      <button mat-flat-button
               (click)="downloadSelectedPhotos()"
               [disabled]="selection.selected.length === 0">
         Download Selected ({{ selection.selected.length }})

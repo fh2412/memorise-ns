@@ -1,4 +1,5 @@
 import { Component, Inject, OnInit, HostListener } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -7,7 +8,8 @@ import { MatIconModule } from '@angular/material/icon';
     templateUrl: './image-dialog.component.html',
     styleUrls: ['./image-dialog.component.scss'],
     imports: [
-      MatIconModule
+      MatIconModule,
+      MatButtonModule
     ]
 })
 export class ImageDialogComponent implements OnInit {

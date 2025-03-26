@@ -4,8 +4,8 @@
     </div>
     <div>
         <app-back-button [text]="'Cancel'"></app-back-button>
-        <button mat-flat-button color="primary" (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-        <button mat-flat-button color="warn" (click)="confirmDeletion('DELETE')"><mat-icon>delete</mat-icon>DELETE</button>
+        <button mat-flat-button (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
+        <button mat-flat-button (click)="confirmDeletion('DELETE')" style="background-color: var(--mat-sys-error);"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 

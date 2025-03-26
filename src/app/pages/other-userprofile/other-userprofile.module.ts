@@ -7,7 +7,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { OtherUserprofileComponent } from './other-userprofile.component';
 import { PinCardModule } from '../../components/pin-card/pin-card.module';
 
@@ -31,7 +31,7 @@ const routes: Routes = [
     MatButtonModule,
     MatListModule,
     MatCardModule,
-    BackButtonModule,
+    BackButtonComponent,
     PinCardModule
 ],
   providers: [DatePipe], // Add DatePipe here if needed

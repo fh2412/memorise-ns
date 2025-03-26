@@ -10,11 +10,11 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import {MatTabsModule} from '@angular/material/tabs'; 
 import { FriendCardComponent } from '../../components/friend-card/friend-card.component';
-import { FriendsPreviewModule } from '../../components/friend-preview/friend-preview.module';
 import { FriendSearchComponent } from '../../components/friend-search/friend-search.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { UserInformationComponent } from '../../components/user-information/user-information.component';
+import { FriendPreviewComponent } from '../../components/friend-preview/friend-preview.component';
 
 
 const routes: Routes = [
@@ -42,7 +42,7 @@ const routes: Routes = [
     MatDividerModule,
     MatListModule,
     MatTabsModule,
-    FriendsPreviewModule,
+    FriendPreviewComponent,
     MatInputModule,
     FormsModule
   ]

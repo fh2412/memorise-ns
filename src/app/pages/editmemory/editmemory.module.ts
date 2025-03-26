@@ -13,12 +13,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
 import { ImageUploadModule } from '../../components/image-upload/image-upload.module';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
+import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 
 const routes: Routes = [
   {
@@ -45,12 +45,12 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     MatIconModule,
-    FriendsAutocompleteModule,
+    FriendsAutocompletComponent,
     ImageUploadModule,
     MatToolbarModule,
     MatTableModule,
     MatChipsModule,
-    BackButtonModule
+    BackButtonComponent
 ]
 })
 export class EditMemoryModule { }

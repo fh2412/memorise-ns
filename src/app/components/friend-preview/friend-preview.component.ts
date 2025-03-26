@@ -3,19 +3,27 @@ import { UserService } from '../../services/userService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 import { Friend } from '../../models/userInterface.model';
 import { Router } from '@angular/router';
+import { CommonModule, NgOptimizedImage } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-friend-preview',
     templateUrl: './friend-preview.component.html',
     styleUrl: './friend-preview.component.scss',
-    standalone: false
+    imports: [
+      CommonModule,
+      MatButtonModule,
+      MatIconModule,
+      NgOptimizedImage,
+  ],
 })
 export class FriendPreviewComponent implements OnInit {
   @Input() requested = false;
   @Input() buttonText = 'Request';
   @Input() requestedText = 'Requested';
-  @Input() buttonColor = 'primary'; // Use MatButton color options (primary, accent, warn, etc.)
-  @Input() buttonIcon = 'person_add'; // Use MatButton icon options
+  @Input() buttonColor = 'primary';
+  @Input() buttonIcon = 'person_add';
   @Input() friend!: Friend;
 
   @Output() buttonClicked = new EventEmitter<void>();

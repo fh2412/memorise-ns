@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { AddPhotosComponent } from './add-photos.component';
 import { ImageUploadModule } from '../../../components/image-upload/image-upload.module';
-import { BackButtonModule } from '../../../components/back-button/back-button.module';
+import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 
 const routes: Routes = [
   {
@@ -20,7 +20,7 @@ const routes: Routes = [
         CommonModule,
         RouterModule.forChild(routes),
         ImageUploadModule,
-        BackButtonModule
+        BackButtonComponent
     ]
 })
 export class AddPhotosModule { }

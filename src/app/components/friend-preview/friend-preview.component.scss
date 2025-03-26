@@ -8,10 +8,6 @@
       object-fit: cover;
       margin-right: 15px;
     }
-
-    .request-button {
-      height: 45px;
-    }
   }
 
   .profile-row {
@@ -27,4 +23,8 @@
 
   .profile-button {
     all: unset;
+  }
+
+  .logout-icon{
+    color: var(--mat-sys-primary);
   }

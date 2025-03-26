@@ -17,9 +17,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 import { MatGridListModule } from '@angular/material/grid-list';
-import { FriendsAutocompleteModule } from '../../components/friends-autocomplet/friends-autocomplet.module';
 import { ImageUploadModule } from '../../components/image-upload/image-upload.module';
-import { BackButtonModule } from '../../components/back-button/back-button.module';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 
 const routes: Routes = [
   {
@@ -52,9 +52,9 @@ const routes: Routes = [
     AsyncPipe,
     MatSlideToggleModule,
     MatGridListModule,
-    FriendsAutocompleteModule,
+    FriendsAutocompletComponent,
     ImageUploadModule,
-    BackButtonModule
+    BackButtonComponent
   ]
 })
 export class AddingMemoryModule {}

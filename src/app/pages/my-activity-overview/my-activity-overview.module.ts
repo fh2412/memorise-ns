@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { MyActivityOverviewComponent } from './my-activity-overview.component';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { ActivityCardComponent } from '../../components/activity-card/activity-card.component';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -23,7 +23,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    BackButtonModule,
+    BackButtonComponent,
     MatCardModule,
     MatIconModule,
     MatChipsModule,

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { SetMemoriesActivityComponent } from './set-memories-activity.component';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDividerModule } from '@angular/material/divider';
@@ -26,7 +26,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
-    BackButtonModule,
+    BackButtonComponent,
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,

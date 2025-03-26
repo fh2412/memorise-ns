@@ -1,18 +1,35 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatChipInputEvent } from '@angular/material/chips';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
     selector: 'app-friends-autocomplet',
     templateUrl: './friends-autocomplet.component.html',
     styleUrls: ['./friends-autocomplet.component.scss'],
-    standalone: false
+    imports: [
+      CommonModule,
+      MatAutocompleteModule,
+      MatIconModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatButtonModule,
+      ReactiveFormsModule,
+      MatProgressBarModule,
+      FormsModule,
+      MatChipsModule,
+    ]
 })
 export class FriendsAutocompletComponent implements OnInit {
   allfriends: string[] = [];

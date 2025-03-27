@@ -11,7 +11,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
 import { CreateActivityComponent } from './create-activity.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import {MatSliderModule} from '@angular/material/slider'; 
+import {MatSliderModule} from '@angular/material/slider';
+import { MapSnippetComponent } from "../../components/map-snippet/map-snippet.component"; 
 
 const routes: Routes = [
   {
@@ -38,7 +39,8 @@ const routes: Routes = [
     BackButtonComponent,
     MatSlideToggleModule,
     MatSliderModule,
-    BackButtonComponent
-  ]
+    BackButtonComponent,
+    MapSnippetComponent
+]
 })
 export class CreateActivityModule {}

@@ -14,9 +14,10 @@ import { UserService } from '../../services/userService';
 export class CreateActivityComponent implements OnInit {
   activityForm: FormGroup;
   selectedImageUrl: string | null = null;
-  location: string | null = null;
   preview = '';
   userId: string | null = null;
+  lat = 0;
+  lng = 0;
 
   constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService) {
     this.activityForm = this.fb.group({
@@ -41,15 +42,16 @@ export class CreateActivityComponent implements OnInit {
       this.countryService.getCountryGeocordsByUserId(this.userId).subscribe(
         response => {
           if (response) {
-            const coords = response; // Assuming response is already the desired Geocords object
-            console.log(coords[0].lat, coords[0].long);
+            const coords = response;
             const dialogRef = this.dialog.open(ChooseLocationComponent, {
               data: { lat: coords[0].lat, long: coords[0].long },
             });
 
             dialogRef.afterClosed().subscribe(result => {
               if (result) {
-                console.log(result.markerPosition);
+                this.lat = result.markerPosition.lat;
+                this.lng = result.markerPosition.lng;
+                console.log(this.lat, this.lng);
               } else {
                 console.error("Incomplete location data received from map dialog.");
               }
@@ -79,7 +81,6 @@ export class CreateActivityComponent implements OnInit {
   onSubmit() {
     if (this.activityForm.valid) {
       console.log('Form submitted:', this.activityForm.value);
-      console.log('Location:', this.location);
       console.log('Image URL:', this.selectedImageUrl);
     }
   }

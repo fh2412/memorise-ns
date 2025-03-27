@@ -1,13 +1,20 @@
 /* activity-creation.component.scss */
 .activity-creation-container {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
 }
 
-h1 {
-  margin-bottom: 24px;
-  text-align: center;
+.create-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  h1 {
+    width: 100%;
+    margin: initial;
+    margin-left: 25px;
+  }
 }
 
 .step-content {
@@ -20,7 +27,7 @@ h1 {
 }
 
 .form-overlay {
-  background-color: rgba(255, 255, 255, 0.85);
+  background-color: var(--mat-sys-background);
   padding: 24px;
   border-radius: 8px;
 }
@@ -33,13 +40,14 @@ h1 {
 }
 
 .title-field {
+  margin-top: 15px;
   flex-grow: 1;
 }
 
 .media-location-section {
   display: flex;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 48px;
 }
 
 .buttons-column {
@@ -55,20 +63,20 @@ h1 {
 
 .sliders-section {
   margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
 }
 
 .slider-container {
   margin-bottom: 20px;
-
+  flex-grow: 1;
   label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
   }
+}
 
-  mat-slider {
-    width: 100%;
-  }
+mat-slider{
+  width: 90%;
 }
 
 .step-navigation {

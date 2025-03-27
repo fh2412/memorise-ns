@@ -1,8 +1,14 @@
-<div class="wrapper" *ngIf="user">
+<div class="wrapper">
+  
   <div class="sticky-sidebar">
+    @if (user) {
     <app-my-activity-information [user]="user"></app-my-activity-information>
     <app-company-information [company]="company" [userId]="user.user_id"></app-company-information>
+    } @else {
+      <mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
+    }
   </div>
+  
   <div class="main-content">
     <div class="header">
       <h1>ACTIVITIES</h1>

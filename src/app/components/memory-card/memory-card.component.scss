@@ -2,7 +2,6 @@
 
 .card {
   @include mixins.full-size();
-  overflow: hidden;
   cursor: pointer;
   transition: border 0.3s ease;
 

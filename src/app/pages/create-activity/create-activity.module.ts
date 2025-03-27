@@ -37,7 +37,8 @@ const routes: Routes = [
     FormsModule,
     BackButtonComponent,
     MatSlideToggleModule,
-    MatSliderModule
+    MatSliderModule,
+    BackButtonComponent
   ]
 })
 export class CreateActivityModule {}

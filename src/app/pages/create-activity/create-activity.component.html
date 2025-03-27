@@ -1,7 +1,10 @@
 <!-- activity-creation.component.html -->
 <div class="activity-creation-container">
-  <h1>Create a New Activity</h1>
-  
+  <div class="create-header">
+    <app-back-button></app-back-button>
+    <h1>Create a New Activity</h1>
+  </div>
+  <mat-card appearance="outlined">
   <mat-horizontal-stepper [linear]="true" #stepper>
     <!-- Step 1: Main Information -->
     <mat-step [stepControl]="activityForm" label="Main Information">
@@ -17,16 +20,13 @@
                   Title is required
                 </mat-error>
               </mat-form-field>
-              
-              <mat-slide-toggle formControlName="isPrivate" color="primary">
-                {{ activityForm.get('isPrivate')?.value ? 'Private' : 'Public' }}
-              </mat-slide-toggle>
+              <mat-slide-toggle formControlName="isPrivate">Public</mat-slide-toggle>
             </div>
             
             <!-- Media and Location Section -->
             <div class="media-location-section">
               <div class="buttons-column">
-                <button mat-raised-button color="primary" type="button" (click)="addLocation()">
+                <button mat-raised-button color="primary" type="button" (click)="openMapDialog()">
                   <mat-icon>location_on</mat-icon> Add Location
                 </button>
                 
@@ -51,12 +51,12 @@
             <!-- Sliders -->
             <div class="sliders-section">
               <div class="slider-container">
-                <label>Group Size: {{ activityForm.get('groupSize')?.value }}</label>
+                <label>Group Size: {{ activityForm.get('groupSizeMin')?.value }} - {{ activityForm.get('groupSizeMax')?.value }}</label>
                 <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                  <input matSliderThumb formControlName="groupSize">
+                  <input matSliderStartThumb formControlName="groupSizeMin">
+                  <input matSliderEndThumb formControlName="groupSizeMax">
                 </mat-slider>
               </div>
-              
               <div class="slider-container">
                 <label>Cost: ${{ activityForm.get('costs')?.value }}</label>
                 <mat-slider min="0" max="100" step="5" showTickMarks discrete>
@@ -86,4 +86,5 @@
       </div>
     </mat-step>
   </mat-horizontal-stepper>
+</mat-card>
 </div>

@@ -14,6 +14,15 @@ export class UserService {
   private userIdSource = new BehaviorSubject<string | null>(null);
   userId$ = this.userIdSource.asObservable();
 
+  constructor(private http: HttpClient) {
+    const storedUserId = localStorage.getItem(this.storageKey);
+    if (storedUserId) {
+      this.loggedInUserId = JSON.parse(storedUserId);
+      this.userIdSource.next(this.loggedInUserId);
+    }
+  }
+
+
   setLoggedInUserId(userId: string): void {
     this.loggedInUserId = userId;
     this.userIdSource.next(userId);
@@ -28,8 +37,6 @@ export class UserService {
   
   private apiUrl = `${environment.apiUrl}/users`;
   
-  constructor(private http: HttpClient) {}
-
   getUser(id: string) {
     return this.http.get<MemoriseUser>(`${this.apiUrl}/${id}`);
   }

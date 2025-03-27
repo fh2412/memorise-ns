@@ -29,32 +29,29 @@
                   <mat-icon>location_on</mat-icon> Add Location
                 </button>
               </mat-card>
-              <mat-card appearance="outlined" class="media-location-card">
-                <button mat-stroked-button (click)="fileInput.click()">
+            
+              <mat-card 
+                appearance="outlined" 
+                class="media-location-card image-card" 
+                [ngStyle]="{'background-image': preview ? 'url(' + preview + ')' : 'none'}">
+                <button mat-stroked-button (click)="fileInput.click()" class="upload-button">
                   <mat-icon>add_photo_alternate</mat-icon> Add Picture
                   <input #fileInput type="file" accept="image/*" (change)="selectFiles($event)" style="display: none" />
                 </button>
-                @if (preview != '') {
-                  <img mat-card-image [src]="preview" alt="Image" class="background-image">
-                }
               </mat-card>
             </div>
 
-
-
-
-            
             <!-- Sliders -->
             <div class="sliders-section">
               <div class="slider-container">
-                <label>Group Size: {{ activityForm.get('groupSizeMin')?.value }} - {{ activityForm.get('groupSizeMax')?.value }}</label>
+                <span>Group Size: {{ activityForm.get('groupSizeMin')?.value }} - {{ activityForm.get('groupSizeMax')?.value }}</span>
                 <mat-slider min="1" max="20" step="1" showTickMarks discrete>
                   <input matSliderStartThumb formControlName="groupSizeMin">
                   <input matSliderEndThumb formControlName="groupSizeMax">
                 </mat-slider>
               </div>
               <div class="slider-container">
-                <label>Cost: ${{ activityForm.get('costs')?.value }}</label>
+                <span>Cost: ${{ activityForm.get('costs')?.value }}</span>
                 <mat-slider min="0" max="100" step="5" showTickMarks discrete>
                   <input matSliderThumb formControlName="costs">
                 </mat-slider>

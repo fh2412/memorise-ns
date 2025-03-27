@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   h1 {
     width: 100%;
     margin: initial;
@@ -18,7 +18,7 @@
 }
 
 .step-content {
-  margin: 20px 0;
+  margin: 15px 0;
   min-height: 400px;
   position: relative;
   background-size: cover;
@@ -36,7 +36,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .title-field {
@@ -70,7 +70,7 @@ mat-slider{
 }
 
 .media-location-row{
-  gap: 16px;
+  gap: 32px;
   display: flex;
   margin-bottom: 36px;
 }
@@ -80,4 +80,10 @@ mat-slider{
   flex-grow: 1;
   align-items: center;
   justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.upload-button{
+  background-color: var(--mat-sys-background);
 }

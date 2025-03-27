@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { CountryService } from '../../services/restCountries.service';
 import { MatDialog } from '@angular/material/dialog';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-create-activity',
@@ -10,13 +11,14 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './create-activity.component.html',
   styleUrl: './create-activity.component.scss'
 })
-export class CreateActivityComponent {
+export class CreateActivityComponent implements OnInit {
   activityForm: FormGroup;
   selectedImageUrl: string | null = null;
   location: string | null = null;
   preview = '';
-  
-  constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog) {
+  userId: string | null = null;
+
+  constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService) {
     this.activityForm = this.fb.group({
       title: ['', Validators.required],
       isPrivate: [false],
@@ -26,75 +28,51 @@ export class CreateActivityComponent {
     });
   }
 
-  openMapDialog(): void {
-    const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { lat: 0, long: 0 },
+  ngOnInit(): void {
+    // Subscribe to get the logged-in user ID
+    this.userService.userId$.subscribe(userId => {
+      this.userId = userId;
+      console.log("Component received userId:", this.userId);
     });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        console.log(result.markerPosition);
-      } else {
-        console.error("Incomplete location data received from map dialog.");
-      }
-    });
-    /*
-    this.countryService.getCountryGeocordsByUserId("this.userId").subscribe(
-      response => {
-        if (response) {
-          const coords = response; // Assuming response is already the desired Geocords object
-          console.log(coords[0].lat, coords[0].long);
-          const dialogRef = this.dialog.open(ChooseLocationComponent, {
-            data: { lat: coords[0].lat, long: coords[0].long },
-          });
-
-          dialogRef.afterClosed().subscribe(result => {
-            if (result) {
-              console.log(result.markerPosition);
-            } else {
-              console.error("Incomplete location data received from map dialog.");
-            }
-          });
-        } else {
-          console.error("No coordinates found for the specified country.");
-        }
-      },
-      error => {
-        console.error('Error getting country geocoordinates:', error);
-      }
-    );*/
   }
 
-  addLocation() {
-    // In a real application, this would open a location picker
-    // For demonstration purposes, we're just setting a placeholder
-    this.location = 'Central Park, New York';
+  openMapDialog(): void {
+    if(this.userId){
+      this.countryService.getCountryGeocordsByUserId(this.userId).subscribe(
+        response => {
+          if (response) {
+            const coords = response; // Assuming response is already the desired Geocords object
+            console.log(coords[0].lat, coords[0].long);
+            const dialogRef = this.dialog.open(ChooseLocationComponent, {
+              data: { lat: coords[0].lat, long: coords[0].long },
+            });
+
+            dialogRef.afterClosed().subscribe(result => {
+              if (result) {
+                console.log(result.markerPosition);
+              } else {
+                console.error("Incomplete location data received from map dialog.");
+              }
+            });
+          } else {
+            console.error("No coordinates found for the specified country.");
+          }
+        },
+        error => {
+          console.error('Error getting country geocoordinates:', error);
+        }
+      );
+    }
   }
 
   selectFiles(event: Event): void {
     const input = event.target as HTMLInputElement;
-    const file = input.files?.[0];
-  
-    if (file) {
+    if (input.files && input.files[0]) {
       const reader = new FileReader();
-  
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        const preview = e.target?.result as string;
-  
-        const img = new Image();
-        img.src = preview;
-        this.preview = preview;
-        // You can now use the 'img' element or the 'preview' string (base64 data URL)
-        // for display or further processing. For example:
-        // this.previewImage = preview; // If you want to store the preview
-        // or append the image to a container
+        this.preview = e.target?.result as string;
       };
-  
-      reader.onerror = (error: ProgressEvent<FileReader>) => {
-        console.error('Error reading file:', error);
-      };
-  
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(input.files[0]);
     }
   }
 

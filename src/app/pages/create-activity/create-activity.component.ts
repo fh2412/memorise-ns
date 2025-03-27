@@ -14,6 +14,7 @@ export class CreateActivityComponent {
   activityForm: FormGroup;
   selectedImageUrl: string | null = null;
   location: string | null = null;
+  preview = '';
   
   constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog) {
     this.activityForm = this.fb.group({
@@ -70,10 +71,31 @@ export class CreateActivityComponent {
     this.location = 'Central Park, New York';
   }
 
-  addPicture() {
-    // In a real application, this would open a file picker
-    // For demonstration purposes, we're just setting a placeholder image
-    this.selectedImageUrl = '/api/placeholder/600/400';
+  selectFiles(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+  
+    if (file) {
+      const reader = new FileReader();
+  
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        const preview = e.target?.result as string;
+  
+        const img = new Image();
+        img.src = preview;
+        this.preview = preview;
+        // You can now use the 'img' element or the 'preview' string (base64 data URL)
+        // for display or further processing. For example:
+        // this.previewImage = preview; // If you want to store the preview
+        // or append the image to a container
+      };
+  
+      reader.onerror = (error: ProgressEvent<FileReader>) => {
+        console.error('Error reading file:', error);
+      };
+  
+      reader.readAsDataURL(file);
+    }
   }
 
   onSubmit() {

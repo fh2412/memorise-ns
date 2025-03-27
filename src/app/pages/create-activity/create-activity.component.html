@@ -23,30 +23,26 @@
               <mat-slide-toggle formControlName="isPrivate">Public</mat-slide-toggle>
             </div>
             
-            <!-- Media and Location Section -->
-            <div class="media-location-section">
-              <div class="buttons-column">
-                <button mat-raised-button color="primary" type="button" (click)="openMapDialog()">
+            <div class="media-location-row">
+              <mat-card appearance="outlined" class="media-location-card">
+                <button mat-flat-button (click)="openMapDialog()">
                   <mat-icon>location_on</mat-icon> Add Location
                 </button>
-                
-                <button mat-raised-button color="accent" type="button" (click)="addPicture()">
+              </mat-card>
+              <mat-card appearance="outlined" class="media-location-card">
+                <button mat-stroked-button (click)="fileInput.click()">
                   <mat-icon>add_photo_alternate</mat-icon> Add Picture
+                  <input #fileInput type="file" accept="image/*" (change)="selectFiles($event)" style="display: none" />
                 </button>
-              </div>
-              
-              <div class="location-display" *ngIf="location">
-                <mat-card>
-                  <mat-card-header>
-                    <mat-icon mat-card-avatar>place</mat-icon>
-                    <mat-card-title>Location</mat-card-title>
-                  </mat-card-header>
-                  <mat-card-content>
-                    <p>{{ location }}</p>
-                  </mat-card-content>
-                </mat-card>
-              </div>
+                @if (preview != '') {
+                  <img mat-card-image [src]="preview" alt="Image" class="background-image">
+                }
+              </mat-card>
             </div>
+
+
+
+
             
             <!-- Sliders -->
             <div class="sliders-section">

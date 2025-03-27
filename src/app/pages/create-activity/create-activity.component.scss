@@ -44,23 +44,6 @@
   flex-grow: 1;
 }
 
-.media-location-section {
-  display: flex;
-  gap: 24px;
-  margin-bottom: 48px;
-}
-
-.buttons-column {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 180px;
-}
-
-.location-display {
-  flex-grow: 1;
-}
-
 .sliders-section {
   margin-bottom: 24px;
   display: flex;
@@ -84,4 +67,17 @@ mat-slider{
   justify-content: flex-end;
   margin-top: 24px;
   gap: 16px;
+}
+
+.media-location-row{
+  gap: 16px;
+  display: flex;
+  margin-bottom: 36px;
+}
+
+.media-location-card{
+  aspect-ratio: 1/1;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
 }

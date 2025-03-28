@@ -89,6 +89,7 @@ export class CreateActivityComponent implements OnInit {
   onFileSelected(event: any) {
     const files: File[] = Array.from(event.target.files);
     this.uploadedFiles = [...this.uploadedFiles, ...files];
+    console.log(files);
   }
 
   removeFile(fileToRemove: File) {

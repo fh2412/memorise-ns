@@ -29,14 +29,21 @@
                 <textarea matInput formControlName="description" rows="8"></textarea>
               </mat-form-field>
               <mat-card appearance="outlined" class="flex file-list">
-                <mat-list *ngIf="uploadedFiles.length > 0">
-                  <mat-list-item *ngFor="let file of uploadedFiles">
-                    {{ file.name }}
-                    <button mat-icon-button (click)="removeFile(file)">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                @if (uploadedFiles.length > 0) {
+                <mat-list>
+                  @for (file of uploadedFiles; track $index) {
+                  <mat-list-item>
+                    <mat-icon matListItemIcon>folder</mat-icon>
+                    <div matListItemTitle>{{file.name}}
+                    </div>
+                    <div matListItemLine>{{file.size / 100000}} MB</div>
+                    <div matListItemMeta>
+                      <button mat-icon-button (click)="removeFile(file)" class="list-button"><mat-icon>delete</mat-icon></button>
+                    </div>
                   </mat-list-item>
+                  }
                 </mat-list>
+                }
               </mat-card>
             </div>
             <!-- Toggle Buttons -->

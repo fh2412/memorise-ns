@@ -18,6 +18,8 @@ export class CreateActivityComponent implements OnInit {
   userId: string | null = null;
   lat = 0;
   lng = 0;
+  uploadedFiles: File[] = [];
+  tags: string[] = [];
 
   constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService) {
     this.activityForm = this.fb.group({
@@ -25,7 +27,12 @@ export class CreateActivityComponent implements OnInit {
       isPrivate: [false],
       groupSizeMin: [1, [Validators.min(1), Validators.max(20)]],
       groupSizeMax: [20, [Validators.min(1), Validators.max(20)]],
-      costs: [0, [Validators.min(0), Validators.max(100)]]
+      costs: [0, [Validators.min(0), Validators.max(100)]],
+      description: [''],
+      link: ['', Validators.pattern('https?://.+')],
+      location: ['indoor'],
+      season: ['summer'],
+      weather: ['sunny'],
     });
   }
 
@@ -68,6 +75,7 @@ export class CreateActivityComponent implements OnInit {
   }
 
   selectFiles(event: Event): void {
+    console.log("Select files!");
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const reader = new FileReader();
@@ -76,6 +84,27 @@ export class CreateActivityComponent implements OnInit {
       };
       reader.readAsDataURL(input.files[0]);
     }
+  }
+
+  onFileSelected(event: any) {
+    const files: File[] = Array.from(event.target.files);
+    this.uploadedFiles = [...this.uploadedFiles, ...files];
+  }
+
+  removeFile(fileToRemove: File) {
+    this.uploadedFiles = this.uploadedFiles.filter(file => file !== fileToRemove);
+  }
+
+  addTag(event: any) {
+    const value = (event.value || '').trim();
+    if (value && !this.tags.includes(value)) {
+      this.tags.push(value);
+    }
+    event.input.value = '';
+  }
+
+  removeTag(tagToRemove: string) {
+    this.tags = this.tags.filter(tag => tag !== tagToRemove);
   }
 
   onSubmit() {

@@ -12,7 +12,9 @@ import { BackButtonComponent } from '../../components/back-button/back-button.co
 import { CreateActivityComponent } from './create-activity.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import {MatSliderModule} from '@angular/material/slider';
-import { MapSnippetComponent } from "../../components/map-snippet/map-snippet.component"; 
+import { MapSnippetComponent } from "../../components/map-snippet/map-snippet.component";
+import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
+import { MatListModule } from '@angular/material/list';
 
 const routes: Routes = [
   {
@@ -40,7 +42,9 @@ const routes: Routes = [
     MatSlideToggleModule,
     MatSliderModule,
     BackButtonComponent,
-    MapSnippetComponent
+    MapSnippetComponent,
+    MatButtonToggleModule,
+    MatListModule
 ]
 })
 export class CreateActivityModule {}

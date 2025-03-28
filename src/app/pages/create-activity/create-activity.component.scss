@@ -17,15 +17,6 @@
   }
 }
 
-.step-content {
-  margin: 15px 0;
-  min-height: 400px;
-  position: relative;
-  background-size: cover;
-  background-position: center;
-  border-radius: 8px;
-}
-
 .form-overlay {
   background-color: var(--mat-sys-background);
   padding: 24px;
@@ -86,4 +77,23 @@ mat-slider{
 
 .upload-button{
   background-color: var(--mat-sys-background);
+}
+
+.file-upload-btn{
+  margin-top: 8px;
+}
+.details-row{
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.flex{
+  width: 50%;
+}
+
+
+.file-list{
+  max-height: 225px;
+  overflow: auto;
 }

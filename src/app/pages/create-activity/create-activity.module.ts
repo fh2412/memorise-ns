@@ -15,6 +15,8 @@ import {MatSliderModule} from '@angular/material/slider';
 import { MapSnippetComponent } from "../../components/map-snippet/map-snippet.component";
 import {MatButtonToggleModule} from '@angular/material/button-toggle'; 
 import { MatListModule } from '@angular/material/list';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const routes: Routes = [
   {
@@ -44,7 +46,9 @@ const routes: Routes = [
     BackButtonComponent,
     MapSnippetComponent,
     MatButtonToggleModule,
-    MatListModule
+    MatListModule,
+    MatChipsModule,
+    MatTooltipModule
 ]
 })
 export class CreateActivityModule {}

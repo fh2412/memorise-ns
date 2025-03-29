@@ -18,6 +18,12 @@ export class ActivityService {
     return this.http.post<CreateActivityResponse>(url, body);
   }
 
+  createUserActivity(title: string){
+    const url = `${this.apiUrl}/add-activity`;
+    const body = { title };
+    return this.http.post<CreateActivityResponse>(url, body);
+  }
+
   getActivity(activityId: number){
     return this.http.get<MemoriseActivity>(`${this.apiUrl}/${activityId}`);
   }

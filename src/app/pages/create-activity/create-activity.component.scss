@@ -102,3 +102,10 @@ mat-slider{
   margin-top: 10px;
   color: var(--mat-sys-error);
 }
+
+.toggle-section{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 32px;
+  margin-right: 32px;
+}

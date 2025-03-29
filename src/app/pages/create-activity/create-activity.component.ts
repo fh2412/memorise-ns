@@ -13,13 +13,11 @@ import { UserService } from '../../services/userService';
 })
 export class CreateActivityComponent implements OnInit {
   activityForm: FormGroup;
-  selectedImageUrl: string | null = null;
-  preview = '';
+  selectedImageUrl= '';
   userId: string | null = null;
   lat = 0;
   lng = 0;
   uploadedFiles: File[] = [];
-  tags: string[] = [];
 
   constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService) {
     this.activityForm = this.fb.group({
@@ -80,13 +78,13 @@ export class CreateActivityComponent implements OnInit {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
-        this.preview = e.target?.result as string;
+        this.selectedImageUrl = e.target?.result as string;
       };
       reader.readAsDataURL(input.files[0]);
     }
   }
 
-  onFileSelected(event: any) {
+  onSupportingFileSelected(event: any) {
     const files: File[] = Array.from(event.target.files);
     this.uploadedFiles = [...this.uploadedFiles, ...files];
     console.log(files);
@@ -96,22 +94,18 @@ export class CreateActivityComponent implements OnInit {
     this.uploadedFiles = this.uploadedFiles.filter(file => file !== fileToRemove);
   }
 
-  addTag(event: any) {
-    const value = (event.value || '').trim();
-    if (value && !this.tags.includes(value)) {
-      this.tags.push(value);
-    }
-    event.input.value = '';
-  }
-
-  removeTag(tagToRemove: string) {
-    this.tags = this.tags.filter(tag => tag !== tagToRemove);
-  }
-
   onSubmit() {
     if (this.activityForm.valid) {
       console.log('Form submitted:', this.activityForm.value);
       console.log('Image URL:', this.selectedImageUrl);
+      console.log('Supporting Docs:', this.uploadedFiles);
+      console.log('Location:', this.lat, this.lng);
+
+      //Open Upload Dialog
+      //Upload docs to firebase
+      //Safe firebase string to var
+      //create MemoriseUserActivity
+      //Call service function
     }
   }
 }

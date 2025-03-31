@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 import { environment } from '../../environments/environment';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
@@ -10,9 +10,10 @@ import { UpdateStandardResponse } from '../models/api-responses.model';
   providedIn: 'root'
 })
 export class ActivityService {
+  private storage = inject(Storage);
   private apiUrl = `${environment.apiUrl}/activity`;
 
-  constructor(private http: HttpClient, private storage: Storage) { }
+  constructor(private http: HttpClient) { }
 
   createActivity(activityData: MemoriseUserActivity): Observable<CreateActivityResponse> {
     const url = `${this.apiUrl}/add-user-activity`;
@@ -34,13 +35,9 @@ export class ActivityService {
       const filePath = `activities/${activityId}/thumbnail.jpg`;
       const storageRef = ref(this.storage, filePath);
       const uploadTask = uploadBytesResumable(storageRef, file);
-      
       uploadTask.on(
         'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Title picture upload progress: ${progress}%`);
-        },
+        (snapshot) => {console.log(snapshot.state);},
         (error) => {
           console.error("Title picture upload error:", error);
           observer.error(error);
@@ -100,11 +97,11 @@ export class ActivityService {
   }
 
   // Update activity with document URLs
-  updateActivityWithDocuments(activityId: string, titlePictureUrl: string, supportingDocUrls: string[]): Observable<UpdateStandardResponse> {
+  updateActivityWithDocuments(activityId: string, titlePictureUrl: string, firebaseFolderUrl: string[]): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/update-activity/${activityId}`;
     const updateData = {
       titlePictureUrl,
-      supportingDocUrls
+      firebaseFolderUrl
     };
     
     return this.http.put<UpdateStandardResponse>(url, updateData);

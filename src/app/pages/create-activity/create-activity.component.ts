@@ -20,6 +20,7 @@ import { MemoriseLocation } from '../../models/location.model';
 export class CreateActivityComponent implements OnInit {
   activityForm: FormGroup;
   selectedImageUrl = '';
+  selectedImageFile: File | undefined;
   userId: string | null = null;
   lat = 0;
   lng = 0;
@@ -35,9 +36,9 @@ export class CreateActivityComponent implements OnInit {
       costs: [0, [Validators.min(0), Validators.max(100)]],
       description: [''],
       link: ['', Validators.pattern('https?://.+')],
-      location: ['indoor'],
-      season: ['summer'],
-      weather: ['sunny'],
+      indoor_outdoor_flag: ['indoor'],
+      season: [['summer']],
+      weather: [['sunny']],
     });
   }
 
@@ -63,7 +64,6 @@ export class CreateActivityComponent implements OnInit {
               if (result) {
                 this.lat = result.markerPosition.lat;
                 this.lng = result.markerPosition.lng;
-                console.log(this.lat, this.lng);
               } else {
                 console.error("Incomplete location data received from map dialog.");
               }
@@ -80,9 +80,9 @@ export class CreateActivityComponent implements OnInit {
   }
 
   selectFiles(event: Event): void {
-    console.log("Select files!");
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
+      this.selectedImageFile = input.files[0];
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.selectedImageUrl = e.target?.result as string;
@@ -112,7 +112,7 @@ export class CreateActivityComponent implements OnInit {
     }
   }
 
-  private createActivity(dialogRef: MatDialogRef<UploadActivityDialogComponent>): void {
+  private async createActivity(dialogRef: MatDialogRef<UploadActivityDialogComponent>): Promise<void> {
     const formData = this.activityForm.value;
     let activityId: string;
     let titlePictureUrl = '';
@@ -137,70 +137,71 @@ export class CreateActivityComponent implements OnInit {
       groupSizeMax: formData.groupSizeMax,
       costs: formData.costs,
       link: formData.link,
-      indoor: formData.indoor,
+      indoor: formData.indoor_outdoor_flag == 'indoor',
       season: formData.season,
       weather: formData.weather,
       location: location,
       firebaseUrl: ''
     };
 
-    this.activityService.createActivity(activityData)
+    await this.activityService.createActivity(activityData)
       .pipe(
         catchError(error => {
           dialogRef.componentInstance.showError(new Error('Failed to create activity: ' + error.message));
           return of(null);
         })
       )
-      .subscribe(response => {
+      .subscribe(async response => {
         if (!response) return; // Error was handled
-
         activityId = response.activityId.toString();
+        console.log("Activity created: ", activityId);
         dialogRef.componentInstance.updateProgress(10, 'Activity created. Starting uploads...');
 
         // Step 2: Upload title picture (progress to 20%)
-        if (formData.titlePicture) {
-          this.activityService.uploadTitlePicture(formData.titlePicture, activityId)
-            .pipe(
-              catchError(error => {
+        if (this.selectedImageFile) {
+          this.activityService.uploadTitlePicture(this.selectedImageFile, activityId)
+            .subscribe({
+              next: (url) => {
+                console.log("Picture uploaded ", url);
+                titlePictureUrl = url;
+                dialogRef.componentInstance.updateProgress(20, 'Title picture uploaded successfully');
+                this.finalizeActivity(dialogRef, activityId, titlePictureUrl, []);
+                // Step 3: Upload supporting documents (progress to 60%)
+                /*if (formData.supportingDocuments && formData.supportingDocuments.length > 0) {
+                  this.activityService.uploadSupportingDocuments(formData.supportingDocuments, activityId)
+                    .pipe(
+                      catchError(error => {
+                        dialogRef.componentInstance.showError(new Error('Failed to upload supporting documents: ' + error.message));
+                        return of(null);
+                      })
+                    )
+                    .subscribe(urls => {
+                      if (!urls) return; // Error was handled
+
+                      supportingDocUrls = urls;
+                      dialogRef.componentInstance.updateProgress(60, 'Supporting documents uploaded');
+                      this.finalizeActivity(dialogRef, activityId, titlePictureUrl, supportingDocUrls);
+                    });
+                } else {
+                  // Skip document upload if none provided
+                  dialogRef.componentInstance.updateProgress(60, 'No supporting documents to upload');
+                  this.finalizeActivity(dialogRef, activityId, titlePictureUrl, []);
+                }*/
+              },
+              error: (error) => {
                 dialogRef.componentInstance.showError(new Error('Failed to upload title picture: ' + error.message));
                 return of(null);
-              })
-            )
-            .subscribe(url => {
-              if (!url) return; // Error was handled
-
-              titlePictureUrl = url;
-              dialogRef.componentInstance.updateProgress(20, 'Title picture uploaded successfully');
-
-              // Step 3: Upload supporting documents (progress to 60%)
-              if (formData.supportingDocuments && formData.supportingDocuments.length > 0) {
-                this.activityService.uploadSupportingDocuments(formData.supportingDocuments, activityId)
-                  .pipe(
-                    catchError(error => {
-                      dialogRef.componentInstance.showError(new Error('Failed to upload supporting documents: ' + error.message));
-                      return of(null);
-                    })
-                  )
-                  .subscribe(urls => {
-                    if (!urls) return; // Error was handled
-
-                    supportingDocUrls = urls;
-                    dialogRef.componentInstance.updateProgress(60, 'Supporting documents uploaded');
-                    this.finalizeActivity(dialogRef, activityId, titlePictureUrl, supportingDocUrls);
-                  });
-              } else {
-                // Skip document upload if none provided
-                dialogRef.componentInstance.updateProgress(60, 'No supporting documents to upload');
-                this.finalizeActivity(dialogRef, activityId, titlePictureUrl, []);
               }
             });
         } else {
           // Skip title picture upload if none provided
           dialogRef.componentInstance.updateProgress(20, 'No title picture to upload');
+          this.finalizeActivity(dialogRef, activityId, '', []);
 
           // Handle supporting documents
+          /*
           if (formData.supportingDocuments && formData.supportingDocuments.length > 0) {
-            this.activityService.uploadSupportingDocuments(formData.supportingDocuments, activityId)
+            await this.activityService.uploadSupportingDocuments(formData.supportingDocuments, activityId)
               .pipe(
                 catchError(error => {
                   dialogRef.componentInstance.showError(new Error('Failed to upload supporting documents: ' + error.message));
@@ -218,14 +219,17 @@ export class CreateActivityComponent implements OnInit {
             // Skip document upload if none provided
             dialogRef.componentInstance.updateProgress(60, 'No files to upload');
             this.finalizeActivity(dialogRef, activityId, '', []);
-          }
+          }*/
         }
       });
   }
 
-  private finalizeActivity(dialogRef: MatDialogRef<UploadActivityDialogComponent>, activityId: string, titlePictureUrl: string, supportingDocUrls: string[]): void {
+
+  
+
+  private async finalizeActivity(dialogRef: MatDialogRef<UploadActivityDialogComponent>, activityId: string, titlePictureUrl: string, supportingDocUrls: string[]): Promise<void> {
     // Step 4: Update activity with URLs (progress to 80%)
-    this.activityService.updateActivityWithDocuments(activityId, titlePictureUrl, supportingDocUrls)
+    await this.activityService.updateActivityWithDocuments(activityId, titlePictureUrl, supportingDocUrls)
       .pipe(
         catchError(error => {
           dialogRef.componentInstance.showError(new Error('Failed to update activity with document URLs: ' + error.message));
@@ -233,9 +237,9 @@ export class CreateActivityComponent implements OnInit {
         })
       )
       .subscribe(result => {
-        if (!result) return; // Error was handled
-
+        if (!result) return;
         dialogRef.componentInstance.updateProgress(80, 'Activity updated with files');
+        dialogRef.close();
       });
   }
 }

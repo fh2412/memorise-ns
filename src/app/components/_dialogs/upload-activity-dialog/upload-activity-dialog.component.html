@@ -1,0 +1,42 @@
+<!-- progress-dialog.component.html -->
+<h2 mat-dialog-title>Creating Activity</h2>
+<mat-dialog-content>
+    @if (!error) {
+    <div>
+        <p>{{ currentStepLabel }}</p>
+        <mat-spinner mode="determinate" [value]="progress" color="primary">
+        </mat-spinner>
+
+        <div class="progress-steps">
+            <div class="step" [class.completed]="progress >= 20">
+                <div class="step-marker">1</div>
+                <div class="step-label">Upload Title Picture</div>
+            </div>
+            <div class="step" [class.completed]="progress >= 60">
+                <div class="step-marker">2</div>
+                <div class="step-label">Upload Documents</div>
+            </div>
+            <div class="step" [class.completed]="progress >= 80">
+                <div class="step-marker">3</div>
+                <div class="step-label">Create Activity</div>
+            </div>
+            <div class="step" [class.completed]="progress >= 90">
+                <div class="step-marker">4</div>
+                <div class="step-label">Clean Up</div>
+            </div>
+        </div>
+    </div>
+    }
+
+    @if (error) {
+    <div class="error-container">
+        <mat-icon>error</mat-icon>
+        <p>{{ error }}</p>
+    </div>
+    }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button [disabled]="!error && progress < 100" [mat-dialog-close]="true">
+        {{ error ? 'Close' : 'Done' }}
+    </button>
+</mat-dialog-actions>

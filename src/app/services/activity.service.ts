@@ -66,7 +66,7 @@ export class ActivityService {
 
     const uploads: Observable<string>[] = files.map((file, index) => {
       return new Observable<string>(observer => {
-        const filePath = `activities/${activityId}/supporting-doc-${index}-${file.name}`;
+        const filePath = `activities/${activityId}/docs/supporting-doc-${index}-${file.name}`;
         const storageRef = ref(this.storage, filePath);
         const uploadTask = uploadBytesResumable(storageRef, file);
         
@@ -97,11 +97,10 @@ export class ActivityService {
   }
 
   // Update activity with document URLs
-  updateActivityWithDocuments(activityId: string, titlePictureUrl: string, firebaseFolderUrl: string[]): Observable<UpdateStandardResponse> {
+  updateActivityWithDocuments(activityId: string, titlePictureUrl: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/update-activity/${activityId}`;
     const updateData = {
-      titlePictureUrl,
-      firebaseFolderUrl
+      titlePictureUrl
     };
     
     return this.http.put<UpdateStandardResponse>(url, updateData);

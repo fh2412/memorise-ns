@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 import { ActivityTag } from '../../components/activity-card/activity-card.component';
+import { ActivityService } from '../../services/activity.service';
+import { firstValueFrom } from 'rxjs';
+import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-my-activity-overview',
@@ -9,8 +12,9 @@ import { ActivityTag } from '../../components/activity-card/activity-card.compon
   styleUrl: './my-activity-overview.component.scss'
 })
 export class MyActivityOverviewComponent implements OnInit {
-  userId!: string;
+  userId: string | null = null;
   userName = '';
+  userActivityList: MemoriseUserActivity[] = [];
 
   hikingTags: ActivityTag[] = [
     { name: 'Adventure', color: '#4CAF50' },
@@ -24,10 +28,14 @@ export class MyActivityOverviewComponent implements OnInit {
     { name: 'Indoor', color: '#607D8B' }
   ];
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private activityService: ActivityService, private userService: UserService) {}
 
-  ngOnInit(): void {
-    this.userId = this.route.snapshot.paramMap.get('user_id') || '';
+  async ngOnInit(): Promise<void> {
+    this.userId = this.userService.getLoggedInUserId();
     this.userName = history.state.userName || 'Unknown';
+    if(this.userId){
+      this.userActivityList = await firstValueFrom(this.activityService.getUsersActivities(this.userId));
+    }
+    console.log(this.userActivityList);
   }
 }

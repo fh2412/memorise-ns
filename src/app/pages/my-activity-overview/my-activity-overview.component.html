@@ -9,15 +9,12 @@
 
 <div class="body">
     <div class="activities-container">
-        <app-activity-card title="Mountain Hiking Tour" backgroundImage="assets/img/new-activity.webp"
-            [groupSizeMin]="2" [groupSizeMax]="8" [isOutdoor]="true"
-            locationTooltip="Best during summer months with clear weather" [price]="49.99" [rating]="4.7"
-            [timesPerformed]="156" [tags]="hikingTags" activityId="hiking-001">
+        @for (activity of userActivityList; track $index) {
+        <app-activity-card [title]="activity.title" [backgroundImage]="activity.firebaseUrl"
+            [groupSizeMin]="activity.groupSizeMin" [groupSizeMax]="activity.groupSizeMax" [isOutdoor]="!activity.indoor"
+            locationTooltip="Best during summer months with clear weather" [price]="activity.costs" [rating]="4.7"
+            [timesPerformed]="156" activityId="123">
         </app-activity-card>
-
-        <app-activity-card title="Indoor Rock Climbing" backgroundImage="assets/img/1.png" [groupSizeMin]="1"
-            [groupSizeMax]="4" [isOutdoor]="false" locationTooltip="Available year-round, climate controlled"
-            [price]="35" [rating]="4.5" [timesPerformed]="209" [tags]="climbingTags" activityId="climbing-002">
-        </app-activity-card>
+        }
     </div>
 </div>

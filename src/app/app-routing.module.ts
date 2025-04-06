@@ -83,6 +83,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'activity/:id',
+    loadChildren: () => import('./pages/activity-detail/activity-detail.module').then(m => m.ActivityModule),
+    canActivate: [authGuard]
+  },
+  {
     path: 'activity/overview/:userId',
     loadChildren: () => import('./pages/my-activity-overview/my-activity-overview.module').then(m => m.ActivitiesOverviewModule),
     canActivate: [authGuard]

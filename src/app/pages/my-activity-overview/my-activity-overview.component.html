@@ -8,12 +8,10 @@
 </div>
 
 <div class="body">
+    <!--<app-activity-list [activities]="userActivityList"></app-activity-list>-->
     <div class="activities-container">
         @for (activity of userActivityList; track $index) {
-        <app-activity-card [title]="activity.title" [backgroundImage]="activity.firebaseUrl"
-            [groupSizeMin]="activity.groupSizeMin" [groupSizeMax]="activity.groupSizeMax" [isOutdoor]="!activity.indoor"
-            locationTooltip="Best during summer months with clear weather" [price]="activity.costs" [rating]="4.7"
-            [timesPerformed]="156" activityId="123">
+        <app-activity-card [activity]="activity" activityId="123">
         </app-activity-card>
         }
     </div>

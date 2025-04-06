@@ -1,38 +1,39 @@
 <mat-card class="activity-card">
-    <div class="card-background" [style.background-image]="'url(' + backgroundImage + ')'">
+    <div class="card-background" [style.background-image]="'url(' + activity.firebaseUrl + ')'">
       <div class="overlay">
         <!-- Top section with location type and price -->
         <div class="top-section">
           <div class="location-type" 
-               [matTooltip]="locationTooltip"
                matTooltipPosition="above">
-            <mat-icon>{{ isOutdoor ? 'wb_sunny' : 'home' }}</mat-icon>
+            <mat-icon>{{ activity.indoor ? 'home' : 'wb_sunny' }}</mat-icon>
           </div>
-          <div *ngIf="price" class="price">{{ price | currency }}</div>
+          @if (activity.costs) {
+            <div class="price">{{ activity.costs | currency }}</div>
+          }
         </div>
 
         <!-- Middle section for group size -->
         <div class="group-size">
           <mat-icon>group</mat-icon>
-          <span>{{ groupSizeMin }}-{{ groupSizeMax }}</span>
+          <span>{{ activity.groupSizeMin }}-{{ activity.groupSizeMax }}</span>
         </div>
 
         <!-- Bottom section with title and details -->
         <div class="bottom-section">
-          <h2 class="title">{{ title }}</h2>
+          <h2 class="title">{{ activity.title }}</h2>
           
           <div class="stats">
             <div class="rating">
               <mat-icon>star</mat-icon>
-              <span>{{ rating }}/5</span>
+              <span>4/5</span>
             </div>
             <div class="performed">
               <mat-icon>event_available</mat-icon>
-              <span>{{ timesPerformed }}x</span>
+              <span>100x</span>
             </div>
           </div>
 
-          <!-- Tags section -->
+          <!-- Tags section
           <div class="tags-section" *ngIf="tags && tags.length">
             <mat-chip-set>
               <mat-chip *ngFor="let tag of tags" 
@@ -41,10 +42,10 @@
                 {{ tag.name }}
               </mat-chip>
             </mat-chip-set>
-          </div>
+          </div> -->
 
           <!-- Detail button -->
-          <button mat-raised-button color="primary" class="details-button" (click)="viewDetails()">
+          <button mat-raised-button class="details-button" (click)="viewDetails()">
             View Details
           </button>
         </div>

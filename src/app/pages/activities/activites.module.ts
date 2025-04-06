@@ -13,6 +13,7 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import { MyActivityInformationComponent } from '../../components/my-activity-information/my-activity-information.component';
 import { MatListModule } from '@angular/material/list';
 import { CompanyInformationComponent } from '../../components/company-information/company-information.component';
+import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
 
 const routes: Routes = [
   {
@@ -42,6 +43,7 @@ const routes: Routes = [
     MatListModule,
     MatIconModule,
     MyActivityInformationComponent,
-  ]
+    ActivityListComponent
+]
 })
 export class ActivitiesModule { }

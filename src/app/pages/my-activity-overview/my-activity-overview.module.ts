@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
 
 const routes: Routes = [
   {
@@ -28,7 +29,8 @@ const routes: Routes = [
     MatIconModule,
     MatChipsModule,
     MatTooltipModule,
-    ActivityCardComponent
+    ActivityCardComponent,
+    ActivityListComponent
 ]
 })
 export class ActivitiesOverviewModule { }

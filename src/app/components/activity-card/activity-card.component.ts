@@ -6,6 +6,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
+import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { Router } from '@angular/router';
 
 export interface ActivityTag {
   name: string;
@@ -26,19 +28,12 @@ export interface ActivityTag {
   ],
 })
 export class ActivityCardComponent {
-  @Input() title = '';
-  @Input() backgroundImage = '';
-  @Input() groupSizeMin = 1;
-  @Input() groupSizeMax = 10;
-  @Input() isOutdoor = true;
-  @Input() locationTooltip = 'Outdoor activity';
-  @Input() price: number | null = null;
-  @Input() rating = 0;
-  @Input() timesPerformed = 0;
-  @Input() tags: ActivityTag[] = [];
+  @Input() activity!: MemoriseUserActivity;
   @Input() activityId: string | number = '';
 
+  constructor(private router: Router) {}
+
   viewDetails() {
-    console.log(`Viewing details for activity: ${this.activityId}`);
+    this.router.navigate(['/activity/', this.activityId]);
   }
 }

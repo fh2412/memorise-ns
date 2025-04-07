@@ -35,7 +35,7 @@ export class ActivityService {
   }
 
   getSugggestedActivities(userId: string) {
-    return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/userActivities/${userId}`);
+    return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/suggestedActivities/${userId}`);
   }
 
   uploadTitlePicture(file: File, activityId: string): Observable<string> {

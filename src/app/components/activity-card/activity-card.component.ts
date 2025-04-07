@@ -34,6 +34,6 @@ export class ActivityCardComponent {
   constructor(private router: Router) {}
 
   viewDetails() {
-    this.router.navigate(['/activity/', this.activityId]);
+    this.router.navigate(['/activity/detail', this.activityId]);
   }
 }

@@ -20,42 +20,34 @@
                     </mat-form-field>
                 </div>
 
-                <!-- Activity/Tag Filter (disabled for now) -->
+                <!-- Activity/Tag Filter (disabled for now) 
                 <div class="filter-item">
                     <mat-form-field appearance="outline">
                         <mat-label>Activity/Tag</mat-label>
                         <input matInput formControlName="tag" placeholder="Search for tags" [disabled=true]>
                     </mat-form-field>
-                </div>
+                </div>-->
 
                 <!-- Group Size Filter -->
                 <div class="filter-item">
-                    <mat-label>Group Size</mat-label>
                     <div class="slider-container">
-                        <span>{{ filterForm.get('groupSizeMin')?.value }}</span>
-                        <mat-slider min="1" max="20" formControlName="groupSizeMin">
-                            <input matSliderThumb>
-                        </mat-slider>
-                        <span>{{ filterForm.get('groupSizeMax')?.value }}</span>
-                        <mat-slider min="1" max="50" formControlName="groupSizeMax">
-                            <input matSliderThumb>
+                        <span>Group Size: {{ filterForm.get('groupSizeMin')?.value }} - {{
+                            filterForm.get('groupSizeMax')?.value }}</span>
+                        <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                            <input matSliderStartThumb formControlName="groupSizeMin">
+                            <input matSliderEndThumb formControlName="groupSizeMax">
                         </mat-slider>
                     </div>
                 </div>
 
                 <!-- Price Filter -->
                 <div class="filter-item">
-                    <mat-label>Price Range</mat-label>
                     <div class="slider-container">
-                        <span>{{ filterForm.get('priceMin')?.value }}</span>
-                        <mat-slider min="0" max="500" formControlName="priceMin">
-                            <input matSliderThumb>
+                        <span>Cost: ${{ filterForm.get('price')?.value }}</span>
+                        <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                          <input matSliderThumb formControlName="price">
                         </mat-slider>
-                        <span>{{ filterForm.get('priceMax')?.value }}</span>
-                        <mat-slider min="0" max="1000" formControlName="priceMax">
-                            <input matSliderThumb>
-                        </mat-slider>
-                    </div>
+                      </div>
                 </div>
 
                 <!-- Season Filter -->
@@ -139,7 +131,8 @@
                 <div class="list-item-details">
                     <mat-card-title>{{ activity.title }}</mat-card-title>
                     <mat-card-subtitle>
-                        <mat-icon>location_on</mat-icon> {{ activity.location.locality }}, {{ activity.location.country }}
+                        <mat-icon>location_on</mat-icon> {{ activity.location.locality }}, {{ activity.location.country
+                        }}
                     </mat-card-subtitle>
                     <div class="activity-info">
                         <div>

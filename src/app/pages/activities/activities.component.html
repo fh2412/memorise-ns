@@ -25,5 +25,11 @@
         </button>
       </div>
     </div>
+    @if (activities.length > 0) {
+      <app-activity-list [activities]="activities"></app-activity-list>
+    }
+    @else {
+      <p>We are so sorry. Something went wrong! :(</p>
+    }
   </div>
 </div>

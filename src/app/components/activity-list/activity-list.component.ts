@@ -59,8 +59,7 @@ export class ActivityListComponent implements OnInit {
       tag: [''],
       groupSizeMin: [1],
       groupSizeMax: [20],
-      priceMin: [0],
-      priceMax: [500],
+      price: [0],
       season: [''],
       weather: [''],
       name: ['']
@@ -69,6 +68,7 @@ export class ActivityListComponent implements OnInit {
   
   ngOnInit(): void {
     this.filteredActivities = [...this.activities];
+    console.log(this.activities);
     this.updatePaginatedActivities();
   }
   

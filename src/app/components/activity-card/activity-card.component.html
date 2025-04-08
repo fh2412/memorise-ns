@@ -1,4 +1,4 @@
-<mat-card class="activity-card">
+<mat-card class="activity-card" (click)="viewDetails()">
     <div class="card-background" [style.background-image]="'url(' + activity.firebaseUrl + ')'">
       <div class="overlay">
         <!-- Top section with location type and price -->
@@ -7,9 +7,10 @@
                matTooltipPosition="above">
             <mat-icon>{{ activity.indoor ? 'home' : 'wb_sunny' }}</mat-icon>
           </div>
-          @if (activity.costs) {
-            <div class="price">{{ activity.costs | currency }}</div>
-          }
+          <div class="location-type" 
+               matTooltipPosition="above">
+            <mat-icon>{{ activity.indoor ? 'bookmark' : 'bookmark' }}</mat-icon>
+          </div>
         </div>
 
         <!-- Middle section for group size -->
@@ -27,27 +28,10 @@
               <mat-icon>star</mat-icon>
               <span>4/5</span>
             </div>
-            <div class="performed">
-              <mat-icon>event_available</mat-icon>
-              <span>100x</span>
+            <div class="price">
+              {{ activity.costs | currency }}
             </div>
           </div>
-
-          <!-- Tags section
-          <div class="tags-section" *ngIf="tags && tags.length">
-            <mat-chip-set>
-              <mat-chip *ngFor="let tag of tags" 
-                        [style.background-color]="tag.color || '#e0e0e0'"
-                        [style.color]="tag.color ? '#ffffff' : '#000000'">
-                {{ tag.name }}
-              </mat-chip>
-            </mat-chip-set>
-          </div> -->
-
-          <!-- Detail button -->
-          <button mat-raised-button class="details-button" (click)="viewDetails()">
-            View Details
-          </button>
         </div>
       </div>
     </div>

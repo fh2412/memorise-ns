@@ -14,6 +14,7 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MemoriseUserActivity } from '../../models/activityInterface.model';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { ActivityCardComponent } from "../activity-card/activity-card.component"; 
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-activity-list',
@@ -52,7 +53,7 @@ export class ActivityListComponent implements OnInit {
   // Form for filters
   filterForm: FormGroup;
   
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private router: Router) {
     this.filterForm = this.fb.group({
       location: [''],
       distance: [25],
@@ -145,6 +146,10 @@ export class ActivityListComponent implements OnInit {
   updatePaginatedActivities(): void {
     const startIndex = this.currentPage * this.pageSize;
     this.paginatedActivities = this.filteredActivities.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  navigateToDetails(activityId: number) {
+    this.router.navigate(['activity/details/', activityId]);
   }
   
   // Helper method for distance calculation (not implemented yet)

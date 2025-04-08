@@ -1,6 +1,6 @@
 <div class="activities-container">
     <!-- Filter Section -->
-    <mat-expansion-panel [expanded]="true" class="filter-panel">
+    <mat-expansion-panel class="filter-panel">
         <mat-expansion-panel-header>
             <mat-panel-title>Filter Activities</mat-panel-title>
         </mat-expansion-panel-header>
@@ -19,14 +19,6 @@
                         <input matInput type="number" formControlName="distance" min="1" max="100">
                     </mat-form-field>
                 </div>
-
-                <!-- Activity/Tag Filter (disabled for now) 
-                <div class="filter-item">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Activity/Tag</mat-label>
-                        <input matInput formControlName="tag" placeholder="Search for tags" [disabled=true]>
-                    </mat-form-field>
-                </div>-->
 
                 <!-- Group Size Filter -->
                 <div class="filter-item">
@@ -123,17 +115,19 @@
     </div>
 
     <!-- List View -->
-    <div *ngIf="viewMode === 'list' && filteredActivities.length > 0" class="list-view">
-        <mat-card *ngFor="let activity of paginatedActivities" class="list-item">
+     @if (viewMode === 'list' && filteredActivities.length > 0) {
+    <div class="list-view">
+        @for (activity of paginatedActivities; track $index) {
+        <mat-card class="list-item">
             <div class="list-item-content">
                 <div class="list-item-image" [style.background-image]="'url(' + activity.firebaseUrl + ')'">
                 </div>
                 <div class="list-item-details">
                     <mat-card-title>{{ activity.title }}</mat-card-title>
-                    <mat-card-subtitle>
+                    <!--<mat-card-subtitle>
                         <mat-icon>location_on</mat-icon> {{ activity.location.locality }}, {{ activity.location.country
                         }}
-                    </mat-card-subtitle>
+                    </mat-card-subtitle>-->
                     <div class="activity-info">
                         <div>
                             <mat-icon>group</mat-icon> {{ activity.groupSizeMin }}-{{ activity.groupSizeMax }} people
@@ -147,11 +141,16 @@
                         </div>
                     </div>
                     <p class="description-truncate">{{ activity.description }}</p>
+                    <button mat-stroked-button (click)="navigateToDetails(activity.costs)">
+                        <mat-icon class="add-icon">info_i</mat-icon>
+                        View Details
+                      </button>
                 </div>
             </div>
         </mat-card>
+        }
     </div>
-
+    }
     <!-- Pagination -->
     <mat-paginator *ngIf="filteredActivities.length > 0" [length]="filteredActivities.length" [pageSize]="pageSize"
         [pageSizeOptions]="[6, 12, 24, 48]" (page)="onPageChange($event)">

@@ -53,7 +53,6 @@ export class ActivitiesComponent implements OnInit {
   }
 
   getInitActivities(): void {
-    console.log("GET init activities from user: ", this.loggedInUserId);
     if (this.loggedInUserId != null) {
       this.activityService.getSugggestedActivities(this.loggedInUserId).subscribe(
         (response) => {

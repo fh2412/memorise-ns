@@ -12,9 +12,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { MemoriseUserActivity } from '../../models/activityInterface.model';
-import {MatExpansionModule} from '@angular/material/expansion';
-import { ActivityCardComponent } from "../activity-card/activity-card.component"; 
+import { MatExpansionModule } from '@angular/material/expansion';
+import { ActivityCardComponent } from "../activity-card/activity-card.component";
 import { Router } from '@angular/router';
+import { ActivityService } from '../../services/activity.service';
 
 @Component({
   selector: 'app-activity-list',
@@ -36,24 +37,19 @@ import { Router } from '@angular/router';
     MatSlideToggleModule,
     MatExpansionModule,
     ActivityCardComponent
-],
+  ],
 })
 export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];
-  
+
   filteredActivities: MemoriseUserActivity[] = [];
   paginatedActivities: MemoriseUserActivity[] = [];
-  
   viewMode: 'grid' | 'list' = 'grid';
-  
-  // Pagination properties
   pageSize = 12;
   currentPage = 0;
-  
-  // Form for filters
   filterForm: FormGroup;
-  
-  constructor(private fb: FormBuilder, private router: Router) {
+
+  constructor(private fb: FormBuilder, private router: Router, private activityService: ActivityService) {
     this.filterForm = this.fb.group({
       location: [''],
       distance: [25],
@@ -66,59 +62,30 @@ export class ActivityListComponent implements OnInit {
       name: ['']
     });
   }
-  
+
   ngOnInit(): void {
     this.filteredActivities = [...this.activities];
     console.log(this.activities);
     this.updatePaginatedActivities();
   }
-  
+
   applyFilters(): void {
     const filters = this.filterForm.value;
-    
-    this.filteredActivities = this.activities.filter(activity => {
-      // Filter by name
-      if (filters.name && !activity.title.toLowerCase().includes(filters.name.toLowerCase())) {
-        return false;
+
+    this.activityService.getFilterSuggestionActivities(filters).subscribe({
+      next: (response) => {
+        this.filteredActivities = response;
+      },
+      error: (err) => {
+        console.error('Error fetching company', err);
       }
-      
-      // Filter by group size
-      if (activity.groupSizeMax < filters.groupSizeMin || activity.groupSizeMin > filters.groupSizeMax) {
-        return false;
-      }
-      
-      // Filter by price
-      if (activity.costs < filters.priceMin || activity.costs > filters.priceMax) {
-        return false;
-      }
-      
-      // Filter by season
-      if (filters.season && activity.season !== filters.season) {
-        return false;
-      }
-      
-      // Filter by weather
-      if (filters.weather && activity.weather !== filters.weather) {
-        return false;
-      }
-      
-      // Filter by location
-      if (filters.location && activity.location.locality) {
-        const locationMatch = activity.location.locality.toLowerCase().includes(filters.location.toLowerCase()) ||
-                              activity.location.country.toLowerCase().includes(filters.location.toLowerCase());
-        if (!locationMatch) {
-          return false;
-        }
-      }
-      
-      return true;
     });
-    
+
     // Reset to first page after applying filters
     this.currentPage = 0;
     this.updatePaginatedActivities();
   }
-  
+
   resetFilters(): void {
     this.filterForm.reset({
       location: '',
@@ -131,18 +98,18 @@ export class ActivityListComponent implements OnInit {
       weather: '',
       name: ''
     });
-    
+
     this.filteredActivities = [...this.activities];
     this.currentPage = 0;
     this.updatePaginatedActivities();
   }
-  
+
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
     this.updatePaginatedActivities();
   }
-  
+
   updatePaginatedActivities(): void {
     const startIndex = this.currentPage * this.pageSize;
     this.paginatedActivities = this.filteredActivities.slice(startIndex, startIndex + this.pageSize);
@@ -152,11 +119,11 @@ export class ActivityListComponent implements OnInit {
     console.log(activityId);
     this.router.navigate(['activity/details/', activityId.toString()]);
   }
-  
+
   // Helper method for distance calculation (not implemented yet)
   //calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    // Haversine formula for calculating distance between two points on Earth
-    // To be implemented
+  // Haversine formula for calculating distance between two points on Earth
+  // To be implemented
   //  return 0;
   //}
 }

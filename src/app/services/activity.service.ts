@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
+import { ActivityFilter, CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 import { environment } from '../../environments/environment';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { forkJoin, Observable } from 'rxjs';
@@ -38,8 +38,48 @@ export class ActivityService {
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/suggestedActivities/${userId}`);
   }
 
-  getFilterSuggestionActivities(filters: any) {
-    return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filterSuggestionActivities/${filters}`);
+  getFilteredActivities(filter: ActivityFilter): Observable<MemoriseUserActivity[]> {
+    // Convert filter object to HttpParams
+    let params = new HttpParams();
+    
+    // Only add parameters that have values
+    if (filter.location) {
+      params = params.set('location', filter.location);
+    }
+    
+    if (filter.distance !== undefined) {
+      params = params.set('distance', filter.distance.toString());
+    }
+    
+    if (filter.tag) {
+      params = params.set('tag', filter.tag);
+    }
+    
+    if (filter.groupSizeMin !== undefined) {
+      params = params.set('groupSizeMin', filter.groupSizeMin.toString());
+    }
+    
+    if (filter.groupSizeMax !== undefined) {
+      params = params.set('groupSizeMax', filter.groupSizeMax.toString());
+    }
+    
+    if (filter.price !== undefined) {
+      params = params.set('price', filter.price.toString());
+    }
+    
+    if (filter.season) {
+      params = params.set('season', filter.season);
+    }
+    
+    if (filter.weather) {
+      params = params.set('weather', filter.weather);
+    }
+    
+    if (filter.name) {
+      params = params.set('name', filter.name);
+    }
+    
+    return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
   }
 
   uploadTitlePicture(file: File, activityId: string): Observable<string> {

@@ -71,8 +71,9 @@ export class ActivityListComponent implements OnInit {
 
   applyFilters(): void {
     const filters = this.filterForm.value;
+    console.log(filters);
 
-    this.activityService.getFilterSuggestionActivities(filters).subscribe({
+    this.activityService.getFilteredActivities(filters).subscribe({
       next: (response) => {
         this.filteredActivities = response;
       },
@@ -116,7 +117,6 @@ export class ActivityListComponent implements OnInit {
   }
 
   navigateToDetails(activityId: number) {
-    console.log(activityId);
     this.router.navigate(['activity/details/', activityId.toString()]);
   }
 

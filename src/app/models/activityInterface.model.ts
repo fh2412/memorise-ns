@@ -25,3 +25,15 @@ export interface MemoriseUserActivity {
     location: MemoriseLocation,
     firebaseUrl: string,
 }
+
+export interface ActivityFilter {
+    location?: string;
+    distance?: number;
+    tag?: string;
+    groupSizeMin?: number;
+    groupSizeMax?: number;
+    price?: number;
+    season?: string;
+    weather?: string;
+    name?: string;
+  }

@@ -11,6 +11,7 @@ export interface CreateActivityResponse {
 }
 
 export interface MemoriseUserActivity {
+    activityId: number,
     title: string,
     isPrivate: boolean,
     groupSizeMin: number,

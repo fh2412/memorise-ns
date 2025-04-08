@@ -136,6 +136,7 @@ export class CreateActivityComponent implements OnInit {
 
     // Step 1: Create activity in backend to get the ID
     const activityData: MemoriseUserActivity = {
+      activityId: 0,
       title: formData.title,
       description: formData.description,
       isPrivate: formData.isPrivate,

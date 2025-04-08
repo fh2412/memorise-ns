@@ -29,11 +29,10 @@ export interface ActivityTag {
 })
 export class ActivityCardComponent {
   @Input() activity!: MemoriseUserActivity;
-  @Input() activityId: string | number = '';
 
   constructor(private router: Router) {}
 
   viewDetails() {
-    this.router.navigate(['/activity/detail', this.activityId]);
+    this.router.navigate(['activity/details/', this.activity.activityId]);
   }
 }

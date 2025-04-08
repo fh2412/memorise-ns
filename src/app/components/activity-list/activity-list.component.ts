@@ -149,7 +149,8 @@ export class ActivityListComponent implements OnInit {
   }
 
   navigateToDetails(activityId: number) {
-    this.router.navigate(['activity/details/', activityId]);
+    console.log(activityId);
+    this.router.navigate(['activity/details/', activityId.toString()]);
   }
   
   // Helper method for distance calculation (not implemented yet)

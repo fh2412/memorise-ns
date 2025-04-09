@@ -3,16 +3,16 @@
     <!-- Back button and title bar -->
     <div class="title-bar">
         <app-back-button></app-back-button>
-        <h1 class="activity-title">{{ activity.title }}</h1>
+        <h1>{{ activity.title }}</h1>
     </div>
 
     <!-- Image and Memories section -->
     <div class="image-memories-container">
-        <div class="image-container">
+        <mat-card class="image-container" appearance="outlined">
             @if (true) { <!--!activity.hasLeadMemory-->
             <img [src]="activity.firebaseUrl" alt="{{ activity.title }}" class="main-image">
             }
-            @if (true) { <!--activity.hasLeadMemory-->
+            @if (false) { <!--activity.hasLeadMemory-->
             <div class="quad-images">
                 <div class="image-grid">
                     <img [src]="activity.firebaseUrl" alt="Memory 1" class="grid-image">
@@ -20,42 +20,29 @@
                     <img [src]="activity.firebaseUrl" alt="Memory 3" class="grid-image">
                     <img [src]="activity.firebaseUrl" alt="Memory 4" class="grid-image">
                 </div>
-                <button mat-stroked-button color="primary" class="see-full-btn">See Full</button>
+                <button mat-stroked-button class="see-full-btn">See Full</button>
             </div>
             }
-        </div>
+        </mat-card>
 
-        <div class="memories-container">
-            <p class="memories-text">
+        <mat-card class="memories-container" appearance="outlined">
+            <p>
                 <strong>DEFAULT NAME</strong> and
                 <strong>0 others</strong>
                 have already created Memories to this activity.
             </p>
-            <button mat-raised-button color="primary">Click Here to View</button>
-        </div>
+            <button mat-flat-button>Click Here to View</button>
+        </mat-card>
     </div>
 
-    <!-- Rating and Views 
     <div class="rating-views-container">
         <div class="rating">
-            <mat-icon *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= activity.rating"
-                [class.half-filled]="star - 0.5 === activity.rating">
-                {{ star <= activity.rating ? 'star' : (star - 0.5===activity.rating ? 'star_half' : 'star_outline' ) }}
+            @for (star of [1,2,3,4,5]; track $index) {
+                <mat-icon [class.filled]="star <= 4"
+                [class.half-filled]="star - 0.5 === 4">
+                {{ star <= 4 ? 'star' : (star - 0.5===4 ? 'star_half' : 'star_outline' ) }}
                     </mat-icon>
-                    <span class="rating-value">{{ activity.rating }}/5</span>
-        </div>
-        <div class="views">
-            <mat-icon>visibility</mat-icon>
-            <span>{{ activity.views }} views</span>
-        </div>
-    </div>-->
-    <div class="rating-views-container">
-        <div class="rating">
-            <mat-icon *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= 5"
-                [class.half-filled]="star - 0.5 === 5">
-                {{ star <= 5 ? 'star' : (star - 0.5===5 ? 'star_half' : 'star_outline' ) }}
-                    </mat-icon>
-                    <span class="rating-value">{{ 5 }}/5</span>
+            }
         </div>
         <div class="views">
             <mat-icon>visibility</mat-icon>
@@ -65,18 +52,18 @@
 
     <!-- Toggles: Indoor/Outdoor, Seasons, Weather -->
     <div class="toggles-container">
-        <mat-button-toggle-group class="toggle-group" disabled>
+        <mat-button-toggle-group disabled>
             <mat-button-toggle [checked]="!activity.indoor">Outdoor</mat-button-toggle>
             <mat-button-toggle [checked]="activity.indoor">Indoor</mat-button-toggle>
         </mat-button-toggle-group>
 
-        <mat-button-toggle-group class="toggle-group seasons" multiple disabled>
+        <mat-button-toggle-group multiple disabled>
             <mat-button-toggle *ngFor="let season of allSeasons" [checked]="seasons.includes(season)">
                 {{ season }}
             </mat-button-toggle>
         </mat-button-toggle-group>
 
-        <mat-button-toggle-group class="toggle-group weather" multiple disabled>
+        <mat-button-toggle-group multiple disabled>
             <mat-button-toggle *ngFor="let weather of allWeather" [checked]="activity.weather.includes(weather)">
                 {{ weather }}
             </mat-button-toggle>

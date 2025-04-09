@@ -22,7 +22,7 @@ export class ActivityDetailComponent implements OnInit {
     season: 'string',
     weather: 'string',
     location: {latitude: 0, longitude: 0, country: 'Austria', locality: 'Linz', location_id: 1},
-    firebaseUrl: 'string',
+    firebaseUrl: 'https://firebasestorage.googleapis.com/v0/b/memorise-910c3.appspot.com/o/activities%2F44%2Fthumbnail.jpg?alt=media&token=020fe672-b8ce-4c0e-97f6-973930002bbc',
   };
   mapOptions: google.maps.MapOptions = {};
   markerPosition!: google.maps.LatLngLiteral;

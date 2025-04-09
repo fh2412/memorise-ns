@@ -38,11 +38,9 @@
     <div class="rating-views-container">
         <div class="rating">
             @for (star of [1,2,3,4,5]; track $index) {
-                <mat-icon [class.filled]="star <= 4"
-                [class.half-filled]="star - 0.5 === 4">
-                {{ star <= 4 ? 'star' : (star - 0.5===4 ? 'star_half' : 'star_outline' ) }}
-                    </mat-icon>
-            }
+            <mat-icon [class.filled]="star <= 4" [class.half-filled]="star - 0.5 === 4">
+                {{ star <= 4 ? 'star' : (star - 0.5===4 ? 'star_half' : 'star_outline' ) }} </mat-icon>
+                    }
         </div>
         <div class="views">
             <mat-icon>visibility</mat-icon>
@@ -58,32 +56,21 @@
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
-            <mat-button-toggle *ngFor="let season of allSeasons" [checked]="seasons.includes(season)">
+            @for (season of allSeasons; track $index) {
+            <mat-button-toggle [checked]="seasons.includes(season)">
                 {{ season }}
             </mat-button-toggle>
+            }
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
-            <mat-button-toggle *ngFor="let weather of allWeather" [checked]="activity.weather.includes(weather)">
+            @for (weather of allWeather; track $index) {
+            <mat-button-toggle [checked]="activity.weather.includes(weather)">
                 {{ weather }}
             </mat-button-toggle>
+            }
         </mat-button-toggle-group>
     </div>
-
-    <!-- Map and Description
-    <div class="map-description-container">
-        <div class="map-container">
-            <google-map [options]="mapOptions" height="250px" width="100%">
-                <map-marker [position]="markerPosition" [title]="activity.location.address"></map-marker>
-            </google-map>
-            <p class="location-address">{{ activity.location.address }}</p>
-        </div>
-
-        <div class="description-container">
-            <h3>Description</h3>
-            <p>{{ activity.description }}</p>
-        </div>
-    </div> -->
 
     <!-- Group Size and Price -->
     <div class="group-price-container">
@@ -95,6 +82,20 @@
         <div class="price">
             <mat-icon>attach_money</mat-icon>
             <span>Price: {{ getPriceText() }}</span>
+        </div>
+    </div>
+
+    <!-- Map and Description -->
+    <div class="map-description-container">
+        <mat-card class="map-container">
+            <google-map [options]="mapOptions" height="250px" width="100%">
+                <map-marker [position]="markerPosition"></map-marker>
+            </google-map>
+        </mat-card>
+
+        <div>
+            <h3>Description</h3>
+            <p>{{ activity.description }}</p>
         </div>
     </div>
 

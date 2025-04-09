@@ -43,7 +43,7 @@ const routes: Routes = [
     MatListModule,
     MatIconModule,
     MyActivityInformationComponent,
-    ActivityListComponent
+    ActivityListComponent,
 ]
 })
 export class ActivitiesModule { }

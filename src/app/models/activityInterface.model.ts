@@ -36,4 +36,36 @@ export interface ActivityFilter {
     season?: string;
     weather?: string;
     name?: string;
-  }
+}
+
+export interface ActivityDetails {
+    id: number;
+    title: string;
+    description: string;
+    creatorId: string;
+    creationDate: string;
+    activeFlag: boolean;
+    commercialFlag: boolean;
+    groupSizeMin: number;
+    groupSizeMax: number;
+    indoor: boolean;
+    costs: number;
+    locationId: number;
+    baseMemoryId: string;
+    firebaseUrl: string;
+    websiteUrl: string;
+    seasons: Season[];
+    weatherConditions: Weather[];
+    location: MemoriseLocation;
+}
+
+export interface Season {
+    id: number;
+    name: string;
+}
+
+export interface Weather {
+    id: number;
+    name: string;
+    description: string;
+}

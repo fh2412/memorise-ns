@@ -1,5 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { Component, OnInit } from '@angular/core';
+import { ActivityDetails } from '../../models/activityInterface.model';
+import { switchMap } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { ActivityService } from '../../services/activity.service';
 
 @Component({
   selector: 'app-activity-detail',
@@ -9,42 +12,50 @@ import { MemoriseUserActivity } from '../../models/activityInterface.model';
 })
 
 export class ActivityDetailComponent implements OnInit {
-  @Input() activity: MemoriseUserActivity = {
-    activityId: 43,
-    title: 'Test Data',
-    isPrivate: true,
-    groupSizeMin: 1,
-    groupSizeMax: 5,
-    costs: 0,
-    description: 'knhsortöhguoöjirshgöioarhgöarhjgnartkhaöertjhjiathjkajklthsrtjh',
-    link: 'string',
-    indoor: false,
-    season: 'string',
-    weather: 'string',
-    location: {latitude: 0, longitude: 0, country: 'Austria', locality: 'Linz', location_id: 1},
-    firebaseUrl: 'https://firebasestorage.googleapis.com/v0/b/memorise-910c3.appspot.com/o/activities%2F44%2Fthumbnail.jpg?alt=media&token=020fe672-b8ce-4c0e-97f6-973930002bbc',
-  };
+  activity!: ActivityDetails;
   mapOptions: google.maps.MapOptions = {};
   markerPosition!: google.maps.LatLngLiteral;
   
-  allSeasons = ['Spring', 'Summer', 'Fall', 'Winter'];
-  seasons = ['Spring', 'Summer', 'Fall', ];
-  allWeather = ['Sunny', 'Cloudy', 'Rainy', 'Snowy', 'Windy'];
+  allSeasons = [
+    {id: 0, name: 'Spring'},
+    {id: 0, name: 'Summer'},
+    {id: 0, name: 'Fall'},
+    {id: 0, name: 'Winter'},
+  ];
+  allWeather = [
+    {id: 0, name: 'Sunny', description: 'The sun is shining fully'},
+    {id: 1, name: 'Cloudy', description: 'The sun is shining fully'},
+    {id: 2, name: 'Rainy', description: 'The sun is shining fully'},
+    {id: 3, name: 'Snowy', description: 'The sun is shining fully'},
+    {id: 4, name: 'Windy', description: 'The sun is shining fully'}
+  ];
+
+  isLoading = true;
+  errorMessage = '';
   
+  constructor(private route: ActivatedRoute,private activitiesService: ActivityService) {}
+
   ngOnInit(): void {
-    /*if (this.activity) {
-      this.mapOptions = {
-        center: { 
-          lat: this.activity.location.lat, 
-          lng: this.activity.location.lng 
-        },
-        zoom: 14
-      };
-      this.markerPosition = {
-        lat: this.activity.location.lat,
-        lng: this.activity.location.lng
-      };
-    }*/
+    this.route.paramMap.pipe(
+      switchMap(params => {
+        const activityId = params.get('id');
+        if (!activityId) {
+          throw new Error('Activity ID is required');
+        }
+        return this.activitiesService.getActivityDetails(activityId);
+      })
+    ).subscribe({
+      next: (data) => {
+        this.activity = data;
+        this.isLoading = false;
+        console.log(this.activity);
+      },
+      error: (error) => {
+        console.error('Error fetching activity details', error);
+        this.errorMessage = 'Failed to load activity details. Please try again.';
+        this.isLoading = false;
+      }
+    });
   }
   
   getGroupSizeText(): string {

@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { MapSnippetComponent } from "../../components/map-snippet/map-snippet.component";
 
 const routes: Routes = [
   {
@@ -36,7 +37,8 @@ const routes: Routes = [
     MatListModule,
     MatTooltipModule,
     GoogleMapsModule,
-    BackButtonComponent
-  ]
+    BackButtonComponent,
+    MapSnippetComponent
+]
 })
 export class ActivityModule { }

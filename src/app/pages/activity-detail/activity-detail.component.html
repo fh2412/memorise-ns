@@ -1,4 +1,13 @@
+@if (isLoading) {
+Loading activity details...
+}
+
+@if (errorMessage) {
+{{errorMessage}}
+}
+
 <!-- activity-detail.component.html -->
+@if (activity && !isLoading) {
 <div class="activity-container">
     <!-- Back button and title bar -->
     <div class="title-bar">
@@ -57,16 +66,16 @@
 
         <mat-button-toggle-group multiple disabled>
             @for (season of allSeasons; track $index) {
-            <mat-button-toggle [checked]="seasons.includes(season)">
-                {{ season }}
+            <mat-button-toggle [checked]="activity.seasons.includes(season)">
+                {{ season.name }}
             </mat-button-toggle>
             }
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
             @for (weather of allWeather; track $index) {
-            <mat-button-toggle [checked]="activity.weather.includes(weather)">
-                {{ weather }}
+            <mat-button-toggle [checked]="activity.weatherConditions.includes(weather)">
+                {{ weather.name }}
             </mat-button-toggle>
             }
         </mat-button-toggle-group>
@@ -114,3 +123,4 @@
         </mat-list>
     </div>-->
 </div>
+}

@@ -27,6 +27,7 @@ export class CreateActivityComponent implements OnInit {
   lng = 0;
   uploadedFiles: File[] = [];
   uploadStarted = false;
+  leadMemoryId = 0;
 
   constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService, private activityService: ActivityService, private router: Router,) {
     this.activityForm = this.fb.group({
@@ -44,7 +45,6 @@ export class CreateActivityComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Subscribe to get the logged-in user ID
     this.userService.userId$.subscribe(userId => {
       this.userId = userId;
       console.log("Component received userId:", this.userId);
@@ -226,5 +226,9 @@ export class CreateActivityComponent implements OnInit {
         dialogRef.componentInstance.updateProgress(80, 'Activity updated with files');
         dialogRef.close();
       });
+  }
+
+  onMemorySelected(memoryId: number) {
+    this.leadMemoryId = memoryId;
   }
 }

@@ -19,6 +19,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { UploadActivityDialogComponent } from '../../components/_dialogs/upload-activity-dialog/upload-activity-dialog.component';
+import { MemorySelectorComponent } from "../../components/memory-selecter/memory-selecter.component";
 
 const routes: Routes = [
   {
@@ -52,7 +53,8 @@ const routes: Routes = [
     MatChipsModule,
     MatTooltipModule,
     MatProgressSpinnerModule,
-    UploadActivityDialogComponent
+    UploadActivityDialogComponent,
+    MemorySelectorComponent
 ]
 })
 export class CreateActivityModule {}

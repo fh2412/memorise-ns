@@ -18,12 +18,13 @@ export interface MemoriseUserActivity {
     groupSizeMax: number,
     costs: number,
     description: string,
-    link: string,
+    websiteUrl: string,
     indoor: boolean,
-    season: string,
-    weather: string,
+    seasons: [string],
+    weathers: [string],
     location: MemoriseLocation,
     firebaseUrl: string,
+    leadMemoryId: number | null
 }
 
 export interface ActivityFilter {

@@ -27,7 +27,7 @@ export class CreateActivityComponent implements OnInit {
   lng = 0;
   uploadedFiles: File[] = [];
   uploadStarted = false;
-  leadMemoryId = 0;
+  leadMemoryId: number | null = null;
 
   constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService, private activityService: ActivityService, private router: Router,) {
     this.activityForm = this.fb.group({
@@ -39,15 +39,15 @@ export class CreateActivityComponent implements OnInit {
       description: [''],
       link: ['', Validators.pattern('https?://.+')],
       indoor_outdoor_flag: ['indoor'],
-      season: [['summer']],
-      weather: [['sunny']],
+      season: [['2']],
+      weather: [['1']],
+      leadMemoryId: [],
     });
   }
 
   ngOnInit(): void {
     this.userService.userId$.subscribe(userId => {
       this.userId = userId;
-      console.log("Component received userId:", this.userId);
     });
   }
 
@@ -143,12 +143,13 @@ export class CreateActivityComponent implements OnInit {
       groupSizeMin: formData.groupSizeMin,
       groupSizeMax: formData.groupSizeMax,
       costs: formData.costs,
-      link: formData.link,
+      websiteUrl: formData.link,
       indoor: formData.indoor_outdoor_flag == 'indoor',
-      season: formData.season,
-      weather: formData.weather,
+      seasons: formData.season,
+      weathers: formData.weather,
       location: location,
-      firebaseUrl: ''
+      firebaseUrl: '',
+      leadMemoryId: this.leadMemoryId
     };
 
     await this.activityService.createActivity(activityData)
@@ -161,7 +162,6 @@ export class CreateActivityComponent implements OnInit {
       .subscribe(async response => {
         if (!response) return; // Error was handled
         activityId = response.activityId.toString();
-        console.log("Activity created: ", activityId);
         dialogRef.componentInstance.updateProgress(10, 'Activity created. Starting uploads...');
 
         // Step 2: Upload title picture (progress to 20%)

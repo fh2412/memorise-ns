@@ -13,7 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-memory-selecter',
   templateUrl: './memory-selecter.component.html',
-  styleUrl: './memory-selecter.component.css',
+  styleUrl: './memory-selecter.component.scss',
   imports: [
     CommonModule,
     ReactiveFormsModule,

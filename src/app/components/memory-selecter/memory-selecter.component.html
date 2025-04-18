@@ -1,43 +1,41 @@
-<div class="memory-selector-container">
-    <h3>Choose a Lead Memory</h3>
+<h3>Choose a Lead Memory</h3>
 
-    <!-- Search Bar -->
-    <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Search memories</mat-label>
-        <input matInput [formControl]="searchControl" placeholder="Type to search...">
-        <mat-icon matSuffix>search</mat-icon>
-    </mat-form-field>
+<!-- Search Bar -->
+<mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search memories</mat-label>
+    <input matInput [formControl]="searchControl" placeholder="Type to search...">
+    <mat-icon matSuffix>search</mat-icon>
+</mat-form-field>
 
-    <!-- Memory List -->
-    <div class="memories-container">
-        <mat-card *ngFor="let memory of filteredMemories | async" class="memory-item"
-            [class.selected]="selectedMemory === memory" (click)="selectMemory(memory)">
-            <mat-card-content>
-                <h3>{{ memory.title }}</h3>
-                <p>{{ memory.text | slice:0:50 }}{{ memory.text.length > 50 ? '...' : '' }}</p>
-            </mat-card-content>
-        </mat-card>
+<!-- Memory List -->
+<div class="memories-container">
+    <mat-card *ngFor="let memory of filteredMemories | async" class="memory-item"
+        [class.selected]="selectedMemory === memory" (click)="selectMemory(memory)">
+        <mat-card-content>
+            <h3>{{ memory.title }}</h3>
+            <p>{{ memory.text | slice:0:50 }}{{ memory.text.length > 50 ? '...' : '' }}</p>
+        </mat-card-content>
+    </mat-card>
 
-        @if ((filteredMemories | async)?.length === 0) {
-        <div class="no-results">
-            No memories found matching your search.
-        </div>
-        }
-        <div *ngIf="memories.length === 0 && !loading" class="no-results">
-            No memories available.
-        </div>
-        @if (loading) {
-        <div class="loading">
-            <mat-spinner diameter="40"></mat-spinner>
-            <span>Loading memories...</span>
-        </div>
-        }
+    @if ((filteredMemories | async)?.length === 0) {
+    <div class="no-results">
+        No memories found matching your search.
     </div>
-
-    <!-- Selected Memory Display -->
-    @if (selectedMemory) {
-    <div class="selected-memory-info">
-        <strong>Selected:</strong> {{ selectedMemory.title }}
+    }
+    <div *ngIf="memories.length === 0 && !loading" class="no-results">
+        No memories available.
+    </div>
+    @if (loading) {
+    <div class="loading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <span>Loading memories...</span>
     </div>
     }
 </div>
+
+<!-- Selected Memory Display -->
+@if (selectedMemory) {
+<div class="selected-memory-info">
+    <strong>Selected:</strong> {{ selectedMemory.title }}
+</div>
+}

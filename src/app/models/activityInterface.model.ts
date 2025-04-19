@@ -61,7 +61,7 @@ export interface ActivityDetails {
 }
 
 export interface Season {
-    id: number;
+    season_id: number;
     name: string;
 }
 

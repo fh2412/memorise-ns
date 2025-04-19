@@ -17,10 +17,10 @@ export class ActivityDetailComponent implements OnInit {
   markerPosition!: google.maps.LatLngLiteral;
   
   allSeasons = [
-    {id: 0, name: 'Spring'},
-    {id: 0, name: 'Summer'},
-    {id: 0, name: 'Fall'},
-    {id: 0, name: 'Winter'},
+    {season_id: 1, name: 'Spring'},
+    {season_id: 2, name: 'Summer'},
+    {season_id: 3, name: 'Fall'},
+    {season_id: 4, name: 'Winter'},
   ];
   allWeather = [
     {id: 0, name: 'Sunny', description: 'The sun is shining fully'},
@@ -48,6 +48,9 @@ export class ActivityDetailComponent implements OnInit {
       next: (data) => {
         this.activity = data;
         this.isLoading = false;
+        this.markerPosition = {lat: Number(data.location.latitude), lng: Number(data.location.longitude)}
+        this.mapOptions.center = this.markerPosition;
+        this.mapOptions.zoom = 11;
         console.log(this.activity);
       },
       error: (error) => {

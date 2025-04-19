@@ -65,11 +65,23 @@ Loading activity details...
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
-            @for (season of allSeasons; track $index) {
+            <!--@for (season of allSeasons; track $index) {
             <mat-button-toggle [checked]="activity.seasons.includes(season)">
                 {{ season.name }}
             </mat-button-toggle>
-            }
+        }-->
+            <mat-button-toggle value="1" [checked]="activity.seasons.includes({ season_id: 2, name: 'Summer' })">
+                <mat-icon>grass</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="2">
+                <mat-icon>wb_sunny</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="3">
+                <mat-icon>park</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle value="4">
+                <mat-icon>ac_unit</mat-icon>
+            </mat-button-toggle>
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
@@ -97,9 +109,9 @@ Loading activity details...
     <!-- Map and Description -->
     <div class="map-description-container">
         <mat-card class="map-container">
-            <google-map [options]="mapOptions" height="250px" width="100%">
+            <!--<google-map [options]="mapOptions" height="250px" width="100%">
                 <map-marker [position]="markerPosition"></map-marker>
-            </google-map>
+            </google-map>-->
         </mat-card>
 
         <div>

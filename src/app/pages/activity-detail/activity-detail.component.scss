@@ -101,9 +101,8 @@
     flex-direction: column;
   }
 
-  .map-container,
-  .description-container {
-    flex: 1;
+  .map-container {
+    width: 70%;
   }
 }
 

@@ -60,34 +60,26 @@ Loading activity details...
     <!-- Toggles: Indoor/Outdoor, Seasons, Weather -->
     <div class="toggles-container">
         <mat-button-toggle-group disabled>
-            <mat-button-toggle [checked]="!activity.indoor">Outdoor</mat-button-toggle>
-            <mat-button-toggle [checked]="activity.indoor">Indoor</mat-button-toggle>
+            <mat-button-toggle [checked]="!activity.indoor">
+                <mat-icon>home</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle [checked]="activity.indoor">
+                <mat-icon>landscape</mat-icon>
+            </mat-button-toggle>
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
-            <!--@for (season of allSeasons; track $index) {
-            <mat-button-toggle [checked]="activity.seasons.includes(season)">
-                {{ season.name }}
+            @for (season of allSeasons; track $index) {
+            <mat-button-toggle [checked]="isSeasonSelected(season.season_id)">
+                <mat-icon>{{season.icon}}</mat-icon>
             </mat-button-toggle>
-        }-->
-            <mat-button-toggle value="1" [checked]="activity.seasons.includes({ season_id: 2, name: 'Summer' })">
-                <mat-icon>grass</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="2">
-                <mat-icon>wb_sunny</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="3">
-                <mat-icon>park</mat-icon>
-            </mat-button-toggle>
-            <mat-button-toggle value="4">
-                <mat-icon>ac_unit</mat-icon>
-            </mat-button-toggle>
+            }
         </mat-button-toggle-group>
 
         <mat-button-toggle-group multiple disabled>
             @for (weather of allWeather; track $index) {
-            <mat-button-toggle [checked]="activity.weatherConditions.includes(weather)">
-                {{ weather.name }}
+            <mat-button-toggle [checked]="isWeatherSelected(weather.weather_id)">
+                <mat-icon>{{weather.icon}}</mat-icon>
             </mat-button-toggle>
             }
         </mat-button-toggle-group>
@@ -109,9 +101,9 @@ Loading activity details...
     <!-- Map and Description -->
     <div class="map-description-container">
         <mat-card class="map-container">
-            <!--<google-map [options]="mapOptions" height="250px" width="100%">
+            <google-map [options]="mapOptions" height="250px" width="100%">
                 <map-marker [position]="markerPosition"></map-marker>
-            </google-map>-->
+            </google-map>
         </mat-card>
 
         <div>

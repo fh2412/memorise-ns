@@ -17,17 +17,17 @@ export class ActivityDetailComponent implements OnInit {
   markerPosition!: google.maps.LatLngLiteral;
   
   allSeasons = [
-    {season_id: 1, name: 'Spring'},
-    {season_id: 2, name: 'Summer'},
-    {season_id: 3, name: 'Fall'},
-    {season_id: 4, name: 'Winter'},
+    {season_id: 1, name: 'Spring', icon: 'grass'},
+    {season_id: 2, name: 'Summer', icon: 'wb_sunny'},
+    {season_id: 3, name: 'Fall', icon: 'park'},
+    {season_id: 4, name: 'Winter', icon: 'ac_unit'},
   ];
   allWeather = [
-    {id: 0, name: 'Sunny', description: 'The sun is shining fully'},
-    {id: 1, name: 'Cloudy', description: 'The sun is shining fully'},
-    {id: 2, name: 'Rainy', description: 'The sun is shining fully'},
-    {id: 3, name: 'Snowy', description: 'The sun is shining fully'},
-    {id: 4, name: 'Windy', description: 'The sun is shining fully'}
+    {weather_id: 1, name: 'Sunny', icon: 'wb_sunny'},
+    {weather_id: 3, name: 'Cloudy', icon: 'cloud'},
+    {weather_id: 4, name: 'Rainy', icon: 'water_drop'},
+    {weather_id: 7, name: 'Snowy', icon: 'air'},
+    {weather_id: 6, name: 'Windy', icon: 'ac_unit'}
   ];
 
   isLoading = true;
@@ -92,5 +92,13 @@ export class ActivityDetailComponent implements OnInit {
       case 'mov': return 'videocam';
       default: return 'insert_drive_file';
     }
+  }
+
+  isSeasonSelected(seasonId: number): boolean {
+    return this.activity.seasons.some(s => s.season_id === seasonId);
+  }
+
+  isWeatherSelected(weatherId: number): boolean {
+    return this.activity.weatherConditions.some(w => w.weather_id === weatherId);
   }
 }

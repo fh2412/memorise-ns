@@ -66,7 +66,7 @@ export interface Season {
 }
 
 export interface Weather {
-    id: number;
+    weather_id: number;
     name: string;
     description: string;
 }

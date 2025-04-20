@@ -1,10 +1,15 @@
 @use '../../../styles/components/header.scss';
+@use '../../../styles/components/layouts.scss';
 
 /* activity-detail.component.scss */
 .activity-container {
   max-width: 1000px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.center{
+  font-style: italic;
 }
 
 .image-memories-container {

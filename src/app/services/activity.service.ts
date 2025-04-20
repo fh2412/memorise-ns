@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ActivityDetails, ActivityFilter, CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
+import { ActivityCreator, ActivityDetails, ActivityFilter, CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 import { environment } from '../../environments/environment';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { forkJoin, Observable } from 'rxjs';
@@ -32,6 +32,10 @@ export class ActivityService {
 
   getActivityDetails(activityId: number | string): Observable<ActivityDetails> {
     return this.http.get<ActivityDetails>(`${this.apiUrl}/details/${activityId}`);
+  }
+
+  getActivityCreator(activityId: number, userId: string): Observable<ActivityCreator> {
+    return this.http.get<ActivityCreator>(`${this.apiUrl}/creatorDetails/${activityId}/${userId}`);
   }
 
   getUsersActivities(userId: string) {

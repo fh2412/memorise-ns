@@ -18,29 +18,26 @@ Loading activity details...
     <!-- Image and Memories section -->
     <div class="image-memories-container">
         <mat-card class="image-container" appearance="outlined">
-            @if (true) { <!--!activity.hasLeadMemory-->
+            @if (activity.firebaseUrl) { <!--!activity.hasLeadMemory-->
             <img [src]="activity.firebaseUrl" alt="{{ activity.title }}" class="main-image">
             }
-            @if (false) { <!--activity.hasLeadMemory-->
-            <div class="quad-images">
-                <div class="image-grid">
-                    <img [src]="activity.firebaseUrl" alt="Memory 1" class="grid-image">
-                    <img [src]="activity.firebaseUrl" alt="Memory 2" class="grid-image">
-                    <img [src]="activity.firebaseUrl" alt="Memory 3" class="grid-image">
-                    <img [src]="activity.firebaseUrl" alt="Memory 4" class="grid-image">
-                </div>
-                <button mat-stroked-button class="see-full-btn">See Full</button>
-            </div>
+            @else {
+            <div class="center">This Activity has no Title-Picture added.</div>
             }
         </mat-card>
 
         <mat-card class="memories-container" appearance="outlined">
+            @if (activity.baseMemoryId) {
             <p>
-                <strong>DEFAULT NAME</strong> and
-                <strong>0 others</strong>
+                <strong>{{creatorDetails.creator_name}}</strong> and
+                <strong>{{creatorDetails.created_activities_count}} others</strong>
                 have already created Memories to this activity.
             </p>
             <button mat-flat-button>Click Here to View</button>
+            }
+            @else {
+                <div class="center">There were no Memories created to this Activity.</div>
+            }
         </mat-card>
     </div>
 

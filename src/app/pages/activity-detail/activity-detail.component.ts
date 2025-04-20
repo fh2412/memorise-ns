@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivityDetails } from '../../models/activityInterface.model';
+import { ActivityCreator, ActivityDetails } from '../../models/activityInterface.model';
 import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 import { ActivityService } from '../../services/activity.service';
@@ -15,7 +15,8 @@ export class ActivityDetailComponent implements OnInit {
   activity!: ActivityDetails;
   mapOptions: google.maps.MapOptions = {};
   markerPosition!: google.maps.LatLngLiteral;
-  
+  creatorDetails!: ActivityCreator;
+
   allSeasons = [
     {season_id: 1, name: 'Spring', icon: 'grass'},
     {season_id: 2, name: 'Summer', icon: 'wb_sunny'},
@@ -47,11 +48,25 @@ export class ActivityDetailComponent implements OnInit {
     ).subscribe({
       next: (data) => {
         this.activity = data;
-        this.isLoading = false;
         this.markerPosition = {lat: Number(data.location.latitude), lng: Number(data.location.longitude)}
         this.mapOptions.center = this.markerPosition;
         this.mapOptions.zoom = 11;
-        console.log(this.activity);
+        if(this.activity.baseMemoryId){
+          this.activitiesService.getActivityCreator(this.activity.id ,this.activity.creatorId).subscribe({
+            next: (data) => {
+              this.isLoading = false;
+              this.creatorDetails = data;
+            },
+            error: (error) => {
+              console.error('Error fetching activity creator details', error);
+              this.errorMessage = 'Failed to load activity creator details. Please try again.';
+              this.isLoading = false;
+            }
+          });
+        }
+        else{
+          this.isLoading = false;
+        }
       },
       error: (error) => {
         console.error('Error fetching activity details', error);

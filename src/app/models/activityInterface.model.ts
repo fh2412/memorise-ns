@@ -60,6 +60,11 @@ export interface ActivityDetails {
     location: MemoriseLocation;
 }
 
+export interface ActivityCreator {
+    creator_name: string;
+    created_activities_count: number;
+}
+
 export interface Season {
     season_id: number;
     name: string;

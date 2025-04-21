@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivityCreator, ActivityDetails } from '../../models/activityInterface.model';
 import { switchMap } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ActivityService } from '../../services/activity.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class ActivityDetailComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   
-  constructor(private route: ActivatedRoute,private activitiesService: ActivityService) {}
+  constructor(private route: ActivatedRoute, private activitiesService: ActivityService, private router: Router) {}
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -107,6 +107,10 @@ export class ActivityDetailComponent implements OnInit {
       case 'mov': return 'videocam';
       default: return 'insert_drive_file';
     }
+  }
+
+  navigateLeadMemory(){
+    this.router.navigate(['memory/', this.activity.baseMemoryId]);
   }
 
   isSeasonSelected(seasonId: number): boolean {

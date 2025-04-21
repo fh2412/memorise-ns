@@ -33,36 +33,19 @@
     height: 300px;
     object-fit: cover;
   }
-
-  .quad-images {
-    position: relative;
-
-    .image-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 4px;
-      height: 300px;
-
-      .grid-image {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-
-    .see-full-btn {
-      position: absolute;
-      bottom: 8px;
-      right: 8px;
-      background-color: rgba(255, 255, 255, 0.8);
-    }
-  }
 }
 
 .memories-container {
   justify-content: center;
   padding: 24px;
+  .button-container{
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    button{
+      width: 100%;
+    }
+  }
 }
 
 .rating-views-container {

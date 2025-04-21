@@ -33,7 +33,10 @@ Loading activity details...
                 <strong>{{creatorDetails.created_activities_count}} others</strong>
                 have already created Memories to this activity.
             </p>
-            <button mat-flat-button>Click Here to View</button>
+            <div class="button-container">
+            <button mat-flat-button (click)="navigateLeadMemory()"><mat-icon>photo_library</mat-icon>View Memory</button>
+            <button mat-stroked-button disabled><mat-icon>web_stories</mat-icon>Browse All</button>
+        </div>
             }
             @else {
                 <div class="center">There were no Memories created to this Activity.</div>

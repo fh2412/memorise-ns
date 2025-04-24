@@ -5,7 +5,8 @@
     <app-my-activity-information [user]="user"></app-my-activity-information>
     <app-company-information [company]="company" [userId]="user.user_id"></app-company-information>
     } @else {
-      <mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
+      <!--<mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>-->
+      <app-color-test></app-color-test>
     }
   </div>
   

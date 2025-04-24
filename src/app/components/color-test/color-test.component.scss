@@ -1,0 +1,13 @@
+mat-card {
+    padding: 15px;
+    margin-bottom: 5px;
+
+    div {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    span{
+        font-family: 'Courier New', Courier, monospace;
+    }
+}

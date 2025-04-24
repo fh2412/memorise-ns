@@ -1,13 +1,13 @@
 <mat-card appearance="outlined">
   <mat-card-header>
       <mat-card-title>Your Activites</mat-card-title>
-      @if (activities.length === 1) {
+      @if (!stats) {
         <mat-card-subtitle>You have not created an activity yet. Do you want to change that?</mat-card-subtitle>
       }
       @else {
         <mat-card-subtitle>
-          Activity count: {{activities.length}}<br>
-          Total Stars: {{activities.length}}
+          Activity count: {{stats.activity_count}}<br>
+          Total Stars: {{stats.stars_count}}
         </mat-card-subtitle>
       }
   </mat-card-header>

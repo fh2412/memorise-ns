@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ActivityCreator, ActivityDetails, ActivityFilter, CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
+import { ActivityCreator, ActivityDetails, ActivityFilter, ActivityStats, CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 import { environment } from '../../environments/environment';
 import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
 import { forkJoin, Observable } from 'rxjs';
@@ -88,6 +88,10 @@ export class ActivityService {
     }
     
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
+  }
+
+  getActivityStats(userId: string): Observable<ActivityStats> {
+    return this.http.get<ActivityStats>(`${this.apiUrl}/stats/${userId}`);
   }
 
   uploadTitlePicture(file: File, activityId: string): Observable<string> {

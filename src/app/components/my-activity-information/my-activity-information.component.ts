@@ -1,9 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MemoriseUser } from '../../models/userInterface.model';
-import { Activity } from '../quick-activity-autocomplete/quick-activity-autocomplete.component';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
+import { ActivityService } from '../../services/activity.service';
+import { firstValueFrom } from 'rxjs';
+import { ActivityStats } from '../../models/activityInterface.model';
 
 @Component({
     selector: 'app-my-activity-information',
@@ -16,22 +18,18 @@ import { MatButtonModule } from '@angular/material/button';
 })
 export class MyActivityInformationComponent implements OnInit {
   @Input() user!: MemoriseUser;
+  stats: ActivityStats | null = null;
 
-  activities: Activity[] = [{ id: 1, icon: '🏃', name: 'Running', genre: 'Sport' }];
-
-  constructor(private router: Router){}
+  constructor(private router: Router, private activityService: ActivityService){}
 
 
   ngOnInit(): void {
-    this.activities.push(
-      { id: 2, icon: '🎸', name: 'Playing Guitar', genre: 'Music' },
-      { id: 3, icon: '📖', name: 'Reading', genre: 'Education' }
-    );
     this.getActivityStats();
   }
 
-  getActivityStats() {
-    console.log("Here");
+  async getActivityStats() {
+    this.stats = await firstValueFrom(this.activityService.getActivityStats(this.user.user_id));
+    console.log("stats: ",this.stats);
   }
 
   navigateMyActivities() {

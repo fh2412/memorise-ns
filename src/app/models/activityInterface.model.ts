@@ -65,6 +65,11 @@ export interface ActivityCreator {
     created_activities_count: number;
 }
 
+export interface ActivityStats {
+    activity_count: number;
+    stars_count: number;
+}
+
 export interface Season {
     season_id: number;
     name: string;

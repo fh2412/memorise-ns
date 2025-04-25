@@ -15,6 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { CompanyInformationComponent } from '../../components/company-information/company-information.component';
 import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
 import { ColorTestComponent } from "../../components/color-test/color-test.component";
+import { CommingSoonComponent } from "../../components/comming-soon/comming-soon.component";
 
 const routes: Routes = [
   {
@@ -45,7 +46,8 @@ const routes: Routes = [
     MatIconModule,
     MyActivityInformationComponent,
     ActivityListComponent,
-    ColorTestComponent
+    ColorTestComponent,
+    CommingSoonComponent
 ]
 })
 export class ActivitiesModule { }

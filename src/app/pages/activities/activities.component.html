@@ -3,10 +3,10 @@
   <div class="sticky-sidebar">
     @if (user) {
     <app-my-activity-information [user]="user"></app-my-activity-information>
-    <app-company-information [company]="company" [userId]="user.user_id"></app-company-information>
+    <!--<app-company-information [company]="company" [userId]="user.user_id"></app-company-information>-->
     } @else {
-      <!--<mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>-->
-      <app-color-test></app-color-test>
+      <mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
+      <!--<app-color-test></app-color-test>-->
     }
   </div>
   
@@ -27,7 +27,8 @@
       </div>
     </div>
     @if (activities.length > 0) {
-      <app-activity-list [activities]="activities"></app-activity-list>
+      <!--<app-activity-list [activities]="activities"></app-activity-list>-->
+      <app-comming-soon [featureName]="'Browse Activities'" [imageUrl]="'../../../assets/img/no_memories.jpg'"></app-comming-soon>
     }
     @else {
       <!--<p>We are so sorry. Something went wrong! :(</p>-->

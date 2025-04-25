@@ -11,7 +11,7 @@
     <!--<app-activity-list [activities]="userActivityList"></app-activity-list>-->
     <div class="activities-container">
         @for (activity of userActivityList; track $index) {
-        <app-activity-card [activity]="activity" activityId="123">
+        <app-activity-card [activity]="activity" [myActivity]="true">
         </app-activity-card>
         }
     </div>

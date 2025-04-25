@@ -110,7 +110,7 @@
     <!-- Grid View -->
     <div *ngIf="viewMode === 'grid' && filteredActivities.length > 0" class="grid-view">
         <div *ngFor="let activity of paginatedActivities" class="grid-item">
-            <app-activity-card [activity]="activity"></app-activity-card>
+            <app-activity-card [activity]="activity" [myActivity]="false"></app-activity-card>
         </div>
     </div>
 

@@ -57,12 +57,14 @@ export interface ActivityTag {
 })
 export class ActivityCardComponent {
   @Input() activity!: MemoriseUserActivity;
+  @Input() myActivity = false;
   isBookmarked = false;
   loggedInUserId: string | null = null;
 
   constructor(private router: Router, private userService: UserService, private bookmarkService: BookmarkService) { }
 
   viewDetails() {
+    console.log("ACTIVITY TO DETAIL,", this.activity);
     this.router.navigate(['activity/details/', this.activity.activityId]);
   }
 

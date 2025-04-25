@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivityTag } from '../../components/activity-card/activity-card.component';
 import { ActivityService } from '../../services/activity.service';
 import { firstValueFrom } from 'rxjs';
 import { MemoriseUserActivity } from '../../models/activityInterface.model';
@@ -16,18 +15,6 @@ export class MyActivityOverviewComponent implements OnInit {
   userName = '';
   userActivityList: MemoriseUserActivity[] = [];
 
-  hikingTags: ActivityTag[] = [
-    { name: 'Adventure', color: '#4CAF50' },
-    { name: 'Nature', color: '#2196F3' },
-    { name: 'Moderate', color: '#FF9800' }
-  ];
-
-  climbingTags: ActivityTag[] = [
-    { name: 'Sport', color: '#9C27B0' },
-    { name: 'Beginner', color: '#4CAF50' },
-    { name: 'Indoor', color: '#607D8B' }
-  ];
-
   constructor(private activityService: ActivityService, private userService: UserService) {}
 
   async ngOnInit(): Promise<void> {
@@ -36,6 +23,6 @@ export class MyActivityOverviewComponent implements OnInit {
     if(this.userId){
       this.userActivityList = await firstValueFrom(this.activityService.getUsersActivities(this.userId));
     }
-    console.log(this.userActivityList);
+    console.log("this.userActivityList", this.userActivityList);
   }
 }

@@ -238,9 +238,7 @@ export class EditmemoryComponent implements OnInit {
   
   private openMapDialog(lat: number, long: number): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
-      data: { lat: lat, long: long },
-      width: '500px',
-      height: '542px'
+      data: { lat: Number(lat), long: Number(long) },
     });
   
     dialogRef.afterClosed().subscribe(result => {

@@ -1,0 +1,18 @@
+<div class="header">
+    <div class="headline">
+        <h1>{{userName}}'s ACTIVITIES</h1>
+    </div>
+    <div class="actions">
+        <app-back-button class="back-button"></app-back-button>
+    </div>
+</div>
+
+<div class="body">
+    <!--<app-activity-list [activities]="userActivityList"></app-activity-list>-->
+    <div class="activities-container">
+        @for (activity of userActivityList; track $index) {
+        <app-activity-card [activity]="activity" [myActivity]="true">
+        </app-activity-card>
+        }
+    </div>
+</div>

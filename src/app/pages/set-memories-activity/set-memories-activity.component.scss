@@ -1,45 +1,45 @@
 .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  /* Center vertically */
+
+  .options {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Center vertically */
-  
-    .options {
+    gap: 20px;
+
+    .option {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 20px;
-  
-      .option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        button{
-            width: 30vh;
-        }
-      }
-  
-      mat-divider {
-        height: 400px;
-      }
-    }
+      gap: 10px;
 
-    img{
+      button {
         width: 30vh;
-        border-radius: 15px;
+      }
+    }
+
+    mat-divider {
+      height: 400px;
     }
   }
-  
-  .headline{
-    font-size: 5vh;
-    font-weight: bold;
-    margin-bottom: 80px;
-  }
 
-  .headline-uber{
-    font-size: 5vh;
-    font-weight: bold;
-    margin-bottom: 40px;
+  img {
+    width: 30vh;
+    border-radius: 15px;
   }
+}
+
+h2 {
+  font-size: var(--mat-sys-display-medium-size);
+}
+
+.headline-uber {
+  font-size: 5vh;
+  font-weight: bold;
+  margin-bottom: 40px;
+}

@@ -3,10 +3,10 @@
   <p>{{ data.message }}</p>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button color="primary" (click)="onCloseClick(true)">
-    Yes
-  </button>
-  <button mat-raised-button (click)="onCloseClick(false)">
+  <button mat-button (click)="onCloseClick(false)">
     No
+  </button>
+  <button mat-stroked-button (click)="onCloseClick(true)">
+    Yes
   </button>
 </mat-dialog-actions>

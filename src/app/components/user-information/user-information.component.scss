@@ -1,33 +1,29 @@
 @use '../../../styles/components/mixins' as mixins;
 
 .user-card {
-    display: flex;
-    align-items: center;
-    width: 100%;
-  }
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 
-// Container styles
 .profile-picture-container {
   margin: 20px;
   aspect-ratio: 1 / 1;
 
-  // Profile picture styles
   .profile-picture {
     @include mixins.profile-pic
   }
 }
 
-button{
-  margin-top: 3px;
-}
-
 .list-wrapper mat-list-item {
   height: 34px;
 }
-.editbutton{
+
+.editbutton {
   width: 100%;
+  margin-top: 3px;
 }
 
-.user-details{
+.user-details {
   width: 90%;
 }

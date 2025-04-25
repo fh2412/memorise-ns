@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { Friend } from '../../models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
@@ -18,13 +18,14 @@ export class FriendSearchComponent {
   errorMessage = '';
   private searchSubject = new Subject<string>();
 
-  constructor(private searchService: UserService) {
+  constructor(private searchService: UserService, private cdRef: ChangeDetectorRef) {
     this.searchSubject.pipe(debounceTime(300)).subscribe(() => this.searchFriend());
   }
 
   onSearchTermChange(term: string): void {
     this.searchTerm = term;
     this.searchSubject.next(term);
+    this.cdRef.detectChanges();
   }
 
   searchFriend(): void {

@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import {  MatCardModule } from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { OtherUserprofileComponent } from './other-userprofile.component';
-import { PinCardModule } from '../../components/pin-card/pin-card.module';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 
 const routes: Routes = [
   {
@@ -31,8 +31,8 @@ const routes: Routes = [
     MatButtonModule,
     MatListModule,
     MatCardModule,
-    BackButtonModule,
-    PinCardModule
+    BackButtonComponent,
+    PinCardComponent
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

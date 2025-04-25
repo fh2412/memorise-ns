@@ -1,0 +1,40 @@
+<mat-card class="activity-card" (click)="viewDetails()">
+  <div class="card-background" [style.background-image]="'url(' + activity.firebaseUrl + ')'">
+    <div class="overlay">
+      <!-- Top section with location type and price -->
+      <div class="top-section">
+        <div class="location-type" matTooltipPosition="above">
+          <mat-icon>{{ activity.indoor ? 'home' : 'wb_sunny' }}</mat-icon>
+        </div>
+        @if (!myActivity) {
+        <div class="location-type" matTooltipPosition="above">
+          <button mat-icon-button (click)="toggleBookmark($event)" [@bookmarkAnimation]="isBookmarked">
+            <mat-icon>{{ isBookmarked ? 'bookmark' : 'bookmark_border' }}</mat-icon>
+          </button>
+        </div>
+        }
+      </div>
+
+      <!-- Middle section for group size -->
+      <div class="group-size">
+        <mat-icon>group</mat-icon>
+        <span>{{ activity.groupSizeMin }}-{{ activity.groupSizeMax }}</span>
+      </div>
+
+      <!-- Bottom section with title and details -->
+      <div class="bottom-section">
+        <h2 class="title">{{ activity.title }}</h2>
+
+        <div class="stats">
+          <div class="rating">
+            <mat-icon>star</mat-icon>
+            <span>4/5</span>
+          </div>
+          <div class="price">
+            {{ activity.costs | currency }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-card>

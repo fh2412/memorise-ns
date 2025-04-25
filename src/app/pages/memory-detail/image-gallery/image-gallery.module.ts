@@ -13,7 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatTableModule} from '@angular/material/table'; 
 import { ImageGalleryComponent } from './image-gallery.component';
-import { BackButtonModule } from "../../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../../components/back-button/back-button.component";
 
 const routes: Routes = [
   {
@@ -40,7 +40,7 @@ const routes: Routes = [
     MatButtonModule,
     MatToolbarModule,
     MatTableModule,
-    BackButtonModule,
+    BackButtonComponent,
     NgOptimizedImage,
 ]
 })

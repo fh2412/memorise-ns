@@ -1,14 +1,4 @@
-form {
-    margin: 0 auto;
-  }
-  
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-
-  .friend-chips-container {
-    max-height: 50px; /* Set your desired maximum height */
-    overflow-y: auto; /* Add a scrollbar when content exceeds the maximum height */
-  }
-  
+mat-form-field {
+  width: 100%;
+  margin-bottom: 15px;
+}

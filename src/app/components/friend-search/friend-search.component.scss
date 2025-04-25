@@ -1,27 +1,21 @@
-.search-container{
+.search-container {
     display: flex;
     align-items: center;
 }
 
-.search-results{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.mdc-list-item.mdc-list-item--with-one-line {
+    height:var(--mdc-list-list-item-one-line-container-height, 80px);
 }
 
-mat-form-field{
+mat-form-field {
     width: 90%;
     margin-top: 20px;
 }
 
-mat-card-content{
+mat-card-content {
     width: 70%;
 }
 
 mat-card {
     align-items: center;
-}
-
-.list-item{
-    height: 80px;
 }

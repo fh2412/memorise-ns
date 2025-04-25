@@ -1,16 +1,14 @@
 @use '../../../styles/components/mixins' as mixins;
-@use '../../../styles/themes/variables' as color;
 
 .card {
   @include mixins.full-size();
-  overflow: hidden;
   cursor: pointer;
   transition: border 0.3s ease;
 
   &:hover {
-    border: 2px solid color.$primary;
+    border: 2px solid var(--mat-sys-primary);
     .edit-button {
-      transform: translateY(0); // Brings button into view smoothly on hover
+      transform: translateY(0);
     }
   }
 
@@ -21,7 +19,7 @@
 
     .background-image {
       @include mixins.full-size();
-      object-fit: cover; // Ensures image covers the entire container
+      object-fit: cover;
     }
   }
 
@@ -33,7 +31,6 @@
     padding: 16px;
     box-sizing: border-box;
     background: rgba(255, 255, 255, 0.7); // Semi-transparent white background
-    color: #333;
     backdrop-filter: blur(4px); // Optional for a frosted effect on background
 
     h3 {
@@ -52,7 +49,7 @@
     bottom: 15px;
     right: 10px;
     color: #333;
-    transform: translateY(100%);
+    transform: translateY(110%);
     transition: transform 0.3s ease;
   }
 

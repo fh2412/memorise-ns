@@ -1,5 +1,18 @@
-.flex-space-between{
+.flex-space-between {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.center{
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
 }

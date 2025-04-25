@@ -1,7 +1,17 @@
-<mat-card appearance="outlined" *ngIf="user">
-        <h3>News</h3>
-        <p>You got ... activities</p>
-        <p>... Memories got created to ...</p>
-      <button mat-stroked-button (click)="navigateToUserActivities()">View Activities</button>
+<mat-card appearance="outlined">
+  <mat-card-header>
+      <mat-card-title>Your Activites</mat-card-title>
+      @if (!stats) {
+        <mat-card-subtitle>You have not created an activity yet. Do you want to change that?</mat-card-subtitle>
+      }
+      @else {
+        <mat-card-subtitle>
+          Activity count: {{stats.activity_count}}<br>
+          Total Stars: {{stats.stars_count}}
+        </mat-card-subtitle>
+      }
+  </mat-card-header>
+  <mat-card-actions>
+      <button mat-stroked-button class="editbutton" (click)="navigateMyActivities()">Navigate to Activites</button>
+  </mat-card-actions>
 </mat-card>
-<br>

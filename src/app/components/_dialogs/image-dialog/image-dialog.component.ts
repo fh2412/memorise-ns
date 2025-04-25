@@ -1,11 +1,16 @@
 import { Component, Inject, OnInit, HostListener } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
     selector: 'app-image-dialog',
     templateUrl: './image-dialog.component.html',
     styleUrls: ['./image-dialog.component.scss'],
-    standalone: false
+    imports: [
+      MatIconModule,
+      MatButtonModule
+    ]
 })
 export class ImageDialogComponent implements OnInit {
   currentIndex = 0;

@@ -1,11 +1,13 @@
 import { Component, Input, ViewChild, OnInit } from '@angular/core';
-import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
+import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
 
 @Component({
     selector: 'app-map-snippet',
     templateUrl: './map-snippet.component.html',
     styleUrls: ['./map-snippet.component.scss'],
-    standalone: false
+    imports: [
+      GoogleMapsModule,
+    ]
 })
 export class MapSnippetComponent implements OnInit {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;

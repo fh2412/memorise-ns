@@ -8,11 +8,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MapSnippetComponent } from '../../components/map-snippet/map-snippet.component';
-import { GoogleMapsModule } from '@angular/google-maps';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatTableModule} from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -27,7 +26,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     MemoryDetailComponent,
-    MapSnippetComponent,
   ],
   imports: [
     CommonModule,
@@ -37,14 +35,14 @@ const routes: Routes = [
     MatGridListModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    GoogleMapsModule,
     MatIconModule,
     MatDividerModule,
     MatButtonModule,
-    BackButtonModule,
+    BackButtonComponent,
     MatToolbarModule,
     MatTableModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MapSnippetComponent
 ]
 })
 export class MemoryModule { }

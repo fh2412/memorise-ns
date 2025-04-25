@@ -1,0 +1,158 @@
+<div class="activities-container">
+    <!-- Filter Section -->
+    <mat-expansion-panel class="filter-panel">
+        <mat-expansion-panel-header>
+            <mat-panel-title>Filter Activities</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <form [formGroup]="filterForm">
+            <div class="filter-grid">
+                <!-- Location Filter -->
+                <div class="filter-item">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Location</mat-label>
+                        <input matInput formControlName="location" placeholder="Enter city or area">
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Distance (km)</mat-label>
+                        <input matInput type="number" formControlName="distance" min="1" max="100">
+                    </mat-form-field>
+                </div>
+
+                <!-- Group Size Filter -->
+                <div class="filter-item">
+                    <div class="slider-container">
+                        <span>Group Size: {{ filterForm.get('groupSizeMin')?.value }} - {{
+                            filterForm.get('groupSizeMax')?.value }}</span>
+                        <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                            <input matSliderStartThumb formControlName="groupSizeMin">
+                            <input matSliderEndThumb formControlName="groupSizeMax">
+                        </mat-slider>
+                    </div>
+                </div>
+
+                <!-- Price Filter -->
+                <div class="filter-item">
+                    <div class="slider-container">
+                        <span>Cost: ${{ filterForm.get('price')?.value }}</span>
+                        <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                          <input matSliderThumb formControlName="price">
+                        </mat-slider>
+                      </div>
+                </div>
+
+                <!-- Season Filter -->
+                <div class="filter-item">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Season</mat-label>
+                        <mat-select formControlName="season">
+                            <mat-option value="">All Seasons</mat-option>
+                            <mat-option value="spring">Spring</mat-option>
+                            <mat-option value="summer">Summer</mat-option>
+                            <mat-option value="fall">Fall</mat-option>
+                            <mat-option value="winter">Winter</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- Weather Filter -->
+                <div class="filter-item">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Weather</mat-label>
+                        <mat-select formControlName="weather">
+                            <mat-option value="">Any Weather</mat-option>
+                            <mat-option value="sunny">Sunny</mat-option>
+                            <mat-option value="rainy">Rainy</mat-option>
+                            <mat-option value="snowy">Snowy</mat-option>
+                            <mat-option value="cloudy">Cloudy</mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <!-- Name Filter -->
+                <div class="filter-item">
+                    <mat-form-field appearance="outline" class="full-width">
+                        <mat-label>Search by Name</mat-label>
+                        <input matInput formControlName="name" placeholder="Enter activity name">
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
+                <button mat-button (click)="resetFilters()">Reset</button>
+            </div>
+        </form>
+    </mat-expansion-panel>
+
+    <!-- View Toggle -->
+    <div class="view-toggle">
+        <mat-button-toggle-group [(value)]="viewMode">
+            <mat-button-toggle value="grid">
+                <mat-icon>grid_view</mat-icon> Grid
+            </mat-button-toggle>
+            <mat-button-toggle value="list">
+                <mat-icon>view_list</mat-icon> List
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+    </div>
+
+    <!-- No Results Message -->
+    <div *ngIf="filteredActivities.length === 0" class="no-results">
+        <mat-card>
+            <mat-card-content>
+                <p>No activities match your filters.</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+
+    <!-- Grid View -->
+    <div *ngIf="viewMode === 'grid' && filteredActivities.length > 0" class="grid-view">
+        <div *ngFor="let activity of paginatedActivities" class="grid-item">
+            <app-activity-card [activity]="activity" [myActivity]="false"></app-activity-card>
+        </div>
+    </div>
+
+    <!-- List View -->
+     @if (viewMode === 'list' && filteredActivities.length > 0) {
+    <div class="list-view">
+        @for (activity of paginatedActivities; track $index) {
+        <mat-card class="list-item">
+            <div class="list-item-content">
+                <div class="list-item-image" [style.background-image]="'url(' + activity.firebaseUrl + ')'">
+                </div>
+                <div class="list-item-details">
+                    <mat-card-title>{{ activity.title }}</mat-card-title>
+                    <!--<mat-card-subtitle>
+                        <mat-icon>location_on</mat-icon> {{ activity.location.locality }}, {{ activity.location.country
+                        }}
+                    </mat-card-subtitle>-->
+                    <div class="activity-info">
+                        <div>
+                            <mat-icon>group</mat-icon> {{ activity.groupSizeMin }}-{{ activity.groupSizeMax }} people
+                        </div>
+                        <div>
+                            <mat-icon>euro</mat-icon> {{ activity.costs }}
+                        </div>
+                        <div>
+                            <mat-icon>{{ activity.indoor ? 'home' : 'landscape' }}</mat-icon> {{ activity.indoor ?
+                            'Indoor' : 'Outdoor' }}
+                        </div>
+                    </div>
+                    <p class="description-truncate">{{ activity.description }}</p>
+                    <button mat-stroked-button (click)="navigateToDetails(activity.activityId)">
+                        <mat-icon class="add-icon">info_i</mat-icon>
+                        View Details
+                      </button>
+                </div>
+            </div>
+        </mat-card>
+        }
+    </div>
+    }
+    <!-- Pagination -->
+    <mat-paginator *ngIf="filteredActivities.length > 0" [length]="filteredActivities.length" [pageSize]="pageSize"
+        [pageSizeOptions]="[6, 12, 24, 48]" (page)="onPageChange($event)">
+    </mat-paginator>
+</div>

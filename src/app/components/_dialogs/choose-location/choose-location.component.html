@@ -1,8 +1,10 @@
-<google-map [zoom]="mapZoom" [center]="mapCenter" [options]="mapOptions" (mapClick)="addMarker($event)">
-    <map-marker [position]="markerPosition" [options]="markerOptions" />
-</google-map>
-
-<button mat-raised-button color="primary" class="fixed-fab" (click)="submitAddress()" [disabled]="!this.markerPosition">
-    <mat-icon class="add-icon">submit</mat-icon>
-    Submit Address
-</button>
+<mat-dialog-content>
+    <google-map [zoom]="mapZoom" [center]="mapCenter" [options]="mapOptions" (mapClick)="addMarker($event)">
+        <map-marker [position]="markerPosition" [options]="markerOptions" />
+    </google-map>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="submitAddress()" [disabled]="!this.markerPosition">
+        Submit Address
+    </button>
+</mat-dialog-actions>

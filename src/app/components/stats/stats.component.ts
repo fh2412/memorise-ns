@@ -2,12 +2,15 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MemorystatsService } from '../../services/memorystats.service';
 import { forkJoin } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
     selector: 'app-stats',
     templateUrl: './stats.component.html',
     styleUrl: './stats.component.scss',
-    standalone: false
+    imports: [
+      MatCardModule
+    ]
 })
 export class StatsComponent implements OnInit {
   @Input() userid = '';

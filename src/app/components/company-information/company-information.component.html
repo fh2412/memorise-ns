@@ -1,4 +1,5 @@
-<mat-card appearance="outlined" *ngIf="company">
+@if (company) {
+<mat-card appearance="outlined">
     <div class="user-details">
         <mat-list class="list-wrapper">
             <mat-list-item>
@@ -19,26 +20,31 @@
             </mat-list-item>
         </mat-list>
         <mat-card-actions>
-            <button mat-stroked-button class="editbutton" (click)="openEditCreateDialog()" style="margin-right: 3px;"
-                *ngIf="company.owner_id===userId">Edit</button>
-            <button mat-stroked-button class="editbutton" (click)="openInviteDialog()" style="margin-right: 3px;" *ngIf="company.owner_id===userId">
-                Invite
-            </button>
-            <button mat-stroked-button class="editbutton" (click)="onLeaveClick(company.owner_id===userId)" color="warn">
+            @if (company.owner_id===userId) {
+            <button mat-stroked-button class="editbutton" (click)="openEditCreateDialog()"
+                style="margin-right: 3px;">Edit</button>
+            }
+            @if (company.owner_id===userId) {
+            <button mat-stroked-button class="editbutton" (click)="openInviteDialog()"
+                style="margin-right: 3px;">Invite</button>
+            }
+            <button mat-stroked-button class="editbutton" (click)="onLeaveClick(company.owner_id===userId)">
                 {{ company.owner_id === userId ? 'Delete' : 'Leave' }}
             </button>
         </mat-card-actions>
     </div>
 </mat-card>
+}
 <br>
-<mat-card *ngIf="!company" appearance="outlined">
+@if (!company) {
+<mat-card appearance="outlined">
     <mat-card-header>
         <mat-card-title>No Company</mat-card-title>
         <mat-card-subtitle>You have not joined a company yet. Do you want to change that?</mat-card-subtitle>
     </mat-card-header>
     <mat-card-actions>
-        <button mat-stroked-button class="editbutton" style="margin-right: 3px;"
-            (click)="joinCompany()">Join</button>
+        <button mat-stroked-button class="editbutton" style="margin-right: 3px;" (click)="joinCompany()">Join</button>
         <button mat-stroked-button class="editbutton" (click)="openEditCreateDialog()">Create</button>
     </mat-card-actions>
 </mat-card>
+}

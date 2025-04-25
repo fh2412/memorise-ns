@@ -1,0 +1,130 @@
+@if (isLoading) {
+Loading activity details...
+}
+
+@if (errorMessage) {
+{{errorMessage}}
+}
+
+<!-- activity-detail.component.html -->
+@if (activity && !isLoading) {
+<div class="activity-container">
+    <!-- Back button and title bar -->
+    <div class="title-bar">
+        <app-back-button></app-back-button>
+        <h1>{{ activity.title }}</h1>
+    </div>
+
+    <!-- Image and Memories section -->
+    <div class="image-memories-container">
+        <mat-card class="image-container" appearance="outlined">
+            @if (activity.firebaseUrl) { <!--!activity.hasLeadMemory-->
+            <img [src]="activity.firebaseUrl" alt="{{ activity.title }}" class="main-image">
+            }
+            @else {
+            <div class="center">This Activity has no Title-Picture added.</div>
+            }
+        </mat-card>
+
+        <mat-card class="memories-container" appearance="outlined">
+            @if (activity.baseMemoryId) {
+            <p>
+                <strong>{{creatorDetails.creator_name}}</strong> and
+                <strong>{{creatorDetails.created_activities_count}} others</strong>
+                have already created Memories to this activity.
+            </p>
+            <div class="button-container">
+            <button mat-flat-button (click)="navigateLeadMemory()"><mat-icon>photo_library</mat-icon>View Memory</button>
+            <button mat-stroked-button disabled><mat-icon>web_stories</mat-icon>Browse All</button>
+        </div>
+            }
+            @else {
+                <div class="center">There were no Memories created to this Activity.</div>
+            }
+        </mat-card>
+    </div>
+
+    <div class="rating-views-container">
+        <div class="rating">
+            @for (star of [1,2,3,4,5]; track $index) {
+            <mat-icon [class.filled]="star <= 4" [class.half-filled]="star - 0.5 === 4">
+                {{ star <= 4 ? 'star' : (star - 0.5===4 ? 'star_half' : 'star_outline' ) }} </mat-icon>
+                    }
+        </div>
+        <div class="views">
+            <mat-icon>visibility</mat-icon>
+            <span>1000 views</span>
+        </div>
+    </div>
+
+    <!-- Toggles: Indoor/Outdoor, Seasons, Weather -->
+    <div class="toggles-container">
+        <mat-button-toggle-group disabled>
+            <mat-button-toggle [checked]="!activity.indoor">
+                <mat-icon>home</mat-icon>
+            </mat-button-toggle>
+            <mat-button-toggle [checked]="activity.indoor">
+                <mat-icon>landscape</mat-icon>
+            </mat-button-toggle>
+        </mat-button-toggle-group>
+
+        <mat-button-toggle-group multiple disabled>
+            @for (season of allSeasons; track $index) {
+            <mat-button-toggle [checked]="isSeasonSelected(season.season_id)">
+                <mat-icon>{{season.icon}}</mat-icon>
+            </mat-button-toggle>
+            }
+        </mat-button-toggle-group>
+
+        <mat-button-toggle-group multiple disabled>
+            @for (weather of allWeather; track $index) {
+            <mat-button-toggle [checked]="isWeatherSelected(weather.weather_id)">
+                <mat-icon>{{weather.icon}}</mat-icon>
+            </mat-button-toggle>
+            }
+        </mat-button-toggle-group>
+    </div>
+
+    <!-- Group Size and Price -->
+    <div class="group-price-container">
+        <div class="group-size">
+            <mat-icon>people</mat-icon>
+            <span>Group Size: {{ getGroupSizeText() }}</span>
+        </div>
+
+        <div class="price">
+            <mat-icon>attach_money</mat-icon>
+            <span>Price: {{ getPriceText() }}</span>
+        </div>
+    </div>
+
+    <!-- Map and Description -->
+    <div class="map-description-container">
+        <mat-card class="map-container">
+            <google-map [options]="mapOptions" height="250px" width="100%">
+                <map-marker [position]="markerPosition"></map-marker>
+            </google-map>
+        </mat-card>
+
+        <div>
+            <h3>Description</h3>
+            <p>{{ activity.description }}</p>
+        </div>
+    </div>
+
+    <!-- Supporting Documents 
+    <div class="documents-container" *ngIf="activity.supportingDocuments && activity.supportingDocuments.length > 0">
+        <h3>Supporting Documents</h3>
+        <mat-divider></mat-divider>
+        <mat-list>
+            <mat-list-item *ngFor="let doc of activity.supportingDocuments">
+                <mat-icon matListItemIcon>{{ getFileIcon(doc.type) }}</mat-icon>
+                <div matListItemTitle>{{ doc.name }}</div>
+                <button mat-icon-button matListItemMeta aria-label="Download">
+                    <mat-icon>download</mat-icon>
+                </button>
+            </mat-list-item>
+        </mat-list>
+    </div>-->
+</div>
+}

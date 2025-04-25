@@ -1,15 +1,22 @@
 import { Component, Inject, ViewChild } from '@angular/core';
-import { GoogleMap, MapInfoWindow } from '@angular/google-maps';
+import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
 import { GeocodingService } from '../../../services/geocoding.service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { GeocoderResponse } from '../../../models/geocoder-response.model';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
     selector: 'app-choose-location',
     templateUrl: './choose-location.component.html',
-    styleUrl: './choose-location.component.scss',
-    standalone: false
+    standalone: true,
+    imports: [
+      MatDialogModule,
+      GoogleMapsModule,
+      MatIconModule,
+      MatButtonModule
+    ]
 })
 export class ChooseLocationComponent {
   constructor(private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) { }
@@ -18,7 +25,6 @@ export class ChooseLocationComponent {
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
 
   mapZoom = 5;
-  //mapCenter: google.maps.LatLng = new google.maps.LatLng(this.data.lat, this.data.long);
   mapCenter: google.maps.LatLngLiteral = {lat: this.data.lat, lng: this.data.long};
   mapOptions: google.maps.MapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,

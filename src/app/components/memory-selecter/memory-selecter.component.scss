@@ -1,0 +1,37 @@
+  .search-field {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .memories-container {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+  }
+
+  .memory-item {
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+  
+  .memory-item.selected {
+    background-color: var(--mat-sys-surface-container-high);
+    border-left: 4px solid var(--mat-sys-secondary);
+  }
+
+  .no-results,
+  .loading {
+    padding: 16px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .selected-memory-info {
+    margin-top: 8px;
+    padding: 8px;
+    background-color: var(--mat-sys-primary-fixed);
+    border-radius: 4px;
+  }

@@ -1,7 +1,13 @@
 import { Component } from '@angular/core';
 import { map, Observable, startWith } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 
 
 export interface Activity {
@@ -15,15 +21,24 @@ export interface Activity {
     selector: 'app-quick-activity-autocomplete',
     templateUrl: './quick-activity-autocomplete.component.html',
     styleUrl: './quick-activity-autocomplete.component.scss',
-    standalone: false
+    imports: [
+      CommonModule,
+      MatAutocompleteModule,
+      MatIconModule,
+      MatFormFieldModule,
+      MatInputModule,
+      MatButtonModule,
+      ReactiveFormsModule,
+      FormsModule,
+  ],
 })
 export class QuickActivityAutocompleteComponent {
   activityCtrl = new FormControl('');
-  filteredStates: Observable<Activity[]>;
+  filteredActivities: Observable<Activity[]>;
 
   quickActivity = '';
 
-  states: Activity[] = [
+  activities: Activity[] = [
     {
       id: 1,
       name: 'Hiking',
@@ -45,20 +60,20 @@ export class QuickActivityAutocompleteComponent {
   ];
 
   constructor( private router: Router) {
-    this.filteredStates = this.activityCtrl.valueChanges.pipe(
+    this.filteredActivities = this.activityCtrl.valueChanges.pipe(
       startWith(''),
-      map(state => (state ? this._filterStates(state) : this.states.slice())),
+      map(activity => (activity ? this._filterStates(activity) : this.activities.slice())),
     );
   }
 
   private _filterStates(value: string): Activity[] {
     const filterValue = value.toLowerCase();
 
-    return this.states.filter(state => state.name.toLowerCase().includes(filterValue));
+    return this.activities.filter(activity => activity.name.toLowerCase().includes(filterValue));
   }
 
   addMemory(): void {
-    const selectedActivity = this.states.find(
+    const selectedActivity = this.activities.find(
       (activity) => activity.name.toLowerCase() === this.quickActivity.trim().toLowerCase()
     );
   

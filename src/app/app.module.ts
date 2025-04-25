@@ -29,7 +29,6 @@ import { ChangePasswordDialogComponent } from './components/_dialogs/change-pass
 import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
-import { FriendsPreviewModule } from './components/friend-preview/friend-preview.module';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { InfoDialogComponent } from './components/_dialogs/info-dialog/info-dialog.component';
 import { ConfirmDialogComponent } from './components/_dialogs/confirm-dialog/confirm-dialog.component';
@@ -40,6 +39,7 @@ import { CompanyDialogComponent } from './components/_dialogs/company-dialog/com
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { AuthInterceptor } from './services/auth.interceptor';
 import { routes } from './app-routing.module';
+import { FriendPreviewComponent } from './components/friend-preview/friend-preview.component';
 
 @NgModule({
     declarations: [
@@ -47,13 +47,8 @@ import { routes } from './app-routing.module';
         MainNavComponent,
         ChangePasswordDialogComponent,
         UploadProgressDialogComponent,
-        ImageDialogComponent,
-        InfoDialogComponent,
-        ConfirmDialogComponent,
-        ShareFriendCodeDialogComponent,
         PinnedDialogComponent,
         CompanyDialogComponent,
-        FullDescriptionDialogComponent,
     ],
     bootstrap: [AppComponent],
     imports: [
@@ -79,8 +74,13 @@ import { routes } from './app-routing.module';
         MatSelectModule,
         MatProgressBarModule,
         GoogleMapsModule,
-        FriendsPreviewModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        ConfirmDialogComponent,
+        FullDescriptionDialogComponent,
+        ImageDialogComponent,
+        InfoDialogComponent,
+        ShareFriendCodeDialogComponent,
+        FriendPreviewComponent
     ],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),

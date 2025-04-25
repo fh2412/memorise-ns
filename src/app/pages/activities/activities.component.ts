@@ -3,27 +3,32 @@ import { UserService } from '../../services/userService';
 import { companyService } from '../../services/company.service';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseCompany } from '../../models/company.model';
+import { Router } from '@angular/router';
+import { ActivityService } from '../../services/activity.service';
+import { MemoriseUserActivity } from '../../models/activityInterface.model';
 
 
 @Component({
-    selector: 'app-activities',
-    templateUrl: './activities.component.html',
-    styleUrl: './activities.component.scss',
-    standalone: false
+  selector: 'app-activities',
+  templateUrl: './activities.component.html',
+  styleUrl: './activities.component.scss',
+  standalone: false
 })
 export class ActivitiesComponent implements OnInit {
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
+  activities: MemoriseUserActivity[] = [];
   company!: MemoriseCompany;
 
-  constructor(private userService: UserService, private companyService: companyService) {}
+  constructor(private router: Router, private userService: UserService, private activityService: ActivityService, private companyService: companyService) { }
   async ngOnInit() {
     this.loggedInUserId = this.userService.getLoggedInUserId();
-    if(this.loggedInUserId){
+    if (this.loggedInUserId) {
       this.userService.getUser(this.loggedInUserId).subscribe(
         (response) => {
           this.user = response;
-          if(this.user.company_id){ 
+          this.getInitActivities();
+          if (this.user.company_id) {
             this.getCompany();
           }
         },
@@ -33,8 +38,9 @@ export class ActivitiesComponent implements OnInit {
       );
     }
   }
+
   getCompany(): void {
-    if(this.loggedInUserId != null){
+    if (this.loggedInUserId != null) {
       this.companyService.getUserCompany(this.loggedInUserId).subscribe(
         (response) => {
           this.company = response;
@@ -45,8 +51,21 @@ export class ActivitiesComponent implements OnInit {
       );
     }
   }
-  
-  addActivity(){
-    console.log("Add Activity");
+
+  getInitActivities(): void {
+    if (this.loggedInUserId != null) {
+      this.activityService.getSugggestedActivities(this.loggedInUserId).subscribe(
+        (response) => {
+          this.activities = response;
+        },
+        (error) => {
+          console.log('Error fetching compnay', error);
+        }
+      );
+    }
+  }
+
+  addActivity() {
+    this.router.navigate(['activity/create']);
   };
 }

@@ -18,9 +18,9 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { BackButtonModule } from "../../components/back-button/back-button.module";
-import { PinCardModule } from '../../components/pin-card/pin-card.module';
+import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 
 const routes: Routes = [
   {
@@ -32,7 +32,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     UserProfileComponent,
-    LogoutButtonComponent,
     EditUserDialogComponent,
   ],
   imports: [
@@ -52,9 +51,10 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatInputModule,
     MatSelectModule,
-    BackButtonModule,
-    PinCardModule,
-    MatAutocompleteModule
+    BackButtonComponent,
+    PinCardComponent,
+    MatAutocompleteModule,
+    LogoutButtonComponent
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

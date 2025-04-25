@@ -32,7 +32,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     HomeComponent,
-    StatsComponent,
     MemoryCardComponent,
     ViewSelectorComponent,
     HomeMapViewComponent,
@@ -54,7 +53,8 @@ const routes: Routes = [
     GoogleMapsModule,
     MatDialogModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    StatsComponent,
   ],
   providers: [DatePipe, ViewSelectorComponent],
 })

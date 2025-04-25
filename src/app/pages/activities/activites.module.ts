@@ -9,11 +9,13 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
-import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
 import { MyActivityInformationComponent } from '../../components/my-activity-information/my-activity-information.component';
 import { MatListModule } from '@angular/material/list';
 import { CompanyInformationComponent } from '../../components/company-information/company-information.component';
+import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
+import { ColorTestComponent } from "../../components/color-test/color-test.component";
+import { CommingSoonComponent } from "../../components/comming-soon/comming-soon.component";
 
 const routes: Routes = [
   {
@@ -25,8 +27,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     ActivitiesComponent,
-    ChooseLocationComponent,
-    MyActivityInformationComponent,
     CompanyInformationComponent
   ],
   imports: [
@@ -43,7 +43,11 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     MatListModule,
-    MatIconModule
-  ]
+    MatIconModule,
+    MyActivityInformationComponent,
+    ActivityListComponent,
+    ColorTestComponent,
+    CommingSoonComponent
+]
 })
 export class ActivitiesModule { }

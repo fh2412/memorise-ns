@@ -1,46 +1,48 @@
 @use '../../../styles/components/memory-card-empty' as mixins;
 
 
-.memory-card{
-    height: 100%;
-  }
+.memory-card {
+  height: 100%;
+}
 
-  .tag{
-    display: flex; /* Make the content itself a flex container */
-    align-items: center;
-    position: absolute;
-    bottom: 12px;
-    left: 12px;
-  }
+.tag {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+}
 
-  .memory-card-empty{
-    @include mixins.memory-card(95%, 100%);
-  }
+.memory-card-empty {
+  @include mixins.memory-card(95%, 100%);
+}
 
-  .truncate {
-    display: block;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
+.truncate {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  color: var(--mat-sys-on-primary-fixed-variant);
+}
 
-  .two-line-truncate {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-line-clamp: 2; /* For WebKit-based browsers */
-    -webkit-box-orient: vertical;
-    line-clamp: 2; /* Standard property (currently not well-supported) */
-    box-orient: vertical; /* Standard property */
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
+.two-line-truncate {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  font-size: var(--mat-sys-title-small-size);
+}
 
-  .truncate-title{
-    width: 80%;
-  }
+.truncate-title {
+  width: 80%;
+}
 
-  mat-card-title-group{
-    justify-content: flex-start;
-  }
-  
+mat-card-title-group {
+  justify-content: space-between;
+}
+
+mat-icon{
+  color: var(--mat-sys-secondary);
+}

@@ -4,38 +4,20 @@
     <mat-toolbar class="logo-container"><img src="/assets/img/logo.png" alt="Logo"></mat-toolbar>
     <mat-nav-list class="mat-nav-list">
       <a mat-list-item href="/home">
-        <mat-icon color="accent">home</mat-icon> <!-- Material Icon for home -->
+        <mat-icon>home</mat-icon>
         <span class="text">MEMORISE</span>
       </a>
       <a mat-list-item href="/friends">
-        <mat-icon color="accent">people</mat-icon> <!-- Material Icon for people/friends -->
+        <mat-icon>people</mat-icon>
         <span class="text">FRIENDS</span>
       </a>
-      <a mat-list-item [disabled]="true"
-        matTooltip="Exciting features coming soon! Stay tuned for 'Activities' to explore and plan your events."
-        matTooltipPosition="above">
-        <mat-icon color="accent">event</mat-icon>
+      <a mat-list-item href="/activities">
+        <mat-icon>event</mat-icon>
         <span class="text">ACTIVITIES</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <!--<mat-toolbar color="primary">
-        <button mat-icon-button (click)="drawer.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button>
-        <span class="marginR">Memorise</span>
-        <div class="spacer"></div>
-        @if (isHandset$ | async) {
-          <button
-            type="button"
-            aria-label="Toggle sidenav"
-            mat-icon-button
-            (click)="drawer.toggle()">
-            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-          </button>
-        }
-      </mat-toolbar>-->
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>

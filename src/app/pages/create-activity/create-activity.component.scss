@@ -1,0 +1,111 @@
+/* activity-creation.component.scss */
+.activity-creation-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.create-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  h1 {
+    width: 100%;
+    margin: initial;
+    margin-left: 25px;
+  }
+}
+
+.form-overlay {
+  background-color: var(--mat-sys-background);
+  padding: 24px;
+  border-radius: 8px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.title-field {
+  margin-top: 15px;
+  flex-grow: 1;
+}
+
+.sliders-section {
+  margin-bottom: 24px;
+  display: flex;
+  gap: 16px;
+}
+
+.slider-container {
+  margin-bottom: 20px;
+  flex-grow: 1;
+  label {
+    display: block;
+  }
+}
+
+mat-slider{
+  width: 90%;
+}
+
+.step-navigation {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  gap: 16px;
+}
+
+.media-location-row{
+  gap: 32px;
+  display: flex;
+  margin-bottom: 36px;
+}
+
+.media-location-card{
+  aspect-ratio: 1/1;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+}
+
+.upload-button{
+  background-color: var(--mat-sys-background);
+}
+
+.file-upload-btn{
+  margin-top: 8px;
+}
+.details-row{
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.flex{
+  width: 50%;
+}
+
+
+.file-list{
+  max-height: 225px;
+  overflow: auto;
+}
+
+.list-button{
+  margin-top: 10px;
+  color: var(--mat-sys-error);
+}
+
+.toggle-section{
+  display: flex;
+  justify-content: space-between;
+  margin-left: 32px;
+  margin-right: 32px;
+}

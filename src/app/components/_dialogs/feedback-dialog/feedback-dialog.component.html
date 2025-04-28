@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Beta Feedback</h2>
+<mat-dialog-content>
+    <form [formGroup]="feedbackForm">
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Feedback Type</mat-label>
+            <mat-select formControlName="type">
+                <mat-option value="bug">Bug Report</mat-option>
+                <mat-option value="feature">Feature Request</mat-option>
+                <mat-option value="improvement">Improvement Suggestion</mat-option>
+                <mat-option value="other">Other</mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title" placeholder="Brief description">
+            <mat-error *ngIf="feedbackForm.get('title')?.invalid">Title is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Path</mat-label>
+            <input matInput formControlName="path" placeholder="Path in the searchbar (e.x. https://memorise.online/home)">
+            <mat-error *ngIf="feedbackForm.get('path')?.invalid">Path is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" placeholder="Please provide details..."
+                rows="5"></textarea>
+            <mat-error *ngIf="feedbackForm.get('description')?.invalid">Description is required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill" class="full-width">
+            <mat-label>Email (Optional)</mat-label>
+            <input matInput formControlName="email" placeholder="Your email for follow-up">
+            <mat-error *ngIf="feedbackForm.get('email')?.invalid">Please enter a valid email</mat-error>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-raised-button color="primary" [disabled]="feedbackForm.invalid" (click)="onSubmit()">Submit
+        Feedback</button>
+</mat-dialog-actions>

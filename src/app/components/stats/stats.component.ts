@@ -8,9 +8,7 @@ import { MatCardModule } from '@angular/material/card';
     selector: 'app-stats',
     templateUrl: './stats.component.html',
     styleUrl: './stats.component.scss',
-    imports: [
-      MatCardModule
-    ]
+    imports: [MatCardModule]
 })
 export class StatsComponent implements OnInit {
   @Input() userid = '';

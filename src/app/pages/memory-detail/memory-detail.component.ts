@@ -65,9 +65,11 @@ export class MemoryDetailComponent implements OnInit {
       const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryID));
       this.memorydb = memoryData;
 
-      await this.initializeMemoryDetails();
-      const activityData = await firstValueFrom(this.activityService.getActivity(this.memorydb.activity_id));
-      this.activity = activityData.title;
+      //await this.initializeMemoryDetails();
+      //const activityData = await firstValueFrom(this.activityService.getActivity(this.memorydb.activity_id));
+      //this.activity = activityData.title;
+
+      //TODO FIX ACTIVITY ROUTE
 
       const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
@@ -129,7 +131,6 @@ export class MemoryDetailComponent implements OnInit {
               created: metadata.timeCreated,
               size: metadata.size,
             });
-            console.log("Metadata: ", metadata);
           }))
           .catch((error) => console.error('Error fetching metadata or URL:', error));
       });

@@ -57,10 +57,10 @@ export class FeedbackDialogComponent {
           this.snackBar.open('Your Feedback has been sent! Thanks for helping!', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',
-            verticalPosition: 'top'
+            verticalPosition: 'bottom'
           });
         },
-        error: (error) => {
+        error: () => {
           this.snackBar.open('There was a problem sending your Feedback :(', 'Close', {
             duration: 3000,
             horizontalPosition: 'center',

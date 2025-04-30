@@ -25,7 +25,7 @@ export interface FeedbackResponse {
   providedIn: 'root'
 })
 export class FeedbackService {
-  private apiUrl = `${environment.apiUrl}/feedback`;
+  private apiUrl = `${environment.apiUrl}/feedback/new`;
 
   constructor(private http: HttpClient) { }
 

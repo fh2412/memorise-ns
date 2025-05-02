@@ -119,7 +119,6 @@ export class ActivityService {
     });
   }
 
-  // Upload supporting documents
   uploadSupportingDocuments(files: File[], activityId: string): Observable<string[]> {
     if (!files || files.length === 0) {
       return new Observable(observer => {
@@ -160,7 +159,6 @@ export class ActivityService {
     return forkJoin(uploads);
   }
 
-  // Update activity with document URLs
   updateActivityWithDocuments(activityId: string, titlePictureUrl: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/update-activity/${activityId}`;
     const updateData = {
@@ -168,5 +166,11 @@ export class ActivityService {
     };
     
     return this.http.put<UpdateStandardResponse>(url, updateData);
+  }
+
+  archiveActivity(activityId: string){
+    const url = `${this.apiUrl}/archive-activity/${activityId}`;
+    
+    return this.http.put<UpdateStandardResponse>(url, {});
   }
 }

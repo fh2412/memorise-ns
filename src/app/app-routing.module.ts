@@ -97,6 +97,11 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/create-activity/create-activity.module').then(m => m.CreateActivityModule),
     canActivate: [authGuard]
   },
+  {
+    path: 'activity/edit/:id',
+    loadChildren: () => import('./pages/edit-activity/edit-activity.module').then(m => m.EditActivityModule),
+    canActivate: [authGuard]
+  },
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
 

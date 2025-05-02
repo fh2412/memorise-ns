@@ -3,6 +3,7 @@ import { ActivityCreator, ActivityDetails } from '../../models/activityInterface
 import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivityService } from '../../services/activity.service';
+import { UserService } from '../../services/userService';
 
 @Component({
   selector: 'app-activity-detail',
@@ -16,6 +17,7 @@ export class ActivityDetailComponent implements OnInit {
   mapOptions: google.maps.MapOptions = {};
   markerPosition!: google.maps.LatLngLiteral;
   creatorDetails!: ActivityCreator;
+  isCreator = false;
 
   allSeasons = [
     {season_id: 1, name: 'Spring', icon: 'grass'},
@@ -34,7 +36,7 @@ export class ActivityDetailComponent implements OnInit {
   isLoading = true;
   errorMessage = '';
   
-  constructor(private route: ActivatedRoute, private activitiesService: ActivityService, private router: Router) {}
+  constructor(private route: ActivatedRoute, private activitiesService: ActivityService, private router: Router, private userService: UserService) {}
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
@@ -51,9 +53,10 @@ export class ActivityDetailComponent implements OnInit {
         this.markerPosition = {lat: Number(data.location.latitude), lng: Number(data.location.longitude)}
         this.mapOptions.center = this.markerPosition;
         this.mapOptions.zoom = 11;
-        if(this.activity.baseMemoryId){
+        if(this.activity){
           this.activitiesService.getActivityCreator(this.activity.id ,this.activity.creatorId).subscribe({
             next: (data) => {
+              this.isCreator = this.checkIfUserIsCreator(this.activity.creatorId);
               this.isLoading = false;
               this.creatorDetails = data;
             },
@@ -74,6 +77,14 @@ export class ActivityDetailComponent implements OnInit {
         this.isLoading = false;
       }
     });
+  }
+
+  checkIfUserIsCreator(creatorId: string): boolean {
+    const loggedInUserId = this.userService.getLoggedInUserId();
+    if(creatorId === loggedInUserId){
+      return true;
+    } 
+    return false;
   }
   
   getGroupSizeText(): string {
@@ -111,6 +122,10 @@ export class ActivityDetailComponent implements OnInit {
 
   navigateLeadMemory(){
     this.router.navigate(['memory/', this.activity.baseMemoryId]);
+  }
+
+  navigateEditMemory(){
+    this.router.navigate(['activity/edit/', this.activity.id]);
   }
 
   isSeasonSelected(seasonId: number): boolean {

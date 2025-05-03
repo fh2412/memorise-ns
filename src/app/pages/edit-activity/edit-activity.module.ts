@@ -5,6 +5,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
 import { EditActivityComponent } from './edit-activity.component';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSliderModule } from '@angular/material/slider';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MemorySelectorComponent } from "../../components/memory-selecter/memory-selecter.component";
+import { ActivityFormComponent } from "../../components/activity-form/activity-form.component";
 
 const routes: Routes = [
     {
@@ -18,11 +28,21 @@ const routes: Routes = [
         EditActivityComponent
     ],
     imports: [
-        CommonModule,
-        RouterModule.forChild(routes),
-        MatButtonModule,
-        MatIconModule,
-        BackButtonComponent,
-    ]
+    CommonModule,
+    RouterModule.forChild(routes),
+    MatButtonModule,
+    MatIconModule,
+    BackButtonComponent,
+    MatCardModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatSlideToggleModule,
+    MatSliderModule,
+    ReactiveFormsModule,
+    MatListModule,
+    MatButtonToggleModule,
+    MemorySelectorComponent,
+    ActivityFormComponent
+]
 })
 export class EditActivityModule { }

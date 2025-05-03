@@ -8,3 +8,8 @@
         <button mat-flat-button (click)="deleteActivity('archive')" style="background-color: var(--mat-sys-error);"><mat-icon>archive</mat-icon>ARCHIVE</button>
     </div>
 </div>
+@if (userId && activity) {
+<div class="activity-creation-container">
+  <app-activity-form [userId]="userId" [activity]="activity"></app-activity-form>
+</div>
+}

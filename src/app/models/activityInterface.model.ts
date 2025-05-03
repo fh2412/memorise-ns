@@ -49,7 +49,7 @@ export interface ActivityDetails {
     commercialFlag: boolean;
     groupSizeMin: number;
     groupSizeMax: number;
-    indoor: boolean;
+    indoor: string;
     costs: number;
     locationId: number;
     baseMemoryId: string;

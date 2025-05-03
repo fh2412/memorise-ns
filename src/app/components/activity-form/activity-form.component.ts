@@ -47,6 +47,7 @@ import { ActivityDetails } from '../../models/activityInterface.model';
 export class ActivityFormComponent implements OnInit {
   @Input() userId = '';
   @Input() activity!: ActivityDetails;
+  @Input() mode = 'edit';
   selectedImageFile: File | undefined;
   selectedImageUrl = '';
 
@@ -55,7 +56,7 @@ export class ActivityFormComponent implements OnInit {
   uploadedFiles: File[] = [];
   lat = 0;
   lng = 0;
-  leadMemoryId: number | null = null;
+  leadMemoryId: string | null = null;
 
   constructor(private fb: FormBuilder, public dialog: MatDialog, private countryService: CountryService) {
     this.activityForm = this.fb.group({
@@ -81,6 +82,10 @@ export class ActivityFormComponent implements OnInit {
   }
 
   populateForm(activity: ActivityDetails): void {
+    this.lat = activity.location.latitude;
+    this.lng = activity.location.longitude;
+    this.selectedImageUrl = activity.firebaseUrl;
+    this.leadMemoryId = activity.baseMemoryId;
     this.activityForm.patchValue({
       title: activity.title,
       isPrivate: !activity.activeFlag,
@@ -89,9 +94,13 @@ export class ActivityFormComponent implements OnInit {
       costs: activity.costs,
       description: activity.description,
       link: activity.websiteUrl,
-      indoor_outdoor_flag: activity.indoor ? 'indoor' : 'outdoor',
+      indoor_outdoor_flag: activity.indoor.toLowerCase(),
+      season: activity.seasons.map(s => s.season_id.toString()),
+      weather: activity.weatherConditions.map(w => w.weather_id.toString()),
       leadMemoryId: activity.baseMemoryId
     });
+
+    console.log("Form: ", this.activityForm.value);
   }
   
   
@@ -150,7 +159,7 @@ export class ActivityFormComponent implements OnInit {
   }
 
   onMemorySelected(memoryId: number) {
-    this.leadMemoryId = memoryId;
+    this.leadMemoryId = memoryId.toString();
   }
 
   onSubmit(){

@@ -20,14 +20,14 @@
                         <mat-card appearance="outlined" class="media-location-card"
                             [ngStyle]="{'background-image': (lat !== 0 && lng !== 0) ? 'url(/assets/img/map.PNG)' : 'none'}">
                             <button mat-flat-button (click)="openMapDialog()">
-                                <mat-icon>location_on</mat-icon> Add Location
+                                <mat-icon>location_on</mat-icon> {{ mode === 'edit' ? 'Change Location' : 'Add Location' }}
                             </button>
 
                         </mat-card>
                         <mat-card appearance="outlined" class="media-location-card"
                             [ngStyle]="{'background-image': selectedImageUrl ? 'url(' + selectedImageUrl + ')' : 'none'}">
                             <button mat-stroked-button (click)="fileInput.click()" class="upload-button">
-                                <mat-icon>add_photo_alternate</mat-icon> Add Picture
+                                <mat-icon>add_photo_alternate</mat-icon> {{ mode === 'edit' ? 'Change Picture' : 'Add Picture' }}
                                 <input #fileInput type="file" accept="image/*" (change)="selectFiles($event)"
                                     style="display: none;" />
                             </button>
@@ -166,7 +166,12 @@
                 }
                 <div class="step-navigation">
                     <button mat-button matStepperPrevious>Back</button>
-                    <button mat-raised-button color="primary" (click)="onSubmit()">Create Activity</button>
+                    @if (mode === 'create') {
+                    <button mat-flat-button (click)="onSubmit()">Create Activity</button>
+                    }
+                    @else if (mode === 'edit') {
+                    <button mat-flat-button (click)="onSubmit()">Update Activity</button>
+                    }
                 </div>
             </div>
         </mat-step>

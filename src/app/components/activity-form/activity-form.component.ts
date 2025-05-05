@@ -157,6 +157,9 @@ export class ActivityFormComponent implements OnInit {
 
   onMemorySelected(memoryId: number) {
     this.leadMemoryId = memoryId.toString();
+    this.activityForm.patchValue({
+      leadMemoryId: this.leadMemoryId
+    });
   }
 
   onSubmit(){

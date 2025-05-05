@@ -49,44 +49,44 @@ export class ActivityService {
   getFilteredActivities(filter: ActivityFilter): Observable<MemoriseUserActivity[]> {
     // Convert filter object to HttpParams
     let params = new HttpParams();
-    
+
     // Only add parameters that have values
     if (filter.location) {
       params = params.set('location', filter.location);
     }
-    
+
     if (filter.distance !== undefined) {
       params = params.set('distance', filter.distance.toString());
     }
-    
+
     if (filter.tag) {
       params = params.set('tag', filter.tag);
     }
-    
+
     if (filter.groupSizeMin !== undefined) {
       params = params.set('groupSizeMin', filter.groupSizeMin.toString());
     }
-    
+
     if (filter.groupSizeMax !== undefined) {
       params = params.set('groupSizeMax', filter.groupSizeMax.toString());
     }
-    
+
     if (filter.price !== undefined) {
       params = params.set('price', filter.price.toString());
     }
-    
+
     if (filter.season) {
       params = params.set('season', filter.season);
     }
-    
+
     if (filter.weather) {
       params = params.set('weather', filter.weather);
     }
-    
+
     if (filter.name) {
       params = params.set('name', filter.name);
     }
-    
+
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
   }
 
@@ -101,7 +101,7 @@ export class ActivityService {
       const uploadTask = uploadBytesResumable(storageRef, file);
       uploadTask.on(
         'state_changed',
-        (snapshot) => {console.log(snapshot.state);},
+        (snapshot) => { console.log(snapshot.state); },
         (error) => {
           console.error("Title picture upload error:", error);
           observer.error(error);
@@ -132,7 +132,7 @@ export class ActivityService {
         const filePath = `activities/${activityId}/docs/supporting-doc-${index}-${file.name}`;
         const storageRef = ref(this.storage, filePath);
         const uploadTask = uploadBytesResumable(storageRef, file);
-        
+
         uploadTask.on(
           'state_changed',
           (snapshot) => {
@@ -164,13 +164,18 @@ export class ActivityService {
     const updateData = {
       titlePictureUrl
     };
-    
+
     return this.http.put<UpdateStandardResponse>(url, updateData);
   }
 
-  archiveActivity(activityId: string){
+  archiveActivity(activityId: string) {
     const url = `${this.apiUrl}/archive-activity/${activityId}`;
-    
+
     return this.http.put<UpdateStandardResponse>(url, {});
+  }
+
+  updateUserActivity(activityId: string, activityData: MemoriseUserActivity): Observable<UpdateStandardResponse> {
+    const url = `${this.apiUrl}/update-user-activity/${activityId}`;
+    return this.http.put<UpdateStandardResponse>(url, activityData);
   }
 }

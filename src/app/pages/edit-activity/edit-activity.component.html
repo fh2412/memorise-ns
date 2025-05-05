@@ -4,7 +4,7 @@
     </div>
     <div>
         <app-back-button [text]="'Cancel'"></app-back-button>
-        <button mat-flat-button><mat-icon>save</mat-icon>UPDATE</button>
+        <button mat-flat-button (click)="updateActivity()"><mat-icon>save</mat-icon>UPDATE</button>
         <button mat-flat-button (click)="deleteActivity('archive')" style="background-color: var(--mat-sys-error);"><mat-icon>archive</mat-icon>ARCHIVE</button>
     </div>
 </div>

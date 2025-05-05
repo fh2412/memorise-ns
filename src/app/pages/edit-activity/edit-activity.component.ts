@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { firstValueFrom, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -7,6 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { UserService } from '../../services/userService';
 import { ActivityDetails } from '../../models/activityInterface.model';
+import { ActivityFormComponent } from '../../components/activity-form/activity-form.component';
 
 
 @Component({
@@ -21,16 +22,18 @@ export class EditActivityComponent implements OnInit {
   userId: string | null = null;
   activity!: ActivityDetails;
 
+  @ViewChild(ActivityFormComponent) activityFormComponent!: ActivityFormComponent;
+
   constructor(private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private activityService: ActivityService, private snackBar: MatSnackBar, private userService: UserService) { }
 
   ngOnInit(): void {
     this.route.paramMap.pipe(
       switchMap(params => {
-        const activityId = params.get('id');
-        if (!activityId) {
+        this.activityId = params.get('id');
+        if (!this.activityId) {
           throw new Error('Activity ID is required');
         }
-        return this.activityService.getActivityDetails(activityId);
+        return this.activityService.getActivityDetails(this.activityId);
       })
     ).subscribe({
       next: (data) => {
@@ -46,8 +49,6 @@ export class EditActivityComponent implements OnInit {
     });
   }
 
-
-
   async deleteActivity(status: string): Promise<void> {
     const confirmed = await this.openConfirmationDialog('Confirm ' + status, `Are you sure you want to ${status} this activity?`);
     this.isLoading = true;
@@ -57,6 +58,25 @@ export class EditActivityComponent implements OnInit {
           this.isLoading = false;
           this.router.navigate(['activities']);
           this.snackBar.open('Activity successfully archived', 'Close', { duration: 3000, verticalPosition: 'bottom' });
+        },
+        error: (error) => {
+          console.error('Error fetching activity creator details', error);
+          this.isLoading = false;
+        }
+      });
+    }
+  }
+
+  async updateActivity(): Promise<void> {
+    const confirmed = await this.openConfirmationDialog('Update Activity', 'This will update the activity for every User already using it for a memory. Are you sure you want to update?');
+    this.isLoading = true;
+    if (confirmed && this.activityId) {
+      const updatedActivityData = this.activityFormComponent.getFormData();
+      this.activityService.updateUserActivity(this.activityId, updatedActivityData).subscribe({
+        next: () => {
+          this.isLoading = false;
+          this.router.navigate(['activity/overview/', this.userId]);
+          this.snackBar.open('Activity successfully updated', 'Ok', { duration: 3000, verticalPosition: 'bottom' });
         },
         error: (error) => {
           console.error('Error fetching activity creator details', error);

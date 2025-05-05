@@ -18,7 +18,7 @@ import { MemorySelectorComponent } from '../memory-selecter/memory-selecter.comp
 import { MatDialog } from '@angular/material/dialog';
 import { CountryService } from '../../services/restCountries.service';
 import { ChooseLocationComponent } from '../_dialogs/choose-location/choose-location.component';
-import { ActivityDetails } from '../../models/activityInterface.model';
+import { ActivityDetails, MemoriseUserActivity } from '../../models/activityInterface.model';
 
 @Component({
   selector: 'app-activity-form',
@@ -76,7 +76,6 @@ export class ActivityFormComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.activity) {
-      console.log("Filling activity!: ", this.activity);
       this.populateForm(this.activity);
     }
   }
@@ -99,8 +98,6 @@ export class ActivityFormComponent implements OnInit {
       weather: activity.weatherConditions.map(w => w.weather_id.toString()),
       leadMemoryId: activity.baseMemoryId
     });
-
-    console.log("Form: ", this.activityForm.value);
   }
   
   
@@ -164,5 +161,9 @@ export class ActivityFormComponent implements OnInit {
 
   onSubmit(){
     console.log("Submited: ", this.activityForm);
+  }
+
+  getFormData(): MemoriseUserActivity {
+    return this.activityForm.value;
   }
 }

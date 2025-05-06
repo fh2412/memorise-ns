@@ -23,6 +23,5 @@ export class MyActivityOverviewComponent implements OnInit {
     if(this.userId){
       this.userActivityList = await firstValueFrom(this.activityService.getUsersActivities(this.userId));
     }
-    console.log("this.userActivityList", this.userActivityList);
   }
 }

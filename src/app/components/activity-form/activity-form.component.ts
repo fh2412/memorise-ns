@@ -70,6 +70,7 @@ export class ActivityFormComponent implements OnInit {
       indoor_outdoor_flag: ['indoor'],
       season: [['2']],
       weather: [['1']],
+      location: [null],
       leadMemoryId: [],
     });
   }
@@ -96,6 +97,7 @@ export class ActivityFormComponent implements OnInit {
       indoor_outdoor_flag: activity.indoor.toLowerCase(),
       season: activity.seasons.map(s => s.season_id.toString()),
       weather: activity.weatherConditions.map(w => w.weather_id.toString()),
+      location: activity.location,
       leadMemoryId: activity.baseMemoryId
     });
   }
@@ -128,6 +130,16 @@ export class ActivityFormComponent implements OnInit {
               if (result) {
                 this.lat = result.markerPosition.lat;
                 this.lng = result.markerPosition.lng;
+                const newLocation = { 
+                  country: '',
+                  latitude: this.lat,
+                  longitude: this.lng,
+                  locality: null,
+                  location_id: this.activity.location.location_id
+                 };
+                this.activityForm.patchValue({ 
+                  location: newLocation,
+                });
               } else {
                 console.error("Incomplete location data received from map dialog.");
               }

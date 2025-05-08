@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ActivityCreator, ActivityDetails, ActivityFilter, ActivityStats, CreateActivityResponse, MemoriseActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 import { environment } from '../../environments/environment';
-import { Storage, ref, uploadBytesResumable, getDownloadURL } from '@angular/fire/storage';
+import { Storage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from '@angular/fire/storage';
 import { forkJoin, Observable } from 'rxjs';
 import { UpdateStandardResponse } from '../models/api-responses.model';
 
@@ -111,6 +111,52 @@ export class ActivityService {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
             observer.next(downloadURL);
             observer.complete();
+          } catch (error) {
+            observer.error(error);
+          }
+        }
+      );
+    });
+  }
+
+  changeTitlePicture(file: File, activityId: string, oldImageUrl: string): Observable<string> {
+    return new Observable((observer) => {
+      // Step 1: Delete the old image from Firebase
+      if (oldImageUrl) {
+        const oldImageRef = ref(this.storage, oldImageUrl);
+        deleteObject(oldImageRef).catch(error => {
+          console.warn('Old image could not be deleted:', error);
+          // continue regardless
+        });
+      }
+      // Step 2: Upload the new image
+      const filePath = `activities/${activityId}/thumbnail.jpg`;
+      const storageRef = ref(this.storage, filePath);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => { console.log(snapshot.state); },
+        (error) => {
+          console.error("Title picture update upload error:", error);
+          observer.error(error);
+        },
+        async () => {
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+            console.log("URL: ", downloadURL);
+            // Step 3: Call backend to update the image URL
+            this.http.put(`${this.apiUrl}/update-thumbmail/${activityId}`, { imageUrl: downloadURL }).subscribe({
+              next: () => {
+                observer.next(downloadURL);
+                observer.complete();
+              },
+              error: (err) => {
+                console.error("Failed to update backend with new image URL:", err);
+                observer.error(err);
+              }
+            });
           } catch (error) {
             observer.error(error);
           }

@@ -13,3 +13,7 @@
   <app-activity-form [userId]="userId" [activity]="activity" [mode]="'edit'"></app-activity-form>
 </div>
 }
+
+@if (isLoading) {
+<mat-spinner class="center"></mat-spinner>
+}

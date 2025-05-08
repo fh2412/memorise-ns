@@ -17,7 +17,7 @@ import { ActivityFormComponent } from '../../components/activity-form/activity-f
   styleUrl: './edit-activity.component.scss'
 })
 export class EditActivityComponent implements OnInit {
-  isLoading = false;
+  isLoading = true;
   activityId: string | null = null;
   userId: string | null = null;
   activity!: ActivityDetails;
@@ -38,6 +38,7 @@ export class EditActivityComponent implements OnInit {
     ).subscribe({
       next: (data) => {
         this.activity = data;
+        this.isLoading = false;
       },
       error: (error) => {
         console.error('Error fetching activity details', error);
@@ -75,9 +76,20 @@ export class EditActivityComponent implements OnInit {
       console.log(updatedActivityData);
       this.activityService.updateUserActivity(this.activityId, updatedActivityData).subscribe({
         next: () => {
-          this.isLoading = false;
-          this.router.navigate(['activity/overview/', this.userId]);
-          this.snackBar.open('Activity successfully updated', 'Ok', { duration: 3000, verticalPosition: 'bottom' });
+          const newImage = this.activityFormComponent.getImageFile();
+          if (newImage && this.activityId && this.activity) {
+            this.activityService.changeTitlePicture(newImage, this.activityId, this.activity.firebaseUrl)
+              .subscribe({
+                next: () => {
+                  this.isLoading = false;
+                  this.router.navigate(['activity/overview/', this.userId]);
+                  this.snackBar.open('Activity successfully updated', 'Ok', { duration: 3000, verticalPosition: 'bottom' });
+                },
+                error: (error) => {
+                  console.error('Error uploading Image', error);
+                }
+              });
+          }
         },
         error: (error) => {
           console.error('Error fetching activity creator details', error);

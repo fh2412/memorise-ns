@@ -49,6 +49,7 @@ export class ActivityFormComponent implements OnInit {
   @Input() activity!: ActivityDetails;
   @Input() mode = 'edit';
   selectedImageFile: File | undefined;
+  imageChanged = false;
   selectedImageUrl = '';
 
 
@@ -108,6 +109,7 @@ export class ActivityFormComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.selectedImageFile = input.files[0];
+      this.imageChanged = true;
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         this.selectedImageUrl = e.target?.result as string;
@@ -180,5 +182,13 @@ export class ActivityFormComponent implements OnInit {
 
   getFormData(): MemoriseUserActivity {
     return this.activityForm.value;
+  }
+  getImageFile(): File | null {
+    if(this.imageChanged && this.selectedImageFile){
+      return this.selectedImageFile;
+    } 
+    else {
+      return null;
+    }
   }
 }

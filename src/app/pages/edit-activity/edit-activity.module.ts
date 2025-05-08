@@ -15,6 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MemorySelectorComponent } from "../../components/memory-selecter/memory-selecter.component";
 import { ActivityFormComponent } from "../../components/activity-form/activity-form.component";
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 const routes: Routes = [
     {
@@ -42,7 +43,8 @@ const routes: Routes = [
     MatListModule,
     MatButtonToggleModule,
     MemorySelectorComponent,
-    ActivityFormComponent
+    ActivityFormComponent,
+    MatProgressSpinnerModule
 ]
 })
 export class EditActivityModule { }

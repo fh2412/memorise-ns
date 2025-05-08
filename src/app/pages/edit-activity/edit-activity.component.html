@@ -1,3 +1,8 @@
+@if (isLoading) {
+<div class="progress-spinner-div">
+    <mat-spinner class="center"></mat-spinner>
+</div>
+}
 <div class="header">
     <div>
         <h1>EDIT ACTIVITY</h1>
@@ -14,6 +19,4 @@
 </div>
 }
 
-@if (isLoading) {
-<mat-spinner class="center"></mat-spinner>
-}
+

@@ -72,9 +72,9 @@ export class MemoryDetailComponent implements OnInit {
       const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryId));
       this.memorydb = memoryData;
 
-      //await this.initializeMemoryDetails();
-      //const activityData = await firstValueFrom(this.activityService.getActivity(this.memorydb.activity_id));
-      //this.activity = activityData.title;
+      await this.initializeMemoryDetails();
+      const activityData = await firstValueFrom(this.activityService.getActivityDetails(this.memorydb.activity_id));
+      this.activity = activityData.title;
 
       //TODO FIX ACTIVITY ROUTE
 

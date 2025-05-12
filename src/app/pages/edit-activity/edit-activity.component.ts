@@ -81,14 +81,14 @@ export class EditActivityComponent implements OnInit {
             this.activityService.changeTitlePicture(newImage, this.activityId, this.activity.firebaseUrl)
               .subscribe({
                 next: () => {
-                  this.isLoading = false;
-                  this.router.navigate(['activity/overview/', this.userId]);
-                  this.snackBar.open('Activity successfully updated', 'Ok', { duration: 3000, verticalPosition: 'bottom' });
+                  this.finishUpdate();
                 },
                 error: (error) => {
                   console.error('Error uploading Image', error);
                 }
               });
+          } else {
+            this.finishUpdate();
           }
         },
         error: (error) => {
@@ -97,6 +97,12 @@ export class EditActivityComponent implements OnInit {
         }
       });
     }
+  }
+
+  finishUpdate(): void {
+    this.isLoading = false;
+    this.router.navigate(['activity/overview/', this.userId]);
+    this.snackBar.open('Activity successfully updated', 'Ok', { duration: 3000, verticalPosition: 'bottom' });
   }
 
   openConfirmationDialog(title: string, message: string): Promise<boolean> {

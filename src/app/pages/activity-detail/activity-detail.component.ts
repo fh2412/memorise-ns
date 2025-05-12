@@ -52,7 +52,7 @@ export class ActivityDetailComponent implements OnInit {
         this.activity = data;
         this.markerPosition = {lat: Number(data.location.latitude), lng: Number(data.location.longitude)}
         this.mapOptions.center = this.markerPosition;
-        this.mapOptions.zoom = 11;
+        this.mapOptions.zoom = 10;
         if(this.activity){
           this.activitiesService.getActivityCreator(this.activity.id ,this.activity.creatorId).subscribe({
             next: (data) => {

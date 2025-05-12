@@ -30,7 +30,7 @@ import { FeedbackDialogComponent } from '../_dialogs/feedback-dialog/feedback-di
   `]
 })
 export class FeedbackButtonComponent {
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: MatDialog) { }
 
   openFeedbackDialog(): void {
     this.dialog.open(FeedbackDialogComponent, {

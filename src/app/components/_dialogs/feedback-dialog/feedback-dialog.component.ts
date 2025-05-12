@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { FeedbackService } from '../../../services/feedback.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-feedback-dialog',
@@ -28,12 +29,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class FeedbackDialogComponent {
   feedbackForm: FormGroup;
+  currentUrl = '';
 
   constructor(
     private dialogRef: MatDialogRef<FeedbackDialogComponent>,
     private fb: FormBuilder,
     private feedbackService: FeedbackService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private router: Router
   ) {
     this.feedbackForm = this.fb.group({
       type: ['bug', Validators.required],
@@ -42,6 +45,12 @@ export class FeedbackDialogComponent {
       description: ['', Validators.required],
       email: ['', Validators.email],
     });
+  }
+
+  ngOnInit() {
+    this.feedbackForm.patchValue({
+      path: this.router.url,
+    })
   }
 
   onCancel(): void {

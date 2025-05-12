@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
+import { ActivityOwnerGuard } from './guards/activity-owner.guard';
 
 export const routes: Routes = [
   {
@@ -100,7 +101,7 @@ export const routes: Routes = [
   {
     path: 'activity/edit/:id',
     loadChildren: () => import('./pages/edit-activity/edit-activity.module').then(m => m.EditActivityModule),
-    canActivate: [authGuard]
+    canActivate: [authGuard, ActivityOwnerGuard]
   },
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];

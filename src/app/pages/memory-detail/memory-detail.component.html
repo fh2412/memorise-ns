@@ -5,14 +5,16 @@
     <mat-toolbar>
       <h1>{{memorydb.title}}</h1>
       <span class="example-spacer"></span>
+      @if (hasPrivileges) {
       <button mat-stroked-button color="primary" (click)="openDownloadPage()">
         <mat-icon>download</mat-icon>
         <span class="button-text">Download</span>
       </button>
-      <button mat-stroked-button color="primary" [routerLink]="['/editmemory', memoryID]" style="margin-left: 5px;">
+      <button mat-stroked-button color="primary" [routerLink]="['/editmemory', memoryId]" style="margin-left: 5px;">
         <mat-icon>edit</mat-icon>
         <span class="button-text">Edit</span>
       </button>
+      }
     </mat-toolbar>
     <mat-card appearance="outlined" *ngIf="displayImages">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">

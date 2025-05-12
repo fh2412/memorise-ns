@@ -32,7 +32,7 @@ export interface ImageWithMetadata {
 })
 export class MemoryDetailComponent implements OnInit {
   memorydb!: Memory;
-  memoryID = 0;
+  memoryId = 0;
   memoryCreator!: MemoriseUser;
   loggedInUserId: string | null = null;
   memorydbFriends: Friend[] | null = [];
@@ -48,21 +48,28 @@ export class MemoryDetailComponent implements OnInit {
   truncatedDescription = '';
   characterLimit = 150;
   imagesWithMetadata: ImageWithMetadata[] = [];
-
+  hasPrivileges = false;
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private activityService: ActivityService) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
-    this.memoryID = this.route.snapshot.params['id'];
+    this.memoryId = this.route.snapshot.params['id'];
+    await this.getUsersPermissions();
     await this.getMemoryInfo();
+  }
+
+  private async getUsersPermissions(): Promise<void> {
+    if(this.loggedInUserId){
+      this.hasPrivileges = await this.memoryService.checkMemoriseUserPermission(this.memoryId.toString(), this.loggedInUserId);
+    }
   }
 
   private async getMemoryInfo(): Promise<void> {
     if (!this.loggedInUserId) return;
 
     try {
-      const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryID));
+      const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryId));
       this.memorydb = memoryData;
 
       //await this.initializeMemoryDetails();
@@ -71,7 +78,7 @@ export class MemoryDetailComponent implements OnInit {
 
       //TODO FIX ACTIVITY ROUTE
 
-      const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryID, this.loggedInUserId));
+      const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryId, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
 
       const memoryCreator = await firstValueFrom(this.userService.getUser(this.memorydb.user_id.toString()));
@@ -139,12 +146,12 @@ export class MemoryDetailComponent implements OnInit {
 
   openGallery() {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
-    this.router.navigate(['memory', this.memoryID, 'gallery']);
+    this.router.navigate(['memory', this.memoryId, 'gallery']);
   }
 
   openDownloadPage(): void {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
-    this.router.navigate(['memory', this.memoryID, 'download'], {
+    this.router.navigate(['memory', this.memoryId, 'download'], {
       state: { memory: this.memorydb }
     });
   }

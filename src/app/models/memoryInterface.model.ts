@@ -2,7 +2,7 @@
 
 export interface Memory {
     memory_id: number;
-    user_id: number;
+    user_id: string;
     image_url: string;
     latitude: string;
     longitude: string;

@@ -14,7 +14,7 @@ export class ActivityOwnerGuard implements CanActivate {
     private activityService: ActivityService,
     private userService: UserService,
     private router: Router
-  ) {}
+  ) { }
 
   canActivate(
     route: ActivatedRouteSnapshot

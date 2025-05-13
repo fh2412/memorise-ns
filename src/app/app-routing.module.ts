@@ -4,6 +4,7 @@ import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
 import { ActivityOwnerGuard } from './guards/activity-owner.guard';
+import { MemoryEditorGuard } from './guards/memory-editor.guard';
 
 export const routes: Routes = [
   {
@@ -33,7 +34,7 @@ export const routes: Routes = [
   {
     path: 'editmemory/:id',
     loadChildren: () => import('./pages/editmemory/editmemory.module').then(m => m.EditMemoryModule),
-    canActivate: [authGuard]
+    canActivate: [authGuard, MemoryEditorGuard]
   },
   {
     path: 'editmemory/:id/addphotos',

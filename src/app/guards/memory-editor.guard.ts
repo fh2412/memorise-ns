@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core'; // Import Injectable
-import { ActivatedRouteSnapshot, CanActivate } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
 import { UserService } from '../services/userService';
 import { MemoryService } from '../services/memory.service';
 
@@ -14,8 +14,6 @@ class Permissions {
       console.error('User ID or Memory ID is missing for permission check.');
       return false;
     }
-    console.log(loggedInuserId, memoryId);
-    console.log(await this.memoryService.checkMemoriseUserPermission(memoryId, loggedInuserId));
     return await this.memoryService.checkMemoriseUserPermission(memoryId, loggedInuserId);
   }
 }
@@ -24,20 +22,17 @@ class Permissions {
   providedIn: 'root'
 })
 export class MemoryEditorGuard implements CanActivate {
-  constructor(private permissions: Permissions, private userService: UserService) {}
+  constructor(private permissions: Permissions, private userService: UserService, private router: Router) {}
 
-  async canActivate(route: ActivatedRouteSnapshot): Promise<boolean> {
-    const loggedInUserId = await this.userService.getLoggedInUserId(); 
-    if (!loggedInUserId) {
-      console.error('MemoryEditorGuard: Logged in user ID not found.');
-      return false;
+  async canActivate(route: ActivatedRouteSnapshot): Promise<boolean | UrlTree> {
+    const loggedInUserId = await this.userService.getLoggedInUserId();
+    const memoryId = route.params['id'] || route.paramMap.get('id'); 
+    if (!loggedInUserId || !memoryId) {
+      console.error('MemoryEditorGuard: Logged in user ID or Memory ID not found.');
     }
-
-    const memoryId = route.params['id'] || route.paramMap.get('id');
-    if (!memoryId) {
-      console.error('MemoryEditorGuard: Memory ID not found in route params.');
-      return false;
+    else if(await this.permissions.canActivateEditMemory(loggedInUserId, memoryId)){
+      return true;
     }
-    return this.permissions.canActivateEditMemory(loggedInUserId, memoryId);
+    return this.router.createUrlTree(['/home']);
   }
 }

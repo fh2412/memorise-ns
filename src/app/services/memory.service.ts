@@ -99,7 +99,6 @@ export class MemoryService {
       const creator: Memory = await lastValueFrom(
         this.getMemory(Number(memoryId))
       );
-      console.log("Creator: ", creator);
       const creatorId = creator.user_id;
 
       const friends: Friend[] = await lastValueFrom(

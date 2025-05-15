@@ -104,7 +104,11 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/edit-activity/edit-activity.module').then(m => m.EditActivityModule),
     canActivate: [authGuard, ActivityOwnerGuard]
   },
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'error/:errorId',
+    loadChildren: () => import('./pages/navigation-error/navigation-error.module').then(m => m.NavigationErrorModule)
+  },
+  { path: '**', redirectTo: 'error/404', pathMatch: 'full' },
 ];
 
 @NgModule({

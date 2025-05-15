@@ -33,6 +33,6 @@ export class MemoryEditorGuard implements CanActivate {
     else if(await this.permissions.canActivateEditMemory(loggedInUserId, memoryId)){
       return true;
     }
-    return this.router.createUrlTree(['/home']);
+    return this.router.createUrlTree(['/error/401']);
   }
 }

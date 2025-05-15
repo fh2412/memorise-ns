@@ -27,7 +27,7 @@ export class ActivityOwnerGuard implements CanActivate {
         if (activity.creatorId === loggedInUserId) {
           return true;
         } else {
-          return this.router.createUrlTree(['/home']);
+          return this.router.createUrlTree(['/error/401']);
         }
       })
     );

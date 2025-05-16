@@ -86,6 +86,10 @@ export class ActivityService {
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
   }
 
+  getBookmarkedActivities(userId: string) {
+    return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/bookmarkedActivities/${userId}`);
+  }
+
   getActivityStats(userId: string): Observable<ActivityStats> {
     return this.http.get<ActivityStats>(`${this.apiUrl}/stats/${userId}`);
   }

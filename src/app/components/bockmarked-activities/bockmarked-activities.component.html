@@ -1,0 +1,24 @@
+<mat-card appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>Bookmarked Activities</mat-card-title>
+        @if (!this.activities) {
+        <mat-card-subtitle>There are no bookmarked Activities. Just add one by clicking the bookmark icon</mat-card-subtitle>
+        }
+        @else {
+        <mat-card-subtitle>
+            <mat-list>
+                @for (activity of activities; track activity) {
+                <mat-list-item>
+                    <mat-icon matListItemIcon>folder</mat-icon>
+                    <div matListItemTitle>{{activity.title}}</div>
+                    <div matListItemLine>{{activity.groupSizeMin}} - {{activity.groupSizeMax}} People</div>
+                </mat-list-item>
+                }
+            </mat-list>
+        </mat-card-subtitle>
+        }
+    </mat-card-header>
+    <mat-card-actions>
+        <button mat-stroked-button>Navigate to Activites</button>
+    </mat-card-actions>
+</mat-card>

@@ -8,27 +8,30 @@
         @else {
         <mat-card-subtitle>
             <mat-divider></mat-divider>
-            <mat-list>
-                @for (activity of activities; track activity) {
-                <div class="row" (click)="viewDetails(activity.activityId)"
-                    (keydown.enter)="viewDetails(activity.activityId)"
-                    (keydown.space)="viewDetails(activity.activityId)" tabindex="0" aria-label="View user profile">
-                    <button class="profile-button" aria-label="View user profile">
-                        <div class="profile-row">
-                            <img [ngSrc]="activity.firebaseUrl" alt="{{ activity.description }}" width="48" height="48">
-                            <span>{{ activity.title }}</span>
-                        </div>
-                    </button>
-                    <button mat-icon-button (click)="deleteBookmark(activity.activityId)">
-                        <mat-icon class="delete-icon">delete</mat-icon>
-                    </button>
-                </div>
-                }
-            </mat-list>
+            @for (activity of displayActivities; track activity.activityId) {
+            <div class="row" (click)="viewDetails(activity.activityId)"
+                (keydown.enter)="viewDetails(activity.activityId)" (keydown.space)="viewDetails(activity.activityId)"
+                tabindex="0" [attr.aria-label]="'View details for ' + activity.title"> <button class="profile-button"
+                    [attr.aria-label]="'View details for ' + activity.title">
+                    <div class="profile-row">
+                        <img [ngSrc]="activity.firebaseUrl"
+                            [alt]="activity.description || 'Profile image for ' + activity.title" width="48"
+                            height="48">
+                        <span>{{ activity.title }}</span>
+                    </div>
+                </button>
+                <button mat-icon-button (click)="deleteBookmark(activity.activityId)"
+                    [attr.aria-label]="'Delete bookmark for ' + activity.title"> <mat-icon
+                        class="delete-icon">delete</mat-icon>
+                </button>
+            </div>
+            }
         </mat-card-subtitle>
         }
     </mat-card-header>
+    @if (canShowMore && activities) {
     <mat-card-actions>
-        <button mat-stroked-button>Navigate to Activites</button>
+        <button mat-stroked-button (click)="toggleShowAll()">{{ showAll ? 'Show less' : 'Show all (' + activities.length + ')' }}</button>
     </mat-card-actions>
+    }
 </mat-card>

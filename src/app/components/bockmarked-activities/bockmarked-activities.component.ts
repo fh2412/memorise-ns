@@ -27,6 +27,10 @@ import { Router } from '@angular/router';
 export class BockmarkedActivitiesComponent implements OnInit {
   @Input() user!: MemoriseUser;
   activities: MemoriseUserActivity[] | null = null;
+  displayActivities: MemoriseUserActivity[] = [];
+  showAll = false;
+  canShowMore = false;
+  private readonly maxInitialEntries = 5;
 
   constructor(private router: Router, private activityService: ActivityService, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
 
@@ -36,7 +40,16 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   async getBookmarks() {
     this.activities = await firstValueFrom(this.activityService.getBookmarkedActivities(this.user.user_id));
-    console.log(this.activities);
+    if (this.showAll || this.activities.length <= this.maxInitialEntries) {
+        this.displayActivities = [...this.activities];
+      } else {
+        this.displayActivities = this.activities.slice(0, this.maxInitialEntries);
+      }
+    this.canShowMore = this.activities.length > this.maxInitialEntries;
+  }
+
+  toggleShowAll(): void {
+    this.showAll = !this.showAll;
   }
 
   deleteBookmark(activityId: number) {

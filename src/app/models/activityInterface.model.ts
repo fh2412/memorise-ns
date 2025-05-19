@@ -70,6 +70,14 @@ export interface ActivityStats {
     stars_count: number;
 }
 
+export interface BookmarkedActivity {
+    activityId: number;
+    firebaseUrl: string;
+    groupSizeMax: number;
+    groupSizeMin: number;
+    title: string;
+}
+
 export interface Season {
     season_id: number;
     name: string;

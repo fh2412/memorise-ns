@@ -1,18 +1,28 @@
 <mat-card appearance="outlined">
     <mat-card-header>
-        <mat-card-title>Bookmarked Activities</mat-card-title>
+        <mat-card-title><b>Bookmarked Activities</b></mat-card-title>
         @if (!this.activities) {
-        <mat-card-subtitle>There are no bookmarked Activities. Just add one by clicking the bookmark icon</mat-card-subtitle>
+        <mat-card-subtitle>There are no bookmarked Activities. Just add one by clicking the bookmark
+            icon</mat-card-subtitle>
         }
         @else {
         <mat-card-subtitle>
+            <mat-divider></mat-divider>
             <mat-list>
                 @for (activity of activities; track activity) {
-                <mat-list-item>
-                    <mat-icon matListItemIcon>folder</mat-icon>
-                    <div matListItemTitle>{{activity.title}}</div>
-                    <div matListItemLine>{{activity.groupSizeMin}} - {{activity.groupSizeMax}} People</div>
-                </mat-list-item>
+                <div class="row" (click)="viewDetails(activity.activityId)"
+                    (keydown.enter)="viewDetails(activity.activityId)"
+                    (keydown.space)="viewDetails(activity.activityId)" tabindex="0" aria-label="View user profile">
+                    <button class="profile-button" aria-label="View user profile">
+                        <div class="profile-row">
+                            <img [ngSrc]="activity.firebaseUrl" alt="{{ activity.description }}" width="48" height="48">
+                            <span>{{ activity.title }}</span>
+                        </div>
+                    </button>
+                    <button mat-icon-button (click)="deleteBookmark(activity.activityId)">
+                        <mat-icon class="delete-icon">delete</mat-icon>
+                    </button>
+                </div>
                 }
             </mat-list>
         </mat-card-subtitle>

@@ -13,7 +13,7 @@ import { ActivityStats } from '../../models/activityInterface.model';
     styleUrl: './my-activity-information.component.scss',
     imports: [
       MatCardModule,
-      MatButtonModule
+      MatButtonModule,
     ]
 })
 export class MyActivityInformationComponent implements OnInit {

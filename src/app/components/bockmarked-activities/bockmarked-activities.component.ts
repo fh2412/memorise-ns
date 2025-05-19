@@ -40,23 +40,31 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   async getBookmarks() {
     this.activities = await firstValueFrom(this.activityService.getBookmarkedActivities(this.user.user_id));
-    if (this.showAll || this.activities.length <= this.maxInitialEntries) {
+    this.updateDisplayedActivities();
+    this.canShowMore = this.activities.length > this.maxInitialEntries;
+  }
+
+  updateDisplayedActivities(): void {
+    if (this.activities) {
+      if (this.showAll || this.activities.length <= this.maxInitialEntries) {
         this.displayActivities = [...this.activities];
       } else {
         this.displayActivities = this.activities.slice(0, this.maxInitialEntries);
       }
-    this.canShowMore = this.activities.length > this.maxInitialEntries;
+    }
   }
 
   toggleShowAll(): void {
     this.showAll = !this.showAll;
   }
 
-  deleteBookmark(activityId: number) {
+  deleteBookmark(activityId: number, event: MouseEvent) {
+    event.stopPropagation();
     if (this.activities) {
       this.activities = this.activities.filter(activity => activity.activityId !== activityId);
       this.bookmarkService.removeBookmark(this.user.user_id, activityId).subscribe({
         next: () => {
+          this.updateDisplayedActivities();
           this.snackBar.open('Bookmark was removed!', 'Close', { duration: 3000, verticalPosition: 'bottom' });
         },
         error: () => {

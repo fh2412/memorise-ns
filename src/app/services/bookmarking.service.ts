@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { BookmarkedActivity } from '../models/activityInterface.model';
+import { BookmarkedActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 
 @Injectable({
   providedIn: 'root'
@@ -12,9 +12,16 @@ export class BookmarkService {
 
   constructor(private http: HttpClient) { }
 
+  private bookmarkedActivitiesSubject = new BehaviorSubject<MemoriseUserActivity[]>([]);
+  bookmarkedActivities$ = this.bookmarkedActivitiesSubject.asObservable();
 
-  getBookmarkedActivities(userId: string): Observable<BookmarkedActivity[]> {
-    return this.http.get<BookmarkedActivity[]>(`${this.apiUrl}/bookmarks/${userId}`);
+  setBookmarkedActivities(activities: MemoriseUserActivity[]) {
+    this.bookmarkedActivitiesSubject.next(activities);
+  }
+
+
+  getBookmarkedActivities(userId: string) {
+    return this.http.get<MemoriseUserActivity[]>(`${environment.apiUrl}/activity/bookmarkedActivities/${userId}`);
   }
 
   addBookmark(userId: string, activityId: number): Observable<BookmarkedActivity> {

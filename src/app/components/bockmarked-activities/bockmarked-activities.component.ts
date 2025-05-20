@@ -2,9 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { ActivityService } from '../../services/activity.service';
 import { MemoriseUserActivity } from '../../models/activityInterface.model';
-import { firstValueFrom } from 'rxjs';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NgOptimizedImage } from '@angular/common';
@@ -32,16 +30,24 @@ export class BockmarkedActivitiesComponent implements OnInit {
   canShowMore = false;
   private readonly maxInitialEntries = 5;
 
-  constructor(private router: Router, private activityService: ActivityService, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
+  constructor(private router: Router, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
 
   ngOnInit(): void {
     this.getBookmarks();
   }
 
   async getBookmarks() {
-    this.activities = await firstValueFrom(this.activityService.getBookmarkedActivities(this.user.user_id));
-    this.updateDisplayedActivities();
-    this.canShowMore = this.activities.length > this.maxInitialEntries;
+    this.bookmarkService.getBookmarkedActivities(this.user.user_id).subscribe({
+      next: (result) => {
+        this.activities = result;
+        this.updateDisplayedActivities();
+        this.canShowMore = this.activities.length > this.maxInitialEntries;
+        this.bookmarkService.setBookmarkedActivities(result);
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   updateDisplayedActivities(): void {

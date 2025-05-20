@@ -37,9 +37,9 @@
                     <div class="slider-container">
                         <span>Cost: ${{ filterForm.get('price')?.value }}</span>
                         <mat-slider min="0" max="100" step="5" showTickMarks discrete>
-                          <input matSliderThumb formControlName="price">
+                            <input matSliderThumb formControlName="price">
                         </mat-slider>
-                      </div>
+                    </div>
                 </div>
 
                 <!-- Season Filter -->
@@ -88,34 +88,41 @@
 
     <!-- View Toggle -->
     <div class="view-toggle">
-        <mat-button-toggle-group [(value)]="viewMode">
+        <mat-button-toggle-group [(value)]="viewMode" (change)="checkForBookmarking($event.value)">
             <mat-button-toggle value="grid">
                 <mat-icon>grid_view</mat-icon> Grid
             </mat-button-toggle>
             <mat-button-toggle value="list">
                 <mat-icon>view_list</mat-icon> List
             </mat-button-toggle>
+            <mat-button-toggle value="bookmark" class="small-screen-bookmark">
+                <mat-icon>bookmark</mat-icon> Bookmarked
+            </mat-button-toggle>
         </mat-button-toggle-group>
     </div>
 
     <!-- No Results Message -->
-    <div *ngIf="filteredActivities.length === 0" class="no-results">
+     @if (filteredActivities.length === 0) {
+    <div class="no-results">
         <mat-card>
             <mat-card-content>
                 <p>No activities match your filters.</p>
             </mat-card-content>
         </mat-card>
     </div>
-
+    }
     <!-- Grid View -->
-    <div *ngIf="viewMode === 'grid' && filteredActivities.length > 0" class="grid-view">
-        <div *ngFor="let activity of paginatedActivities" class="grid-item">
+    @if (viewMode === 'grid' && filteredActivities.length > 0) {
+    <div class="grid-view">
+        @for (activity of paginatedActivities; track $index) {
+        <div class="grid-item">
             <app-activity-card [activity]="activity" [myActivity]="false"></app-activity-card>
         </div>
+        }
     </div>
-
+    }
     <!-- List View -->
-     @if (viewMode === 'list' && filteredActivities.length > 0) {
+    @if (viewMode === 'list' && filteredActivities.length > 0) {
     <div class="list-view">
         @for (activity of paginatedActivities; track $index) {
         <mat-card class="list-item">
@@ -144,15 +151,27 @@
                     <button mat-stroked-button (click)="navigateToDetails(activity.activityId)">
                         <mat-icon class="add-icon">info_i</mat-icon>
                         View Details
-                      </button>
+                    </button>
                 </div>
             </div>
         </mat-card>
         }
     </div>
     }
+
+    @if (viewMode === 'bookmark' && filteredActivities.length > 0) {
+    <div class="grid-view">
+        @for (activity of bookmarkedActivities; track $index) {
+        <div class="grid-item">
+            <app-activity-card [activity]="activity" [myActivity]="true"></app-activity-card>
+        </div>
+        }
+    </div>
+    }
     <!-- Pagination -->
-    <mat-paginator *ngIf="filteredActivities.length > 0" [length]="filteredActivities.length" [pageSize]="pageSize"
+     @if (filteredActivities.length > 0) {
+    <mat-paginator [length]="paginatorLength" [pageSize]="pageSize"
         [pageSizeOptions]="[6, 12, 24, 48]" (page)="onPageChange($event)">
     </mat-paginator>
+    }
 </div>

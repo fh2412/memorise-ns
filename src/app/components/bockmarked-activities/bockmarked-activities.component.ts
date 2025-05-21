@@ -53,6 +53,7 @@ export class BockmarkedActivitiesComponent implements OnInit {
   updateDisplayedActivities(): void {
     if (this.activities) {
       if (this.showAll || this.activities.length <= this.maxInitialEntries) {
+        console.log("Shwoinf all!");
         this.displayActivities = [...this.activities];
       } else {
         this.displayActivities = this.activities.slice(0, this.maxInitialEntries);
@@ -62,6 +63,7 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   toggleShowAll(): void {
     this.showAll = !this.showAll;
+    this.updateDisplayedActivities();
   }
 
   deleteBookmark(activityId: number, event: MouseEvent) {

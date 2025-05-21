@@ -102,7 +102,7 @@
     </div>
 
     <!-- No Results Message -->
-     @if (filteredActivities.length === 0) {
+    @if (filteredActivities.length === 0) {
     <div class="no-results">
         <mat-card>
             <mat-card-content>
@@ -148,9 +148,10 @@
                         </div>
                     </div>
                     <p class="description-truncate">{{ activity.description }}</p>
-                    <button mat-stroked-button (click)="navigateToDetails(activity.activityId)">
-                        <mat-icon class="add-icon">info_i</mat-icon>
-                        View Details
+                </div>
+                <div class="list-item-button">
+                    <button mat-icon-button (click)="navigateToDetails(activity.activityId)">
+                        <mat-icon class="add-icon">arrow_forward_ios</mat-icon>
                     </button>
                 </div>
             </div>
@@ -169,9 +170,9 @@
     </div>
     }
     <!-- Pagination -->
-     @if (filteredActivities.length > 0) {
-    <mat-paginator [length]="paginatorLength" [pageSize]="pageSize"
-        [pageSizeOptions]="[6, 12, 24, 48]" (page)="onPageChange($event)">
+    @if (filteredActivities.length > 0) {
+    <mat-paginator [length]="paginatorLength" [pageSize]="pageSize" [pageSizeOptions]="[6, 12, 24, 48]"
+        (page)="onPageChange($event)">
     </mat-paginator>
     }
 </div>

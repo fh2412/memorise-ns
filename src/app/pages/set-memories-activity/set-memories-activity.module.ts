@@ -11,6 +11,9 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { QuickActivityAutocompleteComponent } from '../../components/quick-activity-autocomplete/quick-activity-autocomplete.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { BockmarkedActivitiesComponent } from "../../components/bockmarked-activities/bockmarked-activities.component";
 
 const routes: Routes = [
   {
@@ -34,7 +37,10 @@ const routes: Routes = [
     MatButtonModule,
     FormsModule,
     MatAutocompleteModule,
-    QuickActivityAutocompleteComponent
+    QuickActivityAutocompleteComponent,
+    MatTabsModule,
+    MatCardModule,
+    BockmarkedActivitiesComponent
 ],
   providers: [],
 })

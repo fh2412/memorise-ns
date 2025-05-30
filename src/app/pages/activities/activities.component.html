@@ -3,7 +3,7 @@
   <div class="sticky-sidebar">
     @if (user) {
     <app-my-activity-information [user]="user"></app-my-activity-information>
-    <app-bockmarked-activities [user]="user"></app-bockmarked-activities>
+    <app-bockmarked-activities [userId]="user.user_id"></app-bockmarked-activities>
     } @else {
       <mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
     }

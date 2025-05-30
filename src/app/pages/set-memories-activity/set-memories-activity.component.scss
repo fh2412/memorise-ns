@@ -1,9 +1,13 @@
+h1{
+  width: unset;
+}
+
 .container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh; /* Center vertically */
+    height: 100vh;
   
     .options {
       display: flex;
@@ -16,8 +20,9 @@
         flex-direction: column;
         align-items: center;
         gap: 10px;
+        width: 35vh;
         button{
-            width: 30vh;
+            width: 35vh;
         }
       }
   
@@ -27,19 +32,7 @@
     }
 
     img{
-        width: 30vh;
+        width: 35vh;
         border-radius: 15px;
     }
-  }
-  
-  .headline{
-    font-size: 5vh;
-    font-weight: bold;
-    margin-bottom: 80px;
-  }
-
-  .headline-uber{
-    font-size: 5vh;
-    font-weight: bold;
-    margin-bottom: 40px;
   }

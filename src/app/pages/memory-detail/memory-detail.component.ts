@@ -76,8 +76,6 @@ export class MemoryDetailComponent implements OnInit {
       const activityData = await firstValueFrom(this.activityService.getActivityDetails(this.memorydb.activity_id));
       this.activity = activityData.title;
 
-      //TODO FIX ACTIVITY ROUTE
-
       const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryId, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
 

@@ -1,38 +1,48 @@
-h1{
+h1 {
   width: unset;
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  .options {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-  
-    .options {
+    gap: 20px;
+    min-height: 46vh;
+
+    .option {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 20px;
-  
-      .option {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
+      gap: 10px;
+      width: 35vh;
+
+      button {
         width: 35vh;
-        button{
-            width: 35vh;
-        }
-      }
-  
-      mat-divider {
-        height: 400px;
       }
     }
 
-    img{
-        width: 35vh;
-        border-radius: 15px;
+    mat-divider {
+      height: 400px;
     }
   }
+
+  img {
+    width: 35vh;
+    border-radius: 15px;
+  }
+}
+
+app-quick-activity-autocomplete {
+  width: 100%;
+}
+
+app-bockmarked-activities {
+  max-height: 45vh;
+}

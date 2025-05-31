@@ -124,8 +124,12 @@ export class ActivityDetailComponent implements OnInit {
     this.router.navigate(['memory/', this.activity.baseMemoryId]);
   }
 
-  navigateEditMemory(){
+  navigateEditActivity(){
     this.router.navigate(['activity/edit/', this.activity.id]);
+  }
+
+  navigateCreateMemory(){
+    this.router.navigate(['/newmemory'], { state: { activityId: this.activity.id } });
   }
 
   isSeasonSelected(seasonId: number): boolean {

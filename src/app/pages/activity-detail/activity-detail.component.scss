@@ -9,7 +9,7 @@
   padding: 20px;
 }
 
-.center{
+.center {
   font-style: italic;
 }
 
@@ -39,11 +39,13 @@
 .memories-container {
   justify-content: center;
   padding: 24px;
-  .button-container{
+
+  .button-container {
     display: flex;
     justify-content: center;
     gap: 16px;
-    button{
+
+    button {
       width: 100%;
     }
   }
@@ -93,6 +95,7 @@
   .map-container {
     width: 60%;
   }
+
   .description-container {
     width: 40%;
   }
@@ -131,4 +134,41 @@
 .mat-button-toggle-appearance-standard.mat-button-toggle-disabled.mat-button-toggle-checked {
   color: var(--mat-sys-on-secondary-fixed);
   background-color: var(--mat-sys-secondary-container);
+}
+
+.expand-flat-button {
+  overflow: hidden;
+  height: 40px;
+  padding: 0 12px;
+  min-width: 40px;
+  width: 40px;
+  border-radius: 50%;
+  transition: width 0.3s ease, border-radius 0.3s ease;
+  
+  .button-content {
+    display: flex;
+    padding-left: 104px;
+    justify-content: center;
+    align-items: center;
+    &:hover{
+      padding-left: unset;
+    }
+  }
+  .button-text {
+    white-space: nowrap;
+    overflow: hidden;
+    opacity: 0;
+    margin-left: 6px;
+    transition: max-width 0.3s ease, opacity 0.3s ease, margin 0.3s ease;
+  }
+
+  &:hover {
+    width: 220px;
+    border-radius: 25px;
+
+    .button-text {
+      max-width: 120px;
+      opacity: 1;
+    }
+  }
 }

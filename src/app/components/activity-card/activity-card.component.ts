@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
 import { BookmarkService } from '../../services/bookmarking.service';
 import { UserService } from '../../services/userService';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ActivityTag {
   name: string;
@@ -61,7 +62,7 @@ export class ActivityCardComponent {
   isBookmarked = false;
   loggedInUserId: string | null = null;
 
-  constructor(private router: Router, private userService: UserService, private bookmarkService: BookmarkService) { }
+  constructor(private router: Router, private userService: UserService, private bookmarkService: BookmarkService, private snackBar: MatSnackBar) { }
 
   viewDetails() {
     console.log("ACTIVITY TO DETAIL,", this.activity);
@@ -75,14 +76,19 @@ export class ActivityCardComponent {
 
     if (this.loggedInUserId) {
       this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity.activityId, this.isBookmarked)
-        .subscribe(
-          () => {
+        .subscribe({
+          next: (result) => {
             this.isBookmarked = !this.isBookmarked;
+            console.log("Bookmarking result: ", result);
           },
-          error => {
-            console.error('Error toggling bookmark', error);
+          error: (error) => {
+            if (error.message === 'Bookmark limit reached') {
+              this.snackBar.open('You can only bookmark up to 10 activities.', 'Close', { duration: 3000 });
+            } else {
+              console.error('Error toggling bookmark', error);
+            }
           }
-        );
+        });
     }
   }
 }

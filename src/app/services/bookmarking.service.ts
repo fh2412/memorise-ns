@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, take, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BookmarkedActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 
@@ -36,7 +36,17 @@ export class BookmarkService {
     if (isCurrentlyBookmarked) {
       return this.removeBookmark(userId, activityId);
     } else {
-      return this.addBookmark(userId, activityId);
+      return this.bookmarkedActivities$.pipe(
+        take(1),
+        switchMap((bookmarks) => {
+          if (bookmarks.length >= 10) {
+            // Reject and return error observable
+            return throwError(() => new Error('Bookmark limit reached'));
+          } else {
+            return this.addBookmark(userId, activityId);
+          }
+        })
+      );
     }
   }
 }

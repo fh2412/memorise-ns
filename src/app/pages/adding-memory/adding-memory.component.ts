@@ -112,8 +112,8 @@ export class AddingMemoryComponent implements OnInit {
       l_city: addressComponents.city,
       l_postcode: addressComponents.postalCode,
       l_country: addressComponents.country,
-      lat: coordinates.lat,
-      lng: coordinates.lng,
+      lat: coordinates.lat.toFixed(4),
+      lng: coordinates.lng.toFixed(4),
     });
   }
 

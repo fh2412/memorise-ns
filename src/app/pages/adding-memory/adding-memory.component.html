@@ -56,6 +56,16 @@
           </button>
 
           <!-- Location Fields -->
+          <div class="lat-long-div">
+            <mat-form-field appearance="outline" class="lat-field">
+              <mat-label>Latitude</mat-label>
+              <input matInput placeholder="Latitude" name="lat" formControlName="lat">
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="long-field">
+              <mat-label>Longitude</mat-label>
+              <input matInput placeholder="Longitude" name="lng" formControlName="lng">
+            </mat-form-field>
+          </div>
           <mat-form-field appearance="outline">
             <mat-label>City</mat-label>
             <input matInput placeholder="City" name="city" formControlName="l_city">

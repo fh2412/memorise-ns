@@ -108,6 +108,7 @@ export const routes: Routes = [
     path: 'error/:errorId',
     loadChildren: () => import('./pages/navigation-error/navigation-error.module').then(m => m.NavigationErrorModule)
   },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404', pathMatch: 'full' },
 ];
 

@@ -1,91 +1,97 @@
-<app-back-button [text]="'Cancel'"></app-back-button>
-<mat-stepper linear #stepper>
+<div class="memory-creation-container">
+  <div class="create-header">
+    <app-back-button></app-back-button>
+    <h1>Create a New Memory</h1>
+  </div>
+  <mat-card appearance="outlined">
+    <mat-stepper linear #stepper>
+      <!-- Step 1: Memory Details -->
+      <mat-step [stepControl]="memoryForm" label="Details to your Memory">
+        <form [formGroup]="memoryForm" class="details-form">
+          <ng-template matStepLabel>Details to your Memory</ng-template>
 
-  <!-- Step 1: Memory Details -->
-  <mat-step [stepControl]="memoryForm" label="Details to your Memory">
-    <form [formGroup]="memoryForm" class="details-form">
-      <ng-template matStepLabel>Details to your Memory</ng-template>
+          <!-- Title Field -->
+          <mat-form-field appearance="outline">
+            <mat-label>Title</mat-label>
+            <input matInput placeholder="Title" name="title" formControlName="title" required>
+            <mat-error *ngIf="memoryForm.get('title')?.hasError('required')">Title is required</mat-error>
+          </mat-form-field>
 
-      <!-- Title Field -->
-      <mat-form-field appearance="outline">
-        <mat-label>Title</mat-label>
-        <input matInput placeholder="Title" name="title" formControlName="title" required>
-        <mat-error *ngIf="memoryForm.get('title')?.hasError('required')">Title is required</mat-error>
-      </mat-form-field>
+          <!-- Description Field -->
+          <mat-form-field appearance="outline">
+            <textarea matInput placeholder="Description" formControlName="description"></textarea>
+          </mat-form-field>
 
-      <!-- Description Field -->
-      <mat-form-field appearance="outline">
-        <textarea matInput placeholder="Description" formControlName="description"></textarea>
-      </mat-form-field>
+          <!-- Date Range Picker -->
+          <mat-form-field appearance="outline">
+            <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
+              <input matStartDate formControlName="memory_date" placeholder="Start Date" required>
+              <input matEndDate formControlName="memory_end_date" placeholder="End Date">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+            <mat-date-range-picker #rangePicker></mat-date-range-picker>
+          </mat-form-field>
 
-      <!-- Date Range Picker -->
-      <mat-form-field appearance="outline">
-        <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
-          <input matStartDate formControlName="memory_date" placeholder="Start Date" required>
-          <input matEndDate formControlName="memory_end_date" placeholder="End Date">
-        </mat-date-range-input>
-        <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-        <mat-date-range-picker #rangePicker></mat-date-range-picker>
-      </mat-form-field>
+          <!-- Friends Autocomplete -->
+          <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"></app-friends-autocomplet>
 
-      <!-- Friends Autocomplete -->
-      <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"></app-friends-autocomplet>
+          <!-- Stepper Navigation -->
+          <div>
+            <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
+          </div>
+        </form>
+      </mat-step>
 
-      <!-- Stepper Navigation -->
-      <div>
-        <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
-      </div>
-    </form>
-  </mat-step>
+      <!-- Step 2: Location Details -->
+      @if (!hasActivity) {
+      <mat-step [stepControl]="memoryForm" label="Location Details">
 
-  <!-- Step 2: Location Details -->
-  @if (!hasActivity) {
-  <mat-step [stepControl]="memoryForm" label="Location Details">
-    
-    <form [formGroup]="memoryForm" class="details-form">
+        <form [formGroup]="memoryForm" class="details-form">
 
-      <!-- Location Button with Icon -->
-      <button mat-raised-button color="accent" class="location-btn" (click)="openMapDialog()"
-        aria-label="Find address on map">
-        <mat-icon class="add-icon">search</mat-icon>
-        <span>Find Address on Map</span>
-      </button>
+          <!-- Location Button with Icon -->
+          <button mat-raised-button color="accent" class="location-btn" (click)="openMapDialog()"
+            aria-label="Find address on map">
+            <mat-icon class="add-icon">search</mat-icon>
+            <span>Find Address on Map</span>
+          </button>
 
-      <!-- Location Fields -->
-      <mat-form-field appearance="outline">
-        <mat-label>City</mat-label>
-        <input matInput placeholder="City" name="city" formControlName="l_city">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Postcode</mat-label>
-        <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
-      </mat-form-field>
-      <mat-form-field appearance="outline">
-        <mat-label>Country</mat-label>
-        <input matInput placeholder="Country" name="country" formControlName="l_country">
-      </mat-form-field>
+          <!-- Location Fields -->
+          <mat-form-field appearance="outline">
+            <mat-label>City</mat-label>
+            <input matInput placeholder="City" name="city" formControlName="l_city">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Postcode</mat-label>
+            <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Country</mat-label>
+            <input matInput placeholder="Country" name="country" formControlName="l_country">
+          </mat-form-field>
 
-      <!-- Stepper Navigation -->
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-        <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
-      </div>
-    </form>
-  </mat-step>
-  }
-  <!-- Step 3: Upload Photos and Videos -->
-  <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
-    <form [formGroup]="memoryForm" class="images-form">
+          <!-- Stepper Navigation -->
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+            <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
+          </div>
+        </form>
+      </mat-step>
+      }
+      <!-- Step 3: Upload Photos and Videos -->
+      <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
+        <form [formGroup]="memoryForm" class="images-form">
 
-      <!-- Image Upload Component -->
-      <app-image-upload [userId]="userId" [memoryData]="memoryForm.value"
-        [friends_emails]="emailArray"></app-image-upload>
+          <!-- Image Upload Component -->
+          <app-image-upload [userId]="userId" [memoryData]="memoryForm.value"
+            [friends_emails]="emailArray"></app-image-upload>
 
-      <!-- Stepper Navigation -->
-      <div>
-        <button mat-button matStepperPrevious>Back</button>
-      </div>
-    </form>
-  </mat-step>
+          <!-- Stepper Navigation -->
+          <div>
+            <button mat-button matStepperPrevious>Back</button>
+          </div>
+        </form>
+      </mat-step>
 
-</mat-stepper>
+    </mat-stepper>
+  </mat-card>
+</div>

@@ -1,24 +1,44 @@
+  .memory-creation-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .create-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    h1 {
+      width: 100%;
+      margin: initial;
+      margin-left: 25px;
+    }
+  }
+
+  mat-card{
+    min-height: 80vh;
+  }
+
   .details-form {
     max-width: 400px;
     margin: 0 auto;
     margin-top: 15px;
   }
+
   .images-form {
     max-width: 75%;
     margin: 0 auto;
     margin-top: 15px;
   }
-  
+
   mat-form-field {
     width: 100%;
     margin-bottom: 15px;
   }
-  
-  .cancel-button{
-    margin: 10px;
-  }
 
-  .location-btn{
+  .location-btn {
     width: 100%;
     margin-bottom: 15px;
   }

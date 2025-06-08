@@ -40,9 +40,14 @@ mat-calendar {
   @include mixins.full-size();
 }
 
-h1 {
+h1, h2 {
   font-size: 30px;
-  font-weight: 800;
+  font-weight: 700;
+  color: var(--mat-sys-primary);
+}
+
+h1{
+  font-size: 35px;
 }
 
 .profile-row {

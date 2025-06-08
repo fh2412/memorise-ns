@@ -40,6 +40,7 @@ import { FullDescriptionDialogComponent } from './components/_dialogs/full-descr
 import { AuthInterceptor } from './services/auth.interceptor';
 import { routes } from './app-routing.module';
 import { FriendPreviewComponent } from './components/friend-preview/friend-preview.component';
+import { FeedbackButtonComponent } from "./components/feedback-button/feedback-button.component";
 
 @NgModule({
     declarations: [
@@ -52,36 +53,37 @@ import { FriendPreviewComponent } from './components/friend-preview/friend-previ
     ],
     bootstrap: [AppComponent],
     imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        RouterModule.forRoot(routes, { // Add RouterModule.forRoot with errorHandler
-            errorHandler: (error) => {
-                console.error('Navigation Error:', error);
-                alert("A navigation error occurred. Please try again later.");
-            }
-        }),
-        AppRoutingModule,
-        MatSidenavModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatListModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        FormsModule,
-        MatButtonModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatProgressBarModule,
-        GoogleMapsModule,
-        MatCheckboxModule,
-        ConfirmDialogComponent,
-        FullDescriptionDialogComponent,
-        ImageDialogComponent,
-        InfoDialogComponent,
-        ShareFriendCodeDialogComponent,
-        FriendPreviewComponent
-    ],
+    BrowserModule,
+    BrowserAnimationsModule,
+    RouterModule.forRoot(routes, {
+        errorHandler: (error) => {
+            console.error('Navigation Error:', error);
+            alert("A navigation error occurred. Please try again later.");
+        }
+    }),
+    AppRoutingModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatListModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    GoogleMapsModule,
+    MatCheckboxModule,
+    ConfirmDialogComponent,
+    FullDescriptionDialogComponent,
+    ImageDialogComponent,
+    InfoDialogComponent,
+    ShareFriendCodeDialogComponent,
+    FriendPreviewComponent,
+    FeedbackButtonComponent
+],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),
         provideAuth(() => getAuth()),

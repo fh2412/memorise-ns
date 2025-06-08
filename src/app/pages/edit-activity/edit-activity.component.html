@@ -1,0 +1,22 @@
+@if (isLoading) {
+<div class="progress-spinner-div">
+    <mat-spinner class="center"></mat-spinner>
+</div>
+}
+<div class="header">
+    <div>
+        <h1>EDIT ACTIVITY</h1>
+    </div>
+    <div>
+        <app-back-button [text]="'Cancel'"></app-back-button>
+        <button mat-flat-button (click)="updateActivity()"><mat-icon>save</mat-icon>UPDATE</button>
+        <button mat-flat-button (click)="deleteActivity('archive')" style="background-color: var(--mat-sys-error);"><mat-icon>archive</mat-icon>ARCHIVE</button>
+    </div>
+</div>
+@if (userId && activity) {
+<div class="activity-creation-container">
+  <app-activity-form [userId]="userId" [activity]="activity" [mode]="'edit'"></app-activity-form>
+</div>
+}
+
+

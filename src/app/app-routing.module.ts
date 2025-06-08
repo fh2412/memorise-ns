@@ -3,6 +3,8 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
+import { ActivityOwnerGuard } from './guards/activity-owner.guard';
+import { MemoryEditorGuard } from './guards/memory-editor.guard';
 
 export const routes: Routes = [
   {
@@ -32,7 +34,7 @@ export const routes: Routes = [
   {
     path: 'editmemory/:id',
     loadChildren: () => import('./pages/editmemory/editmemory.module').then(m => m.EditMemoryModule),
-    canActivate: [authGuard]
+    canActivate: [authGuard, MemoryEditorGuard]
   },
   {
     path: 'editmemory/:id/addphotos',
@@ -97,7 +99,17 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/create-activity/create-activity.module').then(m => m.CreateActivityModule),
     canActivate: [authGuard]
   },
-  { path: '**', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'activity/edit/:id',
+    loadChildren: () => import('./pages/edit-activity/edit-activity.module').then(m => m.EditActivityModule),
+    canActivate: [authGuard, ActivityOwnerGuard]
+  },
+  {
+    path: 'error/:errorId',
+    loadChildren: () => import('./pages/navigation-error/navigation-error.module').then(m => m.NavigationErrorModule)
+  },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '**', redirectTo: 'error/404', pathMatch: 'full' },
 ];
 
 @NgModule({

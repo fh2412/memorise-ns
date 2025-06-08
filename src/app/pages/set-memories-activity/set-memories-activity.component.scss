@@ -1,25 +1,30 @@
+h1 {
+  width: unset;
+}
+
 .container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  /* Center vertically */
 
   .options {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 20px;
+    min-height: 46vh;
 
     .option {
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      width: 35vh;
 
       button {
-        width: 30vh;
+        width: 35vh;
       }
     }
 
@@ -29,17 +34,15 @@
   }
 
   img {
-    width: 30vh;
+    width: 35vh;
     border-radius: 15px;
   }
 }
 
-h2 {
-  font-size: var(--mat-sys-display-medium-size);
+app-quick-activity-autocomplete {
+  width: 100%;
 }
 
-.headline-uber {
-  font-size: 5vh;
-  font-weight: bold;
-  margin-bottom: 40px;
+app-bockmarked-activities {
+  max-height: 45vh;
 }

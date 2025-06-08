@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, switchMap, take, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
+import { BookmarkedActivity, MemoriseUserActivity } from '../models/activityInterface.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,39 +12,41 @@ export class BookmarkService {
 
   constructor(private http: HttpClient) { }
 
+  private bookmarkedActivitiesSubject = new BehaviorSubject<MemoriseUserActivity[]>([]);
+  bookmarkedActivities$ = this.bookmarkedActivitiesSubject.asObservable();
 
-  getBookmarkedActivities(userId: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/bookmarks/${userId}`);
+  setBookmarkedActivities(activities: MemoriseUserActivity[]) {
+    this.bookmarkedActivitiesSubject.next(activities);
   }
 
-  addBookmark(userId: string, activityId: number): Observable<any> {
-    return this.http.post<any>(`${this.apiUrl}/bookmarks`, { userId, activityId });
+
+  getBookmarkedActivities(userId: string) {
+    return this.http.get<MemoriseUserActivity[]>(`${environment.apiUrl}/activity/bookmarkedActivities/${userId}`);
   }
 
-  removeBookmark(userId: string, activityId: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiUrl}/bookmarks/${userId}/${activityId}`);
+  addBookmark(userId: string, activityId: number): Observable<BookmarkedActivity> {
+    return this.http.post<BookmarkedActivity>(`${this.apiUrl}/bookmarks`, { userId, activityId });
   }
 
-  toggleBookmark(userId: string, activityId: number, isCurrentlyBookmarked: boolean): Observable<any> {
+  removeBookmark(userId: string, activityId: number): Observable<BookmarkedActivity> {
+    return this.http.delete<BookmarkedActivity>(`${this.apiUrl}/bookmarks/${userId}/${activityId}`);
+  }
+
+  toggleBookmark(userId: string, activityId: number, isCurrentlyBookmarked: boolean): Observable<BookmarkedActivity> {
     if (isCurrentlyBookmarked) {
       return this.removeBookmark(userId, activityId);
     } else {
-      return this.addBookmark(userId, activityId);
-    }
-  }
-
-  isActivityBookmarked(userId: string, activityId: string): Observable<boolean> {
-    return new Observable<boolean>(observer => {
-      this.getBookmarkedActivities(userId).subscribe(
-        activities => {
-          const isBookmarked = activities.some(activity => activity.id === activityId);
-          observer.next(isBookmarked);
-          observer.complete();
-        },
-        error => {
-          observer.error(error);
-        }
+      return this.bookmarkedActivities$.pipe(
+        take(1),
+        switchMap((bookmarks) => {
+          if (bookmarks.length >= 10) {
+            // Reject and return error observable
+            return throwError(() => new Error('Bookmark limit reached'));
+          } else {
+            return this.addBookmark(userId, activityId);
+          }
+        })
       );
-    });
+    }
   }
 }

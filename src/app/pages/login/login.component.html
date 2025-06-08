@@ -39,7 +39,7 @@
                 test-id="login-loader">
                 <mat-spinner color="accent" diameter="20"></mat-spinner>
             </button>
-            <button mat-stroked-button color="primary" class="reg-button" (click)="toggleRegister()" [disabled]="true">REGISTER</button>
+            <button mat-stroked-button color="primary" class="reg-button" (click)="toggleRegister()">REGISTER</button>
         </div>
     </form>
     <app-register *ngIf="isRegistering" (cancelRegistration)="toggleRegister()"></app-register>

@@ -1,0 +1,17 @@
+<div class="error-container">
+    <div class="error-content">
+      <div class="error-image">
+        <img [src]="imagePath" [alt]="errorTitle" />
+      </div>
+      
+      <div class="error-info">
+        <h1 class="error-code">{{ errorCode }}</h1>
+        <h2 class="error-title">{{ errorTitle }}</h2>
+        <p class="error-message">{{ errorMessage }}</p>
+        
+        <div class="error-actions">
+          <button mat-flat-button (click)="navigateToHome()">Go to Home</button>
+        </div>
+      </div>
+    </div>
+  </div>

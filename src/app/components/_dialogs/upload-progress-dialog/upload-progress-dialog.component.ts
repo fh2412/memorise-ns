@@ -118,25 +118,18 @@ export class UploadProgressDialogComponent implements OnInit {
   
       if (memoryData.lat && memoryData.lng) {
         memoryData.location_id = await this.handleLocationCreation(memoryData);
-        console.log("location created!: ", memoryData.location_id);
       } else if (memoryData.l_city || memoryData.l_country || memoryData.l_postcode) {
         const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
         memoryData.lat = coords.lat.toString();
         memoryData.lng = coords.lng.toString();
         memoryData.location_id = await this.handleLocationCreation(memoryData);
-        console.log("location created address!: ", memoryData.location_id);
       } else {
         memoryData.location_id = 1;
-        console.log("location set to 1 ", memoryData.location_id);
       }
-      console.log("Acitiviy: ", memoryData);
       if(memoryData.activity_id==0){
-        console.log("Creating new Activity!");
         memoryData.activity_id = await this.handleActivityCreation(memoryData);
-        console.log("activity created!: ", memoryData.activity_id);
       }
       await this.handleMemoryCreation(memoryData);
-      console.log("Memory Created!");
     } catch (error) {
       console.error('Error creating memory:', error);
     }
@@ -170,9 +163,8 @@ export class UploadProgressDialogComponent implements OnInit {
       this.memoryService.createMemory(memoryData).subscribe(
         async (response: { memory_id: string }) => {
           const memoryId = response.memory_id;
-          console.log('Memory created successfully:', memoryId);
-  
-          if (this.data.friends_emails) {
+          console.log('Memory created successfully:', response);
+          if (this.data.friends_emails.length > 0) {
             await this.addFriendsToMemory(memoryId, this.data.friends_emails);
           }
           this.updatePictureCount(memoryId);

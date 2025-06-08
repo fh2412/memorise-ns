@@ -1,0 +1,25 @@
+@use '../friend-preview/friend-preview.component.scss';
+
+.main-card{
+    margin-top: 16px;
+}
+
+mat-divider{
+    margin-bottom: 12px;
+}
+
+.delete-icon{
+    color: var(--mat-sys-error);
+}
+
+.row {
+    margin-bottom: 12px;
+}
+
+.extendet-btn{
+    width: 100%;
+}
+
+.activity-img{
+    min-width: 48px;
+}

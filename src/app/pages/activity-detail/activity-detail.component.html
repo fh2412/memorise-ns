@@ -13,6 +13,18 @@ Loading activity details...
     <div class="title-bar">
         <app-back-button></app-back-button>
         <h1>{{ activity.title }}</h1>
+        <button mat-stroked-button class="expand-flat-button" (click)="navigateCreateMemory()">
+            <div class="button-content">
+                <mat-icon>add_circle</mat-icon>
+                <span class="button-text">Create Memory</span>
+            </div>
+        </button>
+
+        @if (isCreator) {
+        <button mat-icon-button (click)="navigateEditActivity()">
+            <mat-icon>edit</mat-icon>
+        </button>
+        }
     </div>
 
     <!-- Image and Memories section -->
@@ -34,12 +46,13 @@ Loading activity details...
                 have already created Memories to this activity.
             </p>
             <div class="button-container">
-            <button mat-flat-button (click)="navigateLeadMemory()"><mat-icon>photo_library</mat-icon>View Memory</button>
-            <button mat-stroked-button disabled><mat-icon>web_stories</mat-icon>Browse All</button>
-        </div>
+                <button mat-flat-button (click)="navigateLeadMemory()"><mat-icon>photo_library</mat-icon>View
+                    Memory</button>
+                <button mat-stroked-button disabled><mat-icon>web_stories</mat-icon>Browse All</button>
+            </div>
             }
             @else {
-                <div class="center">There were no Memories created to this Activity.</div>
+            <div class="center">There were no Memories created to this Activity.</div>
             }
         </mat-card>
     </div>
@@ -98,15 +111,14 @@ Loading activity details...
         </div>
     </div>
 
-    <!-- Map and Description -->
+    <!-- Map and Description-->
     <div class="map-description-container">
         <mat-card class="map-container">
             <google-map [options]="mapOptions" height="250px" width="100%">
                 <map-marker [position]="markerPosition"></map-marker>
             </google-map>
         </mat-card>
-
-        <div>
+        <div class="description-container">
             <h3>Description</h3>
             <p>{{ activity.description }}</p>
         </div>

@@ -49,7 +49,7 @@ export interface ActivityDetails {
     commercialFlag: boolean;
     groupSizeMin: number;
     groupSizeMax: number;
-    indoor: boolean;
+    indoor: string;
     costs: number;
     locationId: number;
     baseMemoryId: string;
@@ -68,6 +68,14 @@ export interface ActivityCreator {
 export interface ActivityStats {
     activity_count: number;
     stars_count: number;
+}
+
+export interface BookmarkedActivity {
+    activityId: number;
+    firebaseUrl: string;
+    groupSizeMax: number;
+    groupSizeMin: number;
+    title: string;
 }
 
 export interface Season {

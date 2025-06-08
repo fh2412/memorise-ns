@@ -9,12 +9,14 @@ import { Router } from '@angular/router';
 import { LocationService } from '../../services/location.service';
 import { Location } from '@angular/common';
 import { CountryService } from '../../services/restCountries.service';
+import { ActivityService } from '../../services/activity.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
-    selector: 'app-adding-memory',
-    templateUrl: './adding-memory.component.html',
-    styleUrls: ['./adding-memory.component.scss'],
-    standalone: false
+  selector: 'app-adding-memory',
+  templateUrl: './adding-memory.component.html',
+  styleUrls: ['./adding-memory.component.scss'],
+  standalone: false
 })
 export class AddingMemoryComponent implements OnInit {
 
@@ -25,6 +27,7 @@ export class AddingMemoryComponent implements OnInit {
   memoryForm: FormGroup;
   userId = '';
   emailArray: string[] = [];
+  hasActivity = false;
 
 
   constructor(
@@ -35,6 +38,7 @@ export class AddingMemoryComponent implements OnInit {
     public memoryService: MemoryService,
     private userService: UserService,
     private locationService: LocationService,
+    private activityService: ActivityService,
     private router: Router
   ) {
     this.memoryForm = this.formBuilder.group({
@@ -60,12 +64,10 @@ export class AddingMemoryComponent implements OnInit {
     await this.userService.userId$.subscribe((userId) => {
       if (userId) {
         this.userId = userId;
+        this.memoryForm.patchValue({ creator_id: this.userId });
       }
     });
-    this.memoryForm.patchValue({ creator_id: this.userId });
-    const state = this.location.getState() as { quickActivity: string; activityId: number };
-    this.memoryForm.patchValue({ quickActivityTitle: state?.quickActivity });
-    this.memoryForm.patchValue({ activity_id: state?.activityId });
+    this.patchActivityData();
   }
 
   onSelectedValuesChange(selectedValues: string[]): void {
@@ -105,14 +107,33 @@ export class AddingMemoryComponent implements OnInit {
 
   private patchLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
     const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
-    
+
     this.memoryForm.patchValue({
       l_city: addressComponents.city,
       l_postcode: addressComponents.postalCode,
       l_country: addressComponents.country,
-      lat: coordinates.lat,
-      lng: coordinates.lng,
+      lat: coordinates.lat.toFixed(4),
+      lng: coordinates.lng.toFixed(4),
     });
+  }
+
+  private async patchActivityData(): Promise<void> {
+    const state = this.location.getState() as { quickActivity: string; activityId: number };
+    this.memoryForm.patchValue({ activity_id: state?.activityId });
+    if (state.quickActivity) {
+      this.memoryForm.patchValue({ quickActivityTitle: state?.quickActivity });
+    }
+    else {
+      this.hasActivity = true;
+      const activityData = await firstValueFrom(this.activityService.getActivityDetails(state?.activityId));
+      this.memoryForm.patchValue({
+        lat: activityData.location.latitude,
+        lng: activityData.location.longitude,
+        location_id: activityData.location.location_id,
+        description: activityData.description,
+      });
+      console.log(this.memoryForm.value);
+    }
   }
 
   cancelCreation(): void {

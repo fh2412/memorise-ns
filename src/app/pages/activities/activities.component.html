@@ -3,10 +3,9 @@
   <div class="sticky-sidebar">
     @if (user) {
     <app-my-activity-information [user]="user"></app-my-activity-information>
-    <!--<app-company-information [company]="company" [userId]="user.user_id"></app-company-information>-->
+    <app-bockmarked-activities [userId]="user.user_id"></app-bockmarked-activities>
     } @else {
       <mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
-      <!--<app-color-test></app-color-test>-->
     }
   </div>
   
@@ -31,7 +30,8 @@
       <app-comming-soon [featureName]="'Browse Activities'" [imageUrl]="'../../../assets/img/no_memories.jpg'"></app-comming-soon>
     }
     @else {
-      <!--<p>We are so sorry. Something went wrong! :(</p>-->
+      <p>Seems like we could not find activities for you :(</p>
+      <p>Try again later, or submit feedback using the button in the bottom rigth corner.</p>
     }
   </div>
 </div>

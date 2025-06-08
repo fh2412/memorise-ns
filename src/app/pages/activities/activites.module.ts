@@ -15,7 +15,7 @@ import { MatListModule } from '@angular/material/list';
 import { CompanyInformationComponent } from '../../components/company-information/company-information.component';
 import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
 import { ColorTestComponent } from "../../components/color-test/color-test.component";
-import { CommingSoonComponent } from "../../components/comming-soon/comming-soon.component";
+import { BockmarkedActivitiesComponent } from "../../components/bockmarked-activities/bockmarked-activities.component";
 
 const routes: Routes = [
   {
@@ -47,7 +47,7 @@ const routes: Routes = [
     MyActivityInformationComponent,
     ActivityListComponent,
     ColorTestComponent,
-    CommingSoonComponent
+    BockmarkedActivitiesComponent
 ]
 })
 export class ActivitiesModule { }

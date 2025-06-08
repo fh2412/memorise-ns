@@ -26,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class MemorySelectorComponent implements OnInit {
   @Input() userId!: string;
+  @Input() memoryId: string | null = null;
   @Output() memorySelected = new EventEmitter<number>();
 
   memories: Memory[] = [];
@@ -44,6 +45,9 @@ export class MemorySelectorComponent implements OnInit {
         next: (memories) => {
           this.memories = memories;
           this.loading = false;
+          if(this.memoryId){
+            this.selectInitMemory(this.memoryId);
+          }
           
           // Set up filtering based on search input
           this.filteredMemories = this.searchControl.valueChanges.pipe(
@@ -72,5 +76,15 @@ export class MemorySelectorComponent implements OnInit {
   
   selectMemory(memory: Memory) {
     this.selectedMemory = memory;
-    this.memorySelected.emit(memory.memory_id);  }
+    this.memorySelected.emit(memory.memory_id);
+  }
+
+  //Select an Memory when loading if in Edit Activity Component
+  selectInitMemory(memoryId: string){
+    const memory = this.memories.find(m => m.memory_id === Number(memoryId));
+    if (memory) {
+      this.selectMemory(memory);
+    }
+  }
+  
 }

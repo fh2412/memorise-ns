@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
-import { Observable } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData } from '../models/memoryInterface.model';
 import { Friend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
@@ -92,5 +92,29 @@ export class MemoryService {
   deleteFriendsFromMemory(userId: string, memoryId: string): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/memories/${memoryId}/${userId}`;
     return this.http.delete<DeleteStandardResponse>(url);
+  }
+
+  async checkMemoriseUserPermission(memoryId: string, loggedInUserId: string): Promise<boolean> {
+    try {
+      const creator: Memory = await lastValueFrom(
+        this.getMemory(Number(memoryId))
+      );
+      const creatorId = creator.user_id;
+
+      const friends: Friend[] = await lastValueFrom(
+        this.getMemorysFriends(memoryId, creatorId)
+      );
+
+      if(Array.isArray(friends)){
+        const friendIds = friends.map(friend => friend.user_id);
+        return friendIds.includes(loggedInUserId) || creatorId === loggedInUserId;
+      }
+      else{
+        return creatorId === loggedInUserId;
+      }
+    } catch (error) {
+      console.error('Failed to fetch memory friends:', error);
+      return false;
+    }
   }
 }

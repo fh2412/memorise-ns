@@ -1,31 +1,36 @@
 <app-back-button style="position: absolute;"></app-back-button>
 <div class="container">
-    <h2>Tell us about your <span style="color: var(--mat-sys-secondary)">Activity</span>!</h2>
-    <div class="options">
-        <div class="option">
-            <img mat-card-image src="/assets/img/no_memories.jpg"
-                alt="A person looking through a lexicon in search of existing activities to do">
-            <button mat-stroked-button [disabled]="true">
-                <mat-icon>arrow_forward</mat-icon> Choose existing Activity
-            </button>
-        </div>
-        <mat-divider vertical></mat-divider>
-        <div class="option">
-            <img mat-card-image src="/assets/img/new-activity.webp"
-                alt="A person searching the horizon for new optertunities">
-            <button mat-stroked-button (click)="navigateCreateActivity()">
-                <mat-icon>arrow_forward</mat-icon> Create new Activity
-            </button>
-        </div>
-    </div>
-    <!--
-    <span class="headline-uber">Activities will soon come</span>
-    <span class="headline">to <span style="color: var(--mat-sys-secondary)">Memorise</span>!</span>
-    <img mat-card-image src="/assets/img/new-activity.webp" alt="A person searching the horizon for new optertunities">
-    <p style="margin-top: 25px; font-size: 20px">For now please choose an existing quick activity or start with typing your own.</p>
--->
-
-    <div class="input-field" style="margin-top: 40px;">
-        <app-quick-activity-autocomplete></app-quick-activity-autocomplete>        
-    </div>
+    <h1>Tell us about your activity!</h1>
+    <mat-tab-group>
+        <mat-tab label="I have an existing Activity">
+            <div class="options">
+                <div class="option">
+                    <img mat-card-image src="/assets/img/no_memories.jpg"
+                        alt="A person looking through a lexicon in search of existing activities to do">
+                    <button mat-stroked-button color="primary" [disabled]="true">
+                        <mat-icon>arrow_forward</mat-icon> Choose existing Activity
+                    </button>
+                </div>
+                <mat-divider vertical></mat-divider>
+                <div class="option">
+                    <app-bockmarked-activities [userId]="loggedInUserId" [fullComponent]="false" (activitySelected)="onActivitySelected($event)"></app-bockmarked-activities>
+                </div>
+            </div>
+        </mat-tab>
+        <mat-tab label="There is no Activity to my Memory yet">
+            <div class="options">
+                <div class="option">
+                    <img mat-card-image src="/assets/img/new-activity.webp"
+                        alt="A person searching the horizon for new optertunities">
+                    <button mat-stroked-button (click)="navigateToCreateNewActivity()">
+                        <mat-icon>arrow_forward</mat-icon> Create new Activity
+                    </button>
+                </div>
+                <mat-divider vertical></mat-divider>
+                <div class="option">
+                    <app-quick-activity-autocomplete></app-quick-activity-autocomplete>
+                </div>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
 </div>

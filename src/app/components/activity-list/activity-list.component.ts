@@ -16,6 +16,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { ActivityCardComponent } from "../activity-card/activity-card.component";
 import { Router } from '@angular/router';
 import { ActivityService } from '../../services/activity.service';
+import { BookmarkService } from '../../services/bookmarking.service';
 
 @Component({
   selector: 'app-activity-list',
@@ -43,13 +44,15 @@ export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];
 
   filteredActivities: MemoriseUserActivity[] = [];
+  bookmarkedActivities: MemoriseUserActivity[] = [];
   paginatedActivities: MemoriseUserActivity[] = [];
-  viewMode: 'grid' | 'list' = 'grid';
+  paginatorLength = 0;
+  viewMode: 'grid' | 'list' | 'bookmark' = 'grid';
   pageSize = 12;
   currentPage = 0;
   filterForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private activityService: ActivityService) {
+  constructor(private fb: FormBuilder, private router: Router, private activityService: ActivityService, private bookmarkedService: BookmarkService) {
     this.filterForm = this.fb.group({
       location: [''],
       distance: [25],
@@ -65,8 +68,11 @@ export class ActivityListComponent implements OnInit {
 
   ngOnInit(): void {
     this.filteredActivities = [...this.activities];
-    console.log(this.activities);
-    this.updatePaginatedActivities();
+    this.paginatorLength = this.filteredActivities.length;
+    this.bookmarkedService.bookmarkedActivities$.subscribe((data) => {
+      this.bookmarkedActivities = data;
+    });
+    this.updatePaginatedActivities(this.activities);
   }
 
   applyFilters(): void {
@@ -84,7 +90,7 @@ export class ActivityListComponent implements OnInit {
 
     // Reset to first page after applying filters
     this.currentPage = 0;
-    this.updatePaginatedActivities();
+    this.updatePaginatedActivities(this.activities);
   }
 
   resetFilters(): void {
@@ -102,28 +108,30 @@ export class ActivityListComponent implements OnInit {
 
     this.filteredActivities = [...this.activities];
     this.currentPage = 0;
-    this.updatePaginatedActivities();
+    this.updatePaginatedActivities(this.activities);
   }
 
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
-    this.updatePaginatedActivities();
+    this.updatePaginatedActivities(this.activities);
   }
 
-  updatePaginatedActivities(): void {
+  updatePaginatedActivities(activities: MemoriseUserActivity[]): void {
     const startIndex = this.currentPage * this.pageSize;
-    this.paginatedActivities = this.filteredActivities.slice(startIndex, startIndex + this.pageSize);
+    this.paginatedActivities = activities.slice(startIndex, startIndex + this.pageSize);
+  }
+
+  checkForBookmarking(viewMode: string){
+    if(viewMode === 'bookmark'){
+      this.paginatorLength = this.bookmarkedActivities.length;
+    }
+    else{
+      this.paginatorLength = this.filteredActivities.length;
+    }
   }
 
   navigateToDetails(activityId: number) {
     this.router.navigate(['activity/details/', activityId.toString()]);
   }
-
-  // Helper method for distance calculation (not implemented yet)
-  //calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  // Haversine formula for calculating distance between two points on Earth
-  // To be implemented
-  //  return 0;
-  //}
 }

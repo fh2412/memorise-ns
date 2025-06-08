@@ -1,0 +1,22 @@
+<mat-card class="coming-soon-card" appearance="outlined">
+    <img mat-card-image [src]="imageUrl || '/assets/placeholder-image.jpg'" [alt]="featureName + ' coming soon'"
+        class="feature-image">
+    <mat-card-content>
+        <div class="coming-soon-badge">
+            <mat-icon>access_time</mat-icon>
+            <span>Coming Soon</span>
+        </div>
+        <h2 class="feature-title">{{ featureName }}</h2>
+        <p class="feature-description">
+            We're working hard to bring you this exciting new feature. Stay tuned for updates!
+        </p>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-button color="primary" (click)="notifyMe()">
+            <mat-icon>notifications</mat-icon> Notify Me
+        </button>
+        <button mat-button (click)="learnMore()">
+            <mat-icon>info</mat-icon> Learn More
+        </button>
+    </mat-card-actions>
+</mat-card>

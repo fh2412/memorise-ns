@@ -30,5 +30,4 @@ export class SetMemoriesActivityComponent implements OnInit {
   navigateToCreateNewActivity(): void {
     this.router.navigate(['/activity/create']);
   }
-
 }

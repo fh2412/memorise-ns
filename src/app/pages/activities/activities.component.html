@@ -26,7 +26,8 @@
       </div>
     </div>
     @if (activities.length > 0) {
-      <app-activity-list [activities]="activities"></app-activity-list>
+      <!--<app-activity-list [activities]="activities"></app-activity-list>-->
+      <app-comming-soon [featureName]="'Browse Activities'" [imageUrl]="'../../../assets/img/no_memories.jpg'"></app-comming-soon>
     }
     @else {
       <p>Seems like we could not find activities for you :(</p>

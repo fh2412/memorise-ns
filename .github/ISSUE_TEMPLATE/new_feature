@@ -1,0 +1,41 @@
+---
+name: "Feature Request: [Concise Feature Title]"
+about: Suggest a new feature for [Your App Name]
+title: "Feature Request: [Concise Feature Title]"
+labels: "enhancement, feature request"
+assignees: '' # Optional: Assign to yourself or someone else
+---
+
+**Feature Description:**
+
+[Provide a clear and detailed description of the feature you're requesting. Explain what it does and how it benefits users.]
+
+**Problem Statement:**
+
+[Describe the problem this feature aims to solve. What are the current limitations or pain points that this feature addresses?]
+
+**Proposed Solution:**
+
+[Outline your proposed solution. How should this feature be implemented? Include specific details about functionality, UI/UX, and any relevant technical considerations.]
+
+**Acceptance Criteria (Optional):**
+
+[List specific criteria that must be met for this feature to be considered complete. This helps ensure that the feature is implemented as intended.]
+
+**Mockups/Wireframes (Optional):**
+
+[Include visual representations of the feature, such as mockups or wireframes. This can help clarify the design and user experience.]
+
+[Attach images or links here]
+
+**Additional Context (Optional):**
+
+[Provide any other relevant information, such as related issues, use cases, or technical considerations.]
+
+**Possible Implementation Considerations (Optional):**
+
+[If you have any ideas about how this could be implemented, add them here. This is not strictly necessary, but could help with the development process.]
+
+**Dependencies (Optional):**
+
+[Are there any other features or issues that must be completed before this feature can be implemented?]

@@ -48,6 +48,7 @@ export class MemoryDetailComponent implements OnInit {
   truncatedDescription = '';
   characterLimit = 150;
   imagesWithMetadata: ImageWithMetadata[] = [];
+  isLoadingImages = true;
   hasPrivileges = false;
 
   constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private activityService: ActivityService) { }
@@ -114,33 +115,51 @@ export class MemoryDetailComponent implements OnInit {
     }
   }
 
-  get displayImages(): ImageWithMetadata[] {
-    const imagesToShow = [...this.imagesWithMetadata];
-    while (imagesToShow.length < 5) {
-      imagesToShow.push({ url: '../../../assets/img/placeholder_image.png', width: 0, height: 0, created: 'new Date', size: 0 });
-    }
-    return imagesToShow;
+get displayImages(): ImageWithMetadata[] {
+  const imagesToShow = [...this.imagesWithMetadata];
+  while (imagesToShow.length < 5) {
+    imagesToShow.push({
+      url: '../../../assets/img/placeholder_image.png',
+      width: 0,
+      height: 0,
+      created: 'placeholder',
+      size: 0
+    });
   }
+  return imagesToShow.slice(0, 5); // Ensure it's always 5 items
+}
 
-  private getImages(imageId: string): void {
-    const storage = getStorage();
-    const listRef = ref(storage, `memories/${imageId}`);
-    listAll(listRef).then((res) => {
-      res.items.forEach((itemRef) => {
-        getDownloadURL(ref(storage, itemRef.fullPath))
-          .then((url) => getMetadata(ref(storage, itemRef.fullPath)).then((metadata) => {
-            this.imagesWithMetadata.push({
-              url,
-              width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
-              height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
-              created: metadata.timeCreated,
-              size: metadata.size,
-            });
-          }))
-          .catch((error) => console.error('Error fetching metadata or URL:', error));
-      });
-    }).catch((error) => console.error('Error listing items:', error));
-  }
+
+private getImages(imageId: string): void {
+  const storage = getStorage();
+  const listRef = ref(storage, `memories/${imageId}`);
+  this.isLoadingImages = true;
+  this.imagesWithMetadata = [];
+
+  listAll(listRef).then((res) => {
+    const fetchPromises = res.items.map((itemRef) => {
+      const fullRef = ref(storage, itemRef.fullPath);
+      return getDownloadURL(fullRef).then((url) =>
+        getMetadata(fullRef).then((metadata) => ({
+          url,
+          width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
+          height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
+          created: metadata.timeCreated,
+          size: metadata.size,
+        }))
+      );
+    });
+
+    Promise.all(fetchPromises).then((images) => {
+      this.imagesWithMetadata = images;
+      this.isLoadingImages = false;
+    });
+  }).catch((error) => {
+    console.error('Error listing items:', error);
+    this.isLoadingImages = false;
+  });
+}
+
 
   openGallery() {
     this.imageDataService.updateImageData(this.imagesWithMetadata);

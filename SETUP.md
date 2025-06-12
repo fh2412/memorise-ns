@@ -1,5 +1,3 @@
-Here's a detailed installation and setup documentation for the frontend Angular project of your "Memorise" app. This can be linked directly from your GitHub README.
-
 -----
 
 # Memorise Frontend: Installation and Setup

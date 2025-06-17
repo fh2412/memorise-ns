@@ -104,11 +104,7 @@
     <!-- No Results Message -->
     @if (filteredActivities.length === 0) {
     <div class="no-results">
-        <mat-card>
-            <mat-card-content>
-                <p>No activities match your filters.</p>
-            </mat-card-content>
-        </mat-card>
+      <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
     </div>
     }
     <!-- Grid View -->

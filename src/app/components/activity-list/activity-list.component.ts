@@ -17,6 +17,7 @@ import { ActivityCardComponent } from "../activity-card/activity-card.component"
 import { Router } from '@angular/router';
 import { ActivityService } from '../../services/activity.service';
 import { BookmarkService } from '../../services/bookmarking.service';
+import { NotFoundComponent } from "../not-found/not-found.component";
 
 @Component({
   selector: 'app-activity-list',
@@ -37,8 +38,9 @@ import { BookmarkService } from '../../services/bookmarking.service';
     MatIconModule,
     MatSlideToggleModule,
     MatExpansionModule,
-    ActivityCardComponent
-  ],
+    ActivityCardComponent,
+    NotFoundComponent
+],
 })
 export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];

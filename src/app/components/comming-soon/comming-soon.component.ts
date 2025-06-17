@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class CommingSoonComponent {
   @Input() featureName = 'New Feature';
   @Input() imageUrl = '';
+  @Input() text = '';
 
   constructor(private snackBar: MatSnackBar) { }
 

@@ -27,11 +27,9 @@
     </div>
     @if (activities.length > 0) {
       <app-activity-list [activities]="activities"></app-activity-list>
-      <!--<app-comming-soon [featureName]="'Browse Activities'" [imageUrl]="'../../../assets/img/no_memories.jpg'"></app-comming-soon>-->
     }
     @else {
-      <p>Seems like we could not find activities for you :(</p>
-      <p>Try again later, or submit feedback using the button in the bottom rigth corner.</p>
+      <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
     }
   </div>
 </div>

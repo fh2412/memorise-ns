@@ -1,6 +1,6 @@
 # MemoriseNs
 
-This project is an Angular application, initially generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8 and subsequently updated to version 19.1.5.
+This project is an Angular application, initially generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8 and subsequently updated to version 20.
 
 **Important Note:** Starting with Angular version 18, new components are generated as standalone components by default. This project reflects this change, with newer components adhering to the standalone architecture and older ones updated to standalone step by step.
 
@@ -11,6 +11,7 @@ To install all necessary dependencies, run the following command in your project
 ```bash
 npm install
 ```
+For a detailed description on how to get the project running visit: [Memorise Frontend SETUP](https://github.com/fh2412/memorise-ns/blob/dev/SETUP.md)
 
 ## Development Server
 

@@ -1,7 +1,8 @@
-import { ChangeDetectorRef, Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { Friend } from '../../models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
+import { FriendsService } from '../../services/friends.service';
 
 @Component({
     selector: 'app-friend-search',
@@ -9,20 +10,26 @@ import { debounceTime, Subject } from 'rxjs';
     styleUrls: ['./friend-search.component.scss'],
     standalone: false
 })
-export class FriendSearchComponent {
+export class FriendSearchComponent implements OnInit {
   @Input() userId: string | null = null;
 
   searchTerm = '';
   searchResults: Friend[] = [];
   enter = false;
   errorMessage = '';
+  initState = true;
   private searchSubject = new Subject<string>();
 
-  constructor(private searchService: UserService, private cdRef: ChangeDetectorRef) {
+  constructor(private searchService: UserService, private friendsService: FriendsService, private cdRef: ChangeDetectorRef) {
     this.searchSubject.pipe(debounceTime(300)).subscribe(() => this.searchFriend());
   }
 
+  ngOnInit(): void {
+    this.getSuggestedFriends(this.userId);
+  }
+
   onSearchTermChange(term: string): void {
+    this.initState = false;
     this.searchTerm = term;
     this.searchSubject.next(term);
     this.cdRef.detectChanges();
@@ -35,7 +42,6 @@ export class FriendSearchComponent {
       this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
         (results) => {
           this.searchResults = results;
-          console.log(this.searchResults);
           this.errorMessage = ''; // Clear error on successful response
         },
         (error) => {
@@ -43,6 +49,20 @@ export class FriendSearchComponent {
           this.errorMessage = 'Failed to fetch search results. Please try again.';
         }
       );
+    }
+  }
+
+  getSuggestedFriends(userId: string | null) {
+    if(userId){
+      this.friendsService.getFriendSuggestions(userId).subscribe({
+          next: (result) => {
+            console.log("Suggested Friends: ", result);
+            this.searchResults = result;
+          },
+          error: (error) => {
+              console.error('Error toggling bookmark', error);
+          }
+        });
     }
   }
 }

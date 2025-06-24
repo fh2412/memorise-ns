@@ -14,7 +14,7 @@
 }
 
 .memory-card-empty {
-  @include mixins.memory-card(95%, 100%);
+  @include mixins.memory-card(100%, 100%);
 }
 
 .truncate {

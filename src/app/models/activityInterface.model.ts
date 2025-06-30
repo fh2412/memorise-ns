@@ -31,8 +31,7 @@ export interface ActivityFilter {
     location?: string;
     distance?: number;
     tag?: string;
-    groupSizeMin?: number;
-    groupSizeMax?: number;
+    groupSize?: number;
     price?: number;
     season?: string;
     weather?: string;

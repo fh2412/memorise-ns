@@ -59,9 +59,8 @@ export class ActivityListComponent implements OnInit {
       location: [''],
       distance: [25],
       tag: [''],
-      groupSizeMin: [1],
-      groupSizeMax: [20],
-      price: [0],
+      groupSize: [0],
+      price: [100],
       season: [''],
       weather: [''],
       name: ['']
@@ -98,9 +97,8 @@ export class ActivityListComponent implements OnInit {
       location: '',
       distance: 25,
       tag: '',
-      groupSizeMin: 1,
-      groupSizeMax: 20,
-      price: 0,
+      groupSize: 0,
+      price: 100,
       season: '',
       weather: '',
       name: ''

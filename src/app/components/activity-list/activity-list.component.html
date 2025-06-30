@@ -23,11 +23,9 @@
                 <!-- Group Size Filter -->
                 <div class="filter-item">
                     <div class="slider-container">
-                        <span>Group Size: {{ filterForm.get('groupSizeMin')?.value }} - {{
-                            filterForm.get('groupSizeMax')?.value }}</span>
+                        <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
                         <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                            <input matSliderStartThumb formControlName="groupSizeMin">
-                            <input matSliderEndThumb formControlName="groupSizeMax">
+                            <input matSliderThumb formControlName="groupSize">
                         </mat-slider>
                     </div>
                 </div>
@@ -35,7 +33,7 @@
                 <!-- Price Filter -->
                 <div class="filter-item">
                     <div class="slider-container">
-                        <span>Cost: ${{ filterForm.get('price')?.value }}</span>
+                        <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
                         <mat-slider min="0" max="100" step="5" showTickMarks discrete>
                             <input matSliderThumb formControlName="price">
                         </mat-slider>

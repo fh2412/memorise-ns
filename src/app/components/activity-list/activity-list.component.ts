@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -40,12 +40,12 @@ import { NotFoundComponent } from "../not-found/not-found.component";
     MatExpansionModule,
     ActivityCardComponent,
     NotFoundComponent
-],
+  ],
 })
 export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];
 
-  filteredActivities: MemoriseUserActivity[] = [];
+  filteredActivities: WritableSignal<MemoriseUserActivity[]> = signal([]);
   bookmarkedActivities: MemoriseUserActivity[] = [];
   paginatedActivities: MemoriseUserActivity[] = [];
   paginatorLength = 0;
@@ -69,7 +69,7 @@ export class ActivityListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filteredActivities = [...this.activities];
+    this.filteredActivities.set([...this.activities]);
     this.paginatorLength = this.filteredActivities.length;
     this.bookmarkedService.bookmarkedActivities$.subscribe((data) => {
       this.bookmarkedActivities = data;
@@ -83,16 +83,14 @@ export class ActivityListComponent implements OnInit {
 
     this.activityService.getFilteredActivities(filters).subscribe({
       next: (response) => {
-        this.filteredActivities = response;
+        this.filteredActivities.set(response);
+        this.currentPage = 0;
+        this.updatePaginatedActivities(this.filteredActivities());
       },
       error: (err) => {
-        console.error('Error fetching company', err);
+        console.error('Error fetching filterd activities', err);
       }
     });
-
-    // Reset to first page after applying filters
-    this.currentPage = 0;
-    this.updatePaginatedActivities(this.activities);
   }
 
   resetFilters(): void {
@@ -108,7 +106,7 @@ export class ActivityListComponent implements OnInit {
       name: ''
     });
 
-    this.filteredActivities = [...this.activities];
+    this.filteredActivities.set([...this.activities]);
     this.currentPage = 0;
     this.updatePaginatedActivities(this.activities);
   }
@@ -124,12 +122,12 @@ export class ActivityListComponent implements OnInit {
     this.paginatedActivities = activities.slice(startIndex, startIndex + this.pageSize);
   }
 
-  checkForBookmarking(viewMode: string){
-    if(viewMode === 'bookmark'){
+  checkForBookmarking(viewMode: string) {
+    if (viewMode === 'bookmark') {
       this.paginatorLength = this.bookmarkedActivities.length;
     }
-    else{
-      this.paginatorLength = this.filteredActivities.length;
+    else {
+      this.paginatorLength = this.filteredActivities().length;
     }
   }
 

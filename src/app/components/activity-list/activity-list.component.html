@@ -1,6 +1,6 @@
 <div class="activities-container">
     <!-- Filter Section -->
-    <mat-expansion-panel class="filter-panel" disabled>
+    <mat-expansion-panel class="filter-panel">
         <mat-expansion-panel-header>
             <mat-panel-title>Filter Activities</mat-panel-title>
         </mat-expansion-panel-header>
@@ -102,13 +102,13 @@
     </div>
 
     <!-- No Results Message -->
-    @if (filteredActivities.length === 0) {
+    @if (filteredActivities().length === 0) {
     <div class="no-results">
       <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
     </div>
     }
     <!-- Grid View -->
-    @if (viewMode === 'grid' && filteredActivities.length > 0) {
+    @if (viewMode === 'grid' && filteredActivities().length > 0) {
     <div class="grid-view">
         @for (activity of paginatedActivities; track $index) {
         <div class="grid-item">
@@ -118,7 +118,7 @@
     </div>
     }
     <!-- List View -->
-    @if (viewMode === 'list' && filteredActivities.length > 0) {
+    @if (viewMode === 'list' && filteredActivities().length > 0) {
     <div class="list-view">
         @for (activity of paginatedActivities; track $index) {
         <mat-card class="list-item">
@@ -152,7 +152,7 @@
     </div>
     }
 
-    @if (viewMode === 'bookmark' && filteredActivities.length > 0) {
+    @if (viewMode === 'bookmark' && filteredActivities().length > 0) {
     <div class="grid-view">
         @for (activity of bookmarkedActivities; track $index) {
         <div class="grid-item">
@@ -162,7 +162,7 @@
     </div>
     }
     <!-- Pagination -->
-    @if (filteredActivities.length > 0) {
+    @if (filteredActivities().length > 0) {
     <mat-paginator [length]="paginatorLength" [pageSize]="pageSize" [pageSizeOptions]="[6, 12, 24, 48]"
         (page)="onPageChange($event)">
     </mat-paginator>

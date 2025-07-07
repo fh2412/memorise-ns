@@ -15,12 +15,12 @@ export class MyActivityOverviewComponent implements OnInit {
   userName = '';
   userActivityList: MemoriseUserActivity[] = [];
 
-  constructor(private activityService: ActivityService, private userService: UserService) {}
+  constructor(private activityService: ActivityService, private userService: UserService) { }
 
   async ngOnInit(): Promise<void> {
     this.userId = this.userService.getLoggedInUserId();
     this.userName = history.state.userName || 'Unknown';
-    if(this.userId){
+    if (this.userId) {
       this.userActivityList = await firstValueFrom(this.activityService.getUsersActivities(this.userId));
     }
   }

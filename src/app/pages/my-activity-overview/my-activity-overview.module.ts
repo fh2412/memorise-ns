@@ -9,6 +9,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
+import { LocationCompliteComponent } from "../../components/location-complite/location-complite.component";
 
 const routes: Routes = [
   {
@@ -30,7 +31,8 @@ const routes: Routes = [
     MatChipsModule,
     MatTooltipModule,
     ActivityCardComponent,
-    ActivityListComponent
+    ActivityListComponent,
+    LocationCompliteComponent
 ]
 })
 export class ActivitiesOverviewModule { }

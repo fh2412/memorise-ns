@@ -44,7 +44,7 @@ export class UploadProgressDialogComponent implements OnInit {
       if (file) {
         const isStarred = (index === this.data.starredIndex);
         const uploadPromise = new Promise<void>((resolve, reject) => {
-          this.storageService.uploadMemoryPicture(this.data.googleStorageUrl, file, this.data.picture_count, index, isStarred).subscribe(
+          this.storageService.uploadMemoryPicture(this.data.googleStorageUrl, file, this.data.picture_count, index, isStarred, this.data.userId).subscribe(
             (uploadProgress: number | undefined) => {
               this.progress[index] = uploadProgress ?? 0;
             },

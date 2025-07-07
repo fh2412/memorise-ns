@@ -31,7 +31,7 @@ export class FileUploadService {
     });
   }
 
-  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean): Observable<number | undefined> {
+  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean, userId: string): Observable<number | undefined> {
     const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
     const storageRef = ref(this.storage, path);
 
@@ -40,7 +40,8 @@ export class FileUploadService {
       customMetadata: {
         width: file.width.toString(),
         height: file.height.toString(),
-        isStarred: isStarred.toString()
+        isStarred: isStarred.toString(),
+        userId: userId
       }
     };
 

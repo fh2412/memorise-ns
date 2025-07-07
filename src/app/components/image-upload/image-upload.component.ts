@@ -32,13 +32,13 @@ export interface ImageFileWithDimensions {
 })
 
 export class ImageUploadComponent implements OnInit {
-  @Input() userId = '';
   @Input() memoryId = '';
   @Input() memoryData: MemoryFormData | null = null;
   @Input() friends_emails: string[] = [];
   @Input() picture_count = 0;
   @Input() googleStorageUrl = "";
 
+  userId: string | null = '';
 
   selectedFiles: File[] = [];
   showStar = false;
@@ -53,17 +53,15 @@ export class ImageUploadComponent implements OnInit {
   constructor(private dialog: MatDialog, private router: Router, private userService: UserService) { }
 
   async ngOnInit(): Promise<void> {
-    if (this.picture_count == 0) {
-      this.googleStorageUrl = this.userId.toString() + Date.now().toString();
-      this.showStar = true;
-    }
-    if (this.userId == undefined) {
-      await this.userService.userId$.subscribe((userId) => {
-        if (userId) {
-          this.userId = userId;
+    this.userService.userId$.subscribe(userId => {
+      if (userId) {
+        this.userId = userId;
+        if (this.picture_count == 0) {
+          this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+          this.showStar = true;
         }
-      });
-    }
+      }
+    });
   }
 
   selectFiles(event: Event): void {

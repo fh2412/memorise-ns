@@ -5,8 +5,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
-  portraits: (string | null)[];
-  landscapes: (string | null)[];
+  portraits: (GalleryImage | null)[];
+  landscapes: (GalleryImage | null)[];
 }
 
 interface GalleryImage {
@@ -22,10 +22,10 @@ interface GalleryImage {
 })
 
 export class ImageGalleryComponent implements OnInit {
-  portraitPictures: string[] = [];
-  landscapePictures: string[] = [];
+  portraitPictures: GalleryImage[] = [];
+  landscapePictures: GalleryImage[] = [];
   layout: Layout[] = [];
-  allPictures: string[] = [];
+  allPictures: GalleryImage[] = [];
 
   constructor(
     private imageDataService: ImageGalleryService,
@@ -40,14 +40,14 @@ export class ImageGalleryComponent implements OnInit {
     });
   }
 
-  private splitImagesByOrientation(images: { url: string; width: number; height: number }[]): void {
+  private splitImagesByOrientation(images: { url: string; width: number; height: number; userId: string }[]): void {
     images.forEach((image) => {
-      (image.width > image.height ? this.landscapePictures : this.portraitPictures).push(image.url);
+      (image.width > image.height ? this.landscapePictures : this.portraitPictures).push({url: image.url, userId: image.userId});
     });
   }
 
   private generateLayoutDistribution(): Layout[] {
-    const layouts = [];
+    const layouts: Layout[] | null= [];
     const landscapeStack = [...this.landscapePictures];
     const portraitStack = [...this.portraitPictures];
     let alternateLayout = true;
@@ -69,7 +69,7 @@ export class ImageGalleryComponent implements OnInit {
     return layouts;
   }
 
-  private createLayout(type: number, portraitStack: string[], landscapeStack: string[]): Layout {
+  private createLayout(type: number, portraitStack: GalleryImage[], landscapeStack: GalleryImage[]): Layout {
     if (type === 3 || type === 4) {
       return {
         type,
@@ -99,7 +99,7 @@ export class ImageGalleryComponent implements OnInit {
     }
   }
 
-  private createPlaceholderLayout(portraitStack: string[], landscapeStack: string[]): Layout {
+  private createPlaceholderLayout(portraitStack: GalleryImage[], landscapeStack: GalleryImage[]): Layout {
     const portraitCount = portraitStack.length;
     const landscapeCount = landscapeStack.length;
     const portrait = portraitStack.length > 0 ? portraitStack.shift()! : null;
@@ -133,18 +133,18 @@ export class ImageGalleryComponent implements OnInit {
     }
   }
 
-  private createImageArrayFromLayouts(layouts: Layout[]): string[] {
+  private createImageArrayFromLayouts(layouts: Layout[]): GalleryImage[] {
     return layouts.flatMap((layout) => {
       switch (layout.type) {
         case 1:
-          return layout.landscapes.filter(img => img !== null) as string[];
+          return layout.landscapes.filter(img => img !== null);
         case 2:
-          return layout.portraits.filter(img => img !== null) as string[];
+          return layout.portraits.filter(img => img !== null);
         case 3:
         case 4:
           {
-            const portraits = layout.portraits.filter(img => img !== null) as string[];
-            const landscapes = layout.landscapes.filter(img => img !== null) as string[];
+            const portraits = layout.portraits.filter(img => img !== null);
+            const landscapes = layout.landscapes.filter(img => img !== null);
             return [...portraits, ...landscapes];
           }
         default:
@@ -153,7 +153,7 @@ export class ImageGalleryComponent implements OnInit {
     });
   }
 
-  openImageDialog(selectedImageUrl: string): void {
+  openImageDialog(selectedImageUrl: GalleryImage): void {
     // Only open dialog if the image is not null/empty
     if (!selectedImageUrl) return;
 

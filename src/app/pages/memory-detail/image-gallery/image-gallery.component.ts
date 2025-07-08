@@ -5,8 +5,13 @@ import { MatDialog } from '@angular/material/dialog';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
-  portraits: (string | null)[]; // Always present, allow null for empty slots
-  landscapes: (string | null)[]; // Always present, allow null for empty slots
+  portraits: (string | null)[];
+  landscapes: (string | null)[];
+}
+
+interface GalleryImage {
+  url: string;
+  userId: string;
 }
 
 @Component({
@@ -17,8 +22,8 @@ interface Layout {
 })
 
 export class ImageGalleryComponent implements OnInit {
-  landscapePictures: string[] = [];
   portraitPictures: string[] = [];
+  landscapePictures: string[] = [];
   layout: Layout[] = [];
   allPictures: string[] = [];
 
@@ -29,6 +34,7 @@ export class ImageGalleryComponent implements OnInit {
 
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {
+      console.log("Images: ", images);
       this.splitImagesByOrientation(images);
       this.layout = this.generateLayoutDistribution();
     });

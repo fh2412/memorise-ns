@@ -2,117 +2,113 @@
   <app-back-button [text]="'Back'" class="back-button"></app-back-button>
   <div class="container">
     @for (l of layout; track trackByLayoutType($index, l)) {
-      <div>
-        @switch (l.type) {
-          @case (1) {
-            <!-- Layout 1: Single Landscape Image -->
-            <mat-grid-list cols="1" rowHeight="4:3" gutterSize="8px">
-              <mat-grid-tile>
-                @if (l.landscapes[0]) {
-                  <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
-                    (keydown.enter)="openImageDialog(l.landscapes[0])"
-                    (keydown.space)="openImageDialog(l.landscapes[0])" tabindex="0"
-                    aria-label="View landscape image">
-                    <img [ngSrc]="l.landscapes[0]" alt="Landscape Image" fill>
-                  </button>
-                } @else {
-                  <div class="empty-slot"></div>
-                }
-              </mat-grid-tile>
-            </mat-grid-list>
+    <div>
+      @switch (l.type) {
+      @case (1) {
+      <!-- Layout 1: Single Landscape Image -->
+      <mat-grid-list cols="1" rowHeight="4:3" gutterSize="8px">
+        <mat-grid-tile>
+          @if (l.landscapes[0]) {
+          <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
+            (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
+            tabindex="0" aria-label="View landscape image">
+            <img [ngSrc]="l.landscapes[0]" alt="Landscape Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
           }
-          @case (2) {
-            <!-- Layout 2: Two Portrait Images -->
-            <mat-grid-list cols="2" rowHeight="3:4" gutterSize="8px">
-              @for (portrait of l.portraits; track $index) {
-                <mat-grid-tile>
-                  @if (portrait) {
-                    <button class="image-button" type="button" (click)="openImageDialog(portrait)"
-                      (keydown.enter)="openImageDialog(portrait)" (keydown.space)="openImageDialog(portrait)" tabindex="0"
-                      aria-label="View portrait image">
-                      <img [ngSrc]="portrait" alt="Portrait Image" fill>
-                    </button>
-                  } @else {
-                    <div class="empty-slot"></div>
-                  }
-                </mat-grid-tile>
-              }
-            </mat-grid-list>
+        </mat-grid-tile>
+      </mat-grid-list>
+      }
+      @case (2) {
+      <!-- Layout 2: Two Portrait Images -->
+      <mat-grid-list cols="2" rowHeight="3:4" gutterSize="8px">
+        @for (portrait of l.portraits; track $index) {
+        <mat-grid-tile>
+          @if (portrait) {
+          <app-person-hint [username]="'Florian Hofer'" class="person-hint"></app-person-hint>
+          <button class="image-button" type="button" (click)="openImageDialog(portrait)"
+            (keydown.enter)="openImageDialog(portrait)" (keydown.space)="openImageDialog(portrait)" tabindex="0"
+            aria-label="View portrait image">
+            <img [ngSrc]="portrait" alt="Portrait Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
           }
-          @case (3) {
-            <!-- Layout 3: One Portrait, Two Landscapes (Portrait Left) -->
-            <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
-              <mat-grid-tile rowspan="12" colspan="9">
-                @if (l.portraits[0]) {
-                  <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
-                    (keydown.enter)="openImageDialog(l.portraits[0])"
-                    (keydown.space)="openImageDialog(l.portraits[0])" tabindex="0"
-                    aria-label="View portrait image">
-                    <img [ngSrc]="l.portraits[0]" alt="Portrait Image" fill>
-                  </button>
-                } @else {
-                  <div class="empty-slot"></div>
-                }
-              </mat-grid-tile>
-              @for (landscape of l.landscapes; track $index) {
-                <mat-grid-tile rowspan="6" colspan="8">
-                  @if (landscape) {
-                    <button class="image-button" type="button" (click)="openImageDialog(landscape)"
-                      (keydown.enter)="openImageDialog(landscape)" (keydown.space)="openImageDialog(landscape)" tabindex="0"
-                      aria-label="View landscape image">
-                      <img [ngSrc]="landscape" alt="Landscape Image" fill>
-                    </button>
-                  } @else {
-                    <div class="empty-slot"></div>
-                  }
-                </mat-grid-tile>
-              }
-            </mat-grid-list>
-          }
-          @case (4) {
-            <!-- Layout 4: One Portrait, Two Landscapes (Portrait Right) -->
-            <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
-              <mat-grid-tile rowspan="6" colspan="8">
-                @if (l.landscapes[0]) {
-                  <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
-                    (keydown.enter)="openImageDialog(l.landscapes[0])"
-                    (keydown.space)="openImageDialog(l.landscapes[0])" tabindex="0"
-                    aria-label="View landscape image">
-                    <img [ngSrc]="l.landscapes[0]" alt="Landscape Image" fill>
-                  </button>
-                } @else {
-                  <div class="empty-slot"></div>
-                }
-              </mat-grid-tile>
-              <mat-grid-tile rowspan="12" colspan="9">
-                @if (l.portraits[0]) {
-                  <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
-                    (keydown.enter)="openImageDialog(l.portraits[0])"
-                    (keydown.space)="openImageDialog(l.portraits[0])" tabindex="0"
-                    aria-label="View portrait image">
-                    <img [ngSrc]="l.portraits[0]" alt="Portrait Image" fill>
-                  </button>
-                } @else {
-                  <div class="empty-slot"></div>
-                }
-              </mat-grid-tile>
-              <mat-grid-tile rowspan="6" colspan="8">
-                @if (l.landscapes[1]) {
-                  <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[1])"
-                    (keydown.enter)="openImageDialog(l.landscapes[1])"
-                    (keydown.space)="openImageDialog(l.landscapes[1])" tabindex="0"
-                    aria-label="View landscape image">
-                    <img [ngSrc]="l.landscapes[1]" alt="Landscape Image" fill>
-                  </button>
-                } @else {
-                  <div class="empty-slot"></div>
-                }
-              </mat-grid-tile>
-            </mat-grid-list>
-          }
+        </mat-grid-tile>
         }
-        <div class="layout-spacing"></div>
-      </div>
+      </mat-grid-list>
+      }
+      @case (3) {
+      <!-- Layout 3: One Portrait, Two Landscapes (Portrait Left) -->
+      <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
+        <mat-grid-tile rowspan="12" colspan="9">
+          @if (l.portraits[0]) {
+          <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
+            (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
+            tabindex="0" aria-label="View portrait image">
+            <img [ngSrc]="l.portraits[0]" alt="Portrait Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
+          }
+        </mat-grid-tile>
+        @for (landscape of l.landscapes; track $index) {
+        <mat-grid-tile rowspan="6" colspan="8">
+          @if (landscape) {
+          <button class="image-button" type="button" (click)="openImageDialog(landscape)"
+            (keydown.enter)="openImageDialog(landscape)" (keydown.space)="openImageDialog(landscape)" tabindex="0"
+            aria-label="View landscape image">
+            <img [ngSrc]="landscape" alt="Landscape Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
+          }
+        </mat-grid-tile>
+        }
+      </mat-grid-list>
+      }
+      @case (4) {
+      <!-- Layout 4: One Portrait, Two Landscapes (Portrait Right) -->
+      <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
+        <mat-grid-tile rowspan="6" colspan="8">
+          @if (l.landscapes[0]) {
+          <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
+            (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
+            tabindex="0" aria-label="View landscape image">
+            <img [ngSrc]="l.landscapes[0]" alt="Landscape Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
+          }
+        </mat-grid-tile>
+        <mat-grid-tile rowspan="12" colspan="9">
+          @if (l.portraits[0]) {
+          <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
+            (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
+            tabindex="0" aria-label="View portrait image">
+            <img [ngSrc]="l.portraits[0]" alt="Portrait Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
+          }
+        </mat-grid-tile>
+        <mat-grid-tile rowspan="6" colspan="8">
+          @if (l.landscapes[1]) {
+          <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[1])"
+            (keydown.enter)="openImageDialog(l.landscapes[1])" (keydown.space)="openImageDialog(l.landscapes[1])"
+            tabindex="0" aria-label="View landscape image">
+            <img [ngSrc]="l.landscapes[1]" alt="Landscape Image" fill>
+          </button>
+          } @else {
+          <div class="empty-slot"></div>
+          }
+        </mat-grid-tile>
+      </mat-grid-list>
+      }
+      }
+      <div class="layout-spacing"></div>
+    </div>
     }
   </div>
 </section>

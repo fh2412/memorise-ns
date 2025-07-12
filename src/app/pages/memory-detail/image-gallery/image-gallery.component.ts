@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { ImageDialogComponent } from '../../../components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
+import { getDownloadURL, getStorage, ref } from '@angular/fire/storage';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -12,6 +14,11 @@ interface Layout {
 interface GalleryImage {
   url: string;
   userId: string;
+}
+
+interface UserProfile {
+  userId: string;
+  profilePicUrl: string;
 }
 
 @Component({
@@ -26,6 +33,8 @@ export class ImageGalleryComponent implements OnInit {
   landscapePictures: GalleryImage[] = [];
   layout: Layout[] = [];
   allPictures: GalleryImage[] = [];
+  userIds: string[] = [];
+  userProfiles: Record<string, string> = {};
 
   constructor(
     private imageDataService: ImageGalleryService,
@@ -34,20 +43,53 @@ export class ImageGalleryComponent implements OnInit {
 
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {
-      console.log("Images: ", images);
+      this.getUsers(images);
       this.splitImagesByOrientation(images);
       this.layout = this.generateLayoutDistribution();
     });
   }
 
+  private async getUsers(images: { url: string; width: number; height: number; userId: string }[]): Promise<void> {
+    images.forEach((image) => {
+      this.userIds.push(image.userId);
+    });
+    const uniqueUserIds = Array.from(new Set(this.userIds)).filter(id => id !== 'unknown');
+
+    // Fetch profile pictures for unique user IDs
+    const profilePicObservables: Observable<UserProfile>[] = uniqueUserIds.map(userId => {
+      const storage = getStorage();
+      const profilePicRef = ref(storage, `profile-pictures/${userId}/profile.jpg`);
+      return from(getDownloadURL(profilePicRef)).pipe(
+        map(url => ({ userId, profilePicUrl: url })),
+        catchError(error => {
+          console.warn(`Profile picture not found for user ${userId}:`, error);
+          return of({ userId, profilePicUrl: 'assets/default-profile.png' });
+        })
+      );
+    });
+
+    // Combine all profile picture fetches
+    const profiles = await forkJoin(profilePicObservables).toPromise();
+    if (profiles) {
+      profiles.forEach(profile => {
+        if (profile) {
+          this.userProfiles[profile.userId] = profile.profilePicUrl;
+        }
+      });
+    }
+
+    console.log('User Profiles:', this.userProfiles);
+  }
+
+
   private splitImagesByOrientation(images: { url: string; width: number; height: number; userId: string }[]): void {
     images.forEach((image) => {
-      (image.width > image.height ? this.landscapePictures : this.portraitPictures).push({url: image.url, userId: image.userId});
+      (image.width > image.height ? this.landscapePictures : this.portraitPictures).push({ url: image.url, userId: image.userId });
     });
   }
 
   private generateLayoutDistribution(): Layout[] {
-    const layouts: Layout[] | null= [];
+    const layouts: Layout[] | null = [];
     const landscapeStack = [...this.landscapePictures];
     const portraitStack = [...this.portraitPictures];
     let alternateLayout = true;

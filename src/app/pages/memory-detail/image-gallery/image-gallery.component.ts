@@ -58,12 +58,12 @@ export class ImageGalleryComponent implements OnInit {
     // Fetch profile pictures for unique user IDs
     const profilePicObservables: Observable<UserProfile>[] = uniqueUserIds.map(userId => {
       const storage = getStorage();
-      const profilePicRef = ref(storage, `profile-pictures/${userId}/profile.jpg`);
+      const profilePicRef = ref(storage, `profile-pictures/${userId}/thumbnail.jpg`);
       return from(getDownloadURL(profilePicRef)).pipe(
         map(url => ({ userId, profilePicUrl: url })),
         catchError(error => {
           console.warn(`Profile picture not found for user ${userId}:`, error);
-          return of({ userId, profilePicUrl: 'assets/default-profile.png' });
+          return of({ userId, profilePicUrl: 'assets/img/1.png' });
         })
       );
     });

@@ -8,4 +8,5 @@ import { Component, Input } from '@angular/core';
 })
 export class PersonHintComponent {
   @Input() username = '';
+  @Input() url = '';
 }

@@ -1,3 +1,10 @@
+@if (username !== '') {
 <div class="creator-div">
     <span>{{ username }}</span>
 </div>
+}
+@else {
+<div class="image-div">
+    <img [src]="url" alt="Portrait Image" fill class="profile-image">
+</div>
+}

@@ -3,6 +3,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
+interface GalleryImage {
+  url: string;
+  userId: string;
+}
+
 @Component({
     selector: 'app-image-dialog',
     templateUrl: './image-dialog.component.html',
@@ -17,7 +22,7 @@ export class ImageDialogComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ImageDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { images: string[], initialIndex: number }
+    @Inject(MAT_DIALOG_DATA) public data: { images: GalleryImage[], initialIndex: number }
   ) {}
 
   ngOnInit(): void {

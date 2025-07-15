@@ -77,8 +77,6 @@ export class ImageGalleryComponent implements OnInit {
         }
       });
     }
-
-    console.log('User Profiles:', this.userProfiles);
   }
 
 

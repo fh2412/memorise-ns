@@ -18,7 +18,7 @@
 .columns {
   display: flex;
   justify-content: space-between;
-
+  min-width: 1200px;
   @media (max-width: 1480px) {
     display: block;
   }
@@ -43,7 +43,6 @@
 
 .profile-section {
   width: 25%;
-
   @media (max-width: 1480px) {
     display: flex;
     width: 50%;

@@ -10,21 +10,21 @@
     <mat-autocomplete
       #auto="matAutocomplete"
       [displayWith]="displayFn"
-      (optionSelected)="onPlaceSelected($event)"
+      (optionSelected)="onLocationSelected($event)"
     >
-      @for (suggestion of filteredSuggestions | async; track suggestion) {
+      @for (suggestion of filteredLocations | async; track suggestion) {
         <mat-option
           [value]="suggestion"
           class="place-option"
         >
           <div class="place-info">
-            <div class="main-text">{{ suggestion.placePrediction.structuredFormat.mainText.text }}</div>
-            <div class="secondary-text">{{ suggestion.placePrediction.structuredFormat.secondaryText.text }}</div>
+            <div class="main-text">{{ suggestion.name }}</div>
+            <div class="secondary-text">{{ suggestion.address }}</div>
           </div>
         </mat-option>
       }
      
-      @if ((filteredSuggestions | async)?.length === 0 && searchControl.value) {
+      @if ((filteredLocations | async)?.length === 0 && searchControl.value) {
         <mat-option disabled>
           <div class="no-results">Keine Ergebnisse gefunden</div>
         </mat-option>

@@ -6,8 +6,18 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Observable, of, startWith, debounceTime, distinctUntilChanged, switchMap } from 'rxjs';
-import { PlaceSuggestion, GooglePlacesService } from '../../services/googleplace.service';
+import { Observable, of, startWith, debounceTime, distinctUntilChanged, switchMap, map, catchError } from 'rxjs';
+import { GooglePlacesService } from '../../services/googleplace.service';
+
+export interface LocationResult {
+  name: string;
+  address: string;
+  coordinates: {
+    latitude: number;
+    longitude: number;
+  };
+  placeId: string;
+}
 
 @Component({
   selector: 'app-places-search',
@@ -25,13 +35,15 @@ import { PlaceSuggestion, GooglePlacesService } from '../../services/googleplace
 })
 export class PlacesSearchComponent implements OnInit {
   searchControl = new FormControl('');
-  filteredSuggestions: Observable<PlaceSuggestion[]> = of([]);
-
-  // Optional: Aktuelle Position für bessere Suchergebnisse
+  filteredLocations: Observable<LocationResult[]> = of([]);
+  selectedLocation: LocationResult | null = null;
+  isLoading = false;
+  
+  // Aktuelle Position für bessere Suchergebnisse
   currentLatitude?: number;
   currentLongitude?: number;
 
-  constructor(private placesService: GooglePlacesService) { }
+  constructor(private placesService: GooglePlacesService) {}
 
   ngOnInit() {
     this.setupAutocomplete();
@@ -39,18 +51,39 @@ export class PlacesSearchComponent implements OnInit {
   }
 
   private setupAutocomplete() {
-    this.filteredSuggestions = this.searchControl.valueChanges.pipe(
+    this.filteredLocations = this.searchControl.valueChanges.pipe(
       startWith(''),
-      debounceTime(300), // Wartet 300ms nach dem letzten Tastendruck
+      debounceTime(400), // Etwas länger warten für bessere Performance
       distinctUntilChanged(),
       switchMap(value => {
-        if (typeof value === 'string') {
-          return this.placesService.getPlaceSuggestions(
+        if (typeof value === 'string' && value.length >= 2) {
+          this.isLoading = true;
+          
+          return this.placesService.getLocationWithCoordinates(
             value,
             this.currentLatitude,
             this.currentLongitude
+          ).pipe(
+            map(results => {
+              this.isLoading = false;
+              return results.map(result => ({
+                name: result.details.displayName.text,
+                address: result.details.formattedAddress,
+                coordinates: {
+                  latitude: result.details.location.latitude,
+                  longitude: result.details.location.longitude
+                },
+                placeId: result.details.id
+              }));
+            }),
+            catchError(error => {
+              this.isLoading = false;
+              console.error('Search error:', error);
+              return of([]);
+            })
           );
         }
+        this.isLoading = false;
         return of([]);
       })
     );
@@ -62,6 +95,7 @@ export class PlacesSearchComponent implements OnInit {
         (position) => {
           this.currentLatitude = position.coords.latitude;
           this.currentLongitude = position.coords.longitude;
+          console.log('Current location:', this.currentLatitude, this.currentLongitude);
         },
         (error) => {
           console.warn('Geolocation nicht verfügbar:', error);
@@ -70,17 +104,19 @@ export class PlacesSearchComponent implements OnInit {
     }
   }
 
-  displayFn(suggestion: PlaceSuggestion): string {
-    return suggestion ? suggestion.placePrediction.text.text : '';
+  displayFn(location: LocationResult): string {
+    return location ? location.name : '';
   }
 
-  onPlaceSelected(event: any) {
-    const selectedPlace: PlaceSuggestion = event.option.value;
-    console.log('Ausgewählter Ort:', selectedPlace);
-
-    // Hier kannst du weitere Aktionen ausführen, z.B.:
-    // - Place Details API aufrufen
-    // - Navigation zu dem Ort
+  onLocationSelected(event: any) {
+    const selectedLocation: LocationResult = event.option.value;
+    this.selectedLocation = selectedLocation;
+    
+    console.log('Ausgewählter Ort:', selectedLocation);
+    
+    // Hier kannst du weitere Aktionen ausführen:
+    // - Karte zu den Koordinaten zentrieren
     // - Formular mit Daten füllen
+    // - Event emittieren für Parent-Komponente
   }
 }

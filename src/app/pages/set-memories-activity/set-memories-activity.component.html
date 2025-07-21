@@ -1,36 +1,24 @@
 <app-back-button style="position: absolute;"></app-back-button>
 <div class="container">
     <h1>Tell us about your activity!</h1>
-    <mat-tab-group>
-        <mat-tab label="I have an existing Activity">
-            <div class="options">
-                <div class="option">
-                    <img mat-card-image src="/assets/img/no_memories.jpg"
-                        alt="A person looking through a lexicon in search of existing activities to do">
-                    <button mat-stroked-button color="primary" [disabled]="true">
-                        <mat-icon>arrow_forward</mat-icon> Choose existing Activity
-                    </button>
-                </div>
-                <mat-divider vertical></mat-divider>
-                <div class="option">
-                    <app-bockmarked-activities [userId]="loggedInUserId" [fullComponent]="false" (activitySelected)="onActivitySelected($event)"></app-bockmarked-activities>
-                </div>
-            </div>
-        </mat-tab>
-        <mat-tab label="There is no Activity to my Memory yet">
-            <div class="options">
-                <div class="option">
-                    <img mat-card-image src="/assets/img/new-activity.webp"
-                        alt="A person searching the horizon for new optertunities">
-                    <button mat-stroked-button (click)="navigateToCreateNewActivity()">
-                        <mat-icon>arrow_forward</mat-icon> Create new Activity
-                    </button>
-                </div>
-                <mat-divider vertical></mat-divider>
-                <div class="option">
-                    <app-quick-activity-autocomplete></app-quick-activity-autocomplete>
-                </div>
-            </div>
-        </mat-tab>
-    </mat-tab-group>
+    <div class="options">
+        <div class="option">
+            <img mat-card-image src="/assets/img/no_memories.jpg"
+                alt="A person looking through a lexicon in search of existing activities to do">
+            <button mat-stroked-button [disabled]="true">
+                <mat-icon>arrow_forward</mat-icon> Choose existing Activity
+            </button>
+        </div>
+        <mat-divider vertical></mat-divider>
+        <div class="option">
+            <app-bockmarked-activities [userId]="loggedInUserId" [fullComponent]="false"
+                (activitySelected)="onActivitySelected($event)"></app-bockmarked-activities>
+        </div>
+    </div>
+    <div class="skip-btn">
+        <button mat-button>
+            <mat-icon>skip_next</mat-icon> Skip
+        </button>
+    </div>
+
 </div>

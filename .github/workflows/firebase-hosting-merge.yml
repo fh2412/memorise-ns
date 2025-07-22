@@ -26,7 +26,7 @@ jobs:
           EOF
           
       # Build the project
-      - run: ng build --configuration=production
+      - run: ng build --configuration=production --base-href /
 
       # Deploy to Firebase Hosting
       - uses: FirebaseExtended/action-hosting-deploy@v0

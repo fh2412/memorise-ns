@@ -2,7 +2,7 @@
   <button mat-icon-button (click)="onArrowClick('left')" class="left">
     <mat-icon>chevron_left</mat-icon>
   </button>
-  <img [src]="data.images[currentIndex]" alt="Large Image">
+  <img [src]="data.images[currentIndex].url" alt="Large Image">
   <button mat-icon-button (click)="onArrowClick('right')" class="right">
     <mat-icon>chevron_right</mat-icon>
   </button>

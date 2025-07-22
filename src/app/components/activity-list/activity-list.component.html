@@ -9,10 +9,7 @@
             <div class="filter-grid">
                 <!-- Location Filter -->
                 <div class="filter-item">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Location</mat-label>
-                        <input matInput formControlName="location" placeholder="Enter city or area">
-                    </mat-form-field>
+                    <app-places-search></app-places-search>
 
                     <mat-form-field appearance="outline">
                         <mat-label>Distance (km)</mat-label>
@@ -23,11 +20,9 @@
                 <!-- Group Size Filter -->
                 <div class="filter-item">
                     <div class="slider-container">
-                        <span>Group Size: {{ filterForm.get('groupSizeMin')?.value }} - {{
-                            filterForm.get('groupSizeMax')?.value }}</span>
+                        <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
                         <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                            <input matSliderStartThumb formControlName="groupSizeMin">
-                            <input matSliderEndThumb formControlName="groupSizeMax">
+                            <input matSliderThumb formControlName="groupSize">
                         </mat-slider>
                     </div>
                 </div>
@@ -35,7 +30,7 @@
                 <!-- Price Filter -->
                 <div class="filter-item">
                     <div class="slider-container">
-                        <span>Cost: ${{ filterForm.get('price')?.value }}</span>
+                        <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
                         <mat-slider min="0" max="100" step="5" showTickMarks discrete>
                             <input matSliderThumb formControlName="price">
                         </mat-slider>
@@ -102,17 +97,13 @@
     </div>
 
     <!-- No Results Message -->
-    @if (filteredActivities.length === 0) {
+    @if (filteredActivities().length === 0) {
     <div class="no-results">
-        <mat-card>
-            <mat-card-content>
-                <p>No activities match your filters.</p>
-            </mat-card-content>
-        </mat-card>
+      <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
     </div>
     }
     <!-- Grid View -->
-    @if (viewMode === 'grid' && filteredActivities.length > 0) {
+    @if (viewMode === 'grid' && filteredActivities().length > 0) {
     <div class="grid-view">
         @for (activity of paginatedActivities; track $index) {
         <div class="grid-item">
@@ -122,7 +113,7 @@
     </div>
     }
     <!-- List View -->
-    @if (viewMode === 'list' && filteredActivities.length > 0) {
+    @if (viewMode === 'list' && filteredActivities().length > 0) {
     <div class="list-view">
         @for (activity of paginatedActivities; track $index) {
         <mat-card class="list-item">
@@ -156,7 +147,7 @@
     </div>
     }
 
-    @if (viewMode === 'bookmark' && filteredActivities.length > 0) {
+    @if (viewMode === 'bookmark' && filteredActivities().length > 0) {
     <div class="grid-view">
         @for (activity of bookmarkedActivities; track $index) {
         <div class="grid-item">
@@ -166,7 +157,7 @@
     </div>
     }
     <!-- Pagination -->
-    @if (filteredActivities.length > 0) {
+    @if (filteredActivities().length > 0) {
     <mat-paginator [length]="paginatorLength" [pageSize]="pageSize" [pageSizeOptions]="[6, 12, 24, 48]"
         (page)="onPageChange($event)">
     </mat-paginator>

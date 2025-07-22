@@ -5,8 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 @Component({
     selector: 'app-add-photos',
     templateUrl: './add-photos.component.html',
-    styleUrls: ['./add-photos.component.scss'] // Corrected to styleUrls for an array
-    ,
+    styleUrls: ['./add-photos.component.scss'],
     standalone: false
 })
 export class AddPhotosComponent implements OnInit {

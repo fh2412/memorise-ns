@@ -16,7 +16,12 @@
 
     <!-- Search results section -->
     <div class="search-countainer" *ngIf="searchResults.length > 0">
+      @if (initState) {
+      <h2>Suggested Friends</h2>
+      }
+      @else {
       <h2>Search Results</h2>
+      }
       <mat-list>
         @for (friend of searchResults.slice(0, 5); track $index; let last = $last) {
           <mat-list-item>

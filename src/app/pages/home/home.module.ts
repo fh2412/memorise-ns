@@ -20,6 +20,7 @@ import { GoogleMapsModule } from '@angular/google-maps';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { PersonHintComponent } from "../../components/person-hint/person-hint.component";
 
 
 const routes: Routes = [
@@ -55,7 +56,8 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     StatsComponent,
-  ],
+    PersonHintComponent
+],
   providers: [DatePipe, ViewSelectorComponent],
 })
 export class HomeModule { }

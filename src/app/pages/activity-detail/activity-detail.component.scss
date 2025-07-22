@@ -138,22 +138,18 @@
 
 .expand-flat-button {
   overflow: hidden;
-  height: 40px;
   padding: 0 12px;
   min-width: 40px;
   width: 40px;
-  border-radius: 50%;
   transition: width 0.3s ease, border-radius 0.3s ease;
-  
+
   .button-content {
     display: flex;
     padding-left: 104px;
     justify-content: center;
     align-items: center;
-    &:hover{
-      padding-left: unset;
-    }
   }
+
   .button-text {
     white-space: nowrap;
     overflow: hidden;
@@ -164,11 +160,14 @@
 
   &:hover {
     width: 220px;
-    border-radius: 25px;
 
     .button-text {
       max-width: 120px;
       opacity: 1;
+    }
+
+    .button-content {
+      padding-left: unset;
     }
   }
 }

@@ -10,28 +10,124 @@ export class FileUploadService {
   private storage = inject(Storage);
 
 
-  uploadProfilePicture(file: File, userId: string): Observable<string> {
-    return new Observable((observer) => {
-      const filePath = `profile-pictures/${userId}/profile.jpg`;
-      const storageRef = ref(this.storage, filePath);
+uploadProfilePicture(file: File, userId: string): Observable<string> {
+  return new Observable((observer) => {
+    const filePath = `profile-pictures/${userId}/profile.jpg`;
+    const thumbnailPath = `profile-pictures/${userId}/thumbnail.jpg`;
+    
+    const storageRef = ref(this.storage, filePath);
+    const thumbnailRef = ref(this.storage, thumbnailPath);
+    
+    // Create thumbnail
+    this.createThumbnail(file, 128).then((thumbnailFile) => {
       const uploadTask = uploadBytesResumable(storageRef, file);
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {console.log(snapshot.state);},
-        (error) => {
-          console.log("ERROR IN SERVIE: ", error);
-          observer.error(error);
-        },
-        async () => {
-          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      const thumbnailUploadTask = uploadBytesResumable(thumbnailRef, thumbnailFile);
+      
+      let mainUploadComplete = false;
+      let thumbnailUploadComplete = false;
+      let downloadURL = '';
+      
+      const checkCompletion = () => {
+        if (mainUploadComplete && thumbnailUploadComplete) {
           observer.next(downloadURL);
           observer.complete();
         }
+      };
+      
+      // Main image upload
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          console.log('Main upload:', snapshot.state);
+        },
+        (error) => {
+          console.log("ERROR IN SERVICE (main): ", error);
+          observer.error(error);
+        },
+        async () => {
+          downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+          mainUploadComplete = true;
+          checkCompletion();
+        }
       );
+      
+      // Thumbnail upload
+      thumbnailUploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          console.log('Thumbnail upload:', snapshot.state);
+        },
+        (error) => {
+          console.log("ERROR IN SERVICE (thumbnail): ", error);
+          observer.error(error);
+        },
+        async () => {
+          console.log('Thumbnail upload completed');
+          thumbnailUploadComplete = true;
+          checkCompletion();
+        }
+      );
+      
+    }).catch((error) => {
+      console.log("ERROR creating thumbnail: ", error);
+      observer.error(error);
     });
-  }
+  });
+}
 
-  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean): Observable<number | undefined> {
+private createThumbnail(file: File, minSize: number): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    
+    img.onload = () => {
+      const originalWidth = img.width;
+      const originalHeight = img.height;
+      
+      // Calculate new dimensions maintaining aspect ratio
+      // At least one dimension should be minSize (64px)
+      let newWidth: number;
+      let newHeight: number;
+      
+      if (originalWidth < originalHeight) {
+        // Portrait: make width = minSize, scale height proportionally
+        newWidth = minSize;
+        newHeight = Math.round((originalHeight * minSize) / originalWidth);
+      } else {
+        // Landscape or square: make height = minSize, scale width proportionally
+        newHeight = minSize;
+        newWidth = Math.round((originalWidth * minSize) / originalHeight);
+      }
+      
+      canvas.width = newWidth;
+      canvas.height = newHeight;
+      
+      // Draw image scaled to new dimensions
+      ctx?.drawImage(img, 0, 0, newWidth, newHeight);
+      
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const thumbnailFile = new File([blob], 'thumbnail.jpg', {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          resolve(thumbnailFile);
+        } else {
+          reject(new Error('Failed to create thumbnail blob'));
+        }
+      }, 'image/jpeg', 0.8);
+    };
+    
+    img.onerror = () => {
+      reject(new Error('Failed to load image'));
+    };
+    
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean, userId: string): Observable<number | undefined> {
     const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
     const storageRef = ref(this.storage, path);
 
@@ -40,7 +136,8 @@ export class FileUploadService {
       customMetadata: {
         width: file.width.toString(),
         height: file.height.toString(),
-        isStarred: isStarred.toString()
+        isStarred: isStarred.toString(),
+        userId: userId
       }
     };
 

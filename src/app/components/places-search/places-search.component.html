@@ -1,0 +1,36 @@
+<form class="search-form">
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Suche nach Orten</mat-label>
+    <input
+      matInput
+      [formControl]="searchControl"
+      [matAutocomplete]="auto"
+      placeholder="z.B. Pizza, Restaurant, Café..."
+    >
+    <mat-autocomplete
+      #auto="matAutocomplete"
+      [displayWith]="displayFn"
+      (optionSelected)="onLocationSelected($event)"
+    >
+      @for (suggestion of filteredLocations | async; track suggestion) {
+        <mat-option
+          [value]="suggestion"
+          class="place-option"
+        >
+          <div class="place-info">
+            <div class="main-text">{{ suggestion.name }}</div>
+            <div class="secondary-text">{{ suggestion.address }}</div>
+          </div>
+        </mat-option>
+      }
+     
+      @if ((filteredLocations | async)?.length === 0 && searchControl.value) {
+        <mat-option disabled>
+          <div class="no-results">Keine Ergebnisse gefunden</div>
+        </mat-option>
+      }
+    </mat-autocomplete>
+   
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+</form>

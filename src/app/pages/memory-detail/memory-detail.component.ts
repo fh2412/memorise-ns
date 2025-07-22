@@ -21,6 +21,7 @@ export interface ImageWithMetadata {
   height: number;
   created: string;
   size: number;
+  userId: string;
 }
 
 
@@ -123,7 +124,8 @@ get displayImages(): ImageWithMetadata[] {
       width: 0,
       height: 0,
       created: 'placeholder',
-      size: 0
+      size: 0,
+      userId: '',
     });
   }
   return imagesToShow.slice(0, 5); // Ensure it's always 5 items
@@ -146,6 +148,7 @@ private getImages(imageId: string): void {
           height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
           created: metadata.timeCreated,
           size: metadata.size,
+          userId: metadata.customMetadata?.['userId'] || '',
         }))
       );
     });

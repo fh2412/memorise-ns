@@ -59,13 +59,10 @@ export class ActivityService {
       params = params.set('tag', filter.tag);
     }
 
-    if (filter.groupSizeMin !== undefined) {
-      params = params.set('groupSizeMin', filter.groupSizeMin.toString());
+    if (filter.groupSize !== undefined) {
+      params = params.set('groupSize', filter.groupSize.toString());
     }
 
-    if (filter.groupSizeMax !== undefined) {
-      params = params.set('groupSizeMax', filter.groupSizeMax.toString());
-    }
 
     if (filter.price !== undefined) {
       params = params.set('price', filter.price.toString());

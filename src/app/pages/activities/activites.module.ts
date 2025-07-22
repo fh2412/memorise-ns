@@ -16,6 +16,7 @@ import { CompanyInformationComponent } from '../../components/company-informatio
 import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
 import { ColorTestComponent } from "../../components/color-test/color-test.component";
 import { BockmarkedActivitiesComponent } from "../../components/bockmarked-activities/bockmarked-activities.component";
+import { NotFoundComponent } from "../../components/not-found/not-found.component";
 
 const routes: Routes = [
   {
@@ -47,7 +48,8 @@ const routes: Routes = [
     MyActivityInformationComponent,
     ActivityListComponent,
     ColorTestComponent,
-    BockmarkedActivitiesComponent
+    BockmarkedActivitiesComponent,
+    NotFoundComponent
 ]
 })
 export class ActivitiesModule { }

@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatTableModule} from '@angular/material/table'; 
 import { ImageGalleryComponent } from './image-gallery.component';
 import { BackButtonComponent } from "../../../components/back-button/back-button.component";
+import { PersonHintComponent } from "../../../components/person-hint/person-hint.component";
 
 const routes: Routes = [
   {
@@ -42,6 +43,7 @@ const routes: Routes = [
     MatTableModule,
     BackButtonComponent,
     NgOptimizedImage,
+    PersonHintComponent
 ]
 })
 export class ImageGalleryModule { }

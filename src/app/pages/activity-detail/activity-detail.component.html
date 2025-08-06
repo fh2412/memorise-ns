@@ -73,10 +73,10 @@ Loading activity details...
     <!-- Toggles: Indoor/Outdoor, Seasons, Weather -->
     <div class="toggles-container">
         <mat-button-toggle-group disabled>
-            <mat-button-toggle [checked]="!activity.indoor">
+            <mat-button-toggle [checked]="activity.indoor==='Indoor'">
                 <mat-icon>home</mat-icon>
             </mat-button-toggle>
-            <mat-button-toggle [checked]="activity.indoor">
+            <mat-button-toggle [checked]="activity.indoor==='Outdoor'">
                 <mat-icon>landscape</mat-icon>
             </mat-button-toggle>
         </mat-button-toggle-group>

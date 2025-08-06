@@ -4,7 +4,12 @@
       <!-- Top section with location type and price -->
       <div class="top-section">
         <div class="location-type" matTooltipPosition="above">
-          <mat-icon>{{ activity.indoor ? 'wb_sunny' : 'home' }}</mat-icon>
+          @if (activity.indoor === 'Indoor') {
+          <mat-icon>home</mat-icon>
+
+          }@else {
+            <mat-icon>wb_sunny</mat-icon>
+          }
         </div>
         @if (!myActivity) {
         <div class="location-type" matTooltipPosition="above">

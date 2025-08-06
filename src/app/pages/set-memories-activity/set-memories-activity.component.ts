@@ -19,12 +19,7 @@ export class SetMemoriesActivityComponent implements OnInit {
   }
 
   onActivitySelected(activityId: number) {
-    console.log('Received from child:', activityId);
     this.router.navigate(['/newmemory'], { state: { activityId: activityId } });
-  }
-
-  addMemory(): void {
-    this.router.navigate(['/newmemory'], { state: { quickActivity: this.quickActivity } });
   }
 
   navigateToCreateNewActivity(): void {

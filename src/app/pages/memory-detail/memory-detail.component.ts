@@ -47,7 +47,7 @@ export class MemoryDetailComponent implements OnInit {
 
   showMore = false;
   truncatedDescription = '';
-  characterLimit = 150;
+  characterLimit = 500;
   imagesWithMetadata: ImageWithMetadata[] = [];
   isLoadingImages = true;
   hasPrivileges = false;

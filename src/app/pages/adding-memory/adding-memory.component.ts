@@ -120,8 +120,9 @@ export class AddingMemoryComponent implements OnInit {
   private async patchActivityData(): Promise<void> {
     const state = this.location.getState() as { quickActivity: string; activityId: number };
     this.memoryForm.patchValue({ activity_id: state?.activityId });
-    if (state.quickActivity) {
-      this.memoryForm.patchValue({ quickActivityTitle: state?.quickActivity });
+    if (state.activityId === 56) {
+      //this.memoryForm.patchValue({ quickActivityTitle: state?.quickActivity });
+      this.memoryForm.patchValue({ quickActivityTitle: "placeholder" });
     }
     else {
       this.hasActivity = true;

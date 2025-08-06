@@ -19,6 +19,6 @@
 
   .profile-image {
     @include mixins.profile-pic();
-    width: 36px;
-    box-shadow: 0 2px 4px var(--mat-sys-shadow);
+    width: 48px;
+    border: 1.5px solid var(--mat-sys-shadow);
   }

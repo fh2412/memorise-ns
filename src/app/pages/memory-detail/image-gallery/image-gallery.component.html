@@ -9,6 +9,7 @@
       <mat-grid-list cols="1" rowHeight="4:3" gutterSize="8px">
         <mat-grid-tile>
           @if (l.landscapes[0]) {
+          <app-person-hint [url]="userProfiles[l.landscapes[0].userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
             (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
             tabindex="0" aria-label="View landscape image">
@@ -44,6 +45,7 @@
       <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile rowspan="12" colspan="9">
           @if (l.portraits[0]) {
+          <app-person-hint [url]="userProfiles[l.portraits[0].userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
             (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
             tabindex="0" aria-label="View portrait image">
@@ -56,6 +58,7 @@
         @for (landscape of l.landscapes; track $index) {
         <mat-grid-tile rowspan="6" colspan="8">
           @if (landscape) {
+          <app-person-hint [url]="userProfiles[landscape.userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(landscape)"
             (keydown.enter)="openImageDialog(landscape)" (keydown.space)="openImageDialog(landscape)" tabindex="0"
             aria-label="View landscape image">
@@ -73,6 +76,7 @@
       <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile rowspan="6" colspan="8">
           @if (l.landscapes[0]) {
+          <app-person-hint [url]="userProfiles[l.landscapes[0].userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
             (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
             tabindex="0" aria-label="View landscape image">
@@ -84,6 +88,7 @@
         </mat-grid-tile>
         <mat-grid-tile rowspan="12" colspan="9">
           @if (l.portraits[0]) {
+           <app-person-hint [url]="userProfiles[l.portraits[0].userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
             (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
             tabindex="0" aria-label="View portrait image">
@@ -95,6 +100,7 @@
         </mat-grid-tile>
         <mat-grid-tile rowspan="6" colspan="8">
           @if (l.landscapes[1]) {
+          <app-person-hint [url]="userProfiles[l.landscapes[1].userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[1])"
             (keydown.enter)="openImageDialog(l.landscapes[1])" (keydown.space)="openImageDialog(l.landscapes[1])"
             tabindex="0" aria-label="View landscape image">

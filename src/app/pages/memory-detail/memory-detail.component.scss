@@ -79,7 +79,9 @@ h1{
   .custom-pre {
     font-family: monospace;
     font-size: large;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
+    white-space: pre-wrap;
+    line-height: 1.13rem;
   }
 }
 

@@ -73,6 +73,7 @@ export class MemoryDetailComponent implements OnInit {
     try {
       const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryId));
       this.memorydb = memoryData;
+      console.log(this.memorydb.text);
 
       await this.initializeMemoryDetails();
       const activityData = await firstValueFrom(this.activityService.getActivityDetails(this.memorydb.activity_id));

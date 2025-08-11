@@ -8,6 +8,7 @@ import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { Memory } from '../../../models/memoryInterface.model';
 import { ImageWithMetadata } from '../memory-detail.component';
 import { Router } from '@angular/router';
+import { FormControl } from '@angular/forms';
 
 
 @Component({
@@ -17,23 +18,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./photo-download.component.scss']
 })
 export class PhotoDownloadComponent implements OnInit {
-  // Input for photos from parent component
   photos: ImageWithMetadata[] = [];
   memorydb!: Memory;
-
-  // Data source for table view
   dataSource: MatTableDataSource<ImageWithMetadata>;
-
-  // Selection model for checkbox selection
   selection = new SelectionModel<ImageWithMetadata>(true, []);
-
-  // Display modes
   displayMode: 'grid' | 'table' = 'grid';
-
-  // Columns for table view
   displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'uploadDate'];
 
-  // Filter predicate
+  toppings = new FormControl('');
+  userList: string[] = ['Flo', 'Maxi', 'Niki', 'Jonas'];
   filterValue = '';
   isDownloading = false;
 

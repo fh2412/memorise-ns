@@ -10,6 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import {MatSelectModule} from '@angular/material/select';
 
 import { PhotoDownloadComponent } from './photo-download.component';
 import { RouterModule, Routes } from '@angular/router';
@@ -36,7 +37,8 @@ const routes: Routes = [
     MatInputModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    BackButtonComponent
+    BackButtonComponent,
+    MatSelectModule
   ],
 })
 export class PhotoDownloadModule { }

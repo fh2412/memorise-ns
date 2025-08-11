@@ -2,71 +2,75 @@
 
 .header {
   margin-top: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .headline{
-      width: 50%;
-      h1{
-        width: 100%;
-        font-size: 50px;
-        font-weight: bold;
-        margin-left: 25px;
-      }
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .headline {
+    width: 50%;
+
+    h1 {
+      width: 100%;
+      font-size: 50px;
+      font-weight: bold;
+      margin-left: 25px;
     }
-    button{
-        margin-right: 25px;
-    }
+  }
+
+  button {
+    margin-right: 25px;
+  }
 }
 
 .photo-download-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 20px;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+.toolbar {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
   .display-mode-toggle {
     align-self: flex-end;
   }
-  
-  .photo-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-  }
-  
-  .photo-card {
-    position: relative;
-    border-radius: 10px;
+}
 
-    .photo-checkbox {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      z-index: 10;
-    }
-  
-    img {
-      height: 250px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.photo-card {
+  .photo-checkbox {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
   }
-  
-  .photo-table {
-    width: 100%;
-  
-    .thumbnail {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-    }
+
+  img {
+    height: 250px;
+    object-fit: cover;
   }
-  
-  .action-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 16px;
-    margin-top: 20px;
+}
+
+.photo-table {
+  width: 100%;
+
+  .thumbnail {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
   }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+}

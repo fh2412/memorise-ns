@@ -73,7 +73,6 @@ export class EditActivityComponent implements OnInit {
     this.isLoading = true;
     if (confirmed && this.activityId) {
       const updatedActivityData = this.activityFormComponent.getFormData();
-      console.log(updatedActivityData);
       this.activityService.updateUserActivity(this.activityId, updatedActivityData).subscribe({
         next: () => {
           const newImage = this.activityFormComponent.getImageFile();

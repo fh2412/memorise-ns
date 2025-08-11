@@ -3,8 +3,7 @@
         <mat-card-title><b>Bookmarked Activities</b></mat-card-title>
         <span>{{displayActivities.length}}/10</span>
         @if (!this.activities) {
-        <mat-card-subtitle>There are no bookmarked Activities. Just add one by clicking the bookmark
-            icon</mat-card-subtitle>
+        <mat-card-subtitle>{{emptyText}}</mat-card-subtitle>
         }
         @else {
         <mat-card-subtitle>

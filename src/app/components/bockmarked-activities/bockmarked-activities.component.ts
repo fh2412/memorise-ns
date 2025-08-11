@@ -31,11 +31,15 @@ export class BockmarkedActivitiesComponent implements OnInit {
   showAll = false;
   canShowMore = false;
   private readonly maxInitialEntries = 5;
+  emptyText = "There are no bookmarked Activities. Just add one by clicking the bookmark icon";
 
   constructor(private router: Router, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
 
   ngOnInit(): void {
     this.getBookmarks();
+    if(!this.fullComponent){
+      this.emptyText = "You haven’t bookmarked any activities yet. Visit the Activity page to bookmark some, and they’ll show up here.";
+    }
   }
 
   async getBookmarks() {

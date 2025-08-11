@@ -16,7 +16,7 @@
         <mat-label>Users</mat-label>
         <mat-select multiple>
           @for (user of userList; track user) {
-          <mat-option [value]="user">{{user}}</mat-option>
+          <mat-option [value]="user">{{user.name}}</mat-option>
           }
         </mat-select>
       </mat-form-field>

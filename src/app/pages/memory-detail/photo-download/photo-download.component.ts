@@ -9,6 +9,8 @@ import { Memory } from '../../../models/memoryInterface.model';
 import { ImageWithMetadata } from '../memory-detail.component';
 import { Router } from '@angular/router';
 import { FormControl } from '@angular/forms';
+import { FriendsService } from '../../../services/friends.service';
+import { Friend } from '../../../models/userInterface.model';
 
 
 @Component({
@@ -26,11 +28,11 @@ export class PhotoDownloadComponent implements OnInit {
   displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'uploadDate'];
 
   toppings = new FormControl('');
-  userList: string[] = ['Flo', 'Maxi', 'Niki', 'Jonas'];
+  userList: Friend[] = [];
   filterValue = '';
   isDownloading = false;
 
-  constructor(public dialog: MatDialog, private imageDataService: ImageGalleryService, private router: Router) {
+  constructor(public dialog: MatDialog, private imageDataService: ImageGalleryService, private friendsService: FriendsService, private router: Router) {
     this.dataSource = new MatTableDataSource<ImageWithMetadata>([]);
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
@@ -43,6 +45,9 @@ export class PhotoDownloadComponent implements OnInit {
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {
       this.dataSource.data = images;
+    });
+    this.friendsService.currentFriendData.subscribe((users) => {
+      this.userList = users;
     });
   }
 

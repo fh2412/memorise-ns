@@ -13,6 +13,7 @@ import { Friend, MemoriseUser } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
 import { ActivityService } from '../../services/activity.service';
 import { firstValueFrom } from 'rxjs';
+import { FriendsService } from '../../services/friends.service';
 
 
 export interface ImageWithMetadata {
@@ -52,7 +53,7 @@ export class MemoryDetailComponent implements OnInit {
   isLoadingImages = true;
   hasPrivileges = false;
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private activityService: ActivityService) { }
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private friendsService: FriendsService, private activityService: ActivityService) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -62,7 +63,7 @@ export class MemoryDetailComponent implements OnInit {
   }
 
   private async getUsersPermissions(): Promise<void> {
-    if(this.loggedInUserId){
+    if (this.loggedInUserId) {
       this.hasPrivileges = await this.memoryService.checkMemoriseUserPermission(this.memoryId.toString(), this.loggedInUserId);
     }
   }
@@ -117,52 +118,52 @@ export class MemoryDetailComponent implements OnInit {
     }
   }
 
-get displayImages(): ImageWithMetadata[] {
-  const imagesToShow = [...this.imagesWithMetadata];
-  while (imagesToShow.length < 5) {
-    imagesToShow.push({
-      url: '../../../assets/img/placeholder_image.png',
-      width: 0,
-      height: 0,
-      created: 'placeholder',
-      size: 0,
-      userId: '',
-    });
+  get displayImages(): ImageWithMetadata[] {
+    const imagesToShow = [...this.imagesWithMetadata];
+    while (imagesToShow.length < 5) {
+      imagesToShow.push({
+        url: '../../../assets/img/placeholder_image.png',
+        width: 0,
+        height: 0,
+        created: 'placeholder',
+        size: 0,
+        userId: '',
+      });
+    }
+    return imagesToShow.slice(0, 5); // Ensure it's always 5 items
   }
-  return imagesToShow.slice(0, 5); // Ensure it's always 5 items
-}
 
 
-private getImages(imageId: string): void {
-  const storage = getStorage();
-  const listRef = ref(storage, `memories/${imageId}`);
-  this.isLoadingImages = true;
-  this.imagesWithMetadata = [];
+  private getImages(imageId: string): void {
+    const storage = getStorage();
+    const listRef = ref(storage, `memories/${imageId}`);
+    this.isLoadingImages = true;
+    this.imagesWithMetadata = [];
 
-  listAll(listRef).then((res) => {
-    const fetchPromises = res.items.map((itemRef) => {
-      const fullRef = ref(storage, itemRef.fullPath);
-      return getDownloadURL(fullRef).then((url) =>
-        getMetadata(fullRef).then((metadata) => ({
-          url,
-          width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
-          height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
-          created: metadata.timeCreated,
-          size: metadata.size,
-          userId: metadata.customMetadata?.['userId'] || '',
-        }))
-      );
-    });
+    listAll(listRef).then((res) => {
+      const fetchPromises = res.items.map((itemRef) => {
+        const fullRef = ref(storage, itemRef.fullPath);
+        return getDownloadURL(fullRef).then((url) =>
+          getMetadata(fullRef).then((metadata) => ({
+            url,
+            width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
+            height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
+            created: metadata.timeCreated,
+            size: metadata.size,
+            userId: metadata.customMetadata?.['userId'] || '',
+          }))
+        );
+      });
 
-    Promise.all(fetchPromises).then((images) => {
-      this.imagesWithMetadata = images;
+      Promise.all(fetchPromises).then((images) => {
+        this.imagesWithMetadata = images;
+        this.isLoadingImages = false;
+      });
+    }).catch((error) => {
+      console.error('Error listing items:', error);
       this.isLoadingImages = false;
     });
-  }).catch((error) => {
-    console.error('Error listing items:', error);
-    this.isLoadingImages = false;
-  });
-}
+  }
 
 
   openGallery() {
@@ -172,6 +173,22 @@ private getImages(imageId: string): void {
 
   openDownloadPage(): void {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
+    if (this.memorydbFriends) {
+      const memoriesUser: Friend[] = [
+        ...this.memorydbFriends,
+        {
+          country: this.memoryCreator.country,
+          dob: null,
+          name: this.memoryCreator.name,
+          profilepic: this.memoryCreator.profilepic,
+          sharedMemoriesCount: 0,
+          user_id: this.memoryCreator.user_id,
+          gender: this.memoryCreator.gender,
+          email: this.memoryCreator.email
+        }
+      ];
+      this.friendsService.updateFriendsData(memoriesUser);
+    }
     this.router.navigate(['memory', this.memoryId, 'download'], {
       state: { memory: this.memorydb }
     });

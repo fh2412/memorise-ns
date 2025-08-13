@@ -20,6 +20,9 @@
       </div>
     </div>
     <br>
+    @if (ingoingFriends.length>=0) {
+      <app-ingoing-requests></app-ingoing-requests>
+    }
     <mat-tab-group>
       <mat-tab label="Friends/Suggestions">
         <div class="friends-container">

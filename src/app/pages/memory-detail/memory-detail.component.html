@@ -57,8 +57,10 @@
                 <b>{{ memoryCreator.name || 'name' }}</b><br>
                 <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
-              <mat-divider vertical style="height: 4rem; margin-left: 3rem;" *ngIf="memorydbFriends"></mat-divider>
-              <span class="more" *ngIf="memorydbFriends">+ {{memorydbFriends.length}} more</span>
+              @if (memorydbFriends) {
+              <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
+              <app-friends-profile-pics [friends]="memorydbFriends"></app-friends-profile-pics>
+              }
             </div>
             }
             <mat-card appearance="outlined" class="desc big-screen">

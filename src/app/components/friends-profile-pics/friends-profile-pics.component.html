@@ -1,0 +1,47 @@
+<div class="friends-profile-container">
+      <div class="profile-pics-wrapper">
+        <!-- Display up to 3 profile pictures -->
+        @for (friend of displayedFriends; track friend.user_id; let i = $index) {
+          <div 
+            class="profile-pic mat-elevation-z2"
+            [style.z-index]="displayedFriends.length - i"
+            [style.left.px]="i * 20"
+            [matTooltip]="getTooltipText(friend)"
+            matTooltipPosition="above"
+          >
+            @if (friend.profilepic) {
+              <img 
+                [src]="friend.profilepic" 
+                [alt]="friend.name + ' profile picture'"
+                class="profile-image"
+                (error)="onImageError($event)"
+              />
+            } @else {
+              <div class="default-avatar">
+                <mat-icon class="avatar-icon">person</mat-icon>
+                <span class="initials">{{ getInitials(friend.name) }}</span>
+              </div>
+            }
+          </div>
+        }
+        
+        <!-- Badge for remaining count -->
+        @if (remainingCount > 0) {
+          <div 
+            class="remaining-badge mat-elevation-z2"
+            [style.left.px]="displayedFriends.length * 20"
+            [matTooltip]="getRemainingTooltip()"
+            matTooltipPosition="above"
+          >
+            <span class="remaining-text">+{{ remainingCount }}</span>
+          </div>
+        }
+      </div>
+      
+      <!-- Text indicator for remaining friends -->
+      @if (remainingCount > 0) {
+        <span class="remaining-count-text">
+          and {{ remainingCount }} more
+        </span>
+      }
+    </div>

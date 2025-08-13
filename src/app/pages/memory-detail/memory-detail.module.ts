@@ -15,6 +15,7 @@ import { BackButtonComponent } from "../../components/back-button/back-button.co
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatTableModule} from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FriendsProfilePicsComponent } from "../../components/friends-profile-pics/friends-profile-pics.component";
 
 const routes: Routes = [
   {
@@ -42,7 +43,8 @@ const routes: Routes = [
     MatToolbarModule,
     MatTableModule,
     MatProgressSpinnerModule,
-    MapSnippetComponent
+    MapSnippetComponent,
+    FriendsProfilePicsComponent
 ]
 })
 export class MemoryModule { }

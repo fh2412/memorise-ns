@@ -1,30 +1,21 @@
-<mat-card 
-      class="friend-requests-card" 
-      matRipple
-      (click)="openBottomSheet()"
-      [style.cursor]="'pointer'">
-      <mat-card-content class="card-content">
-        <div class="icon-section">
-          <mat-icon 
-            class="notification-icon"
-            [matBadge]="friends.length" 
-            matBadgeColor="accent"
-            [matBadgeHidden]="friends.length === 0">
-            person_add
-          </mat-icon>
-        </div>
-        <div class="text-section">
-          <h3 class="card-title">Friend Requests</h3>
-          <p class="card-subtitle">
-            @if (friends.length === 1) {
-              You have 1 pending friend request
-            } @else {
-              You have {{ friends.length }} pending friend requests
-            }
-          </p>
-        </div>
-        <div class="arrow-section">
-          <mat-icon class="arrow-icon">chevron_right</mat-icon>
-        </div>
-      </mat-card-content>
-    </mat-card>
+<mat-card class="friend-requests-card" matRipple appearance="outlined" (click)="openBottomSheet()"
+  [style.cursor]="'pointer'">
+  <mat-card-content class="card-content">
+    <div class="icon-section">
+      <mat-icon class="notification-icon" [matBadge]="friends.length" matBadgeColor="accent"
+        [matBadgeHidden]="friends.length === 0">
+        person_add
+      </mat-icon>
+    </div>
+    <div class="text-section">
+      <h3 class="card-title">Friend Requests</h3>
+      <p class="card-subtitle">
+        @if (friends.length === 1) {
+        You have 1 pending friend request
+        } @else {
+        You have {{ friends.length }} pending friend requests
+        }
+      </p>
+    </div>
+  </mat-card-content>
+</mat-card>

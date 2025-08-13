@@ -20,37 +20,19 @@
       </div>
     </div>
     <br>
-    @if (ingoingFriends.length>=0) {
-      <app-ingoing-requests></app-ingoing-requests>
+    @if (ingoingFriends.length>0) {
+    <app-ingoing-requests [friends]="ingoingFriends"></app-ingoing-requests>
     }
-    <mat-tab-group>
-      <mat-tab label="Friends/Suggestions">
-        <div class="friends-container">
-          <div class="suggestions-card">
-            <app-friend-card [friends]="friends" [title]="'Your Friends'" [requested]='false' [buttonText]="'Remove'"
-              [requestedText]="'Undo'" [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-card>
-          </div>
+    <div class="friends-container">
+      <div class="suggestions-card">
+        <app-friend-card [friends]="friends" [title]="'Your Friends'" [requested]='false' [buttonText]="'Remove'"
+          [requestedText]="'Undo'" [buttonColor]="'warn'" [buttonIcon]="'person_remove'"></app-friend-card>
+      </div>
 
-          <!-- Right side: Suggestions Card -->
-          <div class="suggestions-card">
-              <app-friend-search [userId]="loggedInUserId"></app-friend-search>
-          </div>
-        </div>
-      </mat-tab>
-      <mat-tab label="Pending/Requested">
-        <div class="friends-container">
-          <!-- Left side: Search Bar -->
-          <div class="suggestions-card">
-            <app-friend-card [friends]="pendingFriends" [title]="'Pending Requests'" [requested]='true'
-              [buttonText]="'Request'" [requestedText]="'Requested'" [buttonColor]="'primary'"
-              [buttonIcon]="'person_add'"></app-friend-card>
-          </div>
-          <div class="suggestions-card">
-            <app-friend-card [friends]="ingoingFriends" [title]="'Ingoing Requests'" [buttonText]="'Accept'"
-              [requestedText]="'Accepted'" [buttonColor]="'primary'" [buttonIcon]="'person_add'"></app-friend-card>
-          </div>
-        </div>
-      </mat-tab>
-    </mat-tab-group>
+      <!-- Right side: Suggestions Card -->
+      <div class="suggestions-card">
+        <app-friend-search [userId]="loggedInUserId"></app-friend-search>
+      </div>
+    </div>
   </div>
 </div>

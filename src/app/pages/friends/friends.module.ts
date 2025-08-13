@@ -28,7 +28,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     FriendsComponent,
-    FriendCardComponent,
     FriendSearchComponent,
     UserInformationComponent,
   ],
@@ -46,7 +45,8 @@ const routes: Routes = [
     FriendPreviewComponent,
     MatInputModule,
     FormsModule,
-    IngoingRequestsComponent
+    IngoingRequestsComponent,
+    FriendCardComponent
 ]
 })
 export class FriendsModule { }

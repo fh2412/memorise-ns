@@ -40,7 +40,7 @@ export class FriendsComponent implements OnInit {
   private loadFriendsData(): void {
     if (this.loggedInUserId != null) {
       this.fetchFriends(this.loggedInUserId);
-      this.fetchPendingFriends(this.loggedInUserId);
+      //this.fetchPendingFriends(this.loggedInUserId);
       this.fetchIngoingFriends(this.loggedInUserId);
     }
   }
@@ -52,12 +52,12 @@ export class FriendsComponent implements OnInit {
     );
   }
 
-  private fetchPendingFriends(userId: string): void {
+  /*private fetchPendingFriends(userId: string): void {
     this.friendsService.getPendingFriends(userId).subscribe(
       (friends) => this.pendingFriends = friends,
       (error) => this.handleFetchError('pending friends', error)
     );
-  }
+  }*/
 
   private fetchIngoingFriends(userId: string): void {
     this.friendsService.getIngoingFriends(userId).subscribe(

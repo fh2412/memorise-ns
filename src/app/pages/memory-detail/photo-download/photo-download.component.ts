@@ -8,10 +8,16 @@ import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { Memory } from '../../../models/memoryInterface.model';
 import { ImageWithMetadata } from '../memory-detail.component';
 import { Router } from '@angular/router';
-import { FormControl } from '@angular/forms';
 import { FriendsService } from '../../../services/friends.service';
 import { Friend } from '../../../models/userInterface.model';
+import { MemoriseUser } from '../../../models/userInterface.model';
+import { forkJoin } from 'rxjs';
+import { UserService } from '../../../services/userService';
 
+// Extended interface to include user data
+export interface ImageWithUserData extends ImageWithMetadata {
+  user?: MemoriseUser;
+}
 
 @Component({
   selector: 'app-photo-download',
@@ -20,36 +26,109 @@ import { Friend } from '../../../models/userInterface.model';
   styleUrls: ['./photo-download.component.scss']
 })
 export class PhotoDownloadComponent implements OnInit {
-  photos: ImageWithMetadata[] = [];
+  photos: ImageWithUserData[] = [];
   memorydb!: Memory;
-  dataSource: MatTableDataSource<ImageWithMetadata>;
-  selection = new SelectionModel<ImageWithMetadata>(true, []);
+  dataSource: MatTableDataSource<ImageWithUserData>;
+  selection = new SelectionModel<ImageWithUserData>(true, []);
   displayMode: 'grid' | 'table' = 'grid';
   displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'size', 'uploadDate'];
-
-  toppings = new FormControl('');
+  selectedUsers: MemoriseUser[] = [];
   userList: Friend[] = [];
+  availableUsers: MemoriseUser[] = []; // Users who have uploaded photos
   filterValue = '';
   isDownloading = false;
+  isLoadingUsers = false;
 
-  constructor(public dialog: MatDialog, private imageDataService: ImageGalleryService, private friendsService: FriendsService, private router: Router) {
-    this.dataSource = new MatTableDataSource<ImageWithMetadata>([]);
+  constructor(
+    public dialog: MatDialog, 
+    private imageDataService: ImageGalleryService, 
+    private friendsService: FriendsService, 
+    private router: Router,
+    private userService: UserService // Add this injection
+  ) {
+    this.dataSource = new MatTableDataSource<ImageWithUserData>([]);
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {
       this.memorydb = navigation.extras.state['memory'];
-      console.log(this.memorydb);
     }
   }
 
-
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {
-      this.dataSource.data = images;
-      console.log("Images: ", this.dataSource.data);
+      this.loadUsersForImages(images);
     });
+
     this.friendsService.currentFriendData.subscribe((users) => {
       this.userList = users;
     });
+
+    // Note: Filter will be applied when user selection changes via onUserSelectionChange
+  }
+
+  // Load user data for all images
+  loadUsersForImages(images: ImageWithMetadata[]) {
+    this.isLoadingUsers = true;
+    
+    // Get unique user IDs
+    const uniqueUserIds = [...new Set(images.map(img => img.userId))];
+    
+    // Create observables for each user
+    const userRequests = uniqueUserIds.map(userId => 
+      this.userService.getUser(userId)
+    );
+
+    // Execute all requests
+    forkJoin(userRequests).subscribe({
+      next: (users: MemoriseUser[]) => {
+        // Create a map for quick user lookup
+        const userMap = new Map<string, MemoriseUser>();
+        users.forEach(user => userMap.set(user.user_id, user));
+
+        // Attach user data to images
+        const imagesWithUsers: ImageWithUserData[] = images.map(img => ({
+          ...img,
+          user: userMap.get(img.userId)
+        }));
+
+        this.dataSource.data = imagesWithUsers;
+        this.availableUsers = users;
+        console.log("Users: ", this.availableUsers);
+        this.isLoadingUsers = false;
+      },
+      error: (error) => {
+        console.error('Error loading users:', error);
+        this.isLoadingUsers = false;
+        // Fallback: use images without user data
+        this.dataSource.data = images.map(img => ({ ...img }));
+      }
+    });
+  }
+
+  // Handle user selection change
+  onUserSelectionChange() {
+    this.applyFilter();
+  }
+
+  // Apply user filter
+  applyFilter() {
+    const selectedUserIds = this.selectedUsers?.map(user => user.user_id) || [];
+    
+    if (selectedUserIds.length === 0) {
+      // Show all images if no filter selected
+      this.dataSource.filter = '';
+    } else {
+      // Filter by selected users
+      this.dataSource.filterPredicate = (data: ImageWithUserData) => {
+        return selectedUserIds.includes(data.userId);
+      };
+      this.dataSource.filter = 'userFilter'; // Trigger filter
+    }
+  }
+
+  // Clear all filters
+  clearFilters() {
+    this.selectedUsers = [];
+    this.dataSource.filter = '';
   }
 
   // Toggle display mode
@@ -60,7 +139,7 @@ export class PhotoDownloadComponent implements OnInit {
   // Check if all items are selected
   isAllSelected() {
     const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
+    const numRows = this.dataSource.filteredData.length; // Use filteredData instead of data
     return numSelected === numRows;
   }
 
@@ -70,7 +149,7 @@ export class PhotoDownloadComponent implements OnInit {
       this.selection.clear();
       return;
     }
-    this.selection.select(...this.dataSource.data);
+    this.selection.select(...this.dataSource.filteredData); // Use filteredData instead of data
   }
 
   // Handle download all photos
@@ -79,9 +158,7 @@ export class PhotoDownloadComponent implements OnInit {
       title: 'Download memories images?',
       message: 'With clicking "YES" you start the download of this memories images',
     };
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
-
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.imageDataService.downloadZip(this.memorydb.image_url, this.memorydb.title).subscribe();
@@ -95,9 +172,7 @@ export class PhotoDownloadComponent implements OnInit {
       title: 'Download memories images?',
       message: 'With clicking "YES" you start the download of this memories images',
     };
-
     const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
-
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.isDownloading = true;

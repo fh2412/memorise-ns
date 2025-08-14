@@ -25,7 +25,7 @@ export class PhotoDownloadComponent implements OnInit {
   dataSource: MatTableDataSource<ImageWithMetadata>;
   selection = new SelectionModel<ImageWithMetadata>(true, []);
   displayMode: 'grid' | 'table' = 'grid';
-  displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'uploadDate'];
+  displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'size', 'uploadDate'];
 
   toppings = new FormControl('');
   userList: Friend[] = [];
@@ -45,6 +45,7 @@ export class PhotoDownloadComponent implements OnInit {
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {
       this.dataSource.data = images;
+      console.log("Images: ", this.dataSource.data);
     });
     this.friendsService.currentFriendData.subscribe((users) => {
       this.userList = users;

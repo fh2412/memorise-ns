@@ -13,10 +13,12 @@
     </button>
   </div>
 </div>
+@if (picture_count === 0) {
 <p>
   <mat-icon fontIcon="lightbulb"></mat-icon>
   <span>Note:</span> the Photo marked with a star will be your Memories Title-Picture
 </p>
+}
 
 
 <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">

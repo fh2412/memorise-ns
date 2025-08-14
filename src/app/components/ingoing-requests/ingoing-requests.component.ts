@@ -4,7 +4,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Friend } from '../../models/userInterface.model';
 import { FriendCardComponent } from "../friend-card/friend-card.component";
 @Component({
@@ -21,17 +21,25 @@ import { FriendCardComponent } from "../friend-card/friend-card.component";
 export class IngoingRequestsComponent {
   @Input() friends: Friend[] = [];
   @Output() friendsUpdated = new EventEmitter<Friend[]>();
-
+  
   private bottomSheet = inject(MatBottomSheet);
 
   openBottomSheet(): void {
-    this.bottomSheet.open(FriendRequestsBottomSheetComponent, {
+    const bottomSheetRef = this.bottomSheet.open(FriendRequestsBottomSheetComponent, {
       data: { friends: this.friends },
+    });
+
+    bottomSheetRef.afterDismissed().subscribe((updatedFriends?: Friend[]) => {
+      console.log('Bottom sheet has been dismissed.');
+      
+      if (updatedFriends !== undefined) {
+        this.friends = updatedFriends;
+        this.friendsUpdated.emit(this.friends);
+      }
     });
   }
 }
 
-// Bottom Sheet Component
 @Component({
   selector: 'app-friend-requests-bottom-sheet',
   standalone: true,
@@ -42,13 +50,14 @@ export class IngoingRequestsComponent {
   ],
   template: `
     <div class="bottom-sheet-content">
-      <app-friend-card 
-        [friends]="data.friends" 
-        [title]="'Ingoing Requests'" 
+      <app-friend-card
+        [friends]="currentFriends"
+        [title]="'Ingoing Requests'"
         [buttonText]="'Accept'"
-        [requestedText]="'Accepted'" 
-        [buttonColor]="'primary'" 
-        [buttonIcon]="'person_add'">
+        [requestedText]="'Accepted'"
+        [buttonIcon]="'person_add'"
+        [declineButton]="true"
+        (friendsChanged)="onFriendsChanged($event)">
       </app-friend-card>
     </div>
   `,
@@ -61,5 +70,20 @@ export class IngoingRequestsComponent {
   `]
 })
 export class FriendRequestsBottomSheetComponent {
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: { friends: Friend[] }) { }
+  currentFriends: Friend[] = [];
+
+  constructor(
+    @Inject(MAT_BOTTOM_SHEET_DATA) public data: { friends: Friend[] },
+    private bottomSheetRef: MatBottomSheetRef<FriendRequestsBottomSheetComponent>
+  ) {
+    this.currentFriends = [...data.friends];
+  }
+
+  onFriendsChanged(updatedFriends: Friend[]): void {
+    this.currentFriends = updatedFriends;
+    
+    if (updatedFriends.length === 0) {
+      this.bottomSheetRef.dismiss(updatedFriends);
+    }
+  }
 }

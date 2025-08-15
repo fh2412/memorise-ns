@@ -23,19 +23,30 @@ export class IngoingRequestsComponent {
   @Output() friendsUpdated = new EventEmitter<Friend[]>();
   
   private bottomSheet = inject(MatBottomSheet);
+  private currentBottomSheetRef: MatBottomSheetRef<FriendRequestsBottomSheetComponent> | null = null;
 
   openBottomSheet(): void {
-    const bottomSheetRef = this.bottomSheet.open(FriendRequestsBottomSheetComponent, {
+    this.currentBottomSheetRef = this.bottomSheet.open(FriendRequestsBottomSheetComponent, {
       data: { friends: this.friends },
     });
 
-    bottomSheetRef.afterDismissed().subscribe((updatedFriends?: Friend[]) => {
-      console.log('Bottom sheet has been dismissed.');
+    this.currentBottomSheetRef.afterDismissed().subscribe((updatedFriends?: Friend[]) => {
       
       if (updatedFriends !== undefined) {
         this.friends = updatedFriends;
+        
         this.friendsUpdated.emit(this.friends);
+      } else {
+        if (this.currentBottomSheetRef?.instance) {
+          const currentFriends = this.currentBottomSheetRef.instance.currentFriends;
+          if (currentFriends.length !== this.friends.length) {
+            this.friends = currentFriends;
+            this.friendsUpdated.emit(this.friends);
+          }
+        }
       }
+      
+      this.currentBottomSheetRef = null;
     });
   }
 }

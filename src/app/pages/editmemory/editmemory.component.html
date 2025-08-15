@@ -5,7 +5,8 @@
     <div>
         <app-back-button [text]="'Cancel'"></app-back-button>
         <button mat-flat-button (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-        <button mat-flat-button (click)="confirmDeletion('DELETE')" style="background-color: var(--mat-sys-error);"><mat-icon>delete</mat-icon>DELETE</button>
+        <button mat-flat-button (click)="confirmDeletion('DELETE')"
+            style="background-color: var(--mat-sys-error);"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
 </div>
 
@@ -24,23 +25,23 @@
             </div>
             <div class="buttons" *ngIf="isLargeScreen">
                 <button mat-stroked-button color="primary" (click)="navigateToManagePhotos()">
-                  <mat-icon>apps</mat-icon>
-                  Manage Pictures
+                    <mat-icon>apps</mat-icon>
+                    Manage Pictures
                 </button>
                 <button mat-flat-button color="primary" (click)="navigateToAddPhotos()">
-                  <mat-icon>add_photo_alternate</mat-icon>
-                  Add Photos
+                    <mat-icon>add_photo_alternate</mat-icon>
+                    Add Photos
                 </button>
-              </div>
-              
-              <div class="icon-buttons" *ngIf="!isLargeScreen">
+            </div>
+
+            <div class="icon-buttons" *ngIf="!isLargeScreen">
                 <button mat-fab color="primary" (click)="navigateToManagePhotos()">
-                  <mat-icon>apps</mat-icon>
+                    <mat-icon>apps</mat-icon>
                 </button>
                 <button mat-fab color="primary" (click)="navigateToAddPhotos()">
-                  <mat-icon>add_photo_alternate</mat-icon>
+                    <mat-icon>add_photo_alternate</mat-icon>
                 </button>
-              </div>
+            </div>
         </div>
         <br><br>
         <div>
@@ -71,7 +72,7 @@
                     <ng-container matColumnDef="profilePicture">
                         <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
                         <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
-                            alt="Profile Picture" width="30" height="30" class="profile-image"></td>
+                                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
                     </ng-container>
 
                     <ng-container matColumnDef="name">
@@ -108,9 +109,15 @@
             </div>
             <br>
             <div class="friend-wrapper">
-                <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)" [memoryId]="memoryId"></app-friends-autocomplet>
+                <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"
+                    [memoryId]="memoryId"></app-friends-autocomplet>
                 <mat-card appearance="outlined" class="memory-card-empty">
-                    <span *ngIf="friendsToDelete.length===0">Friends you want to remove will appear here</span>
+                    <span *ngIf="friendsToDelete.length===0">Friends you want to remove will appear here
+                        <button matIconButton
+                            matTooltip="You can rejoin deleted Friends to the memory by clicking the cross next to them">
+                            <mat-icon>question_mark</mat-icon>
+                        </button>
+                    </span>
                     <mat-chip-set #chipGrid aria-label="Enter friends">
                         @for (friend of friendsToDelete; track friend) {
                         <mat-chip-row (removed)="reverseDelete(friend)">
@@ -124,10 +131,12 @@
                 </mat-card>
             </div>
 
+
             <br><br>
             <div class="memory-card-empty map-wrap">
                 <img class="map-background" src="/assets/img/map.PNG" alt="picture of map">
-                <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()" class="button-margin">
+                <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()"
+                    class="button-margin">
                     <mat-icon class="add-icon">search</mat-icon>
                     Update Address on Map
                 </button>

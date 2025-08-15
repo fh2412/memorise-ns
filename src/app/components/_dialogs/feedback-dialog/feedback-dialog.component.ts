@@ -1,5 +1,5 @@
 // feedback-dialog.component.ts
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -27,9 +27,10 @@ import { Router } from '@angular/router';
   templateUrl: './feedback-dialog.component.html',
   styleUrl: './feedback-dialog.component.scss',
 })
-export class FeedbackDialogComponent {
+export class FeedbackDialogComponent implements OnInit {
   feedbackForm: FormGroup;
   currentUrl = '';
+  username = '';
 
   constructor(
     private dialogRef: MatDialogRef<FeedbackDialogComponent>,
@@ -50,6 +51,10 @@ export class FeedbackDialogComponent {
   ngOnInit() {
     this.feedbackForm.patchValue({
       path: this.router.url,
+    })
+    this.username = history.state.userName || 'Unknown';
+    this.feedbackForm.patchValue({
+      email: this.username,
     })
   }
 

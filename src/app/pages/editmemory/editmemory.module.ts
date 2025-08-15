@@ -19,6 +19,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 const routes: Routes = [
   {
@@ -50,7 +51,8 @@ const routes: Routes = [
     MatToolbarModule,
     MatTableModule,
     MatChipsModule,
-    BackButtonComponent
+    BackButtonComponent,
+    MatTooltipModule
 ]
 })
 export class EditMemoryModule { }

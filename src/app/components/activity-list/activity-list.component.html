@@ -1,6 +1,6 @@
 <div class="activities-container">
     <!-- Filter Section -->
-    <mat-expansion-panel class="filter-panel" disabled>
+    <mat-expansion-panel class="filter-panel" >
         <mat-expansion-panel-header>
             <mat-panel-title>Filter Activities</mat-panel-title>
         </mat-expansion-panel-header>
@@ -149,7 +149,7 @@
 
     @if (viewMode === 'bookmark' && filteredActivities().length > 0) {
     <div class="grid-view">
-        @for (activity of bookmarkedActivities; track $index) {
+        @for (activity of bookmarkedActivities(); track $index) {
         <div class="grid-item">
             <app-activity-card [activity]="activity" [myActivity]="true"></app-activity-card>
         </div>

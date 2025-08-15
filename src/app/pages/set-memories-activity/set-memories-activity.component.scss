@@ -39,10 +39,13 @@ h1 {
   }
 }
 
-app-quick-activity-autocomplete {
-  width: 100%;
+.skip-btn{
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
 }
 
 app-bockmarked-activities {
   max-height: 45vh;
+  min-height: 45vh;
 }

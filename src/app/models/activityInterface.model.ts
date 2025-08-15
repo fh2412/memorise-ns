@@ -19,7 +19,7 @@ export interface MemoriseUserActivity {
     costs: number,
     description: string,
     websiteUrl: string,
-    indoor: boolean,
+    indoor: string,
     seasons: [string],
     weathers: [string],
     location: MemoriseLocation,

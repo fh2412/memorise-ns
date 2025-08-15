@@ -7,10 +7,10 @@ import { Friend } from '../../models/userInterface.model';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'app-friends',
-    templateUrl: './friends.component.html',
-    styleUrl: './friends.component.scss',
-    standalone: false
+  selector: 'app-friends',
+  templateUrl: './friends.component.html',
+  styleUrl: './friends.component.scss',
+  standalone: false
 })
 export class FriendsComponent implements OnInit {
 
@@ -37,10 +37,10 @@ export class FriendsComponent implements OnInit {
     }
   }
 
-  private loadFriendsData(): void {
+  private async loadFriendsData(): Promise<void> {
     if (this.loggedInUserId != null) {
       this.fetchFriends(this.loggedInUserId);
-      this.fetchPendingFriends(this.loggedInUserId);
+      //this.fetchPendingFriends(this.loggedInUserId);
       this.fetchIngoingFriends(this.loggedInUserId);
     }
   }
@@ -52,12 +52,12 @@ export class FriendsComponent implements OnInit {
     );
   }
 
-  private fetchPendingFriends(userId: string): void {
+  /*private fetchPendingFriends(userId: string): void {
     this.friendsService.getPendingFriends(userId).subscribe(
       (friends) => this.pendingFriends = friends,
       (error) => this.handleFetchError('pending friends', error)
     );
-  }
+  }*/
 
   private fetchIngoingFriends(userId: string): void {
     this.friendsService.getIngoingFriends(userId).subscribe(
@@ -88,5 +88,9 @@ export class FriendsComponent implements OnInit {
     if (this.loggedInUserId) {
       this.router.navigate([`/userprofile/${this.loggedInUserId}`]);
     }
+  }
+
+  onIngoingFriendsUpdated(updatedFriends: Friend[]): void {
+    this.ingoingFriends = updatedFriends;
   }
 }

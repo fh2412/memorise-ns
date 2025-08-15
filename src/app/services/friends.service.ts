@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { Friend, FriendStatus } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
@@ -9,9 +9,17 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class FriendsService {
+  private friendsDataSource = new BehaviorSubject<Friend[]>([]);
+  currentFriendData = this.friendsDataSource.asObservable();
+
+
   private apiUrl = `${environment.apiUrl}/friends`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
+
+  updateFriendsData(friends: Friend[]) {
+    this.friendsDataSource.next(friends);
+  }
 
   getUserFriends(userId: string): Observable<Friend[]> {
     return this.http.get<Friend[]>(`${this.apiUrl}/${userId}`);
@@ -46,7 +54,7 @@ export class FriendsService {
     const url = `${this.apiUrl}/remove_friend/${userId1}/${userId2}`;
     return this.http.delete<DeleteStandardResponse>(url);
   }
-  
+
   sendFriendRequest(senderId: string, receiverId: string): Observable<InsertStandardResult> {
     const url = `${this.apiUrl}/send_request`;
     const body = { senderId, receiverId };
@@ -58,5 +66,5 @@ export class FriendsService {
     const body = { senderId, receiverId };
     return this.http.post<InsertStandardResult>(url, body);
   }
-  
+
 }

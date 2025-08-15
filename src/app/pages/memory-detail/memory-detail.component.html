@@ -20,21 +20,21 @@
     <mat-card appearance="outlined">
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         @for (image of displayImages; track $index) {
-          <mat-grid-tile [colspan]="$index === 0 ? 2 : 1" [rowspan]="$index === 0 ? 2 : 1">
-            @if (isLoadingImages) {
-              <div class="spinner-wrapper">
-                <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
-              </div>
-              }
-              @else {
-              <img class="image-size" [src]="image.url" [alt]="'Memory picture ' + $index">
-              }
-          </mat-grid-tile>
+        <mat-grid-tile [colspan]="$index === 0 ? 2 : 1" [rowspan]="$index === 0 ? 2 : 1">
+          @if (isLoadingImages) {
+          <div class="spinner-wrapper">
+            <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+          </div>
+          }
+          @else {
+          <img class="image-size" [src]="image.url" [alt]="'Memory picture ' + $index">
+          }
+        </mat-grid-tile>
         }
         <div style="position: absolute; bottom: 24px; right: 24px;">
           <button mat-stroked-button (click)="openGallery()" class="show-all-btn">
             <mat-icon>apps</mat-icon>
-            Show all pictures
+            Show all pictures ({{imagesWithMetadata.length}})
           </button>
         </div>
       </mat-grid-list>
@@ -46,40 +46,40 @@
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
           <div class="full-width">
-            <ng-container *ngIf="location; else noLocation">
-              <h2>{{ activity }} in {{ location.country }}</h2>
-            </ng-container>
-
-            <ng-template #noLocation>
-              <h2>{{ activity }} somewhere</h2>
-            </ng-template>
             <span>
               {{ selectedDate | date }},
               {{ memorydbFriends && memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory' }}
             </span>
-
-            <div class="profile-row" *ngIf="memoryCreator">
+            @if (memoryCreator) {
+            <div class="profile-row">
               <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
               <div class="text">
                 <b>{{ memoryCreator.name || 'name' }}</b><br>
                 <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
               </div>
-              <mat-divider vertical style="height: 4rem; margin-left: 3rem;" *ngIf="memorydbFriends"></mat-divider>
-              <span class="more" *ngIf="memorydbFriends">+ {{memorydbFriends.length}} more</span>
+              @if (memorydbFriends) {
+              <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
+              <app-friends-profile-pics [friends]="memorydbFriends"></app-friends-profile-pics>
+              }
             </div>
+            }
             <mat-card appearance="outlined" class="desc big-screen">
-              <mat-card-content *ngIf="memorydb.text.length>0">
+              @if (memorydb.text.length > 0) {
+              <mat-card-content>
                 <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>
                 <div *ngIf="!showMore" class="custom-pre">{{ memorydb.text }}</div>
-                <button *ngIf="showMore" mat-stroked-button color="primary" (click)="openFullDescDialog()">
+                <button *ngIf="showMore" mat-stroked-button (click)="openFullDescDialog()">
                   Show more
                   <mat-icon>chevron_right</mat-icon>
                 </button>
               </mat-card-content>
-              <mat-card-content *ngIf="memorydb.text.length === 0" class="memory-card" appearance="outlined">There is no
-                Discription added
-                to your Memory yet!
-                Provide more Information to remember your Adventure forever!</mat-card-content>
+              }
+              @if (memorydb.text.length === 0) {
+              <mat-card-content class="memory-card" appearance="outlined">
+                There is no Discription added to your Memory yet!
+                Provide more Information to remember your Adventure forever!
+              </mat-card-content>
+              }
             </mat-card>
           </div>
         </mat-grid-tile>
@@ -87,7 +87,6 @@
           <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
         </mat-grid-tile>
       </mat-grid-list>
-      <br class="small-screen"><br class="small-screen">
       <mat-card appearance="outlined" class="desc small-screen">
         <mat-card-content *ngIf="memorydb.text.length>0">
           <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>

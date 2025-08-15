@@ -144,7 +144,7 @@ export class CreateActivityComponent implements OnInit {
       groupSizeMax: formData.groupSizeMax,
       costs: formData.costs,
       websiteUrl: formData.link,
-      indoor: formData.indoor_outdoor_flag == 'indoor',
+      indoor: formData.indoor_outdoor_flag,
       seasons: formData.season,
       weathers: formData.weather,
       location: location,

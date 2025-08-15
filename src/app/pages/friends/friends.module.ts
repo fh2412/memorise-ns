@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
 import { UserInformationComponent } from '../../components/user-information/user-information.component';
 import { FriendPreviewComponent } from '../../components/friend-preview/friend-preview.component';
+import { IngoingRequestsComponent } from "../../components/ingoing-requests/ingoing-requests.component";
 
 
 const routes: Routes = [
@@ -27,7 +28,6 @@ const routes: Routes = [
 @NgModule({
   declarations: [
     FriendsComponent,
-    FriendCardComponent,
     FriendSearchComponent,
     UserInformationComponent,
   ],
@@ -44,7 +44,9 @@ const routes: Routes = [
     MatTabsModule,
     FriendPreviewComponent,
     MatInputModule,
-    FormsModule
-  ]
+    FormsModule,
+    IngoingRequestsComponent,
+    FriendCardComponent
+]
 })
 export class FriendsModule { }

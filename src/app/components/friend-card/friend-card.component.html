@@ -8,7 +8,9 @@
       @for (friend of friends; track $index; let last = $last) {
         <mat-list-item class="list-item">
           <app-friend-preview [friend]="friend" [requested]="requested" [buttonText]="buttonText"
-            [requestedText]="requestedText" [buttonColor]="buttonColor" [buttonIcon]="buttonIcon">
+            [requestedText]="requestedText" [buttonIcon]="buttonIcon" [declineButton]="declineButton"
+            (friendRequestProcessed)="onFriendRequestProcessed($event)"
+            >
           </app-friend-preview>
         </mat-list-item>
         @if (!last){

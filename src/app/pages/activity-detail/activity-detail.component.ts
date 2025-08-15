@@ -50,6 +50,7 @@ export class ActivityDetailComponent implements OnInit {
     ).subscribe({
       next: (data) => {
         this.activity = data;
+        console.log(this.activity.indoor);
         this.markerPosition = {lat: Number(data.location.latitude), lng: Number(data.location.longitude)}
         this.mapOptions.center = this.markerPosition;
         this.mapOptions.zoom = 10;

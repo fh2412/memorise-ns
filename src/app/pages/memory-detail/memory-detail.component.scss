@@ -69,18 +69,14 @@ h1{
   object-fit: cover;
 }
 
-.more {
-  font-size: large;
-  margin-left: 3rem;
-}
-
 .desc {
   margin-top: 5px;
   .custom-pre {
-    white-space: pre-wrap;
     font-family: monospace;
-    background-color: inherit;
-    margin: 0;
+    font-size: large;
+    margin-bottom: 0.5rem;
+    white-space: pre-wrap;
+    line-height: 1.13rem;
   }
 }
 

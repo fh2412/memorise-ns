@@ -3,20 +3,35 @@
     (keydown.enter)="navigateToUserpage(friend.user_id)" (keydown.space)="navigateToUserpage(friend.user_id)"
     tabindex="0" aria-label="View user profile">
     <div class="profile-row">
-      <img [ngSrc]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}" width="60" height="60">
+      <img [ngSrc]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}"
+        width="60" height="60">
       <div>
         <b>{{ friend.name || 'Name' }}</b><br>
         <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>
       </div>
     </div>
   </button>
-  <button *ngIf="isLargeScreen" mat-stroked-button [color]="buttonColor"
-    (click)="requestFriend(buttonText, requested)" [class.enabled]="requested" [class.disabled]="!requested">
+  @if (isLargeScreen && !declineButton) {
+  <button mat-stroked-button [color]="buttonColor" (click)="requestFriend(buttonText, requested)"
+    [class.enabled]="requested" [class.disabled]="!requested">
     <mat-icon>{{ buttonIcon }}</mat-icon>
     {{ requested ? requestedText : buttonText }}
   </button>
-  <button *ngIf="!isLargeScreen" mat-icon-button [color]="buttonColor"
-    (click)="requestFriend(buttonText, requested)" [class.enabled]="requested" [class.disabled]="!requested">
+  }
+  @else if(!isLargeScreen && !declineButton){
+  <button mat-icon-button (click)="requestFriend(buttonText, requested)" [class.enabled]="requested"
+    [class.disabled]="!requested">
     <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
   </button>
+  }
+  @else {
+  <div>
+    <button mat-icon-button (click)="acceptFriendRequest()">
+      <mat-icon class="request-icon accept">check</mat-icon>
+    </button>
+    <button mat-icon-button (click)="declineFriendRequest()" class="request-btn">
+      <mat-icon class="request-icon decline">block</mat-icon>
+    </button>
+  </div>
+  }
 </div>

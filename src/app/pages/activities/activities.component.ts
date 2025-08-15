@@ -6,6 +6,7 @@ import { MemoriseCompany } from '../../models/company.model';
 import { Router } from '@angular/router';
 import { ActivityService } from '../../services/activity.service';
 import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { BookmarkService } from '../../services/bookmarking.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ export class ActivitiesComponent implements OnInit {
   activities: MemoriseUserActivity[] = [];
   company!: MemoriseCompany;
 
-  constructor(private router: Router, private userService: UserService, private activityService: ActivityService, private companyService: companyService) { }
+  constructor(private router: Router, private userService: UserService, private activityService: ActivityService, private companyService: companyService, private bookmarkService: BookmarkService) { }
   async ngOnInit() {
     this.loggedInUserId = this.userService.getLoggedInUserId();
     if (this.loggedInUserId) {
@@ -31,6 +32,7 @@ export class ActivitiesComponent implements OnInit {
           if (this.user.company_id) {
             this.getCompany();
           }
+          this.loadBookmarks();
         },
         (error) => {
           console.error('Error fetching user:', error);
@@ -63,6 +65,19 @@ export class ActivitiesComponent implements OnInit {
         }
       );
     }
+  }
+
+  private async loadBookmarks(): Promise<void> {
+    if(this.loggedInUserId){
+      this.bookmarkService.getBookmarkedActivities(this.loggedInUserId).subscribe(
+        (response) => {
+          this.bookmarkService.setBookmarks(response);
+        },
+        (error) => {
+          console.log('Error fetching bookmarked Activities', error);
+        }
+      );
+    };
   }
 
   addActivity() {

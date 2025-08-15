@@ -25,6 +25,22 @@
     all: unset;
   }
 
-  .logout-icon{
+  .logout-icon {
     color: var(--mat-sys-primary);
+  }
+
+  .request-btn {
+    margin-left: 12px;
+  }
+
+  .request-icon {
+    font-weight: 900;
+  }
+
+  .accept {
+    color: var(--mat-sys-primary);
+  }
+
+  .decline{
+    color: var(--mat-sys-error);
   }

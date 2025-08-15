@@ -1,0 +1,37 @@
+@use '@angular/material' as mat;
+
+mat-card{
+    box-shadow: 0 0 10px var(--mat-sys-secondary);
+    max-width: 30%;
+    @include mat.card-overrides((
+    outlined-container-color: var(--mat-sys-on-secondary),
+    outlined-outline-color: var(--mat-sys-secondary)
+  ));
+}
+
+.friend-requests-card {
+    margin: 0 0 32px 16px;
+}
+
+.friend-requests-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.card-content {
+    display: flex;
+    align-items: center;
+    padding: 16px !important;
+    gap: 16px;
+}
+
+.notification-icon {
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+}
+
+.card-title,
+.card-subtitle {
+    margin: 0;
+}

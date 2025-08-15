@@ -149,7 +149,7 @@
 
     @if (viewMode === 'bookmark' && filteredActivities().length > 0) {
     <div class="grid-view">
-        @for (activity of bookmarkedActivities; track $index) {
+        @for (activity of bookmarkedActivities(); track $index) {
         <div class="grid-item">
             <app-activity-card [activity]="activity" [myActivity]="true"></app-activity-card>
         </div>

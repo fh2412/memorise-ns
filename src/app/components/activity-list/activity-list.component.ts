@@ -48,7 +48,7 @@ export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];
 
   filteredActivities: WritableSignal<MemoriseUserActivity[]> = signal([]);
-  bookmarkedActivities: MemoriseUserActivity[] = [];
+  bookmarkedActivities = this.bookmarkedService.bookmarkedActivities;
   paginatedActivities: MemoriseUserActivity[] = [];
   paginatorLength = 0;
   viewMode: 'grid' | 'list' | 'bookmark' = 'grid';
@@ -72,9 +72,6 @@ export class ActivityListComponent implements OnInit {
   ngOnInit(): void {
     this.filteredActivities.set([...this.activities]);
     this.paginatorLength = this.filteredActivities.length;
-    this.bookmarkedService.bookmarkedActivities$.subscribe((data) => {
-      this.bookmarkedActivities = data;
-    });
     this.updatePaginatedActivities(this.activities);
   }
 

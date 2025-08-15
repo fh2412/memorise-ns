@@ -1,8 +1,7 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, computed, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
 import { MatIconModule } from '@angular/material/icon';
 import { NgOptimizedImage } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -26,8 +25,8 @@ export class BockmarkedActivitiesComponent implements OnInit {
   @Input() fullComponent = true;
   @Output() activitySelected = new EventEmitter<number>();
   
-  activities: MemoriseUserActivity[] | null = null;
-  displayActivities: MemoriseUserActivity[] = [];
+  //activities: MemoriseUserActivity[] | null = null;
+  //displayActivities: MemoriseUserActivity[] = [];
   showAll = false;
   canShowMore = false;
   private readonly maxInitialEntries = 5;
@@ -35,36 +34,22 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   constructor(private router: Router, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
 
+  activities = this.bookmarkService.bookmarkedActivities;
+  displayActivities = computed(() => this.activities());
+
   ngOnInit(): void {
-    this.getBookmarks();
     if(!this.fullComponent){
       this.emptyText = "You haven’t bookmarked any activities yet. Visit the Activity page to bookmark some, and they’ll show up here.";
     }
   }
 
-  async getBookmarks() {
-    if (this.userId) {
-      this.bookmarkService.getBookmarkedActivities(this.userId).subscribe({
-        next: (result) => {
-          this.activities = result;
-          this.updateDisplayedActivities();
-          this.canShowMore = this.activities.length > this.maxInitialEntries;
-          this.bookmarkService.setBookmarkedActivities(result);
-        },
-        error: (error) => {
-          console.error(error);
-        }
-      });
-    }
-  }
 
   updateDisplayedActivities(): void {
     if (this.activities) {
       if (this.showAll || this.activities.length <= this.maxInitialEntries) {
-        console.log("Shwoinf all!");
-        this.displayActivities = [...this.activities];
+        this.displayActivities = computed(() => this.activities());
       } else {
-        this.displayActivities = this.activities.slice(0, this.maxInitialEntries);
+        this.displayActivities = computed(() => this.activities().slice(0, this.maxInitialEntries));
       }
     }
   }
@@ -76,8 +61,7 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   deleteBookmark(activityId: number, event: MouseEvent) {
     event.stopPropagation();
-    if (this.activities && this.userId) {
-      this.activities = this.activities.filter(activity => activity.activityId !== activityId);
+    if (this.activities() && this.userId) {
       this.bookmarkService.removeBookmark(this.userId, activityId).subscribe({
         next: () => {
           this.updateDisplayedActivities();

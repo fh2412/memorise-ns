@@ -1,5 +1,5 @@
 // activity-card.component.ts
-import { Component, Input } from '@angular/core';
+import { Component, computed, Input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -59,13 +59,14 @@ export interface ActivityTag {
 export class ActivityCardComponent {
   @Input() activity!: MemoriseUserActivity;
   @Input() myActivity = false;
-  isBookmarked = false;
+  isBookmarked = computed(() => 
+    this.bookmarkService.isBookmarked(this.activity?.activityId || 0)
+  );
   loggedInUserId: string | null = null;
 
   constructor(private router: Router, private userService: UserService, private bookmarkService: BookmarkService, private snackBar: MatSnackBar) { }
 
   viewDetails() {
-    console.log("ACTIVITY TO DETAIL,", this.activity);
     this.router.navigate(['activity/details/', this.activity.activityId]);
   }
 
@@ -75,10 +76,9 @@ export class ActivityCardComponent {
     this.loggedInUserId = this.userService.getLoggedInUserId();
 
     if (this.loggedInUserId) {
-      this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity.activityId, this.isBookmarked)
+      this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity, this.isBookmarked())
         .subscribe({
           next: (result) => {
-            this.isBookmarked = !this.isBookmarked;
             console.log("Bookmarking result: ", result);
           },
           error: (error) => {

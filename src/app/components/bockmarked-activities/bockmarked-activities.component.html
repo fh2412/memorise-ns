@@ -1,14 +1,14 @@
 <mat-card appearance="outlined" class="main-card">
     <mat-card-header>
         <mat-card-title><b>Bookmarked Activities</b></mat-card-title>
-        <span>{{displayActivities.length}}/10</span>
-        @if (!this.activities) {
+        <span>{{displayActivities().length}}/10</span>
+        @if (activities().length === 0) {
         <mat-card-subtitle>{{emptyText}}</mat-card-subtitle>
         }
         @else {
         <mat-card-subtitle>
             <mat-divider></mat-divider>
-            @for (activity of displayActivities; track activity.activityId) {
+            @for (activity of displayActivities(); track activity.activityId) {
             <div class="row" (click)="viewDetails(activity.activityId)"
                 (keydown.enter)="viewDetails(activity.activityId)" (keydown.space)="viewDetails(activity.activityId)"
                 tabindex="0" [attr.aria-label]="'View details for ' + activity.title"> <button class="profile-button"
@@ -31,9 +31,9 @@
         </mat-card-subtitle>
         }
     </mat-card-header>
-    @if (canShowMore && activities) {
+    @if (canShowMore && activities()) {
     <mat-card-actions>
-        <button mat-stroked-button (click)="toggleShowAll()" class="extendet-btn">{{ showAll ? 'Show less' : 'Show all (' + activities.length + ')' }}</button>
+        <button mat-stroked-button (click)="toggleShowAll()" class="extendet-btn">{{ showAll ? 'Show less' : 'Show all (' + activities().length + ')' }}</button>
     </mat-card-actions>
     }
 </mat-card>

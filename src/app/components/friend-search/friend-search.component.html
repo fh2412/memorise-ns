@@ -15,7 +15,8 @@
     </div>
 
     <!-- Search results section -->
-    <div class="search-countainer" *ngIf="searchResults.length > 0">
+    @if (searchResults.length > 0) {
+    <div class="search-countainer">
       @if (initState) {
       <h2>Suggested Friends</h2>
       }
@@ -23,19 +24,23 @@
       <h2>Search Results</h2>
       }
       <mat-list>
-        @for (friend of searchResults.slice(0, 5); track $index; let last = $last) {
-          <mat-list-item>
-            <app-friend-preview [friend]="friend" [buttonText]="'Request'" [requestedText]="'Requested'"
-              [buttonIcon]="'person_add'">
-            </app-friend-preview></mat-list-item>
-          <mat-divider *ngIf="!last"></mat-divider>
+        @for (friend of searchResults.slice(0, 5); track friend.user_id; let last = $last) {
+        <mat-list-item>
+          <app-friend-preview [friend]="friend" [buttonText]="'Request'" [requestedText]="'Requested'"
+            [buttonIcon]="'person_add'">
+          </app-friend-preview>
+        </mat-list-item>
+        @if (!last) {
+        <mat-divider></mat-divider>
         }
-       </mat-list>
+        }
+      </mat-list>
     </div>
+    }
 
     <!-- No results message -->
     @if (searchResults.length === 0 && searchTerm && enter) {
-      <p>No results found for your search.</p>
+    <p>No results found for your search.</p>
     }
   </mat-card-content>
 </mat-card>

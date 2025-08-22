@@ -43,6 +43,24 @@
     }
     <br><br>
     <div style="overflow: hidden;">
+      @if (activity && activity.id !== 1) {
+      <br>
+      <mat-card class="activity-card" matRipple appearance="outlined" [style.cursor]="'pointer'" (click)="openActivityPage()">
+        <mat-card-content class="card-content">
+          <div class="icon-section">
+            <mat-icon class="notification-icon">
+              info
+            </mat-icon>
+          </div>
+          <div class="text-section">
+            <h3 class="card-title">Activity: {{activity.title}}</h3>
+            <p class="card-subtitle">
+              This Memory was created with an activity. Click to view it!
+            </p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+      }
       <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile colspan="3">
           <div class="full-width">

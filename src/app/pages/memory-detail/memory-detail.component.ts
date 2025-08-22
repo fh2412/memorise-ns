@@ -14,6 +14,7 @@ import { MemoriseLocation } from '../../models/location.model';
 import { ActivityService } from '../../services/activity.service';
 import { firstValueFrom } from 'rxjs';
 import { FriendsService } from '../../services/friends.service';
+import { ActivityDetails } from '../../models/activityInterface.model';
 
 
 export interface ImageWithMetadata {
@@ -42,7 +43,7 @@ export class MemoryDetailComponent implements OnInit {
   endDate = new Date(2024, 1, 1);
   dateRange!: DateRange<Date>;
   location: MemoriseLocation | null = null;
-  activity = 'Activity';
+  activity: ActivityDetails | null = null;
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
@@ -78,7 +79,7 @@ export class MemoryDetailComponent implements OnInit {
 
       await this.initializeMemoryDetails();
       const activityData = await firstValueFrom(this.activityService.getActivityDetails(this.memorydb.activity_id));
-      this.activity = activityData.title;
+      this.activity = activityData;
 
       const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryId, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
@@ -169,6 +170,10 @@ export class MemoryDetailComponent implements OnInit {
   openGallery() {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
     this.router.navigate(['memory', this.memoryId, 'gallery']);
+  }
+
+  openActivityPage() {
+    this.router.navigate(['activity/details', this.activity?.id]);
   }
 
   openDownloadPage(): void {

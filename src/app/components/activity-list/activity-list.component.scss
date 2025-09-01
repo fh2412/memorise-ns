@@ -1,17 +1,23 @@
 @use '@angular/material' as mat;
+
 .small-screen-bookmark {
-    display: none;
-    @media (max-width: 1366px) {
-        display: block;
-    }
+  display: none;
+
+  @media (max-width: 1366px) {
+    display: block;
+  }
 }
 
 .activities-container {
   padding: 16px;
 }
 
-.filter-panel {
+
+.filter-bar {
   margin-bottom: 16px;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
 }
 
 .filter-grid {
@@ -77,6 +83,7 @@
   padding: 16px;
   overflow: hidden;
 }
+
 .list-item-button {
   width: 15%;
   justify-content: center;
@@ -84,6 +91,7 @@
   display: flex;
   background-color: var(--mat-sys-inverse-on-surface);
 }
+
 .activity-info {
   display: flex;
   gap: 16px;

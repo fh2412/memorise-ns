@@ -1,86 +1,96 @@
 <div class="activities-container">
     <!-- Filter Section -->
-    <mat-expansion-panel class="filter-panel" >
-        <mat-expansion-panel-header>
-            <mat-panel-title>Filter Activities</mat-panel-title>
-        </mat-expansion-panel-header>
+    <div class="filter-bar">
+        <mat-expansion-panel style="width: 100%;">
+            <mat-expansion-panel-header>
+                <mat-panel-title>Filter Activities</mat-panel-title>
+            </mat-expansion-panel-header>
 
-        <form [formGroup]="filterForm">
-            <div class="filter-grid">
-                <!-- Location Filter -->
-                <div class="filter-item">
-                    <app-places-search></app-places-search>
-
+            <form [formGroup]="filterForm">
+                <div class="filter-grid">
+                    <div class="filter-item">
+                        <mat-form-field appearance="outline" class="full-width">
+                            @if (fulladdress) {
+                            <mat-label>Current Location</mat-label>
+                            }@else {
+                            <mat-label>Location</mat-label>
+                            }
+                            <input matInput formControlName="location" placeholder="Search for Locaiton">
+                        </mat-form-field>
+                    </div>
                     <mat-form-field appearance="outline">
-                        <mat-label>Distance (km)</mat-label>
-                        <input matInput type="number" formControlName="distance" min="1" max="100">
+                        <mat-label>Distance</mat-label>
+                        <input matInput type="number" formControlName="distance" placeholder="25km">
                     </mat-form-field>
-                </div>
+                    <button mat-raised-button>Open Location Dialog</button>
 
-                <!-- Group Size Filter -->
-                <div class="filter-item">
-                    <div class="slider-container">
-                        <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
-                        <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                            <input matSliderThumb formControlName="groupSize">
-                        </mat-slider>
+                    <!-- Group Size Filter -->
+                    <div class="filter-item">
+                        <div class="slider-container">
+                            <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
+                            <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                                <input matSliderThumb formControlName="groupSize">
+                            </mat-slider>
+                        </div>
+                    </div>
+
+                    <!-- Price Filter -->
+                    <div class="filter-item">
+                        <div class="slider-container">
+                            <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
+                            <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                                <input matSliderThumb formControlName="price">
+                            </mat-slider>
+                        </div>
+                    </div>
+
+                    <!-- Season Filter -->
+                    <div class="filter-item">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Season</mat-label>
+                            <mat-select formControlName="season">
+                                <mat-option value="">All Seasons</mat-option>
+                                <mat-option value="spring">Spring</mat-option>
+                                <mat-option value="summer">Summer</mat-option>
+                                <mat-option value="fall">Fall</mat-option>
+                                <mat-option value="winter">Winter</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Weather Filter -->
+                    <div class="filter-item">
+                        <mat-form-field appearance="outline">
+                            <mat-label>Weather</mat-label>
+                            <mat-select formControlName="weather">
+                                <mat-option value="">Any Weather</mat-option>
+                                <mat-option value="sunny">Sunny</mat-option>
+                                <mat-option value="rainy">Rainy</mat-option>
+                                <mat-option value="snowy">Snowy</mat-option>
+                                <mat-option value="cloudy">Cloudy</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Name Filter -->
+                    <div class="filter-item">
+                        <mat-form-field appearance="outline" class="full-width">
+                            <mat-label>Search by Name</mat-label>
+                            <input matInput formControlName="name" placeholder="Enter activity name">
+                        </mat-form-field>
                     </div>
                 </div>
 
-                <!-- Price Filter -->
-                <div class="filter-item">
-                    <div class="slider-container">
-                        <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
-                        <mat-slider min="0" max="100" step="5" showTickMarks discrete>
-                            <input matSliderThumb formControlName="price">
-                        </mat-slider>
-                    </div>
+                <div class="filter-actions">
+                    <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
+                    <button mat-button (click)="resetFilters()">Reset</button>
                 </div>
-
-                <!-- Season Filter -->
-                <div class="filter-item">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Season</mat-label>
-                        <mat-select formControlName="season">
-                            <mat-option value="">All Seasons</mat-option>
-                            <mat-option value="spring">Spring</mat-option>
-                            <mat-option value="summer">Summer</mat-option>
-                            <mat-option value="fall">Fall</mat-option>
-                            <mat-option value="winter">Winter</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Weather Filter -->
-                <div class="filter-item">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Weather</mat-label>
-                        <mat-select formControlName="weather">
-                            <mat-option value="">Any Weather</mat-option>
-                            <mat-option value="sunny">Sunny</mat-option>
-                            <mat-option value="rainy">Rainy</mat-option>
-                            <mat-option value="snowy">Snowy</mat-option>
-                            <mat-option value="cloudy">Cloudy</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Name Filter -->
-                <div class="filter-item">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Search by Name</mat-label>
-                        <input matInput formControlName="name" placeholder="Enter activity name">
-                    </mat-form-field>
-                </div>
-            </div>
-
-            <div class="filter-actions">
-                <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
-                <button mat-button (click)="resetFilters()">Reset</button>
-            </div>
-        </form>
-    </mat-expansion-panel>
-
+            </form>
+        </mat-expansion-panel>
+        <!--<button matMiniFab aria-label="Button to open Filter Bootom Sheet" (click)="openBottomSheet()">
+            <mat-icon>filter_alt</mat-icon>
+        </button>-->
+    </div>
     <!-- View Toggle -->
     <div class="view-toggle">
         <mat-button-toggle-group [(value)]="viewMode" (change)="checkForBookmarking($event.value)">
@@ -99,7 +109,8 @@
     <!-- No Results Message -->
     @if (filteredActivities().length === 0) {
     <div class="no-results">
-      <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
+        <app-not-found [imageUrl]="'/assets/img/no_activities.png'"
+            text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
     </div>
     }
     <!-- Grid View -->

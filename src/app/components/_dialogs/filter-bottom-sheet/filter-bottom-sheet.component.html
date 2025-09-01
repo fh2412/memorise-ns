@@ -1,0 +1,64 @@
+<form [formGroup]="filterForm">
+    <div class="filter-grid">
+        <!-- Group Size Filter -->
+        <div class="filter-item">
+            <div class="slider-container">
+                <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
+                <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                    <input matSliderThumb formControlName="groupSize">
+                </mat-slider>
+            </div>
+        </div>
+
+        <!-- Price Filter -->
+        <div class="filter-item">
+            <div class="slider-container">
+                <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
+                <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                    <input matSliderThumb formControlName="price">
+                </mat-slider>
+            </div>
+        </div>
+
+        <!-- Season Filter -->
+        <div class="filter-item">
+            <mat-form-field appearance="outline">
+                <mat-label>Season</mat-label>
+                <mat-select formControlName="season">
+                    <mat-option value="">All Seasons</mat-option>
+                    <mat-option value="spring">Spring</mat-option>
+                    <mat-option value="summer">Summer</mat-option>
+                    <mat-option value="fall">Fall</mat-option>
+                    <mat-option value="winter">Winter</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Weather Filter -->
+        <div class="filter-item">
+            <mat-form-field appearance="outline">
+                <mat-label>Weather</mat-label>
+                <mat-select formControlName="weather">
+                    <mat-option value="">Any Weather</mat-option>
+                    <mat-option value="sunny">Sunny</mat-option>
+                    <mat-option value="rainy">Rainy</mat-option>
+                    <mat-option value="snowy">Snowy</mat-option>
+                    <mat-option value="cloudy">Cloudy</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <!-- Name Filter -->
+        <div class="filter-item">
+            <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Search by Name</mat-label>
+                <input matInput formControlName="name" placeholder="Enter activity name">
+            </mat-form-field>
+        </div>
+    </div>
+
+    <div class="filter-actions">
+        <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
+        <button mat-button (click)="resetFilters()">Reset</button>
+    </div>
+</form>

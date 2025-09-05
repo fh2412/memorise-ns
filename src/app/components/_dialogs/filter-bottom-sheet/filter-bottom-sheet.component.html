@@ -1,64 +1,207 @@
-<form [formGroup]="filterForm">
-    <div class="filter-grid">
-        <!-- Group Size Filter -->
-        <div class="filter-item">
-            <div class="slider-container">
-                <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
-                <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                    <input matSliderThumb formControlName="groupSize">
-                </mat-slider>
-            </div>
-        </div>
-
-        <!-- Price Filter -->
-        <div class="filter-item">
-            <div class="slider-container">
-                <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
-                <mat-slider min="0" max="100" step="5" showTickMarks discrete>
-                    <input matSliderThumb formControlName="price">
-                </mat-slider>
-            </div>
-        </div>
-
-        <!-- Season Filter -->
-        <div class="filter-item">
-            <mat-form-field appearance="outline">
-                <mat-label>Season</mat-label>
-                <mat-select formControlName="season">
-                    <mat-option value="">All Seasons</mat-option>
-                    <mat-option value="spring">Spring</mat-option>
-                    <mat-option value="summer">Summer</mat-option>
-                    <mat-option value="fall">Fall</mat-option>
-                    <mat-option value="winter">Winter</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-
-        <!-- Weather Filter -->
-        <div class="filter-item">
-            <mat-form-field appearance="outline">
-                <mat-label>Weather</mat-label>
-                <mat-select formControlName="weather">
-                    <mat-option value="">Any Weather</mat-option>
-                    <mat-option value="sunny">Sunny</mat-option>
-                    <mat-option value="rainy">Rainy</mat-option>
-                    <mat-option value="snowy">Snowy</mat-option>
-                    <mat-option value="cloudy">Cloudy</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-
-        <!-- Name Filter -->
-        <div class="filter-item">
-            <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Search by Name</mat-label>
-                <input matInput formControlName="name" placeholder="Enter activity name">
-            </mat-form-field>
-        </div>
+<div class="filter-bottom-sheet">
+    <div class="filter-header">
+        <h2>Filter Activities</h2>
+        <button mat-icon-button (click)="dismiss()">
+            <mat-icon>close</mat-icon>
+        </button>
     </div>
+
+    <form [formGroup]="filterForm" class="filter-content">
+        <!-- Location Section -->
+        <div class="filter-section">
+            <div class="section-header">
+                <mat-icon>location_on</mat-icon>
+                <h3>Location & Distance</h3>
+            </div>
+
+            <div class="location-controls">
+                <mat-form-field appearance="outline" class="location-field">
+                    <mat-label>{{ currentLocation ? 'Current Location' : 'Search Location' }}</mat-label>
+                    <input matInput formControlName="location"
+                        [placeholder]="currentLocation ? currentLocation.results[0].formatted_address : 'Enter location'">
+                    <button mat-icon-button matSuffix type="button" (click)="useCurrentLocation()"
+                        [disabled]="!currentLocation" matTooltip="Use current location">
+                        <mat-icon>my_location</mat-icon>
+                    </button>
+                </mat-form-field>
+
+                <div class="distance-slider">
+                    <span class="slider-label">Within {{ filterForm.get('distance')?.value }}km</span>
+                    <mat-slider min="5" max="100" step="5" showTickMarks discrete class="distance-slider-control">
+                        <input matSliderThumb formControlName="distance">
+                    </mat-slider>
+                    <div class="slider-range">
+                        <span>5km</span>
+                        <span>100km</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Environment & Conditions -->
+        <div class="filter-section">
+            <div class="section-header">
+                <mat-icon>wb_sunny</mat-icon>
+                <h3>Environment & Weather</h3>
+            </div>
+
+            <div class="environment-controls">
+                <!-- Indoor/Outdoor Toggle -->
+                <div class="toggle-group">
+                    <span class="toggle-label">Activity Type</span>
+                    <mat-button-toggle-group formControlName="activityType" multiple>
+                        <mat-button-toggle value="indoor">
+                            <mat-icon>home</mat-icon>
+                            Indoor
+                        </mat-button-toggle>
+                        <mat-button-toggle value="outdoor">
+                            <mat-icon>landscape</mat-icon>
+                            Outdoor
+                        </mat-button-toggle>
+                    </mat-button-toggle-group>
+                </div>
+
+                <div class="select-row">
+                    <mat-form-field appearance="outline">
+                        <mat-label>Season</mat-label>
+                        <mat-select formControlName="season">
+                            <mat-option value="">All Seasons</mat-option>
+                            <mat-option value="spring">
+                                <mat-icon>local_florist</mat-icon>
+                                Spring
+                            </mat-option>
+                            <mat-option value="summer">
+                                <mat-icon>wb_sunny</mat-icon>
+                                Summer
+                            </mat-option>
+                            <mat-option value="fall">
+                                <mat-icon>eco</mat-icon>
+                                Fall
+                            </mat-option>
+                            <mat-option value="winter">
+                                <mat-icon>ac_unit</mat-icon>
+                                Winter
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="outline">
+                        <mat-label>Weather</mat-label>
+                        <mat-select formControlName="weather">
+                            <mat-option value="">Any Weather</mat-option>
+                            <mat-option value="sunny">
+                                <mat-icon>wb_sunny</mat-icon>
+                                Sunny
+                            </mat-option>
+                            <mat-option value="rainy">
+                                <mat-icon>grain</mat-icon>
+                                Rainy
+                            </mat-option>
+                            <mat-option value="snowy">
+                                <mat-icon>ac_unit</mat-icon>
+                                Snowy
+                            </mat-option>
+                            <mat-option value="cloudy">
+                                <mat-icon>cloud</mat-icon>
+                                Cloudy
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <!-- Group & Budget -->
+        <div class="filter-section">
+            <div class="section-header">
+                <mat-icon>group</mat-icon>
+                <h3>Group Size & Budget</h3>
+            </div>
+
+            <div class="group-budget-controls">
+                <div class="slider-container">
+                    <span class="slider-label">
+                        Group Size:
+                        {{ filterForm.get('groupSize')?.value === 1 ? '1 person' : filterForm.get('groupSize')?.value +
+                        ' people' }}
+                    </span>
+                    <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                        <input matSliderThumb formControlName="groupSize">
+                    </mat-slider>
+                    <div class="slider-range">
+                        <span>1</span>
+                        <span>20+</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <span class="slider-label">
+                        Max Budget:
+                        {{ filterForm.get('price')?.value === 100 ? '$100+' : '$' + filterForm.get('price')?.value }}
+                    </span>
+                    <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                        <input matSliderThumb formControlName="price">
+                    </mat-slider>
+                    <div class="slider-range">
+                        <span>Free</span>
+                        <span>$100+</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--<mat-divider></mat-divider>
+
+         Quick Filters 
+        <div class="filter-section">
+            <div class="section-header">
+                <mat-icon>flash_on</mat-icon>
+                <h3>Quick Filters</h3>
+            </div>
+
+            <div class="quick-filters">
+                <mat-checkbox formControlName="freeActivities">
+                    <mat-icon>money_off</mat-icon>
+                    Free activities only
+                </mat-checkbox>
+
+                <mat-checkbox formControlName="familyFriendly">
+                    <mat-icon>family_restroom</mat-icon>
+                    Family friendly
+                </mat-checkbox>
+
+                <mat-checkbox formControlName="petFriendly">
+                    <mat-icon>pets</mat-icon>
+                    Pet friendly
+                </mat-checkbox>
+
+                <mat-checkbox formControlName="accessibleActivities">
+                    <mat-icon>accessible</mat-icon>
+                    Wheelchair accessible
+                </mat-checkbox>
+            </div>
+        </div>-->
+    </form>
+    <div class="spacer"></div>
 
     <div class="filter-actions">
-        <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
-        <button mat-button (click)="resetFilters()">Reset</button>
+        <div class="action-buttons">
+            <button mat-button (click)="resetFilters()" class="reset-button">
+                <mat-icon>refresh</mat-icon>
+                Reset All
+            </button>
+
+            <div class="primary-actions">
+                <button mat-stroked-button (click)="dismiss()">Cancel</button>
+                <button mat-raised-button color="primary" (click)="applyFilters()" [disabled]="!hasChanges()">
+                    <mat-icon>check</mat-icon>
+                    Apply Filters
+                </button>
+            </div>
+        </div>
     </div>
-</form>
+</div>

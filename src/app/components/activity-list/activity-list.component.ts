@@ -25,6 +25,7 @@ import { GeocoderResponse } from '../../models/geocoder-response.model';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FilterBottomSheetComponent } from '../_dialogs/filter-bottom-sheet/filter-bottom-sheet.component';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { BreakpointObserver } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-activity-list',
@@ -65,15 +66,17 @@ export class ActivityListComponent implements OnInit {
   searchControl = new FormControl('');
   fulladdress: GeocoderResponse | null = null;
   isLoading = false;
+  isSmallScreen = false;
 
   private _bottomSheet = inject(MatBottomSheet);
 
   constructor(
-    private fb: FormBuilder, 
-    private router: Router, 
-    private activityService: ActivityService, 
-    private bookmarkedService: BookmarkService, 
-    private geocodingService: GeocodingService
+    private fb: FormBuilder,
+    private router: Router,
+    private activityService: ActivityService,
+    private bookmarkedService: BookmarkService,
+    private geocodingService: GeocodingService,
+    private breakpointObserver: BreakpointObserver
   ) {
     this.filterForm = this.fb.group({
       location: [''],
@@ -89,6 +92,11 @@ export class ActivityListComponent implements OnInit {
       petFriendly: [false],
       accessibleActivities: [false]
     });
+    this.breakpointObserver
+      .observe([`(max-width: 1366px)`])
+      .subscribe(result => {
+        this.isSmallScreen = result.matches;
+      });
   }
 
   ngOnInit(): void {
@@ -103,9 +111,9 @@ export class ActivityListComponent implements OnInit {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
-          this.fulladdress = await this.geocodingService.geocodeLatLng({ 
-            lat: position.coords.latitude, 
-            lng: position.coords.longitude 
+          this.fulladdress = await this.geocodingService.geocodeLatLng({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
           });
         },
         (error) => {
@@ -243,10 +251,10 @@ export class ActivityListComponent implements OnInit {
   }
 
   getResultsCountText(): string {
-    const count = this.viewMode === 'bookmark' 
-      ? this.bookmarkedActivities().length 
+    const count = this.viewMode === 'bookmark'
+      ? this.bookmarkedActivities().length
       : this.filteredActivities().length;
-    
+
     if (count === 0) {
       return 'No activities found';
     } else if (count === 1) {
@@ -259,11 +267,11 @@ export class ActivityListComponent implements OnInit {
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize = event.pageSize;
-    
-    const activities = this.viewMode === 'bookmark' 
+
+    const activities = this.viewMode === 'bookmark'
       ? this.bookmarkedActivities()
       : this.filteredActivities();
-    
+
     this.updatePaginatedActivities(activities);
   }
 

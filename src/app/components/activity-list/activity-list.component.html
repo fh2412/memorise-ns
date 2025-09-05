@@ -68,9 +68,11 @@
             <mat-button-toggle value="list">
                 <mat-icon>view_list</mat-icon> List
             </mat-button-toggle>
-            <mat-button-toggle value="bookmark" class="small-screen-bookmark">
+            @if (isSmallScreen) {
+            <mat-button-toggle value="bookmark">
                 <mat-icon>bookmark</mat-icon> Bookmarked
             </mat-button-toggle>
+            }
         </mat-button-toggle-group>
         
         <div class="results-count">

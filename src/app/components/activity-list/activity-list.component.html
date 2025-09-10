@@ -46,7 +46,7 @@
                     <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip-option>
                 }
-                @if (filterForm.get('price')?.value < 100) {
+                @if (filterForm.get('price')?.value > -1) {
                 <mat-chip-option (removed)="removeFilter('price')">
                     <mat-icon>euro</mat-icon>
                     Under ${{ filterForm.get('price')?.value }}

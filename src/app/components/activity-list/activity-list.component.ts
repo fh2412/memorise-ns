@@ -54,6 +54,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 })
 export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];
+  @Input() loggedInUserId = '';
 
   filteredActivities: WritableSignal<MemoriseUserActivity[]> = signal([]);
   bookmarkedActivities = this.bookmarkedService.bookmarkedActivities;
@@ -79,18 +80,14 @@ export class ActivityListComponent implements OnInit {
     private breakpointObserver: BreakpointObserver
   ) {
     this.filterForm = this.fb.group({
+      name: [''],
       location: [''],
       distance: [25],
       season: [''],
       weather: [''],
-      activityType: [[]],
-      groupSize: [1],
-      price: [100],
-      name: [''],
-      freeActivities: [false],
-      familyFriendly: [false],
-      petFriendly: [false],
-      accessibleActivities: [false]
+      groupSize: [0],
+      price: [-1],
+      activityType: ['Indoor']
     });
     this.breakpointObserver
       .observe([`(max-width: 1366px)`])
@@ -155,9 +152,10 @@ export class ActivityListComponent implements OnInit {
     const filters = this.filterForm.value;
     this.isLoading = true;
 
-    this.activityService.getFilteredActivities(filters).subscribe({
+    this.activityService.getFilteredActivities(filters, this.loggedInUserId).subscribe({
       next: (response) => {
         this.filteredActivities.set(response);
+        console.log("Filter activity response: ", response);
         this.currentPage = 0;
         this.paginatorLength = this.filteredActivities().length;
         this.updatePaginatedActivities(this.filteredActivities());
@@ -172,18 +170,14 @@ export class ActivityListComponent implements OnInit {
 
   resetFilters(): void {
     this.filterForm.reset({
+      name: '',
       location: '',
       distance: 25,
       season: '',
       weather: '',
       activityType: [],
-      groupSize: 1,
-      price: 100,
-      name: '',
-      freeActivities: false,
-      familyFriendly: false,
-      petFriendly: false,
-      accessibleActivities: false
+      groupSize: 0,
+      price: -1,
     });
 
     this.searchControl.setValue('', { emitEvent: false });
@@ -195,17 +189,13 @@ export class ActivityListComponent implements OnInit {
 
   hasActiveFilters(): boolean {
     const formValue = this.filterForm.value;
+
     return !!(
       formValue.location ||
       formValue.season ||
       formValue.weather ||
-      (formValue.activityType && formValue.activityType.length > 0) ||
-      formValue.groupSize > 1 ||
-      formValue.price < 100 ||
-      formValue.freeActivities ||
-      formValue.familyFriendly ||
-      formValue.petFriendly ||
-      formValue.accessibleActivities ||
+      formValue.groupSize > 0 ||
+      formValue.price > -1 ||
       this.searchControl.value
     );
   }
@@ -216,12 +206,8 @@ export class ActivityListComponent implements OnInit {
       season: '',
       weather: '',
       activityType: [],
-      groupSize: 1,
-      price: 100,
-      freeActivities: false,
-      familyFriendly: false,
-      petFriendly: false,
-      accessibleActivities: false
+      groupSize: 0,
+      price: -1,
     };
 
     if (Object.prototype.hasOwnProperty.call(resetValues, filterName)) {

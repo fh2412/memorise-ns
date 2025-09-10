@@ -139,10 +139,16 @@
                 </div>
 
                 <div class="slider-container">
+                    @if (filterForm.get('price')?.value !== -1) {
                     <span class="slider-label">
                         Max Budget:
                         {{ filterForm.get('price')?.value === 100 ? '$100+' : '$' + filterForm.get('price')?.value }}
-                    </span>
+                    </span>}
+                    @else {
+                    <span class="slider-label">
+                        Max Budget:
+                        not set
+                    </span>}
                     <mat-slider min="0" max="100" step="5" showTickMarks discrete>
                         <input matSliderThumb formControlName="price">
                     </mat-slider>

@@ -42,11 +42,14 @@ export class ActivityService {
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/suggestedActivities/${userId}`);
   }
 
-  getFilteredActivities(filter: ActivityFilter): Observable<MemoriseUserActivity[]> {
+  getFilteredActivities(filter: ActivityFilter, loggedInUserId: string): Observable<MemoriseUserActivity[]> {
     // Convert filter object to HttpParams
     let params = new HttpParams();
 
-    // Only add parameters that have values
+    if (loggedInUserId) {
+      params = params.set('userId', loggedInUserId);
+    }
+
     if (filter.location) {
       params = params.set('location', filter.location);
     }
@@ -55,14 +58,9 @@ export class ActivityService {
       params = params.set('distance', filter.distance.toString());
     }
 
-    if (filter.tag) {
-      params = params.set('tag', filter.tag);
-    }
-
     if (filter.groupSize !== undefined) {
       params = params.set('groupSize', filter.groupSize.toString());
     }
-
 
     if (filter.price !== undefined) {
       params = params.set('price', filter.price.toString());

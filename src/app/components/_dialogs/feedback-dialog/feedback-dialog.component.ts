@@ -52,10 +52,6 @@ export class FeedbackDialogComponent implements OnInit {
     this.feedbackForm.patchValue({
       path: this.router.url,
     })
-    this.username = history.state.userName || 'Unknown';
-    this.feedbackForm.patchValue({
-      email: this.username,
-    })
   }
 
   onCancel(): void {

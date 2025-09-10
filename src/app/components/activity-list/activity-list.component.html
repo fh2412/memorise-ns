@@ -18,6 +18,13 @@
         <div class="active-filters">
             <span class="filter-label">Active filters:</span>
             <div class="filter-chips">
+                @if (filterForm.get('name')?.value) {
+                <mat-chip-option (removed)="removeFilter('name')">
+                    <mat-icon>text_fields</mat-icon>
+                    {{ filterForm.get('name')?.value }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
                 @if (filterForm.get('location')?.value) {
                 <mat-chip-option (removed)="removeFilter('location')">
                     <mat-icon>location_on</mat-icon>

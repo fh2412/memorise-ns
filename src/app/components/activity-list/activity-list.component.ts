@@ -201,6 +201,9 @@ export class ActivityListComponent implements OnInit {
   }
 
   removeFilter(filterName: string): void {
+    if(filterName === 'name'){
+      this.searchControl.setValue('', { emitEvent: false });
+    }
     const resetValues: any = {
       location: '',
       season: '',
@@ -208,6 +211,7 @@ export class ActivityListComponent implements OnInit {
       activityType: [],
       groupSize: 0,
       price: -1,
+      name: ''
     };
 
     if (Object.prototype.hasOwnProperty.call(resetValues, filterName)) {

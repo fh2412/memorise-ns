@@ -13,10 +13,15 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { CommonModule } from '@angular/common';
 import { GeocoderResponse } from '../../../models/geocoder-response.model';
 import { MatDividerModule } from '@angular/material/divider';
+import { CountryService } from '../../../services/restCountries.service';
+import { ChooseLocationComponent } from '../choose-location/choose-location.component';
+import { MatDialog } from '@angular/material/dialog';
+import { firstValueFrom } from 'rxjs';
 
 interface FilterData {
   currentFilters: any;
   currentLocation?: GeocoderResponse | null;
+  userId: string;
 }
 
 @Component({
@@ -47,10 +52,13 @@ export class FilterBottomSheetComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private bottomSheetRef: MatBottomSheetRef<FilterBottomSheetComponent>,
+    private countryService: CountryService,
+    public dialog: MatDialog,
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: FilterData,
   ) {
     this.filterForm = this.fb.group({
       location: [''],
+      locationCoords: [{ lat: 0, lng: 0 }],
       distance: [25],
       season: [''],
       weather: [''],
@@ -81,10 +89,38 @@ export class FilterBottomSheetComponent implements OnInit {
   useCurrentLocation(): void {
     if (this.currentLocation) {
       this.filterForm.patchValue({
-        location: this.currentLocation.results[0].formatted_address
+        location: this.currentLocation.results[0].formatted_address,
+        locationCoords: {lat: this.currentLocation.results[0].geometry.location.lat(), lng: this.currentLocation.results[0].geometry.location.lng()}
       });
     }
   }
+
+async openMapDialog(): Promise<void> {
+  try {
+    const coords = await firstValueFrom(this.countryService.getCountryGeocordsByUserId(this.data.userId));
+    if (!coords || coords.length === 0) {
+      console.error("No coordinates found for the specified country.");
+      return;
+    }
+
+    const dialogRef = this.dialog.open(ChooseLocationComponent, {
+      data: { lat: coords[0].lat, long: coords[0].long },
+    });
+
+    const result = await firstValueFrom(dialogRef.afterClosed());
+    if (result) {
+      this.filterForm.patchValue({
+        location: result.formattedAddress,
+        locationCoords: result.markerPosition
+      });
+    } else {
+      console.error("Incomplete location data received from map dialog.");
+    }
+  } catch (error) {
+    console.error('Error in openMapDialog:', error);
+  }
+}
+
 
   hasChanges(): boolean {
     return JSON.stringify(this.filterForm.value) !== JSON.stringify(this.initialFormValue);

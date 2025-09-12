@@ -82,6 +82,7 @@ export class ActivityListComponent implements OnInit {
     this.filterForm = this.fb.group({
       name: [''],
       location: [''],
+      locationCoords: [{ lat: 0, lng: 0 }],
       distance: [25],
       season: [''],
       weather: [''],
@@ -134,7 +135,8 @@ export class ActivityListComponent implements OnInit {
     const bottomSheetRef = this._bottomSheet.open(FilterBottomSheetComponent, {
       data: {
         currentFilters: this.filterForm.value,
-        currentLocation: this.fulladdress
+        currentLocation: this.fulladdress,
+        userId: this.loggedInUserId
       },
       panelClass: 'filter-bottom-sheet-panel'
     });
@@ -151,11 +153,11 @@ export class ActivityListComponent implements OnInit {
   applyFilters(): void {
     const filters = this.filterForm.value;
     this.isLoading = true;
+    console.log("Filters", filters);
 
     this.activityService.getFilteredActivities(filters, this.loggedInUserId).subscribe({
       next: (response) => {
         this.filteredActivities.set(response);
-        console.log("Filter activity response: ", response);
         this.currentPage = 0;
         this.paginatorLength = this.filteredActivities().length;
         this.updatePaginatedActivities(this.filteredActivities());

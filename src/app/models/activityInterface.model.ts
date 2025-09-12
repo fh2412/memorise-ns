@@ -29,6 +29,7 @@ export interface MemoriseUserActivity {
 
 export interface ActivityFilter {
     location?: string;
+    locationCoords?: {lat: number; lng: number};
     distance?: number;
     tag?: string;
     groupSize?: number;

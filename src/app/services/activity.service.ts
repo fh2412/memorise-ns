@@ -54,6 +54,11 @@ export class ActivityService {
       params = params.set('location', filter.location);
     }
 
+    if (filter.locationCoords) {
+      params = params.set('lat', filter.locationCoords.lat);
+      params = params.set('lng', filter.locationCoords.lng);
+    }
+
     if (filter.distance !== undefined) {
       params = params.set('distance', filter.distance.toString());
     }

@@ -15,16 +15,22 @@
             </div>
 
             <div class="location-controls">
-                <mat-form-field appearance="outline" class="location-field">
-                    <mat-label>{{ currentLocation ? 'Current Location' : 'Search Location' }}</mat-label>
-                    <input matInput formControlName="location"
-                        [placeholder]="currentLocation ? currentLocation.results[0].formatted_address : 'Enter location'">
-                    <button mat-icon-button matSuffix type="button" (click)="useCurrentLocation()"
-                        [disabled]="!currentLocation" matTooltip="Use current location">
-                        <mat-icon>my_location</mat-icon>
+                <div>
+                    <mat-form-field appearance="outline" class="location-field">
+                        <mat-label>{{ currentLocation ? 'Current Location' : 'Search Location' }}</mat-label>
+                        <input matInput formControlName="location"
+                            [placeholder]="currentLocation ? currentLocation.results[0].formatted_address : 'Enter location'">
+                        <button mat-icon-button matSuffix type="button" (click)="useCurrentLocation()"
+                            [disabled]="!currentLocation" matTooltip="Use current location">
+                            <mat-icon>my_location</mat-icon>
+                        </button>
+                    </mat-form-field>
+                    <button mat-flat-button class="location-btn" (click)="openMapDialog()"
+                        aria-label="Find address on map">
+                        <mat-icon class="add-icon">search</mat-icon>
+                        <span>Find Address on Map</span>
                     </button>
-                </mat-form-field>
-
+                </div>
                 <div class="distance-slider">
                     <span class="slider-label">Within {{ filterForm.get('distance')?.value }}km</span>
                     <mat-slider min="5" max="100" step="5" showTickMarks discrete class="distance-slider-control">

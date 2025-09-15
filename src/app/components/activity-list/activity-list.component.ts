@@ -88,7 +88,7 @@ export class ActivityListComponent implements OnInit {
       weather: [''],
       groupSize: [0],
       price: [-1],
-      activityType: ['Indoor']
+      activityType: ['']
     });
     this.breakpointObserver
       .observe([`(max-width: 1366px)`])
@@ -177,7 +177,7 @@ export class ActivityListComponent implements OnInit {
       distance: 25,
       season: '',
       weather: '',
-      activityType: [],
+      activityType: '',
       groupSize: 0,
       price: -1,
     });

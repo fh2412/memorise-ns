@@ -83,6 +83,10 @@ export class ActivityService {
       params = params.set('name', filter.name);
     }
 
+    if (filter.activityType) {
+      params = params.set('activityType', filter.activityType);
+    }
+
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
   }
 

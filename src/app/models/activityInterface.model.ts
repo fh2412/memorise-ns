@@ -37,6 +37,7 @@ export interface ActivityFilter {
     season?: string;
     weather?: string;
     name?: string;
+    activityType?: string;
 }
 
 export interface ActivityDetails {

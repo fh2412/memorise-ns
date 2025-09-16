@@ -59,6 +59,15 @@ h1 {
   }
 }
 
+.date-activity-box {
+  width: 100%;
+  height: 100%;
+  align-content: center;
+  mat-form-field, button{
+    width: 100%;
+  }
+}
+
 .map-wrap {
   overflow: hidden;
   border-radius: 5px;
@@ -81,21 +90,22 @@ h1 {
   gap: 1rem; // Adds spacing between the child components
 }
 
-.friend-wrapper > * {
+.friend-wrapper>* {
   flex: 1 1 50%; // Each child takes up 50% of the available width
 }
 
-.desc-margin{
+.desc-margin {
   margin-top: 5px;
 }
 
-.button-margin{
+.button-margin {
   margin-top: 55px;
 }
 
-.icon-buttons{
+.icon-buttons {
   margin-left: 30px;
-  button{
+
+  button {
     margin-left: 20px;
   }
 }

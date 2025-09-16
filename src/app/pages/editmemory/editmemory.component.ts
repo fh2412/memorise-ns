@@ -14,6 +14,8 @@ import { Memory } from '../../models/memoryInterface.model';
 import { Friend } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
 import { firstValueFrom } from 'rxjs';
+import { ActivityBottomSheetData, ActivityBottomSheetComponent } from '../../components/_dialogs/activity-bottom-sheet/activity-bottom-sheet.component';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 
 @Component({
     selector: 'app-editmemory',
@@ -53,7 +55,8 @@ export class EditmemoryComponent implements OnInit {
     private locationService: LocationService, 
     private pinnedService: PinnedMemoryService,
     private firebaseService: FileUploadService, 
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private bottomSheet: MatBottomSheet
   ) {
     this.memoryForm = this.initializeMemoryForm();
   }
@@ -233,6 +236,31 @@ export class EditmemoryComponent implements OnInit {
     }).catch(error => {
       console.error('Error loading location:', error);
       // Optionally handle error, e.g., show an alert or fallback
+    });
+  }
+
+openActivityBottomSheet(): void {
+    const data: ActivityBottomSheetData = {
+      activityId: 123, // Your actual activity ID
+      memoryId: 456,   // Your actual memory ID
+      loggedInUserId: 'user-123' // Your actual logged in user ID
+    };
+
+    const bottomSheetRef = this.bottomSheet.open(ActivityBottomSheetComponent, {
+      data: data,
+      disableClose: false,
+      hasBackdrop: true,
+      backdropClass: 'backdrop-blur'
+    });
+
+    // Handle the result when the bottom sheet is closed
+    bottomSheetRef.afterDismissed().subscribe((result) => {
+      if (result && result.success) {
+        console.log('Activity updated successfully:', result.selectedActivity);
+        // Handle successful update (e.g., refresh data, show notification, etc.)
+      } else {
+        console.log('Bottom sheet closed without saving');
+      }
     });
   }
   

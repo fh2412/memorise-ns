@@ -16,7 +16,7 @@ import { ActivityService } from '../../../services/activity.service';
 
 export interface ActivityBottomSheetData {
   activityId: number | string;
-  memoryId: number;
+  memoryId: string;
   loggedInUserId: string;
 }
 
@@ -55,7 +55,9 @@ export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.loadCurrentActivity();
+    if (this.data.activityId) {
+      this.loadCurrentActivity();
+    }
   }
 
   ngOnDestroy(): void {
@@ -69,6 +71,7 @@ export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (activity) => {
           this.currentActivity = activity;
+          console.log(this.currentActivity);
         },
         error: (error) => {
           console.error('Error loading current activity:', error);
@@ -96,7 +99,9 @@ export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
     this.isLoading = true;
 
     const filter: ActivityFilter = {
-      name: this.searchTerm.trim()
+      name: this.searchTerm.trim(),
+      locationCoords: {lat: 0, lng: 0},
+      price: -1
     };
 
     this.activityService.getFilteredActivities(filter, this.data.loggedInUserId)
@@ -134,12 +139,12 @@ export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
 
     this.isSaving = true;
 
-    /*this.activityService.updateMemoriesActivity(this.selectedActivity.activityId, this.data.memoryId)
+    this.activityService.updateMemoriesActivity(this.selectedActivity.activityId, this.data.memoryId)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.isSaving = false;
-          if (response.success) {
+          if (response.message) {
             this.bottomSheetRef.dismiss({
               success: true,
               selectedActivity: this.selectedActivity
@@ -154,7 +159,7 @@ export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
           this.isSaving = false;
           // You might want to show a snackbar or other error notification here
         }
-      });*/
+      });
   }
 
   close(): void {

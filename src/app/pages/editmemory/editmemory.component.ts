@@ -241,9 +241,9 @@ export class EditmemoryComponent implements OnInit {
 
 openActivityBottomSheet(): void {
     const data: ActivityBottomSheetData = {
-      activityId: 123, // Your actual activity ID
-      memoryId: 456,   // Your actual memory ID
-      loggedInUserId: 'user-123' // Your actual logged in user ID
+      activityId: this.memory.activity_id,
+      memoryId: this.memoryId,
+      loggedInUserId: this.loggedInUserId || ''
     };
 
     const bottomSheetRef = this.bottomSheet.open(ActivityBottomSheetComponent, {

@@ -87,6 +87,8 @@ export class ActivityService {
       params = params.set('activityType', filter.activityType);
     }
 
+    console.log(params);
+
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
   }
 
@@ -223,5 +225,14 @@ export class ActivityService {
   updateUserActivity(activityId: string, activityData: MemoriseUserActivity): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/update-user-activity/${activityId}`;
     return this.http.put<UpdateStandardResponse>(url, activityData);
+  }
+
+  updateMemoriesActivity(activityId: number, memoryId: string): Observable<UpdateStandardResponse> {
+    const url = `${this.apiUrl}/update-memory-activity/${memoryId}`;
+    const updateData = {
+      activityId
+    };
+
+    return this.http.put<UpdateStandardResponse>(url, updateData);
   }
 }

@@ -7,7 +7,8 @@
     </div>
 
     <!-- Current Activity Details -->
-    <div class="current-activity" *ngIf="currentActivity">
+     @if (currentActivity && currentActivity.id !== 1) {
+    <div class="current-activity">
         <h4>Current Activity</h4>
         <mat-card class="activity-card">
             <mat-card-content>
@@ -16,7 +17,7 @@
             </mat-card-content>
         </mat-card>
     </div>
-
+    }
     <mat-divider></mat-divider>
 
     <!-- Search Section -->

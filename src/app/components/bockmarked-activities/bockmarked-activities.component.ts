@@ -35,11 +35,22 @@ export class BockmarkedActivitiesComponent implements OnInit {
   constructor(private router: Router, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
 
   activities = this.bookmarkService.bookmarkedActivities;
-  displayActivities = computed(() => this.activities());
+  displayActivities = computed(() => this.activities()); 
 
   ngOnInit(): void {
     if(!this.fullComponent){
       this.emptyText = "You haven’t bookmarked any activities yet. Visit the Activity page to bookmark some, and they’ll show up here.";
+      //Loading Bookmarks here because for the activity page it gets loaded in activities.component.ts
+      if(this.userId){
+      this.bookmarkService.getBookmarkedActivities(this.userId).subscribe(
+        (response) => {
+          this.bookmarkService.setBookmarks(response);
+        },
+        (error) => {
+          console.log('Error fetching bookmarked Activities', error);
+        }
+      );
+    };
     }
   }
 

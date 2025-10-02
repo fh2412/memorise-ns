@@ -163,11 +163,13 @@ private createThumbnail(file: File, minSize: number): Promise<File> {
     const path = `memories/${memoryId}`;
     const storageRef = ref(this.storage, path);
 
+
     return from(listAll(storageRef)).pipe(
       switchMap((result) => {
         if (result.items.length === 0) {
           return of(void 0); // If folder is empty, resolve immediately
         }
+
 
         // Create an array of delete operations as observables
         const deletionObservables = result.items.map((itemRef) => from(deleteObject(itemRef)));
@@ -177,6 +179,8 @@ private createThumbnail(file: File, minSize: number): Promise<File> {
       finalize(() => console.log(`Folder ${path} deleted successfully.`))
     );
   }
+
+  
 
   deleteImages(imageUrls: string[]) {
     // Create a reference to the file to delete

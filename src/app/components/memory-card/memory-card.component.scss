@@ -7,6 +7,7 @@
 
   &:hover {
     border: 2px solid var(--mat-sys-primary);
+
     .edit-button {
       transform: translateY(0);
     }
@@ -30,7 +31,8 @@
     width: 100%;
     padding: 16px;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.7); // Semi-transparent white background
+    background: var(--mat-sys-surface);
+    opacity: 0.7;
     backdrop-filter: blur(4px); // Optional for a frosted effect on background
 
     h3 {

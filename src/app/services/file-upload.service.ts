@@ -184,11 +184,11 @@ export class FileUploadService {
       finalize(() => console.log(`Folder ${path} deleted successfully.`))
     );
   }
-  
+
   deleteImages(imageUrls: string[]): Observable<void> {
     if (!imageUrls || imageUrls.length === 0) {
-        console.log("No images provided for deletion.");
-        return of(void 0);
+      console.log("No images provided for deletion.");
+      return of(void 0);
     }
 
     // 1. Convert URLs to StorageReference objects
@@ -197,8 +197,8 @@ export class FileUploadService {
     // 2. Trigger the private method to collect metadata and notify the backend
     //    We use .subscribe() to execute the notification without blocking the main deletion process.
     this._processAndNotifyBilling(imageRefs).subscribe({
-        next: () => console.log('Billing notification for single image deletion triggered.'),
-        error: (err) => console.error('Error in billing notification for single images:', err)
+      next: () => console.log('Billing notification for single image deletion triggered.'),
+      error: (err) => console.error('Error in billing notification for single images:', err)
     });
 
     // 3. Prepare the deletion observables
@@ -206,10 +206,10 @@ export class FileUploadService {
 
     // 4. Execute all deletions concurrently and return the final observable
     return forkJoin(deletionObservables).pipe(
-        switchMap(() => of(void 0)), // Ensure the final result is void
-        finalize(() => console.log(`Deleted ${imageUrls.length} images successfully.`))
+      switchMap(() => of(void 0)), // Ensure the final result is void
+      finalize(() => console.log(`Deleted ${imageUrls.length} images successfully.`))
     );
-}
+  }
 
   private _processAndNotifyBilling(itemRefs: StorageReference[]): Observable<any> {
     // Create an array of observables to fetch metadata for each file
@@ -233,7 +233,7 @@ export class FileUploadService {
 
         console.log(`Attempting to notify billing service for ${deletionData.length} items.`);
 
-        return this.billingService.updateStorageOnDeletion(deletionData).pipe(
+        return from(this.billingService.updateStorageOnDeletion(deletionData)).pipe(
           finalize(() => console.log('Billing service update notification completed.')),
         );
       })

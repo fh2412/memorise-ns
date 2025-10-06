@@ -47,7 +47,7 @@ export class UploadProgressDialogComponent implements OnInit {
     this.counter = 0;
     const uploadPromises: Promise<void>[] = [];
     const totalSizeBytes = this.data.filesWithDimensions.reduce((sum, currentImage) => { return sum + currentImage.file.size }, 0);
-    if (await firstValueFrom(this.billingService.updateFreeUserStorageUsedAdd(this.data.userId, totalSizeBytes))) {
+    if (await firstValueFrom(this.billingService.updateFreeUserStorageUsed(this.data.userId, totalSizeBytes))) {
       this.data.filesWithDimensions.forEach((file, index) => {
         if (file) {
           const isStarred = (index === this.data.starredIndex);

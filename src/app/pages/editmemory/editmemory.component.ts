@@ -16,12 +16,13 @@ import { MemoriseLocation } from '../../models/location.model';
 import { firstValueFrom } from 'rxjs';
 import { ActivityBottomSheetData, ActivityBottomSheetComponent } from '../../components/_dialogs/activity-bottom-sheet/activity-bottom-sheet.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { BillingService } from '../../services/billing.service';
 
 @Component({
-    selector: 'app-editmemory',
-    templateUrl: './editmemory.component.html',
-    styleUrl: './editmemory.component.scss',
-    standalone: false
+  selector: 'app-editmemory',
+  templateUrl: './editmemory.component.html',
+  styleUrl: './editmemory.component.scss',
+  standalone: false
 })
 export class EditmemoryComponent implements OnInit {
   loggedInUserId: string | null = null;
@@ -41,22 +42,26 @@ export class EditmemoryComponent implements OnInit {
 
   isLargeScreen = true;
 
+  canCreateNewMemory = this.billingService.canCreateNewMemory;
+  storageUsedGB = this.billingService.storageUsedGB;
+
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
   }
 
   constructor(
-    private formBuilder: FormBuilder, 
-    private router: Router, 
-    private route: ActivatedRoute, 
-    private userService: UserService, 
-    private memoryService: MemoryService, 
-    private locationService: LocationService, 
+    private formBuilder: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute,
+    private userService: UserService,
+    private memoryService: MemoryService,
+    private locationService: LocationService,
     private pinnedService: PinnedMemoryService,
-    private firebaseService: FileUploadService, 
+    private firebaseService: FileUploadService,
     private dialog: MatDialog,
-    private bottomSheet: MatBottomSheet
+    private bottomSheet: MatBottomSheet,
+    private billingService: BillingService
   ) {
     this.memoryForm = this.initializeMemoryForm();
   }
@@ -110,7 +115,7 @@ export class EditmemoryComponent implements OnInit {
 
   loadFriends(): Promise<void> {
     return new Promise((resolve, reject) => {
-      if(this.loggedInUserId != null){
+      if (this.loggedInUserId != null) {
         this.memoryService.getMemorysFriends(this.memoryId, this.loggedInUserId).subscribe(
           response => {
             this.friends = response;
@@ -122,7 +127,7 @@ export class EditmemoryComponent implements OnInit {
           }
         );
       }
-    });  
+    });
   }
 
   loadLocation(): Promise<void> {
@@ -142,7 +147,7 @@ export class EditmemoryComponent implements OnInit {
 
   async deleteMemory(favourite: boolean): Promise<void> {
     try {
-      if(favourite){
+      if (favourite) {
         await firstValueFrom(this.pinnedService.deleteMemoryFromAllPins(Number(this.memoryId)));
       }
       await firstValueFrom(this.memoryService.deleteMemoryAndFriends(this.memoryId));
@@ -155,7 +160,7 @@ export class EditmemoryComponent implements OnInit {
 
   async saveChanges(): Promise<void> {
     try {
-      if(this.memoryForm.value.memory_end_date == null){
+      if (this.memoryForm.value.memory_end_date == null) {
         this.memoryForm.value.memory_end_date = this.memoryForm.value.memory_date;
       }
       await firstValueFrom(this.memoryService.updateMemory(this.memoryId, this.memoryForm.value));
@@ -173,9 +178,9 @@ export class EditmemoryComponent implements OnInit {
       await firstValueFrom(this.memoryService.addFriendToMemory({ emails: this.friendsToAdd, memoryId: this.memoryId }));
       this.reloadPage();
     }
-    
+
     if (this.friendsToDelete.length > 0) {
-      await Promise.all(this.friendsToDelete.map(friend => 
+      await Promise.all(this.friendsToDelete.map(friend =>
         firstValueFrom(this.memoryService.deleteFriendsFromMemory(friend.user_id, this.memoryId))
       ));
     }
@@ -199,7 +204,7 @@ export class EditmemoryComponent implements OnInit {
       this.friendsToDelete.push(user);
     }
   }
-  
+
   reverseDelete(user: Friend) {
     const index = this.friendsToDelete.indexOf(user);
     if (index > -1) {
@@ -239,7 +244,7 @@ export class EditmemoryComponent implements OnInit {
     });
   }
 
-openActivityBottomSheet(): void {
+  openActivityBottomSheet(): void {
     const data: ActivityBottomSheetData = {
       activityId: this.memory.activity_id,
       memoryId: this.memoryId,
@@ -263,12 +268,12 @@ openActivityBottomSheet(): void {
       }
     });
   }
-  
+
   private openMapDialog(lat: number, long: number): void {
     const dialogRef = this.dialog.open(ChooseLocationComponent, {
       data: { lat: Number(lat), long: Number(long) },
     });
-  
+
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.updateLocationData(result.formattedAddress, result.markerPosition);
@@ -278,7 +283,7 @@ openActivityBottomSheet(): void {
 
   updateLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
     const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
-  
+
     this.memoryForm.patchValue({
       l_city: addressComponents.city,
       l_postcode: addressComponents.postalCode,
@@ -286,15 +291,15 @@ openActivityBottomSheet(): void {
       lat: coordinates.lat,
       lng: coordinates.lng,
     });
-  
-    if(this.memory.location_id === 1){
+
+    if (this.memory.location_id === 1) {
       this.createLocation();
     }
-    else{
+    else {
       this.updateLocation();
     }
   }
-  
+
 
   openInfoDialog() {
     const dialogData: InfoDialogData = {
@@ -317,8 +322,8 @@ openActivityBottomSheet(): void {
 
   updateLocation(): void {
     this.locationService.updateLocation(this.memory.location_id, this.memoryForm.value)
-      .subscribe(response => console.log('Location updated:', response), 
-      error => console.error('Error updating location:', error));
+      .subscribe(response => console.log('Location updated:', response),
+        error => console.error('Error updating location:', error));
   }
 
   async confirmDeletion(status: string): Promise<void> {
@@ -336,6 +341,13 @@ openActivityBottomSheet(): void {
         error => console.error('Error checking pinned memory:', error)
       );
     }
+  }
+
+  getDisabledTooltip(): string {
+    if (this.canCreateNewMemory()) {
+      return '';
+    }
+    return `Storage limit reached. Free users are limited to 5 GB. Current usage: ${this.storageUsedGB().toFixed(2)} GB. Please upgrade to Premium or Corporate for unlimited storage.`;
   }
 
   openConfirmationDialog(title: string, message: string): Promise<boolean> {

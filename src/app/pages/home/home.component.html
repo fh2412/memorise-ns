@@ -12,9 +12,12 @@
             </div>
             <div class="header-group">
                 <section [formGroup]="filterForm">
-                    <mat-checkbox formControlName="showFilter" aria-label="Toggle filter visibility">Show Filter</mat-checkbox>
+                    <mat-checkbox formControlName="showFilter" aria-label="Toggle filter visibility">Show
+                        Filter</mat-checkbox>
                 </section>
-                <button mat-flat-button (click)="addMemory()" aria-label="Add a new memory">
+                <button mat-flat-button (click)="addMemory()" [disabled]="!canCreateNewMemory()"
+                    [matTooltip]="getDisabledTooltip()" [matTooltipDisabled]="canCreateNewMemory()"
+                    aria-label="Add a new memory">
                     <mat-icon class="add-icon">add</mat-icon>
                     Create New
                 </button>
@@ -26,7 +29,8 @@
                 <mat-label>Search</mat-label>
                 <input matInput formControlName="search" (input)="filterItems()" aria-label="Search memories">
             </mat-form-field>
-            <mat-checkbox formControlName="showFriendsMemories" (change)="showAll($event.checked)" aria-label="Show friends' memories">
+            <mat-checkbox formControlName="showFriendsMemories" (change)="showAll($event.checked)"
+                aria-label="Show friends' memories">
                 Show Friends Memories
             </mat-checkbox>
         </section>
@@ -39,7 +43,8 @@
             <div *ngIf="selectedValue === 'standard'">
                 <mat-grid-list [cols]="3" rowHeight="1:1" gutterSize="5">
                     <mat-grid-tile *ngFor="let item of pagedData">
-                        <app-memory-card [cardData]="item" class="fullcard" (click)="openDetailedMemory(item.memory_id)">
+                        <app-memory-card [cardData]="item" class="fullcard"
+                            (click)="openDetailedMemory(item.memory_id)">
                         </app-memory-card>
                     </mat-grid-tile>
                 </mat-grid-list>

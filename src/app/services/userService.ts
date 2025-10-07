@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { CreateUserResponse, Friend, MemoriseUser } from '../models/userInterface.model';
 import { UpdateStandardResponse } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
+import { UserStorageData } from '../models/billing.model';
 
 @Injectable({
   providedIn: 'root'
@@ -58,6 +59,10 @@ export class UserService {
 
   searchUsers(searchTerm: string, userId: string): Observable<Friend[]> {
     return this.http.get<Friend[]>(`${this.apiUrl}/search/users/${userId}?term=${searchTerm}`);
+  }
+
+  getUserAccountType(userId: string): Observable<UserStorageData> {
+    return this.http.get<UserStorageData>(`${this.apiUrl}/userStorageData/${userId}`);
   }
 
   createUser(email: string): Observable<CreateUserResponse> {

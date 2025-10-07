@@ -21,6 +21,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { PersonHintComponent } from "../../components/person-hint/person-hint.component";
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 
 const routes: Routes = [
@@ -56,7 +57,8 @@ const routes: Routes = [
     MatDatepickerModule,
     MatNativeDateModule,
     StatsComponent,
-    PersonHintComponent
+    PersonHintComponent,
+    MatTooltipModule
 ],
   providers: [DatePipe, ViewSelectorComponent],
 })

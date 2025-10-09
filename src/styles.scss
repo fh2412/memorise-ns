@@ -43,6 +43,10 @@ html {
         background: #ffffff,
       ));
   }
+
+  @include mat.snack-bar-overrides((
+    container-shape: 24px,
+  ));
 }
 
 

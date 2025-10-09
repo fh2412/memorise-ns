@@ -64,8 +64,8 @@
   }
   
   .images-to-delete-container button mat-icon {
-    font-size: 18px; /* Adjust icon size as needed */
-    color: #990000; /* Adjust icon color as needed */
+    font-size: 18px;
+    color: var(--mat-sys-error);
   }
   
   .preview {

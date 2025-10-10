@@ -71,7 +71,6 @@ export class HomeComponent implements OnInit {
     if (this.userdb?.user_id) {
       this.userService.setLoggedInUserId(this.userdb.user_id);
       const useraccount = await firstValueFrom(this.userService.getUserAccountType(user.uid));
-      console.log("useraccount: ", useraccount);
       this.billingService.setUserStorageData({
         userId: user.uid,
         accountType: useraccount.accountType,

@@ -27,7 +27,6 @@ export class BillingService {
   // Computed signal to check if user can create new memory
   readonly canCreateNewMemory = computed(() => {
     const data = this.userStorageData();
-    console.log("Signal data: ", data);
     if (!data) return false;
 
     // No limit for premium and corporate users

@@ -17,6 +17,12 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'memory/join/:token',
+    loadComponent: () => import('./pages/join-memory-page/join-memory-page.component')
+      .then(m => m.JoinMemoryPageComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'memory/:id',
     loadChildren: () => import('./pages/memory-detail/memory-detail.module').then(m => m.MemoryModule),
     canActivate: [authGuard]

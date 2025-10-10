@@ -1,0 +1,63 @@
+.join-dialog {
+    min-width: 400px;
+    max-width: 500px;
+}
+
+mat-dialog-content {
+    min-height: 150px;
+    padding: 20px;
+}
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.loading-container p {
+    margin-top: 20px;
+    color: #666;
+}
+
+.error-container {
+    text-align: center;
+    padding: 20px;
+}
+
+.error-message {
+    color: #f44336;
+    font-size: 14px;
+}
+
+.memory-info {
+    h3 {
+        margin: 0 0 12px 0;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .memory-description {
+        color: #666;
+        margin: 8px 0;
+        line-height: 1.5;
+    }
+
+    .memory-date {
+        color: #999;
+        font-size: 14px;
+        margin: 8px 0;
+    }
+
+    .created-by {
+        color: #666;
+        font-size: 14px;
+        font-style: italic;
+        margin-top: 16px;
+    }
+}
+
+mat-dialog-actions {
+    padding: 16px 24px;
+}

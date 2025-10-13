@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { Friend } from '../../models/userInterface.model';
+import { MemoryDetailFriend } from '../../models/userInterface.model';
 
 @Component({
   selector: 'app-friends-profile-pics',
@@ -11,9 +11,9 @@ import { Friend } from '../../models/userInterface.model';
   styleUrl: './friends-profile-pics.component.scss'
 })
 export class FriendsProfilePicsComponent {
-@Input() friends: Friend[] = [];
+@Input() friends: MemoryDetailFriend[] = [];
 
-  get displayedFriends(): Friend[] {
+  get displayedFriends(): MemoryDetailFriend[] {
     return this.friends.slice(0, 3);
   }
 
@@ -32,7 +32,7 @@ export class FriendsProfilePicsComponent {
     return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
   }
 
-  getTooltipText(friend: Friend): string {
+  getTooltipText(friend: MemoryDetailFriend): string {
     const parts = [friend.name];
     
     if (friend.country) {

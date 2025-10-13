@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { lastValueFrom, Observable } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
-import { Friend } from '../models/userInterface.model';
+import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
@@ -55,7 +55,7 @@ export class MemoryService {
 
   getMemorysFriendsWithShared(memory_id: number, user_id: string) {
     // Implement the logic to fetch user data from your backend API
-    return this.http.get<Friend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
+    return this.http.get<MemoryDetailFriend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
   }
 
   updateMemory(memory_id: string, memoryData: FormGroup): Observable<UpdateStandardResponse> {

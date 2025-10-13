@@ -9,12 +9,13 @@ import { LocationService } from '../../services/location.service';
 import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '../../services/image-gallery.service';
 import { Memory } from '../../models/memoryInterface.model';
-import { Friend, MemoriseUser } from '../../models/userInterface.model';
+import { MemoriseUser, MemoryDetailFriend } from '../../models/userInterface.model';
 import { MemoriseLocation } from '../../models/location.model';
 import { ActivityService } from '../../services/activity.service';
 import { firstValueFrom } from 'rxjs';
 import { FriendsService } from '../../services/friends.service';
 import { ActivityDetails } from '../../models/activityInterface.model';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 export interface ImageWithMetadata {
@@ -38,7 +39,7 @@ export class MemoryDetailComponent implements OnInit {
   memoryId = 0;
   memoryCreator!: MemoriseUser;
   loggedInUserId: string | null = null;
-  memorydbFriends: Friend[] | null = [];
+  memorydbFriends: MemoryDetailFriend[] | null = [];
   selectedDate = new Date(2024, 1, 1);
   endDate = new Date(2024, 1, 1);
   dateRange!: DateRange<Date>;
@@ -54,7 +55,7 @@ export class MemoryDetailComponent implements OnInit {
   isLoadingImages = true;
   hasPrivileges = false;
 
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private friendsService: FriendsService, private activityService: ActivityService) { }
+  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private friendsService: FriendsService, private activityService: ActivityService, private snackBar: MatSnackBar,) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();
@@ -166,6 +167,19 @@ export class MemoryDetailComponent implements OnInit {
     });
   }
 
+  async addFriend(friend: MemoryDetailFriend) {
+    let message = 'Friend Request was sent!';
+    if (this.loggedInUserId) {
+      await firstValueFrom(this.friendsService.sendFriendRequest(this.loggedInUserId, friend.user_id));
+    } else {
+      message = 'Error sending Friend Request!'
+    }
+    this.snackBar.open(message, 'Close', {
+      duration: 3000,
+      horizontalPosition: 'center',
+      verticalPosition: 'bottom'
+    });
+  }
 
   openGallery() {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
@@ -179,7 +193,7 @@ export class MemoryDetailComponent implements OnInit {
   openDownloadPage(): void {
     this.imageDataService.updateImageData(this.imagesWithMetadata);
     if (this.memorydbFriends) {
-      const memoriesUser: Friend[] = [
+      const memoriesUser: MemoryDetailFriend[] = [
         ...this.memorydbFriends,
         {
           country: this.memoryCreator.country,
@@ -188,8 +202,7 @@ export class MemoryDetailComponent implements OnInit {
           profilepic: this.memoryCreator.profilepic,
           sharedMemoriesCount: 0,
           user_id: this.memoryCreator.user_id,
-          gender: this.memoryCreator.gender,
-          email: this.memoryCreator.email
+          friendship_status: "none"
         }
       ];
       this.friendsService.updateFriendsData(memoriesUser);

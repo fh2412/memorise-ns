@@ -9,7 +9,7 @@ import { Memory } from '../../../models/memoryInterface.model';
 import { ImageWithMetadata } from '../memory-detail.component';
 import { Router } from '@angular/router';
 import { FriendsService } from '../../../services/friends.service';
-import { Friend } from '../../../models/userInterface.model';
+import { MemoryDetailFriend } from '../../../models/userInterface.model';
 import { MemoriseUser } from '../../../models/userInterface.model';
 import { forkJoin } from 'rxjs';
 import { UserService } from '../../../services/userService';
@@ -33,7 +33,7 @@ export class PhotoDownloadComponent implements OnInit {
   displayMode: 'grid' | 'table' = 'grid';
   displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'size', 'uploadDate'];
   selectedUsers: MemoriseUser[] = [];
-  userList: Friend[] = [];
+  userList: MemoryDetailFriend[] = [];
   availableUsers: MemoriseUser[] = []; // Users who have uploaded photos
   filterValue = '';
   isDownloading = false;
@@ -61,8 +61,6 @@ export class PhotoDownloadComponent implements OnInit {
     this.friendsService.currentFriendData.subscribe((users) => {
       this.userList = users;
     });
-
-    // Note: Filter will be applied when user selection changes via onUserSelectionChange
   }
 
   // Load user data for all images

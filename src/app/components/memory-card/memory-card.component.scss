@@ -3,7 +3,6 @@
 .card {
   @include mixins.full-size();
   cursor: pointer;
-  transition: border 0.3s ease;
 
   &:hover {
     border: 2px solid var(--mat-sys-primary);
@@ -47,7 +46,7 @@
 
   .action-div {
     position: absolute;
-    bottom: 15px;
+    bottom: 13px;
     right: 10px;
     color: var(--mat-sys-on-surface);
     transform: translateY(110%);

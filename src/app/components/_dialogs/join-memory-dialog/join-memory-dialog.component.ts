@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { Memory } from '../../../models/memoryInterface.model';
 import { MemoryService } from '../../../services/memory.service';
+import { NavigationService } from '../../../services/naviagtion.service';
 
 export interface JoinMemoryDialogData {
   token: string;
@@ -39,8 +40,13 @@ export class JoinMemoryDialogComponent implements OnInit {
     private memoryService: MemoryService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private auth: Auth
-  ) { }
+    private auth: Auth,
+    private navService: NavigationService
+  ) {
+    if (this.router.url.includes('/join')) {
+      this.navService.setCameFromInvite(true);
+    }
+   }
 
   ngOnInit() {
     if (this.data.memory) {

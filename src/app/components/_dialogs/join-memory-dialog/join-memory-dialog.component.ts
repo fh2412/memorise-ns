@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { Memory } from '../../../models/memoryInterface.model';
 import { MemoryService } from '../../../services/memory.service';
-import { NavigationService } from '../../../services/naviagtion.service';
 
 export interface JoinMemoryDialogData {
   token: string;
@@ -41,11 +40,7 @@ export class JoinMemoryDialogComponent implements OnInit {
     private snackBar: MatSnackBar,
     private router: Router,
     private auth: Auth,
-    private navService: NavigationService
   ) {
-    if (this.router.url.includes('/join')) {
-      this.navService.setCameFromInvite(true);
-    }
    }
 
   ngOnInit() {
@@ -70,7 +65,9 @@ export class JoinMemoryDialogComponent implements OnInit {
             });
             this.dialogRef.close({ alreadyMember: true, memory: this.memory });
             setTimeout(() => {
-              this.router.navigate(['/memory', this.memory!.memory_id]);
+              this.router.navigate(['/memory', this.memory!.memory_id], {
+                state: { fromInvite: true }
+              });
             }, 500);
           }
         } else {
@@ -114,7 +111,9 @@ export class JoinMemoryDialogComponent implements OnInit {
 
         // Navigate to the memory
         setTimeout(() => {
-          this.router.navigate(['/memory', this.memory!.memory_id]);
+          this.router.navigate(['/memory', this.memory!.memory_id], {
+            state: { fromInvite: true }
+          });
         }, 500);
       },
       error: (err) => {

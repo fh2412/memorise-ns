@@ -4,8 +4,8 @@
   cursor: pointer;
 
   &:hover {
-    background-color: #f0f0f0;
-    border: 2px solid #004080;
+    background-color: var(--mat-sys-surface);
+    border: 2px solid var(--mat-sys-primary);
   }
 
   .image-container {
@@ -27,8 +27,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #ddd;
+  background-color: var(--mat-sys-surface);
   font-weight: bold;
-  color: #333;
+  color: var(--mat-sys-on-surface);
   padding: 10px;
 }

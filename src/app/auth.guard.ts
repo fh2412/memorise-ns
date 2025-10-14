@@ -1,7 +1,8 @@
+// auth.guard.ts - Enhanced to handle pending join requests
 import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { authState } from '@angular/fire/auth'; // Correct import for authState
+import { authState } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 
@@ -9,7 +10,6 @@ import { map, take, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class authGuard implements CanActivate {
-
   constructor(private auth: Auth, private router: Router) {}
 
   canActivate(
@@ -21,7 +21,21 @@ export class authGuard implements CanActivate {
       map(user => !!user),
       tap(loggedIn => {
         if (!loggedIn) {
-          localStorage.setItem('redirectUrl', state.url);
+          // Store the full URL including any query params and the path
+          const fullUrl = state.url;
+          
+          // Check if this is a memory join link
+          if (fullUrl.includes('/memory/join/')) {
+            // Extract the token from the URL
+            const urlParts = fullUrl.split('/memory/join/');
+            if (urlParts.length > 1) {
+              const token = urlParts[1].split('?')[0]; // Get token, ignore query params
+              localStorage.setItem('pendingMemoryJoinToken', token);
+            }
+          }
+          
+          // Store the redirect URL
+          localStorage.setItem('redirectUrl', fullUrl);
           this.router.navigate(['/login']);
         }
       })

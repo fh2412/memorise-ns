@@ -8,6 +8,7 @@ import { MemoriseUser } from '../../models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { Auth } from '@angular/fire/auth';
+import { BillingService } from '../../services/billing.service';
 
 @Component({
   selector: 'app-home',
@@ -33,9 +34,13 @@ export class HomeComponent implements OnInit {
   selectedValue = 'standard';
   noMemory = true;
 
+  canCreateNewMemory = this.billingService.canCreateNewMemory;
+  storageUsedGB = this.billingService.storageUsedGB;
+
   constructor(
     private auth: Auth,
     private userService: UserService,
+    private billingService: BillingService,
     private router: Router,
     private memoryService: MemoryService,
     private _formBuilder: FormBuilder
@@ -65,6 +70,12 @@ export class HomeComponent implements OnInit {
     this.userdb = await firstValueFrom(this.userService.getUser(user.uid));
     if (this.userdb?.user_id) {
       this.userService.setLoggedInUserId(this.userdb.user_id);
+      const useraccount = await firstValueFrom(this.userService.getUserAccountType(user.uid));
+      this.billingService.setUserStorageData({
+        userId: user.uid,
+        accountType: useraccount.accountType,
+        storageUsedBytes: useraccount.storageUsedBytes
+      });
     }
   }
 
@@ -169,8 +180,15 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  getDisabledTooltip(): string {
+    if (this.canCreateNewMemory()) {
+      return '';
+    }
+    return `Storage limit reached. Free users are limited to 5 GB. Current usage: ${this.storageUsedGB().toFixed(2)} GB. Please upgrade to Premium or Corporate for unlimited storage.`;
+  }
+
   addMemory(): void {
-    this.router.navigate(['/setactivity']);
+    this.router.navigate(['/newmemory'], { state: { activityId: 1 } });
   }
 
   openDetailedMemory(memoryId: number): void {

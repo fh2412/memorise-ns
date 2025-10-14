@@ -1,22 +1,27 @@
 @use '../../../styles/components/memory-card-empty' as card-mixin;
 @use '../../../styles/components/mixins' as mixins;
+@use '@angular/material' as mat;
+
 
 .bd-home-section {
   @include mixins.background-gradient;
+
   @media (max-width: 1874px) {
     --spacing: 1rem;
   }
 }
 
-.small-screen{
+.small-screen {
   display: none;
+
   @media (max-width: 1614px) {
     display: block;
   }
 }
 
-.big-screen{
+.big-screen {
   display: block;
+
   @media (max-width: 1614px) {
     display: none;
   }
@@ -40,13 +45,14 @@ mat-calendar {
   @include mixins.full-size();
 }
 
-h1, h2 {
+h1,
+h2 {
   font-size: 30px;
   font-weight: 700;
   color: var(--mat-sys-primary);
 }
 
-h1{
+h1 {
   font-size: 35px;
 }
 
@@ -71,6 +77,7 @@ h1{
 
 .desc {
   margin-top: 5px;
+
   .custom-pre {
     font-family: monospace;
     font-size: large;
@@ -90,6 +97,43 @@ h1{
   position: absolute;
 }
 
-.show-all-btn{
+.show-all-btn {
   background-color: var(--mat-sys-background);
+}
+
+.activity-card {
+  box-shadow: 0 0 10px var(--mat-sys-secondary);
+  max-width: 30%;
+  @include mat.card-overrides((outlined-container-color: var(--mat-sys-on-secondary),
+      outlined-outline-color: var(--mat-sys-secondary)));
+  margin: 0 0 32px 16px;
+
+}
+
+.activity-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  padding: 16px !important;
+  gap: 16px;
+}
+
+.notification-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  color: var(--mat-sys-primary);
+}
+
+.card-title,
+.card-subtitle {
+  margin: 0;
+}
+
+.card-title {
+  color: var(--mat-sys-primary);
 }

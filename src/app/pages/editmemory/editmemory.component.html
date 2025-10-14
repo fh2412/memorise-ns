@@ -28,7 +28,9 @@
                     <mat-icon>apps</mat-icon>
                     Manage Pictures
                 </button>
-                <button mat-flat-button color="primary" (click)="navigateToAddPhotos()">
+                <button mat-flat-button (click)="navigateToAddPhotos()" [disabled]="!canCreateNewMemory()"
+                    [matTooltip]="getDisabledTooltip()" [matTooltipDisabled]="canCreateNewMemory()"
+                    aria-label="Add new Photos">
                     <mat-icon>add_photo_alternate</mat-icon>
                     Add Photos
                 </button>
@@ -57,14 +59,20 @@
                 </mat-grid-tile>
 
                 <mat-grid-tile>
-                    <mat-form-field appearance="outline">
-                        <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
-                            <input matStartDate formControlName="memory_date" placeholder="Start Date">
-                            <input matEndDate formControlName="memory_end_date" placeholder="End Date">
-                        </mat-date-range-input>
-                        <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-                        <mat-date-range-picker #rangePicker></mat-date-range-picker>
-                    </mat-form-field> </mat-grid-tile>
+                    <div class="date-activity-box">
+                        <mat-form-field appearance="outline">
+                            <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
+                                <input matStartDate formControlName="memory_date" placeholder="Start Date">
+                                <input matEndDate formControlName="memory_end_date" placeholder="End Date">
+                            </mat-date-range-input>
+                            <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+                            <mat-date-range-picker #rangePicker></mat-date-range-picker>
+                        </mat-form-field>
+                        <!--<button mat-flat-button (click)="openActivityBottomSheet()">
+                            <mat-icon>edit</mat-icon> Edit Activity
+                        </button>-->
+                    </div>
+                </mat-grid-tile>
             </mat-grid-list>
             <br><br>
             <div *ngIf="friends">

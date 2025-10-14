@@ -24,8 +24,8 @@
         </button>
       </div>
     </div>
-    @if (activities.length > 0) {
-      <app-activity-list [activities]="activities"></app-activity-list>
+    @if (activities.length > 0 && loggedInUserId) {
+      <app-activity-list [activities]="activities" [loggedInUserId]="loggedInUserId"></app-activity-list>
     }
     @else {
       <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>

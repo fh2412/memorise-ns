@@ -5,10 +5,10 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '../../services/authentication.service';
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    standalone: false
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.scss'],
+  standalone: false
 })
 export class LoginComponent implements OnInit {
   form!: FormGroup;
@@ -20,7 +20,7 @@ export class LoginComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private snackBar: MatSnackBar
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -69,21 +69,31 @@ export class LoginComponent implements OnInit {
   }
 
   private handleLoginSuccess(): void {
-    localStorage.setItem('isFirstTimeUser', 'false');
+    const pendingToken = localStorage.getItem('pendingMemoryJoinToken');
     const redirectUrl = localStorage.getItem('redirectUrl') || '/';
-    localStorage.removeItem('redirectUrl');
-    this.router.navigate([redirectUrl]);
+    localStorage.setItem('isFirstTimeUser', 'false');
+    if (pendingToken) {
+      localStorage.removeItem('pendingMemoryJoinToken');
+      localStorage.removeItem('redirectUrl');
+
+      this.router.navigate(['/memory/join', pendingToken]);
+    } else if (redirectUrl) {
+      localStorage.removeItem('redirectUrl');
+      this.router.navigateByUrl(redirectUrl);
+    } else {
+      this.router.navigate(['/home']);
+    }
   }
 
   private handleError(error: Error, defaultMessage: string): void {
     const message = error?.message === "Firebase: Error (auth/invalid-credential)."
       ? "Username or Password is wrong!"
       : error?.message || defaultMessage;
-  
+
     this.showSnackBar(message, 'OK');
     this.toggleActionState(false);
   }
-  
+
 
   private showSnackBar(message: string, action: string): void {
     this.snackBar.open(message, action, { duration: 5000 });

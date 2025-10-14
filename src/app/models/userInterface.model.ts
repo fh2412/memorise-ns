@@ -32,6 +32,16 @@ export interface Friend {
   email: string;
 }
 
+export interface MemoryDetailFriend {
+  country: string | null;
+  dob: Date | null;
+  name: string;
+  profilepic: string | null;
+  sharedMemoriesCount: number;
+  user_id: string;
+  friendship_status: string | "none";
+}
+
 export interface FriendStatus {
   user_id1: string;
   user_id2: string;

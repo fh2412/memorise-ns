@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Friend, FriendStatus } from '../models/userInterface.model';
+import { Friend, FriendStatus, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
 
@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class FriendsService {
-  private friendsDataSource = new BehaviorSubject<Friend[]>([]);
+  private friendsDataSource = new BehaviorSubject<MemoryDetailFriend[]>([]);
   currentFriendData = this.friendsDataSource.asObservable();
 
 
@@ -17,7 +17,7 @@ export class FriendsService {
 
   constructor(private http: HttpClient) { }
 
-  updateFriendsData(friends: Friend[]) {
+  updateFriendsData(friends: MemoryDetailFriend[]) {
     this.friendsDataSource.next(friends);
   }
 

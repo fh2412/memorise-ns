@@ -14,8 +14,8 @@
   .coming-soon-badge {
     display: flex;
     align-items: center;
-    background-color: #f0f4ff;
-    color: #3f51b5;
+    background-color: var(--mat-sys-surface);
+    color: var(--mat-sys-primary);
     padding: 6px 12px;
     border-radius: 16px;
     width: fit-content;

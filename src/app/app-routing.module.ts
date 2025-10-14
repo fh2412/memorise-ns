@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
-import { ActivityOwnerGuard } from './guards/activity-owner.guard';
+//import { ActivityOwnerGuard } from './guards/activity-owner.guard';
 import { MemoryEditorGuard } from './guards/memory-editor.guard';
 
 export const routes: Routes = [
@@ -14,6 +14,12 @@ export const routes: Routes = [
   {
     path: 'home',
     loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'memory/join/:token',
+    loadComponent: () => import('./pages/join-memory-page/join-memory-page.component')
+      .then(m => m.JoinMemoryPageComponent),
     canActivate: [authGuard]
   },
   {
@@ -51,11 +57,11 @@ export const routes: Routes = [
     loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
     canActivate: [authGuard]
   },
-  {
+  /*{
     path: 'setactivity',
     loadChildren: () => import('./pages/set-memories-activity/set-memories-activity.module').then(m => m.SetMemoriesActivityModule),
     canActivate: [authGuard]
-  },
+  },*/
   {
     path: 'friends',
     loadChildren: () => import('./pages/friends/friends.module').then(m => m.FriendsModule),
@@ -79,7 +85,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
     resolve: { user: ProfileResolver }
   },
-  {
+  /*{
     path: 'activities',
     loadChildren: () => import('./pages/activities/activites.module').then(m => m.ActivitiesModule),
     canActivate: [authGuard]
@@ -103,7 +109,7 @@ export const routes: Routes = [
     path: 'activity/edit/:id',
     loadChildren: () => import('./pages/edit-activity/edit-activity.module').then(m => m.EditActivityModule),
     canActivate: [authGuard, ActivityOwnerGuard]
-  },
+  },*/
   {
     path: 'error/:errorId',
     loadChildren: () => import('./pages/navigation-error/navigation-error.module').then(m => m.NavigationErrorModule)

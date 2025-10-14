@@ -14,7 +14,7 @@
                 tabindex="0" [attr.aria-label]="'View details for ' + activity.title"> <button class="profile-button"
                     [attr.aria-label]="'View details for ' + activity.title">
                     <div class="profile-row">
-                        <img [ngSrc]="activity.firebaseUrl"
+                        <img [ngSrc]="activity.firebaseUrl || '/assets/img/activity_placeholder.png'"
                             [alt]="activity.description || 'Profile image for ' + activity.title" width="48"
                             height="48" class="activity-img">
                         <span>{{ activity.title }}</span>

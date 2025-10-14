@@ -1,85 +1,70 @@
 <div class="activities-container">
-    <!-- Filter Section -->
-    <mat-expansion-panel class="filter-panel" >
-        <mat-expansion-panel-header>
-            <mat-panel-title>Filter Activities</mat-panel-title>
-        </mat-expansion-panel-header>
-
-        <form [formGroup]="filterForm">
-            <div class="filter-grid">
-                <!-- Location Filter -->
-                <div class="filter-item">
-                    <app-places-search></app-places-search>
-
-                    <mat-form-field appearance="outline">
-                        <mat-label>Distance (km)</mat-label>
-                        <input matInput type="number" formControlName="distance" min="1" max="100">
-                    </mat-form-field>
-                </div>
-
-                <!-- Group Size Filter -->
-                <div class="filter-item">
-                    <div class="slider-container">
-                        <span>Group Size: {{ filterForm.get('groupSize')?.value }}</span>
-                        <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                            <input matSliderThumb formControlName="groupSize">
-                        </mat-slider>
-                    </div>
-                </div>
-
-                <!-- Price Filter -->
-                <div class="filter-item">
-                    <div class="slider-container">
-                        <span>Max Cost: ${{ filterForm.get('price')?.value }}</span>
-                        <mat-slider min="0" max="100" step="5" showTickMarks discrete>
-                            <input matSliderThumb formControlName="price">
-                        </mat-slider>
-                    </div>
-                </div>
-
-                <!-- Season Filter -->
-                <div class="filter-item">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Season</mat-label>
-                        <mat-select formControlName="season">
-                            <mat-option value="">All Seasons</mat-option>
-                            <mat-option value="spring">Spring</mat-option>
-                            <mat-option value="summer">Summer</mat-option>
-                            <mat-option value="fall">Fall</mat-option>
-                            <mat-option value="winter">Winter</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Weather Filter -->
-                <div class="filter-item">
-                    <mat-form-field appearance="outline">
-                        <mat-label>Weather</mat-label>
-                        <mat-select formControlName="weather">
-                            <mat-option value="">Any Weather</mat-option>
-                            <mat-option value="sunny">Sunny</mat-option>
-                            <mat-option value="rainy">Rainy</mat-option>
-                            <mat-option value="snowy">Snowy</mat-option>
-                            <mat-option value="cloudy">Cloudy</mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                </div>
-
-                <!-- Name Filter -->
-                <div class="filter-item">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Search by Name</mat-label>
-                        <input matInput formControlName="name" placeholder="Enter activity name">
-                    </mat-form-field>
-                </div>
+    <!-- Header Section with Search and Filter -->
+    <div class="header-section">
+        <div class="search-filter-row">
+            <mat-form-field appearance="outline" class="search-field">
+                <mat-label>Search activities</mat-label>
+                <input matInput [formControl]="searchControl" placeholder="Search by name or description">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            
+            <button mat-fab color="primary" aria-label="Open filters" (click)="openFilterBottomSheet()" class="filter-button">
+                <mat-icon>tune</mat-icon>
+            </button>
+        </div>
+        
+        <!-- Active Filters Display -->
+        @if (hasActiveFilters()) {
+        <div class="active-filters">
+            <span class="filter-label">Active filters:</span>
+            <div class="filter-chips">
+                @if (filterForm.get('name')?.value) {
+                <mat-chip-option (removed)="removeFilter('name')">
+                    <mat-icon>text_fields</mat-icon>
+                    {{ filterForm.get('name')?.value }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
+                @if (filterForm.get('location')?.value) {
+                <mat-chip-option (removed)="removeFilter('location')">
+                    <mat-icon>location_on</mat-icon>
+                    {{ filterForm.get('location')?.value }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
+                @if (filterForm.get('season')?.value) {
+                <mat-chip-option (removed)="removeFilter('season')">
+                    <mat-icon>calendar_today</mat-icon>
+                    {{ getSeasonDisplayName(filterForm.get('season')?.value) }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
+                @if (filterForm.get('weather')?.value) {
+                <mat-chip-option (removed)="removeFilter('weather')">
+                    <mat-icon>wb_sunny</mat-icon>
+                    {{ getWeatherDisplayName(filterForm.get('weather')?.value) }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
+                @if (filterForm.get('groupSize')?.value > 1) {
+                <mat-chip-option (removed)="removeFilter('groupSize')">
+                    <mat-icon>group</mat-icon>
+                    {{ filterForm.get('groupSize')?.value }} people
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
+                @if (filterForm.get('price')?.value > -1) {
+                <mat-chip-option (removed)="removeFilter('price')">
+                    <mat-icon>euro</mat-icon>
+                    Under ${{ filterForm.get('price')?.value }}
+                    <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip-option>
+                }
+                <button mat-stroked-button size="small" (click)="resetFilters()">Clear all</button>
             </div>
-
-            <div class="filter-actions">
-                <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
-                <button mat-button (click)="resetFilters()">Reset</button>
-            </div>
-        </form>
-    </mat-expansion-panel>
+        </div>
+        }
+    </div>
 
     <!-- View Toggle -->
     <div class="view-toggle">
@@ -90,32 +75,49 @@
             <mat-button-toggle value="list">
                 <mat-icon>view_list</mat-icon> List
             </mat-button-toggle>
-            <mat-button-toggle value="bookmark" class="small-screen-bookmark">
+            @if (isSmallScreen) {
+            <mat-button-toggle value="bookmark">
                 <mat-icon>bookmark</mat-icon> Bookmarked
             </mat-button-toggle>
+            }
         </mat-button-toggle-group>
+        
+        <div class="results-count">
+            {{ getResultsCountText() }}
+        </div>
     </div>
 
-    <!-- No Results Message -->
-    @if (filteredActivities().length === 0) {
-    <div class="no-results">
-      <app-not-found [imageUrl]="'/assets/img/no_activities.png'" text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading activities...</p>
     </div>
     }
+
+    <!-- No Results Message -->
+    @if (filteredActivities().length === 0 && !isLoading) {
+    <div class="no-results">
+        <app-not-found [imageUrl]="'/assets/img/no_activities.png'"
+            text="We couldn't find any results for that search. It's okay! A slightly different query might do the trick. Keep experimenting - your ideal results are waiting!"></app-not-found>
+    </div>
+    }
+
     <!-- Grid View -->
-    @if (viewMode === 'grid' && filteredActivities().length > 0) {
+    @if (viewMode === 'grid' && filteredActivities().length > 0 && !isLoading) {
     <div class="grid-view">
-        @for (activity of paginatedActivities; track $index) {
+        @for (activity of paginatedActivities; track activity.activityId) {
         <div class="grid-item">
             <app-activity-card [activity]="activity" [myActivity]="false"></app-activity-card>
         </div>
         }
     </div>
     }
+
     <!-- List View -->
-    @if (viewMode === 'list' && filteredActivities().length > 0) {
+    @if (viewMode === 'list' && filteredActivities().length > 0 && !isLoading) {
     <div class="list-view">
-        @for (activity of paginatedActivities; track $index) {
+        @for (activity of paginatedActivities; track activity.activityId) {
         <mat-card class="list-item">
             <div class="list-item-content">
                 <div class="list-item-image" [style.background-image]="'url(' + activity.firebaseUrl + ')'">
@@ -147,19 +149,21 @@
     </div>
     }
 
-    @if (viewMode === 'bookmark' && filteredActivities().length > 0) {
+    <!-- Bookmarked View -->
+    @if (viewMode === 'bookmark' && filteredActivities().length > 0 && !isLoading) {
     <div class="grid-view">
-        @for (activity of bookmarkedActivities(); track $index) {
+        @for (activity of bookmarkedActivities(); track activity.activityId) {
         <div class="grid-item">
             <app-activity-card [activity]="activity" [myActivity]="true"></app-activity-card>
         </div>
         }
     </div>
     }
+
     <!-- Pagination -->
-    @if (filteredActivities().length > 0) {
+    @if (filteredActivities().length > 0 && !isLoading) {
     <mat-paginator [length]="paginatorLength" [pageSize]="pageSize" [pageSizeOptions]="[6, 12, 24, 48]"
-        (page)="onPageChange($event)">
+        (page)="onPageChange($event)" showFirstLastButtons>
     </mat-paginator>
     }
 </div>

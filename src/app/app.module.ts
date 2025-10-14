@@ -41,6 +41,7 @@ import { AuthInterceptor } from './services/auth.interceptor';
 import { routes } from './app-routing.module';
 import { FriendPreviewComponent } from './components/friend-preview/friend-preview.component';
 import { FeedbackButtonComponent } from "./components/feedback-button/feedback-button.component";
+import { ThemeSwitcherComponent } from "./components/theme-switcher/theme-switcher.component";
 
 @NgModule({
     declarations: [
@@ -82,7 +83,8 @@ import { FeedbackButtonComponent } from "./components/feedback-button/feedback-b
     InfoDialogComponent,
     ShareFriendCodeDialogComponent,
     FriendPreviewComponent,
-    FeedbackButtonComponent
+    FeedbackButtonComponent,
+    ThemeSwitcherComponent
 ],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),

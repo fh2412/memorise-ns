@@ -49,3 +49,9 @@ img {
 mat-icon {
   color: var(--mat-sys-secondary);
 }
+
+app-theme-switcher {
+  position: fixed;
+  bottom: 8px;
+  left: 8px;
+}

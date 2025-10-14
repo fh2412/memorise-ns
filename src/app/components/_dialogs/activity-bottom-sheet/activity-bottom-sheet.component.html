@@ -1,0 +1,84 @@
+<div class="activity-bottom-sheet">
+    <div class="header">
+        <h3>Change Activity</h3>
+        <button mat-icon-button (click)="close()">
+            <mat-icon>close</mat-icon>
+        </button>
+    </div>
+
+    <!-- Current Activity Details -->
+     @if (currentActivity && currentActivity.id !== 1) {
+    <div class="current-activity">
+        <h4>Current Activity</h4>
+        <mat-card class="activity-card">
+            <mat-card-content>
+                <h5>{{ currentActivity.title }}</h5>
+                <p>{{ currentActivity.description }}</p>
+            </mat-card-content>
+        </mat-card>
+    </div>
+    }
+    <mat-divider></mat-divider>
+
+    <!-- Search Section -->
+    <div class="search-section">
+        <h4>Search for New Activity</h4>
+        <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Search activities...</mat-label>
+            <input matInput [(ngModel)]="searchTerm" placeholder="Enter activity title"
+                (input)="onSearchChange($event)">
+            <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="loading-container" *ngIf="isLoading">
+        <mat-spinner diameter="40"></mat-spinner>
+        <p>Searching activities...</p>
+    </div>
+
+    <!-- Search Results -->
+    <div class="results-section" *ngIf="!isLoading && searchResults.length > 0">
+        <h4>Search Results</h4>
+        <mat-selection-list [multiple]="false" (selectionChange)="onActivitySelect($event)">
+            <mat-list-option *ngFor="let activity of searchResults" [value]="activity"
+                [selected]="selectedActivity?.activityId === activity.activityId">
+                <div class="activity-item">
+                    <div class="activity-info">
+                        <h5>{{ activity.title }}</h5>
+                        <p class="activity-description">{{ activity.description }}</p>
+                        <div class="activity-details">
+                            <span class="detail-item">
+                                <mat-icon>group</mat-icon>
+                                {{ activity.groupSizeMin }}-{{ activity.groupSizeMax }} people
+                            </span>
+                            <span class="detail-item">
+                                <mat-icon>euro</mat-icon>
+                                {{ activity.costs }}€
+                            </span>
+                            <span class="detail-item" *ngIf="activity.indoor">
+                                <mat-icon>{{ activity.indoor === 'indoor' ? 'home' : 'nature' }}</mat-icon>
+                                {{ activity.indoor }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </mat-list-option>
+        </mat-selection-list>
+    </div>
+
+    <!-- No Results -->
+    <div class="no-results" *ngIf="!isLoading && searchTerm && searchResults.length === 0">
+        <mat-icon>search_off</mat-icon>
+        <p>No activities found matching "{{ searchTerm }}"</p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="actions" *ngIf="selectedActivity">
+        <button mat-button (click)="close()">Cancel</button>
+        <button mat-raised-button color="primary" (click)="saveActivity()" [disabled]="isSaving">
+            <mat-spinner diameter="20" *ngIf="isSaving"></mat-spinner>
+            {{ isSaving ? 'Saving...' : 'Save Activity' }}
+        </button>
+    </div>
+</div>

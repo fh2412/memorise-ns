@@ -18,9 +18,9 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 3px solid #fff;
+      border: 3px solid var(--mat-sys-background);
       overflow: hidden;
-      background-color: #f5f5f5;
+      background-color: var(--mat-sys-surface);
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
@@ -42,8 +42,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--mat-sys-primary) 0%, var(--mat-sys-inverse-primary) 100%);
+      color: var(--mat-sys-on-primary);
       position: relative;
     }
 
@@ -64,8 +64,8 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      border: 3px solid #fff;
-      background: linear-gradient(135deg, #424242 0%, #616161 100%);
+      border: 3px solid var(--mat-sys-on-primary);
+      background: linear-gradient(135deg, var(--mat-sys-on-surface-variant) 0%, var(--mat-sys-outline) 100%);
       display: flex;
       align-items: center;
       justify-content: center;

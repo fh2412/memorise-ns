@@ -42,27 +42,30 @@ export class ActivityService {
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/suggestedActivities/${userId}`);
   }
 
-  getFilteredActivities(filter: ActivityFilter): Observable<MemoriseUserActivity[]> {
+  getFilteredActivities(filter: ActivityFilter, loggedInUserId: string): Observable<MemoriseUserActivity[]> {
     // Convert filter object to HttpParams
     let params = new HttpParams();
 
-    // Only add parameters that have values
+    if (loggedInUserId) {
+      params = params.set('userId', loggedInUserId);
+    }
+
     if (filter.location) {
       params = params.set('location', filter.location);
+    }
+
+    if (filter.locationCoords) {
+      params = params.set('lat', filter.locationCoords.lat);
+      params = params.set('lng', filter.locationCoords.lng);
     }
 
     if (filter.distance !== undefined) {
       params = params.set('distance', filter.distance.toString());
     }
 
-    if (filter.tag) {
-      params = params.set('tag', filter.tag);
-    }
-
     if (filter.groupSize !== undefined) {
       params = params.set('groupSize', filter.groupSize.toString());
     }
-
 
     if (filter.price !== undefined) {
       params = params.set('price', filter.price.toString());
@@ -79,6 +82,12 @@ export class ActivityService {
     if (filter.name) {
       params = params.set('name', filter.name);
     }
+
+    if (filter.activityType) {
+      params = params.set('activityType', filter.activityType);
+    }
+
+    console.log(params);
 
     return this.http.get<MemoriseUserActivity[]>(`${this.apiUrl}/filtered`, { params });
   }
@@ -216,5 +225,14 @@ export class ActivityService {
   updateUserActivity(activityId: string, activityData: MemoriseUserActivity): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/update-user-activity/${activityId}`;
     return this.http.put<UpdateStandardResponse>(url, activityData);
+  }
+
+  updateMemoriesActivity(activityId: number, memoryId: string): Observable<UpdateStandardResponse> {
+    const url = `${this.apiUrl}/update-memory-activity/${memoryId}`;
+    const updateData = {
+      activityId
+    };
+
+    return this.http.put<UpdateStandardResponse>(url, updateData);
   }
 }

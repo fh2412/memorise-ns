@@ -11,7 +11,9 @@
 }
 
 
-.memory-card-empty {
-  @include mixins.memory-card(500px, 100%);
-  margin-top: 15px;
+.no-connection {
+  height: 40vh;
+  align-items: center;
+  justify-content: center;
+  font-style: italic;
 }

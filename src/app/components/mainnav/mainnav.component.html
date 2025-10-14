@@ -1,7 +1,9 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
     [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
-    <mat-toolbar class="logo-container"><img src="/assets/img/logo.png" alt="Logo"></mat-toolbar>
+    <mat-toolbar class="logo-container">
+      <img [src]="themeService.isDarkMode() ? '/assets/img/logo_big_dark.png' : '/assets/img/logo.png'" alt="Logo">
+    </mat-toolbar>
     <mat-nav-list class="mat-nav-list">
       <a mat-list-item href="/home">
         <mat-icon>home</mat-icon>
@@ -11,11 +13,12 @@
         <mat-icon>people</mat-icon>
         <span class="text">FRIENDS</span>
       </a>
-      <a mat-list-item href="/activities">
+      <!--<a mat-list-item href="/activities">
         <mat-icon>event</mat-icon>
         <span class="text">ACTIVITIES</span>
-      </a>
+      </a>-->
     </mat-nav-list>
+    <app-theme-switcher></app-theme-switcher>
     <app-feedback-button></app-feedback-button>
   </mat-sidenav>
   <mat-sidenav-content>

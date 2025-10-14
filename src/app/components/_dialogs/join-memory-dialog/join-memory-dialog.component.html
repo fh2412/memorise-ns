@@ -1,0 +1,32 @@
+<div class="join-dialog">
+    <h2 mat-dialog-title *ngIf="!loading && memory">Join Memory</h2>
+
+    <mat-dialog-content>
+        <div *ngIf="loading" class="loading-container">
+            <mat-spinner diameter="50"></mat-spinner>
+            <p>Loading memory details...</p>
+        </div>
+
+        <div *ngIf="!loading && error" class="error-container">
+            <p class="error-message">{{ error }}</p>
+        </div>
+
+        <div *ngIf="!loading && memory && !error" class="memory-info">
+            <h3>{{ memory.title }}</h3>
+            <p class="memory-description">{{ memory.text }}</p>
+            <p class="memory-date">{{ formatDate(memory.memory_date, memory.memory_end_date) }}</p>
+            <p class="created-by">Created by: {{ memory.username }}</p>
+        </div>
+    </mat-dialog-content>
+
+    <mat-dialog-actions align="end">
+        <button mat-button (click)="onCancel()" [disabled]="joining">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary" (click)="onJoin()" [disabled]="joining || loading || !!error"
+            *ngIf="!loading && memory && !error">
+            <mat-spinner diameter="20" *ngIf="joining" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+            {{ joining ? 'Joining...' : 'Join Memory' }}
+        </button>
+    </mat-dialog-actions>
+</div>

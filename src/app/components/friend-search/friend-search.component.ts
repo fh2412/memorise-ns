@@ -35,22 +35,29 @@ export class FriendSearchComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
-  searchFriend(): void {
-    if (!this.searchTerm) return;
-    else if (this.userId != null) {
-      this.enter = true;
-      this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
-        (results) => {
-          this.searchResults = results;
-          this.errorMessage = ''; // Clear error on successful response
-        },
-        (error) => {
-          console.error('Error searching for friends:', error);
-          this.errorMessage = 'Failed to fetch search results. Please try again.';
-        }
-      );
-    }
+searchFriend(): void {
+  if (!this.searchTerm) {
+    this.searchResults = [];
+    return;
   }
+  
+  if (this.userId != null) {
+    this.enter = true;
+    this.searchResults = [];
+    
+    this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
+      (results) => {
+        this.searchResults = results;
+        this.errorMessage = '';
+      },
+      (error) => {
+        console.error('Error searching for friends:', error);
+        this.errorMessage = 'Failed to fetch search results. Please try again.';
+        this.searchResults = [];
+      }
+    );
+  }
+}
 
   getSuggestedFriends(userId: string | null) {
     if(userId){

@@ -42,8 +42,10 @@ export interface CreateMemoryResponse {
 
 
 // Interfaces for share feature
+// In memoryInterface.model.ts
 export interface ShareLinkResponse {
   shareLink: string;
+  directLink: string;
   shareToken: string;
 }
 

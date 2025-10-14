@@ -43,7 +43,8 @@ export class MemoryCardComponent {
     this.memoryService.generateShareLink(this.cardData.memory_id).subscribe({
       next: (response) => {
         // Copy the full share link to clipboard
-        const success = this.clipboard.copy(response.shareLink);
+        const success = this.clipboard.copy(response.directLink);
+        
         
         if (success) {
           this.snackBar.open('The invite link was copied to your clipboard!', 'Great!', {

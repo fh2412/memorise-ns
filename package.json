@@ -1,6 +1,6 @@
 {
   "name": "memorise",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -17,9 +17,9 @@
     "@angular/common": "^20.0.3",
     "@angular/compiler": "^20.0.3",
     "@angular/core": "^20.0.3",
-    "@angular/fire": "^20.0.0",
+    "@angular/fire": "^20.0.1",
     "@angular/forms": "^20.0.3",
-    "@angular/google-maps": "^19.2.4",
+    "@angular/google-maps": "^20.0.3",
     "@angular/material": "^20.0.3",
     "@angular/platform-browser": "^20.0.3",
     "@angular/platform-browser-dynamic": "^20.0.3",
@@ -28,7 +28,7 @@
     "@angular/ssr": "^20.3.0",
     "@googlemaps/markerclusterer": "^2.5.3",
     "file-saver": "^2.0.5",
-    "firebase": "^10.7.1",
+    "firebase": "^11.2.0",
     "jszip": "^3.10.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",

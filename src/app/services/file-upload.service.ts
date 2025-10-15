@@ -1,8 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, finalize, forkJoin, from, of, switchMap } from 'rxjs';
-import { deleteObject, getMetadata, Storage, ref, updateMetadata, uploadBytesResumable, listAll, getDownloadURL } from '@angular/fire/storage';
+import { deleteObject, getMetadata, Storage, ref, updateMetadata, uploadBytesResumable, listAll, getDownloadURL, StorageReference } from '@angular/fire/storage';
 import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
-import { StorageReference } from 'firebase/storage';
 import { BillingService, DeletionData } from './billing.service';
 
 @Injectable({

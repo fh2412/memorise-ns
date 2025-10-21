@@ -129,32 +129,41 @@ export class FileUploadService {
     });
   }
 
-  uploadMemoryPicture(memoryId: string, file: ImageFileWithDimensions, count: number, index: number, isStarred: boolean, userId: string): Observable<number | undefined> {
-    const path = `memories/${memoryId}/picture_${index + count + 1}.jpg`;
+  uploadMemoryPicture(
+    memoryId: string,
+    file: ImageFileWithDimensions,
+    userId: string,
+    isStarred: boolean
+  ): Observable<{ progress?: number, downloadURL?: string }> {
+    // Use timestamp + random string for unique filename
+    const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const path = `memories/${memoryId}/${uniqueId}.jpg`;
     const storageRef = ref(this.storage, path);
 
-    // Define metadata with custom dimensions
     const metadata = {
       customMetadata: {
         width: file.width.toString(),
         height: file.height.toString(),
         isStarred: isStarred.toString(),
-        userId: userId
+        userId: userId,
+        uploadedAt: new Date().toISOString()
       }
     };
 
-    // Upload the file with metadata
     const uploadTask = uploadBytesResumable(storageRef, file.file, metadata);
 
-    return new Observable<number | undefined>((observer) => {
+    return new Observable((observer) => {
       uploadTask.on(
         'state_changed',
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          observer.next(progress);
+          observer.next({ progress });
         },
         (error) => observer.error(error),
-        () => {
+        async () => {
+          // Get download URL after upload completes
+          const downloadURL = await getDownloadURL(storageRef);
+          observer.next({ downloadURL });
           observer.complete();
         }
       );

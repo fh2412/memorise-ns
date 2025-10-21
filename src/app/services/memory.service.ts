@@ -62,8 +62,11 @@ export class MemoryService {
     return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
   }
 
-  updatePictureCount(memory_id: string, pictureCount: { picture_count: number }): Observable<UpdateStandardResponse> {
-    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/picturecount/${memory_id}`, pictureCount);
+  incrementPictureCount(memoryId: string, increment: number): Observable<{ message: string; newCount: number }> {
+    return this.http.post<{ message: string; newCount: number }>(
+      `${this.apiUrl}/memories/picturecount/${memoryId}/increment`,
+      { increment }
+    );
   }
 
   updateMemoryLocation(memoryId: number, locationId: number): Observable<UpdateStandardResponse> {

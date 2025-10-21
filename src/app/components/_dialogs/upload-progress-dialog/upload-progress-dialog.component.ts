@@ -9,8 +9,8 @@ import { MemoryFormData } from '../../../models/memoryInterface.model';
 import { ActivityService } from '../../../services/activity.service';
 import { CreateLocationResponse } from '../../../models/location.model';
 import { BillingService } from '../../../services/billing.service';
-import { firstValueFrom } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -20,12 +20,21 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class UploadProgressDialogComponent implements OnInit {
   progress: number[] = [];
-  downloadURL: string | undefined;
-  originalCount = 0;
-  counter = 0;
+  downloadURLs: string[] = [];
+  uploadedCount = 0;
+  memoryId = '';
 
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: { userId: string; memoryId: string; filesWithDimensions: ImageFileWithDimensions[]; memoryData: MemoryFormData; friends_emails: string[]; picture_count: number; googleStorageUrl: string; starredIndex: number },
+    @Inject(MAT_DIALOG_DATA) public data: {
+      userId: string;
+      memoryId: string;
+      filesWithDimensions: ImageFileWithDimensions[];
+      memoryData: MemoryFormData;
+      friends_emails: string[];
+      picture_count: number;
+      googleStorageUrl: string;
+      starredIndex: number
+    },
     private storageService: FileUploadService,
     private memoryService: MemoryService,
     private locationService: LocationService,
@@ -35,86 +44,120 @@ export class UploadProgressDialogComponent implements OnInit {
     private billingService: BillingService,
     private snackbar: MatSnackBar,
   ) {
-    // Initialize progress array with zeros
     this.progress = Array(data.filesWithDimensions.length).fill(0);
+    this.downloadURLs = Array(data.filesWithDimensions.length).fill('');
   }
 
   ngOnInit() {
-    this.oneByOneUpload();
+    console.log("Dialog Data: ", this.data);
+    this.batchUpload();
   }
 
-  async oneByOneUpload() {
-    this.counter = 0;
-    const uploadPromises: Promise<void>[] = [];
-    const totalSizeBytes = this.data.filesWithDimensions.reduce((sum, currentImage) => { return sum + currentImage.file.size }, 0);
-    if (await firstValueFrom(this.billingService.updateFreeUserStorageUsed(this.data.userId, totalSizeBytes))) {
-      this.data.filesWithDimensions.forEach((file, index) => {
-        if (file) {
-          const isStarred = (index === this.data.starredIndex);
-          const uploadPromise = new Promise<void>((resolve, reject) => {
-            this.storageService.uploadMemoryPicture(this.data.googleStorageUrl, file, this.data.picture_count, index, isStarred, this.data.userId).subscribe(
-              (uploadProgress: number | undefined) => {
-                this.progress[index] = uploadProgress ?? 0;
-              },
-              error => {
-                console.error('Error uploading picture:', error);
-                reject(error);
-              },
-              () => {
-                this.counter++;
-                resolve();
-              }
-            );
-          });
-          uploadPromises.push(uploadPromise);
-        }
-      });
-      try {
-        await Promise.all(uploadPromises);
-        console.log("finished upload!");
+  async batchUpload() {
+    this.uploadedCount = 0;
 
-        if (this.data.picture_count == 0) {
-          this.downloadURL = await this.memoryService.getMemoryTitlePictureUrl(this.data.googleStorageUrl, this.data.starredIndex);
-          this.dialogRef.close(this.data.googleStorageUrl);
-          this.createMemory();
+    // Calculate total size upfront
+    const totalSizeBytes = this.data.filesWithDimensions.reduce(
+      (sum, img) => sum + img.file.size,
+      0
+    );
+
+    // Use atomic increment for storage quota
+    let hasStorageSpace = false;
+    try {
+      hasStorageSpace = await this.billingService
+        .updateFreeUserStorageUsed(this.data.userId, totalSizeBytes)
+        .toPromise();
+    } catch {
+      this.snackbar.open(
+        'Your Storage is full! Delete old Images or upgrade to Premium.',
+        'Close',
+        {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
         }
-        else {
-          this.originalCount = this.data.picture_count;
-          this.updatePictureCount(this.data.memoryId);
-          this.dialogRef.close(this.data.googleStorageUrl);
-        }
-      } catch (error) {
-        console.error('Error during upload process:', error);
-        // Handle the error appropriately here.
-      }
+      );
+      this.dialogRef.close(null);
+      return;
     }
-    else{
-      this.snackbar.open('Your Storage is full! Delete old Images or upgrade to Premium.', 'Close', {
-        duration: 3000,
-        horizontalPosition: 'center',
-        verticalPosition: 'top'
-      });
+
+    if (!hasStorageSpace) {
+      this.snackbar.open(
+        'Your Storage is full! Delete old Images or upgrade to Premium.',
+        'Close',
+        {
+          duration: 5000,
+          horizontalPosition: 'center',
+          verticalPosition: 'top'
+        }
+      );
+      this.dialogRef.close(null);
+      return;
     }
-  }
 
+    // Upload all files concurrently
+    const uploadPromises = this.data.filesWithDimensions.map((file, index) => {
+      const isStarred = (index === this.data.starredIndex);
 
-  updatePictureCount(memoryId: string): void {
-    const pictureCount = this.calculatePictureCount();
-    const pictureCountData = { picture_count: pictureCount };
-
-    this.memoryService.updatePictureCount(memoryId, pictureCountData).subscribe({
-      next: (response) => console.log('Picture count updated successfully:', response),
-      error: (error) => console.error('Error updating picture count:', error),
+      return new Promise<void>((resolve, reject) => {
+        this.storageService.uploadMemoryPicture(
+          this.data.googleStorageUrl,
+          file,
+          this.data.userId,
+          isStarred
+        ).subscribe({
+          next: (result) => {
+            if (result.progress !== undefined) {
+              this.progress[index] = result.progress;
+            }
+            if (result.downloadURL) {
+              this.downloadURLs[index] = result.downloadURL;
+            }
+          },
+          error: (error) => {
+            console.error(`Error uploading picture ${index}:`, error);
+            reject(error);
+          },
+          complete: () => {
+            this.uploadedCount++;
+            resolve();
+          }
+        });
+      });
     });
-  }
 
-  private calculatePictureCount(): number {
-    const currentCount = this.data.filesWithDimensions?.length || 0;
-    const totalCount = currentCount + this.originalCount;
-    this.originalCount = 0; // Reset original count
-    return totalCount;
-  }
+    try {
+      await Promise.all(uploadPromises);
+      console.log("All uploads finished!");
 
+      if (this.data.picture_count === 0) {
+        await this.createMemory();
+        console.log("Memory Created: ", this.memoryId);
+      }
+
+      const incrementResult = await firstValueFrom(this.memoryService.incrementPictureCount(this.memoryId || this.data.googleStorageUrl, this.data.filesWithDimensions.length));
+      console.log(`Picture count updated to: ${incrementResult?.newCount}`);
+      this.snackbar.open(
+        'Successfully created Memory!',
+        'Yeay',
+        { duration: 3000 }
+      );
+      this.dialogRef.close(this.data.googleStorageUrl);
+    } catch (error) {
+      console.error('Error during upload process:', error);
+
+      // Rollback storage quota on failure
+      const updatedStroage = await firstValueFrom(this.billingService.updateFreeUserStorageUsed(this.data.userId, -totalSizeBytes));
+
+      this.snackbar.open(
+        'Upload failed. Please try again.',
+        'Close',
+        { duration: 3000 }
+      );
+      this.dialogRef.close(updatedStroage);
+    }
+  }
 
   async createMemory() {
     try {
@@ -125,7 +168,7 @@ export class UploadProgressDialogComponent implements OnInit {
 
       const memoryData = { ...this.data.memoryData };
       memoryData.firestore_bucket_url = this.data.googleStorageUrl;
-      memoryData.title_pic = this.downloadURL || '';
+      memoryData.title_pic = this.downloadURLs[this.data.starredIndex] || '';
 
       if (!memoryData.memory_end_date) {
         memoryData.memory_end_date = memoryData.memory_date;
@@ -134,16 +177,22 @@ export class UploadProgressDialogComponent implements OnInit {
       if (memoryData.lat && memoryData.lng) {
         memoryData.location_id = await this.handleLocationCreation(memoryData);
       } else if (memoryData.l_city || memoryData.l_country || memoryData.l_postcode) {
-        const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_country, memoryData.l_postcode);
+        const coords = await this.get_geocoords(
+          memoryData.l_city,
+          memoryData.l_country,
+          memoryData.l_postcode
+        );
         memoryData.lat = coords.lat.toString();
         memoryData.lng = coords.lng.toString();
         memoryData.location_id = await this.handleLocationCreation(memoryData);
       } else {
         memoryData.location_id = 1;
       }
+
       if (memoryData.activity_id == 0) {
         memoryData.activity_id = await this.handleActivityCreation(memoryData);
       }
+
       await this.handleMemoryCreation(memoryData);
     } catch (error) {
       console.error('Error creating memory:', error);
@@ -177,12 +226,13 @@ export class UploadProgressDialogComponent implements OnInit {
     return new Promise((resolve, reject) => {
       this.memoryService.createMemory(memoryData).subscribe(
         async (response: { memory_id: string }) => {
-          const memoryId = response.memory_id;
+          this.memoryId = response.memory_id;
           console.log('Memory created successfully:', response);
+
           if (this.data.friends_emails.length > 0) {
-            await this.addFriendsToMemory(memoryId, this.data.friends_emails);
+            await this.addFriendsToMemory(this.memoryId, this.data.friends_emails);
           }
-          this.updatePictureCount(memoryId);
+
           resolve();
         },
         (error) => reject(`Error creating memory: ${error}`)
@@ -203,23 +253,23 @@ export class UploadProgressDialogComponent implements OnInit {
     });
   }
 
-  async get_geocoords(city: string, postcode: string, country: string): Promise<{ lat: number, lng: number }> {
+  async get_geocoords(
+    city: string,
+    postcode: string,
+    country: string
+  ): Promise<{ lat: number, lng: number }> {
     const address = await this.geocodingService.geocodeAddress(country, city, postcode);
 
     if (address && address.results && address.results.length > 0) {
       const geometry = address.results[0].geometry;
 
-      // If bounds are present, calculate the center of the bounds
       if (geometry.bounds) {
         const ne = geometry.bounds.getNorthEast();
         const sw = geometry.bounds.getSouthWest();
-
         const lat = (ne.lat() + sw.lat()) / 2;
         const lng = (ne.lng() + sw.lng()) / 2;
-
-        return { lat, lng };  // Return the approximate center of the bounds
+        return { lat, lng };
       } else if (geometry.location) {
-        // If bounds are not present, return the location directly
         return {
           lat: geometry.location.lat(),
           lng: geometry.location.lng()

@@ -24,24 +24,12 @@
             }
           </div>
         }
-        
-        <!-- Badge for remaining count -->
-        @if (remainingCount > 0) {
-          <div 
-            class="remaining-badge mat-elevation-z2"
-            [style.left.px]="displayedFriends.length * 20"
-            [matTooltip]="getRemainingTooltip()"
-            matTooltipPosition="above"
-          >
-            <span class="remaining-text">+{{ remainingCount }}</span>
-          </div>
-        }
       </div>
       
       <!-- Text indicator for remaining friends -->
       @if (remainingCount > 0) {
         <span class="remaining-count-text">
-          and {{ remainingCount }} more
+          and {{ remainingCount }} more!
         </span>
       }
     </div>

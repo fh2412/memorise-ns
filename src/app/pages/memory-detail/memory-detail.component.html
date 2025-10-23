@@ -121,7 +121,8 @@
           Provide more Information to remember your Adventure forever!</mat-card-content>
       </mat-card>
       <br><br>
-      <mat-card appearance="outlined" *ngIf="memorydbFriends !== null" style="overflow: hidden;">
+      @if (memorydbFriends !== null) {
+      <mat-card appearance="outlined" style="overflow: hidden;">
         <table mat-table [dataSource]="memorydbFriends">
           <!-- Profile Picture Column -->
           <ng-container matColumnDef="profilePicture">
@@ -152,10 +153,10 @@
           <ng-container matColumnDef="sharedMemories">
             <th mat-header-cell *matHeaderCellDef> Shared Memories </th>
             <td mat-cell *matCellDef="let user">
-              @if (user.friendship_status !== "none") {
+              @if (user.friendship_status === "accepted" || user.user_id === loggedInUserId) {
               {{ user.sharedMemoriesCount }}
               } @else {
-              <button mat-stroked-button (click)="addFriend(user)"><mat-icon>person_add</mat-icon>Add</button>
+              <button mat-stroked-button (click)="addFriend(user)" [disabled]="user.friendship_status !== 'none'"><mat-icon>person_add</mat-icon>{{ user.friendship_status === 'none' ? 'Add' : 'Requested' }}</button>
               }
             </td>
           </ng-container>
@@ -164,6 +165,7 @@
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       </mat-card>
+      }
       <mat-card *ngIf="!memorydbFriends?.length" class="memory-card" appearance="outlined">
         <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is
           more fun together!</mat-card-content>

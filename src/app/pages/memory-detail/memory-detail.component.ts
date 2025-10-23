@@ -84,6 +84,7 @@ export class MemoryDetailComponent implements OnInit {
 
       const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryId, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
+      console.log("Friend Data: ", this.memorydbFriends);
 
       const memoryCreator = await firstValueFrom(this.userService.getUser(this.memorydb.user_id.toString()));
       this.memoryCreator = memoryCreator;
@@ -167,13 +168,40 @@ export class MemoryDetailComponent implements OnInit {
     });
   }
 
-  async addFriend(friend: MemoryDetailFriend) {
-    let message = 'Friend Request was sent!';
-    if (this.loggedInUserId) {
-      await firstValueFrom(this.friendsService.sendFriendRequest(this.loggedInUserId, friend.user_id));
-    } else {
-      message = 'Error sending Friend Request!'
+  async addFriend(friendToRequest: MemoryDetailFriend): Promise<void> {
+    let message = 'Error sending Friend Request!';
+    const newStatus = 'requested';
+
+    if (!this.loggedInUserId || !this.memorydbFriends) {
+      this.showSnackbar(message);
+      return;
     }
+
+    try {
+      await firstValueFrom(
+        this.friendsService.sendFriendRequest(this.loggedInUserId, friendToRequest.user_id)
+      );
+      this.memorydbFriends = this.memorydbFriends.map(currentFriend => {
+        if (currentFriend.user_id === friendToRequest.user_id) {
+          return {
+            ...currentFriend,
+            friendship_status: newStatus
+          };
+        }
+        return currentFriend;
+      });
+
+      message = 'Friend Request was sent!';
+
+    } catch (error) {
+      console.error('Failed to send friend request:', error);
+    }
+
+    this.showSnackbar(message);
+  }
+
+  // Optional helper method for cleaner snackbar logic
+  private showSnackbar(message: string): void {
     this.snackBar.open(message, 'Close', {
       duration: 3000,
       horizontalPosition: 'center',

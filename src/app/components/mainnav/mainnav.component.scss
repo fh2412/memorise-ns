@@ -50,8 +50,10 @@ mat-icon {
   color: var(--mat-sys-secondary);
 }
 
-app-theme-switcher {
+.nav-actions {
+  height: 100px;
+  width: 190px;
   position: fixed;
-  bottom: 8px;
-  left: 8px;
+  bottom: 0px;
+  left: 5px;
 }

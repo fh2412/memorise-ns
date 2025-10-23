@@ -11,21 +11,30 @@ import { FeedbackDialogComponent } from '../_dialogs/feedback-dialog/feedback-di
   standalone: true,
   imports: [CommonModule, MatButtonModule, MatIconModule, MatDialogModule],
   template: `
-    <button 
-      mat-fab 
-      color="primary" 
+  <div class="theme-controls">
+    Raise Feedback:
+  <button 
+      matIconButton 
       aria-label="Feedback button"
       class="feedback-button"
       (click)="openFeedbackDialog()">
       <mat-icon>feedback</mat-icon>
     </button>
+    </div>
   `,
   styles: [`
+    .theme-controls {
+    display: flex;
+    align-items: center;
+    padding-left: 22px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface);
+    border: 1px solid var(--mat-sys-outline);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
     .feedback-button {
-      position: fixed;
-      bottom: 20px;
-      right: 40px;
-      z-index: 100;
+
     }
   `]
 })

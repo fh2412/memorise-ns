@@ -40,7 +40,7 @@ export class MemorySelectorComponent implements OnInit {
   ngOnInit() {
     // Load memories using the provided service function
     this.loading = true;
-    this.memoryService.getCreatedMemory(this.userId)
+    this.memoryService.getUserCreatedMemories(this.userId, true)
       .subscribe({
         next: (memories) => {
           this.memories = memories;

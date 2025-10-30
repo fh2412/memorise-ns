@@ -21,14 +21,16 @@ export class MemoryService {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
-  getCreatedMemory(user_id: string) {
-    // Implement the logic to fetch user data from your backend API
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/createdMemories/${user_id}`);
+  getUserCreatedMemories(user_id: string, ascending: boolean) {
+    return this.http.get<Memory[]>(`${this.apiUrl}/memories/createdMemories/${user_id}`, {
+      params: { ascending: ascending }
+    });
   }
 
-  getAddedMemories(user_id: string) {
-    // Implement the logic to fetch user data from your backend API
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/getAddedMemories/${user_id}`);
+  getUserCreatedAndAddedMemories(user_id: string, ascending: boolean): Observable<Memory[]> {
+    return this.http.get<Memory[]>(`${this.apiUrl}/memories/all/${user_id}`, {
+      params: { ascending: ascending }
+    });
   }
 
   getAllMemories(user_id: string): Observable<Memory[]> {

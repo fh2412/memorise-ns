@@ -21,11 +21,11 @@ export class HomeComponent implements OnInit {
   openForm: FormGroup;
   userdb!: MemoriseUser;
   fuid: string | undefined;
-  userGeneratedMemories: Memory[] = [];
-  friendGeneratedMemories: Memory[] = [];
+  databaseMemories: Memory[] = [];
   displayMemories: Memory[] = [];
   showFriendsMemoriesBool = true;
 
+  sortOrder: 'asc' | 'desc' = 'desc';
   pageSize = 9;
   pageIndex = 0;
   pagedData: Memory[] = [];
@@ -56,7 +56,6 @@ export class HomeComponent implements OnInit {
     try {
       await this.initializeUserData();
       await this.loadMemories();
-      this.initializeDataDisplay(this.showFriendsMemoriesBool);
     } catch (error) {
       console.error('Initialization error:', error);
     }
@@ -81,21 +80,42 @@ export class HomeComponent implements OnInit {
 
   private async loadMemories(): Promise<void> {
     try {
-      await this.getCreatedMemories();
-      await this.getAddedMemories(this.showFriendsMemoriesBool);
+      if (this.showFriendsMemoriesBool) {
+        await this.getCreatedAndAddedMemories();
+      } else {
+        await this.getUserCreatedMemoriesOnly();
+      }
+      this.initializeDataDisplay();
     } catch (error) {
       console.error('Error loading memories:', error);
     }
   }
 
-  private initializeDataDisplay(checked: boolean): void {
+  private async getUserCreatedMemoriesOnly(): Promise<void> {
+    const orderDirection = this.sortOrder === 'asc';
+    try {
+      const data = await firstValueFrom(this.memoryService.getUserCreatedMemories(this.userdb.user_id, orderDirection));
+      this.databaseMemories = data;
+      this.noMemory = this.databaseMemories.length === 0;
+    } catch (error) {
+      console.error('Error fetching user-created memories:', error);
+    }
+  }
+
+  private async getCreatedAndAddedMemories(): Promise<void> {
+    const orderDirection = this.sortOrder === 'asc';
+    try {
+      this.databaseMemories = await firstValueFrom(this.memoryService.getUserCreatedAndAddedMemories(this.userdb.user_id, orderDirection ));
+      this.noMemory = this.databaseMemories.length === 0;
+    } catch (error) {
+      console.error("Error fetching friend's memories data:", error);
+    }
+  }
+
+  private initializeDataDisplay(): void {
     if (!this.noMemory) {
-      if (checked && this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
-      } else if (checked && this.friendGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.friendGeneratedMemories];
-      } else if (this.userGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.userGeneratedMemories];
+      if (this.databaseMemories.length > 0) {
+        this.displayMemories = this.databaseMemories;
       } else {
         this.displayMemories = [];
       }
@@ -122,28 +142,17 @@ export class HomeComponent implements OnInit {
     this.updatePagedData();
   }
 
-  showAll(checked: boolean): void {
+  async toggleShowFriendsMemories(checked: boolean): Promise<void> {
     localStorage.setItem('showFriendsMemories', checked.toString());
     this.showFriendsMemoriesBool = checked;
-    if (!this.noMemory || this.friendGeneratedMemories.length > 0) {
+    if (!this.noMemory || this.databaseMemories.length > 0) {
       if (checked) {
-        if (this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
-        } else if (this.userGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.userGeneratedMemories];
-        }
-        else if (this.friendGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.friendGeneratedMemories];
-        }
+        await this.getCreatedAndAddedMemories();
       }
       else {
-        if (this.userGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.userGeneratedMemories];
-        } else {
-          this.displayMemories = [];
-        }
+        await this.getUserCreatedMemoriesOnly();
       }
-      this.filteredItems = [...this.displayMemories];
+      this.displayMemories = this.filteredItems = [...this.databaseMemories];
     }
 
     if (this.openForm.get('search')?.value) {
@@ -159,25 +168,9 @@ export class HomeComponent implements OnInit {
     this.pagedData = this.filteredItems.slice(startIndex, startIndex + this.pageSize);
   }
 
-  private async getCreatedMemories(): Promise<void> {
-    try {
-      const data = await firstValueFrom(this.memoryService.getCreatedMemory(this.userdb.user_id));
-      this.userGeneratedMemories = data;
-      this.noMemory = this.userGeneratedMemories.length === 0;
-    } catch (error) {
-      console.error('Error fetching user-created memories:', error);
-    }
-  }
-
-  private async getAddedMemories(showFriendsMemories: boolean): Promise<void> {
-    try {
-      this.friendGeneratedMemories = await firstValueFrom(this.memoryService.getAddedMemories(this.userdb.user_id));
-      if (this.noMemory === true && showFriendsMemories) {
-        this.noMemory = this.userGeneratedMemories.length === 0
-      }
-    } catch (error) {
-      console.error("Error fetching friend's memories data:", error);
-    }
+  async toggleSortOrder(): Promise<void> {
+    this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';
+    await this.loadMemories();
   }
 
   getDisabledTooltip(): string {

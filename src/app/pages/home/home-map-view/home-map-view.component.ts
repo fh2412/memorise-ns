@@ -1,24 +1,28 @@
-import { Component, Input, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, Input } from '@angular/core';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
-import { Memory } from '../../../models/memoryInterface.model';
+import { Memory, MemoryMapData } from '../../../models/memoryInterface.model';
+import { firstValueFrom } from 'rxjs';
+import { MemoryService } from '../../../services/memory.service';
 
 
 export interface CustomMarker {
   position: google.maps.LatLngLiteral;
   title: string;
+  memory_id: number;
   element?: google.maps.marker.AdvancedMarkerElement;
 }
 
 @Component({
-    selector: 'app-home-map-view',
-    templateUrl: './home-map-view.component.html',
-    styleUrl: './home-map-view.component.scss',
-    standalone: false
+  selector: 'app-home-map-view',
+  templateUrl: './home-map-view.component.html',
+  styleUrl: './home-map-view.component.scss',
+  standalone: false
 })
 export class HomeMapViewComponent implements OnInit {
-  @Input() memories: Memory[] = [];
 
+  @Input() userId = '';
+  memories: MemoryMapData[] = [];
   markers: CustomMarker[] = [];
 
   @ViewChild(MapInfoWindow) infoWindow!: MapInfoWindow;
@@ -33,10 +37,23 @@ export class HomeMapViewComponent implements OnInit {
   };
   currentMemory: Memory | null = null;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private memoryService: MemoryService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+    await this.loadMapMarkers(true);
     this.initializeMarkers();
+  }
+
+  private async loadMapMarkers(includeShared: boolean): Promise<void> {
+    try {
+      this.memories = await firstValueFrom(
+        this.memoryService.getMemoriesMapData(this.userId, includeShared)
+      );
+      console.log(this.memories);
+    } catch (error) {
+      console.error('Error loading map markers:', error);
+      this.memories = [];
+    }
   }
 
   private initializeMarkers(): void {
@@ -45,6 +62,7 @@ export class HomeMapViewComponent implements OnInit {
         return {
           position: { lat: parseFloat(memory.latitude), lng: parseFloat(memory.longitude) },
           title: index.toString(),
+          memory_id: memory.memory_id
         };
       }).filter(marker => marker !== null) as CustomMarker[];
 
@@ -60,8 +78,10 @@ export class HomeMapViewComponent implements OnInit {
     }
   }
 
-  openInfoWindow(marker: MapMarker, pos: CustomMarker): void {
-    this.currentMemory = this.memories[+pos.title];
+  async openInfoWindow(marker: MapMarker, pos: CustomMarker): Promise<void> {
+    this.currentMemory = await firstValueFrom(
+        this.memoryService.getMemory(pos.memory_id)
+    );
     this.infoWindow.open(marker);
   }
 

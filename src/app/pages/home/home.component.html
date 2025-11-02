@@ -44,7 +44,7 @@
         <div>
             @if (selectedValue === 'map') {
             <div>
-                <app-home-map-view [memories]="displayMemories"></app-home-map-view>
+                <app-home-map-view [userId]="userdb.user_id"></app-home-map-view>
             </div>
             }
             @if (selectedValue === 'standard') {

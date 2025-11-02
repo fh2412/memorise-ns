@@ -48,6 +48,12 @@ export interface MemorySearchData {
   text: string;
 }
 
+export interface MemoryMapData {
+  memory_id: number;
+  latitude: string;
+  longitude: string;
+}
+
 export interface CreateMemoryResponse {
   message: string;
   memory_id: string;

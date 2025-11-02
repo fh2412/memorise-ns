@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { lastValueFrom, Observable } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemorySearchData, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -41,6 +41,15 @@ export class MemoryService {
       }
     );
   }
+
+  getMemoriesMapData(userId: string, includeShared: boolean): Observable<MemoryMapData[]> {
+  return this.http.get<MemoryMapData[]>(
+    `${this.apiUrl}/memories/mapData/${userId}`,
+    {
+      params: { includeShared: includeShared.toString() }
+    }
+  );
+}
 
   async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
     const path = `memories/${memoryId}/picture_${starredIndex + 1}.jpg`;

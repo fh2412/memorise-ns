@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { lastValueFrom, Observable } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemorySearchData, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -31,6 +31,15 @@ export class MemoryService {
     return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, {
       params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
     });
+  }
+
+  getMemoriesSearchData(userId: string, includeShared: boolean): Observable<MemorySearchData[]> {
+    return this.http.get<MemorySearchData[]>(
+      `${this.apiUrl}/memories/searchData/${userId}`,
+      {
+        params: { includeShared: includeShared.toString() }
+      }
+    );
   }
 
   getAllMemories(user_id: string): Observable<Memory[]> {

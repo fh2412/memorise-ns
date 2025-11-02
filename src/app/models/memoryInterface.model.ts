@@ -42,6 +42,12 @@ export interface PaginatedMemoryResponse {
   total: number;
 }
 
+export interface MemorySearchData {
+  memory_id: number;
+  title: string;
+  text: string;
+}
+
 export interface CreateMemoryResponse {
   message: string;
   memory_id: string;

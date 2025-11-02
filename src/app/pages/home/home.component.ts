@@ -112,7 +112,6 @@ export class HomeComponent implements OnInit {
             this.pageSize
           )
         );
-        console.log("Result: ", result);
       }
 
       this.pagedData = result.data || [];

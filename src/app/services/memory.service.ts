@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { lastValueFrom, Observable } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -21,15 +21,15 @@ export class MemoryService {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
-  getUserCreatedMemories(user_id: string, ascending: boolean) {
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/createdMemories/${user_id}`, {
-      params: { ascending: ascending }
+  getUserCreatedMemories(userId: string, ascending: boolean, page: number, pageSize: number): Observable<PaginatedMemoryResponse> {
+    return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/createdMemories/${userId}`, {
+      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
     });
   }
 
-  getUserCreatedAndAddedMemories(user_id: string, ascending: boolean): Observable<Memory[]> {
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/all/${user_id}`, {
-      params: { ascending: ascending }
+  getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number): Observable<PaginatedMemoryResponse> {
+    return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, {
+      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
     });
   }
 

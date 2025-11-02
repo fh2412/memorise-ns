@@ -35,6 +35,13 @@ export interface MemoryFormData {
   activity_id: number | null;
 }
 
+export interface PaginatedMemoryResponse {
+  data: Memory[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
 export interface CreateMemoryResponse {
   message: string;
   memory_id: string;

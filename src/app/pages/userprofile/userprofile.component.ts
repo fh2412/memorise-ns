@@ -12,21 +12,22 @@ import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dia
 import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-password-dialog/change-password-dialog.component';
 import { PinnedDialogComponent, PinnedMemory } from '../../components/_dialogs/pinned-dialog/pinned-dialog.component';
 
-import { Memory } from '../../models/memoryInterface.model';
+import { Memory, MemorySearchData } from '../../models/memoryInterface.model';
 import { MemoriseUser } from '../../models/userInterface.model';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
-    selector: 'app-userprofile',
-    templateUrl: './userprofile.component.html',
-    styleUrls: ['./userprofile.component.scss'],
-    standalone: false
+  selector: 'app-userprofile',
+  templateUrl: './userprofile.component.html',
+  styleUrls: ['./userprofile.component.scss'],
+  standalone: false
 })
 export class UserProfileComponent implements OnInit {
   userId!: string;
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
   pinnedMemories: Memory[] = [];
-  allMemories: Memory[] = [];
+  allMemories: MemorySearchData[] = [];
   isUploading = false;
 
   constructor(
@@ -70,11 +71,15 @@ export class UserProfileComponent implements OnInit {
   }
 
   /** Retrieves all memories for the user. */
-  private getAllMemories(): void {
-    this.memoryService.getAllMemories(this.userId).subscribe(
-      (memories) => (this.allMemories = memories),
-      () => this.handleError('Error fetching all memories.')
-    );
+  private async getAllMemories(): Promise<void> {
+    try {
+      this.allMemories = await firstValueFrom(
+        this.memoryService.getMemoriesSearchData(this.userId, true)
+      );
+    } catch (error) {
+      console.error('Error loading memories:', error);
+      this.allMemories = [];
+    }
   }
 
   /** Adds a memory to pinned memories. */
@@ -163,10 +168,10 @@ export class UserProfileComponent implements OnInit {
 
   /** Opens the pinned memories dialog. */
   openPinsDialog(): void {
-    if(this.allMemories.length == undefined){
+    if (this.allMemories.length == undefined) {
       this.showSnackBar('You must first add Memories before you can pin some!');
     }
-    else{
+    else {
       const dialogRef = this.dialog.open(PinnedDialogComponent, {
         width: '40%',
         data: { memories: this.allMemories, pinned: this.pinnedMemories },

@@ -42,10 +42,6 @@ export class MemoryService {
     );
   }
 
-  getAllMemories(user_id: string): Observable<Memory[]> {
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/allMemories/${user_id}`);
-  }
-
   async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
     const path = `memories/${memoryId}/picture_${starredIndex + 1}.jpg`;
     const storageRef = ref(this.storage, path);

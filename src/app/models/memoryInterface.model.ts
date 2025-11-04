@@ -79,3 +79,10 @@ export interface ValidateTokenResponse {
   memory?: Memory;
   alreadyMember?: boolean;
 }
+
+export interface MemoryDisplayStats {
+    memoryCount: number;
+    yearCount: number;
+    allCount: number;
+    friendCount: number;
+}

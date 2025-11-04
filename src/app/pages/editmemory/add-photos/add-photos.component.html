@@ -7,12 +7,13 @@
   </div>
 </div>
 
-<div class="body" *ngIf="loaded">
-    <app-image-upload 
-      [memoryId]="memoryId.toString()" 
-      [picture_count]="pictureCount" 
+@if (loaded) {
+  <div class="body">
+    <app-image-upload
+      [memoryId]="memoryId.toString()"
+      [picture_count]="pictureCount"
       [googleStorageUrl]="firebasePath"
       >
     </app-image-upload>
   </div>
-  
+}

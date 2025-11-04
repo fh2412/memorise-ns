@@ -1,47 +1,61 @@
-<form [formGroup]="registerForm" class="login-form" *ngIf="!isFirstTimeUser">
+@if (!isFirstTimeUser) {
+  <form [formGroup]="registerForm" class="login-form">
     <h1 class="headline">Create an account</h1>
-    
     <mat-form-field appearance="outline">
-        <mat-label>Email</mat-label>
-        <input type="email" matInput placeholder="Ex: pat@example.com" formControlName="email">
-        <mat-error *ngIf="registerForm.get('email')!.hasError('required')">
-            Email is required
+      <mat-label>Email</mat-label>
+      <input type="email" matInput placeholder="Ex: pat@example.com" formControlName="email">
+      @if (registerForm.get('email')!.hasError('required')) {
+        <mat-error>
+          Email is required
         </mat-error>
-        <mat-error *ngIf="registerForm.get('email')!.hasError('email')">
-            Email is invalid
+      }
+      @if (registerForm.get('email')!.hasError('email')) {
+        <mat-error>
+          Email is invalid
         </mat-error>
+      }
     </mat-form-field>
-
     <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input type="password" matInput placeholder="Password" formControlName="password">
-        <mat-error *ngIf="registerForm.get('password')!.hasError('required')">
-            Password is required
+      <mat-label>Password</mat-label>
+      <input type="password" matInput placeholder="Password" formControlName="password">
+      @if (registerForm.get('password')!.hasError('required')) {
+        <mat-error>
+          Password is required
         </mat-error>
+      }
     </mat-form-field>
-
     <mat-form-field appearance="outline">
-        <mat-label>Confirm Password</mat-label>
-        <input type="password" matInput placeholder="Confirm Password" formControlName="confirmPassword">
-        <mat-error *ngIf="registerForm.get('confirmPassword')!.hasError('required')">
-            Confirm Password is required
+      <mat-label>Confirm Password</mat-label>
+      <input type="password" matInput placeholder="Confirm Password" formControlName="confirmPassword">
+      @if (registerForm.get('confirmPassword')!.hasError('required')) {
+        <mat-error>
+          Confirm Password is required
         </mat-error>
-        <mat-error *ngIf="registerForm.get('confirmPassword')!.value !== registerForm.get('password')!.value">
-            Passwords must match
+      }
+      @if (registerForm.get('confirmPassword')!.value !== registerForm.get('password')!.value) {
+        <mat-error>
+          Passwords must match
         </mat-error>
+      }
     </mat-form-field>
-
     <div class="action-buttons">
-        <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()" *ngIf="!isSigningIn">
-            REGISTER
+      @if (!isSigningIn) {
+        <button mat-raised-button color="primary" [disabled]="!registerForm.valid" (click)="register()">
+          REGISTER
         </button>
-        <button mat-raised-button color="primary" class="button-loader" *ngIf="isSigningIn"
-                test-id="login-loader">
-                <mat-spinner color="accent" diameter="20"></mat-spinner>
-            </button>
-        <button mat-stroked-button color="primary" class="reg-button" (click)="cancelRegistration.emit()">
-            CANCEL
+      }
+      @if (isSigningIn) {
+        <button mat-raised-button color="primary" class="button-loader"
+          test-id="login-loader">
+          <mat-spinner color="accent" diameter="20"></mat-spinner>
         </button>
+      }
+      <button mat-stroked-button color="primary" class="reg-button" (click)="cancelRegistration.emit()">
+        CANCEL
+      </button>
     </div>
-</form>
-<app-welcome-page *ngIf="isFirstTimeUser" (closeWelcomePage)="closeWelcomePage()"></app-welcome-page>
+  </form>
+}
+@if (isFirstTimeUser) {
+  <app-welcome-page (closeWelcomePage)="closeWelcomePage()"></app-welcome-page>
+}

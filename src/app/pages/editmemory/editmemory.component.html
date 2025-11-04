@@ -1,154 +1,160 @@
 <div class="header">
-    <div>
-        <h1>EDIT MEMORY</h1>
+  <div>
+    <h1>EDIT MEMORY</h1>
+  </div>
+  <div>
+    <app-back-button [text]="'Cancel'"></app-back-button>
+    <button mat-flat-button (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
+    <button mat-flat-button (click)="confirmDeletion('DELETE')"
+      style="background-color: var(--mat-sys-error);"><mat-icon>delete</mat-icon>DELETE</button>
     </div>
-    <div>
-        <app-back-button [text]="'Cancel'"></app-back-button>
-        <button mat-flat-button (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-        <button mat-flat-button (click)="confirmDeletion('DELETE')"
-            style="background-color: var(--mat-sys-error);"><mat-icon>delete</mat-icon>DELETE</button>
-    </div>
-</div>
+  </div>
 
-<mat-divider></mat-divider>
+  <mat-divider></mat-divider>
 
-<section class="bd-home-section bd-theme-memorise" *ngIf="memory">
-    <div class="container">
+  @if (memory) {
+    <section class="bd-home-section bd-theme-memorise">
+      <div class="container">
         <div class="title-row">
-            <div class="title">
-                <form [formGroup]="memoryForm" class="full-width">
-                    <mat-form-field appearance="outline" class="full-width">
-                        <mat-label>Title</mat-label>
-                        <input matInput formControlName="title">
-                    </mat-form-field>
-                </form>
+          <div class="title">
+            <form [formGroup]="memoryForm" class="full-width">
+              <mat-form-field appearance="outline" class="full-width">
+                <mat-label>Title</mat-label>
+                <input matInput formControlName="title">
+              </mat-form-field>
+            </form>
+          </div>
+          @if (isLargeScreen) {
+            <div class="buttons">
+              <button mat-stroked-button color="primary" (click)="navigateToManagePhotos()">
+                <mat-icon>apps</mat-icon>
+                Manage Pictures
+              </button>
+              <button mat-flat-button (click)="navigateToAddPhotos()" [disabled]="!canCreateNewMemory()"
+                [matTooltip]="getDisabledTooltip()" [matTooltipDisabled]="canCreateNewMemory()"
+                aria-label="Add new Photos">
+                <mat-icon>add_photo_alternate</mat-icon>
+                Add Photos
+              </button>
             </div>
-            <div class="buttons" *ngIf="isLargeScreen">
-                <button mat-stroked-button color="primary" (click)="navigateToManagePhotos()">
-                    <mat-icon>apps</mat-icon>
-                    Manage Pictures
-                </button>
-                <button mat-flat-button (click)="navigateToAddPhotos()" [disabled]="!canCreateNewMemory()"
-                    [matTooltip]="getDisabledTooltip()" [matTooltipDisabled]="canCreateNewMemory()"
-                    aria-label="Add new Photos">
-                    <mat-icon>add_photo_alternate</mat-icon>
-                    Add Photos
-                </button>
+          }
+          @if (!isLargeScreen) {
+            <div class="icon-buttons">
+              <button mat-fab color="primary" (click)="navigateToManagePhotos()">
+                <mat-icon>apps</mat-icon>
+              </button>
+              <button mat-fab color="primary" (click)="navigateToAddPhotos()">
+                <mat-icon>add_photo_alternate</mat-icon>
+              </button>
             </div>
-
-            <div class="icon-buttons" *ngIf="!isLargeScreen">
-                <button mat-fab color="primary" (click)="navigateToManagePhotos()">
-                    <mat-icon>apps</mat-icon>
-                </button>
-                <button mat-fab color="primary" (click)="navigateToAddPhotos()">
-                    <mat-icon>add_photo_alternate</mat-icon>
-                </button>
-            </div>
+          }
         </div>
         <br><br>
         <div>
-            <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-                <mat-grid-tile colspan="3">
-                    <form [formGroup]="memoryForm" class="full-width">
-                        <mat-form-field appearance="outline" class="full-width desc-margin">
-                            <mat-label>Description</mat-label>
-                            <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18"
-                                formControlName="description"></textarea>
-                        </mat-form-field>
-                    </form>
-                </mat-grid-tile>
-
-                <mat-grid-tile>
-                    <div class="date-activity-box">
-                        <mat-form-field appearance="outline">
-                            <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
-                                <input matStartDate formControlName="memory_date" placeholder="Start Date">
-                                <input matEndDate formControlName="memory_end_date" placeholder="End Date">
-                            </mat-date-range-input>
-                            <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-                            <mat-date-range-picker #rangePicker></mat-date-range-picker>
-                        </mat-form-field>
-                        <!--<button mat-flat-button (click)="openActivityBottomSheet()">
-                            <mat-icon>edit</mat-icon> Edit Activity
-                        </button>-->
-                    </div>
-                </mat-grid-tile>
-            </mat-grid-list>
-            <br><br>
-            <div *ngIf="friends">
-                <table mat-table [dataSource]="friends" *ngIf="friends.length>0">
-                    <ng-container matColumnDef="profilePicture">
-                        <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
-                        <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
-                                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="name">
-                        <th mat-header-cell *matHeaderCellDef> Name </th>
-                        <td mat-cell *matCellDef="let user"> {{user.name}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="birthday">
-                        <th mat-header-cell *matHeaderCellDef> Birthday </th>
-                        <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="country">
-                        <th mat-header-cell *matHeaderCellDef> Country </th>
-                        <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag"
-                                alt="{{user.country || 'Not Provided'}}" width="30" height="20"></td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="sharedMemories">
-                        <th mat-header-cell *matHeaderCellDef> Actions </th>
-                        <td mat-cell *matCellDef="let user">
-                            <button mat-stroked-button color="warn" (click)="removeFriend(user)">
-                                <mat-icon>person_remove</mat-icon>
-                                Remove
-                            </button>
-                        </td>
-                    </ng-container>
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                </table>
-                <mat-card appearance="outlined" *ngIf="friends.length===0" class="memory-card-empty">
-                    <p>No current friends left in the memory</p>
-                </mat-card>
+          <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+            <mat-grid-tile colspan="3">
+              <form [formGroup]="memoryForm" class="full-width">
+                <mat-form-field appearance="outline" class="full-width desc-margin">
+                  <mat-label>Description</mat-label>
+                  <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18"
+                  formControlName="description"></textarea>
+                </mat-form-field>
+              </form>
+            </mat-grid-tile>
+            <mat-grid-tile>
+              <div class="date-activity-box">
+                <mat-form-field appearance="outline">
+                  <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker">
+                    <input matStartDate formControlName="memory_date" placeholder="Start Date">
+                    <input matEndDate formControlName="memory_end_date" placeholder="End Date">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #rangePicker></mat-date-range-picker>
+                </mat-form-field>
+                <!--<button mat-flat-button (click)="openActivityBottomSheet()">
+                <mat-icon>edit</mat-icon> Edit Activity
+              </button>-->
             </div>
-            <br>
-            <div class="friend-wrapper">
-                <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"
-                    [memoryId]="memoryId"></app-friends-autocomplet>
-                <mat-card appearance="outlined" class="memory-card-empty">
-                    <span *ngIf="friendsToDelete.length===0">Friends you want to remove will appear here
-                        <button matIconButton
-                            matTooltip="You can rejoin deleted Friends to the memory by clicking the cross next to them">
-                            <mat-icon>question_mark</mat-icon>
-                        </button>
-                    </span>
-                    <mat-chip-set #chipGrid aria-label="Enter friends">
-                        @for (friend of friendsToDelete; track friend) {
-                        <mat-chip-row (removed)="reverseDelete(friend)">
-                            {{friend.name}}
-                            <button matChipRemove [attr.aria-label]="'remove ' + friend.name">
-                                <mat-icon>cancel</mat-icon>
-                            </button>
-                        </mat-chip-row>
-                        }
-                    </mat-chip-set>
-                </mat-card>
-            </div>
-
-
-            <br><br>
-            <div class="memory-card-empty map-wrap">
-                <img class="map-background" src="/assets/img/map.PNG" alt="picture of map">
-                <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()"
-                    class="button-margin">
-                    <mat-icon class="add-icon">search</mat-icon>
-                    Update Address on Map
-                </button>
-            </div>
+          </mat-grid-tile>
+        </mat-grid-list>
+        <br><br>
+        @if (friends) {
+          <div>
+            @if (friends.length>0) {
+              <table mat-table [dataSource]="friends">
+                <ng-container matColumnDef="profilePicture">
+                  <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
+                  <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
+                  alt="Profile Picture" width="30" height="30" class="profile-image"></td>
+                </ng-container>
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Name </th>
+                  <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+                </ng-container>
+                <ng-container matColumnDef="birthday">
+                  <th mat-header-cell *matHeaderCellDef> Birthday </th>
+                  <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
+                </ng-container>
+                <ng-container matColumnDef="country">
+                  <th mat-header-cell *matHeaderCellDef> Country </th>
+                  <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag"
+                  alt="{{user.country || 'Not Provided'}}" width="30" height="20"></td>
+                </ng-container>
+                <ng-container matColumnDef="sharedMemories">
+                  <th mat-header-cell *matHeaderCellDef> Actions </th>
+                  <td mat-cell *matCellDef="let user">
+                    <button mat-stroked-button color="warn" (click)="removeFriend(user)">
+                      <mat-icon>person_remove</mat-icon>
+                      Remove
+                    </button>
+                  </td>
+                </ng-container>
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            }
+            @if (friends.length===0) {
+              <mat-card appearance="outlined" class="memory-card-empty">
+                <p>No current friends left in the memory</p>
+              </mat-card>
+            }
+          </div>
+        }
+        <br>
+          <div class="friend-wrapper">
+            <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"
+            [memoryId]="memoryId"></app-friends-autocomplet>
+            <mat-card appearance="outlined" class="memory-card-empty">
+              @if (friendsToDelete.length===0) {
+                <span>Friends you want to remove will appear here
+                  <button matIconButton
+                    matTooltip="You can rejoin deleted Friends to the memory by clicking the cross next to them">
+                    <mat-icon>question_mark</mat-icon>
+                  </button>
+                </span>
+              }
+              <mat-chip-set #chipGrid aria-label="Enter friends">
+                @for (friend of friendsToDelete; track friend) {
+                  <mat-chip-row (removed)="reverseDelete(friend)">
+                    {{friend.name}}
+                    <button matChipRemove [attr.aria-label]="'remove ' + friend.name">
+                      <mat-icon>cancel</mat-icon>
+                    </button>
+                  </mat-chip-row>
+                }
+              </mat-chip-set>
+            </mat-card>
+          </div>
+          <br><br>
+          <div class="memory-card-empty map-wrap">
+            <img class="map-background" src="/assets/img/map.PNG" alt="picture of map">
+            <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()"
+              class="button-margin">
+              <mat-icon class="add-icon">search</mat-icon>
+              Update Address on Map
+            </button>
+          </div>
         </div>
-    </div>
-</section>
+      </div>
+    </section>
+  }

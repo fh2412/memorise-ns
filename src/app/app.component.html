@@ -1,7 +1,7 @@
-<div *ngIf="loggedIn; else showLogin">
+@if (loggedIn) {
+  <div>
     <app-main-nav></app-main-nav>
-</div>
-<ng-template #showLogin>
-    <router-outlet></router-outlet>
-</ng-template>
-  
+  </div>
+} @else {
+  <router-outlet></router-outlet>
+}

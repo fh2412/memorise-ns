@@ -1,7 +1,9 @@
 <h2 mat-dialog-title>Uploading...</h2>
 <mat-dialog-content>
-  <div *ngFor="let file of data.filesWithDimensions; let i = index">
-    <p>{{ file.file.name }}</p>
-    <mat-progress-bar mode="determinate" [value]="progress[i]"></mat-progress-bar>
-  </div>
+  @for (file of data.filesWithDimensions; track file; let i = $index) {
+    <div>
+      <p>{{ file.file.name }}</p>
+      <mat-progress-bar mode="determinate" [value]="progress[i]"></mat-progress-bar>
+    </div>
+  }
 </mat-dialog-content>

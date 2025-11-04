@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -32,7 +32,6 @@ import { BreakpointObserver } from '@angular/cdk/layout';
   templateUrl: './activity-list.component.html',
   styleUrl: './activity-list.component.scss',
   imports: [
-    CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MatPaginatorModule,
@@ -49,8 +48,8 @@ import { BreakpointObserver } from '@angular/cdk/layout';
     MatChipsModule,
     MatProgressSpinnerModule,
     ActivityCardComponent,
-    NotFoundComponent,
-  ],
+    NotFoundComponent
+],
 })
 export class ActivityListComponent implements OnInit {
   @Input() activities: MemoriseUserActivity[] = [];

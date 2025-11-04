@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { CommonModule } from '@angular/common';
+
 import { GeocoderResponse } from '../../../models/geocoder-response.model';
 import { MatDividerModule } from '@angular/material/divider';
 import { CountryService } from '../../../services/restCountries.service';
@@ -28,7 +28,6 @@ interface FilterData {
   selector: 'app-filter-bottom-sheet',
   standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -40,7 +39,7 @@ interface FilterData {
     MatCheckboxModule,
     MatButtonToggleModule,
     MatDividerModule
-  ],
+],
   templateUrl: 'filter-bottom-sheet.component.html',
   styleUrl: 'filter-bottom-sheet.component.scss'
 })

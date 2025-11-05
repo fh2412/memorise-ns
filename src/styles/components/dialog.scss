@@ -1,0 +1,23 @@
+h3 {
+    font-size: large;
+}
+
+.dialog-content {
+    display: flex;
+    gap: 24px;
+    .dialog-image {
+    }
+
+    .dialog-text {
+        span {
+            font-size: xx-large;
+            color: var(--mat-sys-secondary);
+            line-height: normal;
+            font-weight: 900;
+        }
+
+        p{
+            color: var(--mat-sys-on-surface-variant);
+        }
+    }
+}

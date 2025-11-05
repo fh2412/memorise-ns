@@ -46,7 +46,7 @@ export class JoinMemoryPageComponent implements OnInit {
 
   openJoinDialog(token: string) {
     const dialogRef = this.dialog.open(JoinMemoryDialogComponent, {
-      width: '500px',
+      width: '900px',
       disableClose: false,
       data: { token }
     });

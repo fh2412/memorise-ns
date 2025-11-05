@@ -1,29 +1,32 @@
 <div class="join-dialog">
-  @if (!loading && memory) {
-    <h2 mat-dialog-title>Join Memory</h2>
-  }
-
   <mat-dialog-content>
     @if (loading) {
-      <div class="loading-container">
-        <mat-spinner diameter="50"></mat-spinner>
-        <p>Loading memory details...</p>
-      </div>
+    <div class="loading-container">
+      <mat-spinner diameter="50"></mat-spinner>
+      <p>Loading memory details...</p>
+    </div>
     }
 
     @if (!loading && error) {
-      <div class="error-container">
-        <p class="error-message">{{ error }}</p>
-      </div>
+    <div class="error-container">
+      <p class="error-message">{{ error }}</p>
+    </div>
     }
 
     @if (!loading && memory && !error) {
-      <div class="memory-info">
-        <h3>{{ memory.title }}</h3>
-        <p class="memory-description">{{ memory.text }}</p>
-        <p class="memory-date">{{ formatDate(memory.memory_date, memory.memory_end_date) }}</p>
-        <p class="created-by">Created by: {{ memory.username }}</p>
+
+    <h3>You are invited to join the Memory: </h3>
+    <div class="dialog-content">
+      <div class="dialog-image">
+        <img src="/assets/img/flare_invite.png" alt="Flare the Dragon handing you an invite letter" width="256"
+          height="256">
       </div>
+      <div class="dialog-text">
+        <h3><span>{{ memory.title }}</span>!</h3>
+        <p>{{ formatDate(memory.memory_date, memory.memory_end_date) }}</p>
+        <p>Created by: {{ memory.username }}</p>
+      </div>
+    </div>
     }
   </mat-dialog-content>
 
@@ -32,13 +35,12 @@
       Cancel
     </button>
     @if (!loading && memory && !error) {
-      <button mat-raised-button color="primary" (click)="onJoin()" [disabled]="joining || loading || !!error"
-        >
-        @if (joining) {
-          <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
-        }
-        {{ joining ? 'Joining...' : 'Join Memory' }}
-      </button>
+    <button mat-flat-button (click)="onJoin()" [disabled]="joining || loading || !!error">
+      @if (joining) {
+      <mat-spinner diameter="20" style="display: inline-block; margin-right: 8px;"></mat-spinner>
+      }
+      {{ joining ? 'Joining...' : 'Join Memory' }}
+    </button>
     }
   </mat-dialog-actions>
 </div>

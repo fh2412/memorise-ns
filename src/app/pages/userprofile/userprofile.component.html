@@ -1,79 +1,81 @@
 <div class="wrapper">
   <app-back-button [text]="'Back'" class="back-button"></app-back-button>
   @if (user) {
-    <section style="margin-top: 7.5rem;">
-      <div class="columns">
-        <div class="profile-section">
-          <div>
-            <div class="profile-picture-container">
-              <label for="fileInput" class="image-label">
-                <img [src]="user.profilepic ? user.profilepic : '/assets/img/1.png'" alt="Profile Picture"
-                  class="profile-picture">
-                  <mat-icon class="change-icon">add_a_photo</mat-icon>
-                </label>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer"
-                  (change)="onFileChange($event)" [disabled]="!(this.loggedInUserId===this.userId)" />
-                </div>
-                <mat-card-title>{{user.name || 'no name provided'}}</mat-card-title>
-                <mat-card-subtitle>
-                  <span>{{user.username}}</span> - <span>{{user.gender}}</span>
-                </mat-card-subtitle>
-                <button mat-stroked-button class="editbutton" (click)="openEditDialog()">Edit Profile</button>
-              </div>
-              <div class="small-screen-list">
-                <mat-list class="list-wrapper">
-                  <mat-list-item>
-                    <mat-icon matListItemIcon>location_on</mat-icon>
-                    <div matListItemTitle>{{user.country || 'not provided'}}</div>
-                  </mat-list-item>
-                  <mat-list-item>
-                    <mat-icon matListItemIcon>calendar_today</mat-icon>
-                    <div matListItemTitle>{{(user.dob | date) || 'not provided'}}</div>
-                  </mat-list-item>
-                  <mat-list-item>
-                    <mat-icon matListItemIcon>public</mat-icon>
-                    <div matListItemTitle>{{user.instagram || "not provided"}}</div>
-                  </mat-list-item>
-                </mat-list>
-                <div class="usersettings">
-                  <button mat-stroked-button (click)="openPasswordChangeDialog()"
-                    [disabled]="!(this.loggedInUserId===this.userId)">
-                    Change PW
-                  </button>
-                  @if ((this.loggedInUserId===this.userId)) {
-                    <app-logout-button></app-logout-button>
-                  }
-                </div>
-              </div>
-            </div>
-            <div class="bio">
-              <mat-card appearance="outlined">
-                <mat-card-content class="bio-content">
-                  <pre>{{ user.bio || 'no bio provided'}}</pre>
-                </mat-card-content>
-              </mat-card>
-              <div style="margin-top: 2rem;">
-                <div class="level">
-                  <h3 class="title is-4 level-left">Pinned Memories</h3>
-                  <button mat-stroked-button (click)="openPinsDialog()">Customize your pins</button>
-                </div>
-                @if (pinnedMemories) {
-                  <mat-grid-list cols="2" rowHeight="3:1">
-                    @for (memory of getMemoriesToDisplay(); track memory) {
-                      <mat-grid-tile>
-                        <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
-                      </mat-grid-tile>
-                    }
-                  </mat-grid-list>
-                }
-              </div>
-            </div>
+  <section style="margin-top: 7.5rem;">
+    <div class="columns">
+      <div class="profile-section">
+        <div>
+          <div class="profile-picture-container">
+            <label for="fileInput" class="image-label">
+              <img [src]="user.profilepic ? user.profilepic : '/assets/img/1.png'" alt="Profile Picture"
+                class="profile-picture">
+              <mat-icon class="change-icon">add_a_photo</mat-icon>
+            </label>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer"
+              (change)="onFileChange($event)" [disabled]="!(this.loggedInUserId===this.userId)" />
           </div>
-        </section>
-      }
-    </div>
-    @if (isUploading) {
-      <div class="overlay">
-        <mat-spinner class="spinner-container"></mat-spinner>
+          <mat-card-title>{{user.name || 'no name provided'}}</mat-card-title>
+          <mat-card-subtitle>
+            <span>{{user.username}}</span> - <span>{{user.gender}}</span>
+          </mat-card-subtitle>
+          <button mat-stroked-button class="editbutton" (click)="openEditDialog()">Edit Profile</button>
+        </div>
+        <div class="small-screen-list">
+          <mat-list class="list-wrapper">
+            <mat-list-item>
+              <mat-icon matListItemIcon>location_on</mat-icon>
+              <div matListItemTitle>{{user.country || 'not provided'}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>calendar_today</mat-icon>
+              <div matListItemTitle>{{(user.dob | date) || 'not provided'}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>public</mat-icon>
+              <div matListItemTitle>{{user.instagram || "not provided"}}</div>
+            </mat-list-item>
+          </mat-list>
+          <div class="usersettings">
+            <button mat-stroked-button (click)="openPasswordChangeDialog()"
+              [disabled]="!(this.loggedInUserId===this.userId)">
+              Change PW
+            </button>
+            @if ((this.loggedInUserId===this.userId)) {
+            <app-logout-button></app-logout-button>
+            }
+          </div>
+        </div>
       </div>
-    }
+      <div class="bio">
+        <mat-card appearance="outlined">
+          <mat-card-content class="bio-content">
+            <pre>{{ user.bio || 'no bio provided'}}</pre>
+          </mat-card-content>
+        </mat-card>
+        <div style="margin-top: 2rem;">
+          <div class="level">
+            <h3 class="title is-4 level-left">Pinned Memories</h3>
+            <button mat-stroked-button (click)="openPinsDialog()">
+              Customize your Pins
+            </button>
+          </div>
+          @if (pinnedMemories) {
+          <mat-grid-list cols="2" rowHeight="3:1">
+            @for (memory of getMemoriesToDisplay(); track memory) {
+            <mat-grid-tile>
+              <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
+            </mat-grid-tile>
+            }
+          </mat-grid-list>
+          }
+        </div>
+      </div>
+    </div>
+  </section>
+  }
+</div>
+@if (isUploading) {
+<div class="overlay">
+  <mat-spinner class="spinner-container"></mat-spinner>
+</div>
+}

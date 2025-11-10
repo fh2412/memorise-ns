@@ -4,18 +4,21 @@
   [zoom]="zoom"
   [center]="center"
   [options]="options"
->
-<map-marker
-  #marker="mapMarker"
-  *ngFor="let pos of markers"
-  [position]="pos.position"
-  [title]="pos.title"
-  (mapClick)="openInfoWindow(marker, pos)"
-></map-marker>
+  >
+  @for (pos of markers; track pos) {
+    <map-marker
+      #marker="mapMarker"
+      [position]="pos.position"
+      [title]="pos.title"
+      (mapClick)="openInfoWindow(marker, pos)"
+    ></map-marker>
+  }
 
   <map-info-window>
     <div class="size">
-      <app-memory-card [cardData]="currentMemory" class="fullcard" (click)="onButtonClick(currentMemory)" *ngIf="currentMemory"></app-memory-card>
+      @if (currentMemory) {
+        <app-memory-card [cardData]="currentMemory" class="fullcard" (click)="onButtonClick(currentMemory)"></app-memory-card>
+      }
     </div>
   </map-info-window>
 </google-map>

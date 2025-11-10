@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MemorystatsService } from '../../services/memorystats.service';
-import { forkJoin } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
+import { MemoryDisplayStats } from '../../models/memoryInterface.model';
 
 @Component({
     selector: 'app-stats',
@@ -12,10 +12,14 @@ import { MatCardModule } from '@angular/material/card';
 })
 export class StatsComponent implements OnInit {
   @Input() userid = '';
-  memoryCount = 0;
-  memoryThisYearCount = 0;
-  friendsCount = 0;
+  displayStats: MemoryDisplayStats = {
+    memoryCount: 0,
+    yearCount: 0,
+    allCount: 0,
+    friendCount: 0
+  };
   dbConnection = true;
+  loading = true;
 
   constructor (private memorystatsService: MemorystatsService) {}
   
@@ -23,23 +27,12 @@ export class StatsComponent implements OnInit {
     this.getMemoryStats();
   }
 
-  getMemoryStats(): void {
-    forkJoin({
-      memoryCount: this.memorystatsService.getMemoryCount(this.userid),
-      memoryThisYearCount: this.memorystatsService.getMemoryCountThisYear(this.userid),
-      friendsCount: this.memorystatsService.getFriendsCount(this.userid)
-    })
-    .pipe(
-      catchError(error => {
-        console.error('Error fetching statistics', error);
-        this.dbConnection = false;
-        return [];
-      })
-    )
-    .subscribe(({ memoryCount, memoryThisYearCount, friendsCount }) => {
-      this.memoryCount = memoryCount?.count || 0;
-      this.memoryThisYearCount = memoryThisYearCount?.count || 0;
-      this.friendsCount = friendsCount?.count || 0;
-    });
-  }
+  async getMemoryStats(): Promise<void> {
+    this.loading = true;
+    try {
+        this.displayStats = await firstValueFrom(this.memorystatsService.getDisplayStats(this.userid));
+    } finally {
+        this.loading = false;
+    }
+}
 }

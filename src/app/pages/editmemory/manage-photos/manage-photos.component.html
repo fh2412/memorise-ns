@@ -5,40 +5,46 @@
   <div class="actions">
     <app-back-button></app-back-button>
     <button mat-flat-button color="warn" [disabled]="imagesToDelete.length === 0" (click)="deleteImages()"><mat-icon>delete</mat-icon>Delete
-      Selected</button>
-  </div>
+  Selected</button>
+</div>
 </div>
 
 <div class="body">
   <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
-    <mat-grid-tile *ngFor="let image of images; let i = index">
-      <mat-card class="card" [ngClass]="{'starred': starredIndex === i, 'hovered': hoverIndex === i}">
-        <div class="image-container">
-          <img mat-card-image [src]="image.url" alt="Image" class="background-image">
-          <button mat-icon-button 
-                  (mouseover)="hoverIndex = i" 
-                  (mouseleave)="hoverIndex = null"
-                  (focus)="true" 
-                  (click)="onStar(i)" 
-                  class="position-top-right">
-            <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>
-          </button>
-          <button mat-icon-button (click)="onDelete(image.url)" class="position-bottom-right">
-            <mat-icon>delete</mat-icon>
+    @for (image of images; track image; let i = $index) {
+      <mat-grid-tile>
+        <mat-card class="card" [ngClass]="{'starred': starredIndex === i, 'hovered': hoverIndex === i}">
+          <div class="image-container">
+            <img mat-card-image [src]="image.url" alt="Image" class="background-image">
+            <button mat-icon-button
+              (mouseover)="hoverIndex = i"
+              (mouseleave)="hoverIndex = null"
+              (focus)="true"
+              (click)="onStar(i)"
+              class="position-top-right">
+              <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onDelete(image.url)" class="position-bottom-right">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        </mat-card>
+      </mat-grid-tile>
+    }
+  </mat-grid-list>
+
+
+  @if (imagesToDelete.length > 0) {
+    <div class="images-to-delete-container">
+      <h2>Images to delete:</h2>
+      @for (imageUrl of imagesToDelete; track imageUrl) {
+        <div>
+          <img [src]="imageUrl" alt="Image to Delete" class="background-image">
+          <button mat-icon-button (click)="removeFromDeleteList(imageUrl)">
+            <mat-icon>close</mat-icon>
           </button>
         </div>
-      </mat-card>
-    </mat-grid-tile>
-  </mat-grid-list>
-  
-
-  <div class="images-to-delete-container" *ngIf="imagesToDelete.length > 0">
-    <h2>Images to delete:</h2>
-    <div *ngFor="let imageUrl of imagesToDelete">
-      <img [src]="imageUrl" alt="Image to Delete" class="background-image">
-      <button mat-icon-button (click)="removeFromDeleteList(imageUrl)">
-        <mat-icon>close</mat-icon>
-      </button>
+      }
     </div>
-  </div>
+  }
 </div>

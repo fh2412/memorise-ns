@@ -1,7 +1,12 @@
 .theme-controls {
     display: flex;
     align-items: center;
-    position: relative;
+    padding-left: 22px;
+    border-radius: 12px;
+    box-shadow: var(--mat-sys-shadow);
+    background: var(--mat-sys-background);
+    border: 1px solid var(--mat-sys-outline);
+    font-weight: 500;
   }
   
   .theme-toggle {
@@ -55,8 +60,8 @@
     background: var(--mat-sys-background);
     border: 1px solid var(--mat-sys-outline);
     inset: unset;
-    bottom: 48px;
-    left: 8px;
+    bottom: 18px;
+    left: 208px;
     min-width: 200px;
   }
   

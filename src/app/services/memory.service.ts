@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { lastValueFrom, Observable } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -21,19 +21,35 @@ export class MemoryService {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
-  getCreatedMemory(user_id: string) {
-    // Implement the logic to fetch user data from your backend API
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/createdMemories/${user_id}`);
+  getUserCreatedMemories(userId: string, ascending: boolean, page: number, pageSize: number): Observable<PaginatedMemoryResponse> {
+    return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/createdMemories/${userId}`, {
+      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
+    });
   }
 
-  getAddedMemories(user_id: string) {
-    // Implement the logic to fetch user data from your backend API
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/getAddedMemories/${user_id}`);
+  getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number): Observable<PaginatedMemoryResponse> {
+    return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, {
+      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
+    });
   }
 
-  getAllMemories(user_id: string): Observable<Memory[]> {
-    return this.http.get<Memory[]>(`${this.apiUrl}/memories/allMemories/${user_id}`);
+  getMemoriesSearchData(userId: string, includeShared: boolean): Observable<MemorySearchData[]> {
+    return this.http.get<MemorySearchData[]>(
+      `${this.apiUrl}/memories/searchData/${userId}`,
+      {
+        params: { includeShared: includeShared.toString() }
+      }
+    );
   }
+
+  getMemoriesMapData(userId: string, includeShared: boolean): Observable<MemoryMapData[]> {
+  return this.http.get<MemoryMapData[]>(
+    `${this.apiUrl}/memories/mapData/${userId}`,
+    {
+      params: { includeShared: includeShared.toString() }
+    }
+  );
+}
 
   async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
     const path = `memories/${memoryId}/picture_${starredIndex + 1}.jpg`;
@@ -62,8 +78,11 @@ export class MemoryService {
     return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
   }
 
-  updatePictureCount(memory_id: string, pictureCount: { picture_count: number }): Observable<UpdateStandardResponse> {
-    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/picturecount/${memory_id}`, pictureCount);
+  incrementPictureCount(memoryId: string, increment: number): Observable<{ message: string; newCount: number }> {
+    return this.http.post<{ message: string; newCount: number }>(
+      `${this.apiUrl}/memories/picturecount/${memoryId}/increment`,
+      { increment }
+    );
   }
 
   updateMemoryLocation(memoryId: number, locationId: number): Observable<UpdateStandardResponse> {

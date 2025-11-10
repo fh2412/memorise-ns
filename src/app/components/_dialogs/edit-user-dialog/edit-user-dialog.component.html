@@ -1,62 +1,64 @@
 <h2 mat-dialog-title>Update User Data</h2>
-<form [formGroup]="userForm" (ngSubmit)="saveChanges()" *ngIf="countries">
-  <mat-dialog-content class="dialog-content">
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Name</mat-label>
-      <input matInput placeholder="Max Muster" formControlName="name">
-    </mat-form-field>
-    <br>
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Bio</mat-label>
-      <textarea matInput placeholder="My Bio" formControlName="bio"></textarea>
-    </mat-form-field>
-    <br>
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Birthday</mat-label>
-      <input matInput [matDatepicker]="picker" placeholder="YYYY/MM/DD" formControlName="dob" [readonly]="true">
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <br>   
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Gender</mat-label>
-      <mat-select formControlName="gender">
-        <mat-option value="Male">Male</mat-option>
-        <mat-option value="Female">Female</mat-option>
-        <mat-option value="Divers">Divers</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <br>
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Country</mat-label>
-      <input matInput
-             aria-label="State"
-             [matAutocomplete]="auto"
-             formControlName="country"
-             >
-      <mat-autocomplete #auto="matAutocomplete">
-        @for (country of filteredCountries | async; track country) {
-          <mat-option [value]="country.name">
-            <mat-icon>{{country.flag}}</mat-icon>
-            <span>{{country.name}}</span> |
-            <small>{{country.region}}</small>
-          </mat-option>
-        }
-      </mat-autocomplete>
-    </mat-form-field>
-    <br>
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Username</mat-label>
-      <input matInput placeholder="username" formControlName="username">
-    </mat-form-field>
-    <br>
-    <mat-form-field class="full-width" appearance="outline">
-      <mat-label>Instagram</mat-label>
-      <input matInput placeholder="Instagram" formControlName="instagram">
-    </mat-form-field>
-  </mat-dialog-content>
-  <mat-dialog-actions>
-    <button mat-button mat-dialog-close>Cancel</button>
-    <button mat-button cdkFocusInitial type="submit">Update</button>
-  </mat-dialog-actions>
-</form>
+@if (countries) {
+  <form [formGroup]="userForm" (ngSubmit)="saveChanges()">
+    <mat-dialog-content class="dialog-content">
+      <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Name</mat-label>
+        <input matInput placeholder="Max Muster" formControlName="name">
+      </mat-form-field>
+      <br>
+        <mat-form-field class="full-width" appearance="outline">
+          <mat-label>Bio</mat-label>
+          <textarea matInput placeholder="My Bio" formControlName="bio"></textarea>
+        </mat-form-field>
+        <br>
+          <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Birthday</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="YYYY/MM/DD" formControlName="dob" [readonly]="true">
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+          <br>
+            <mat-form-field class="full-width" appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="Male">Male</mat-option>
+                <mat-option value="Female">Female</mat-option>
+                <mat-option value="Divers">Divers</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <br>
+              <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput
+                  aria-label="State"
+                  [matAutocomplete]="auto"
+                  formControlName="country"
+                  >
+                  <mat-autocomplete #auto="matAutocomplete">
+                    @for (country of filteredCountries | async; track country) {
+                      <mat-option [value]="country.name">
+                        <mat-icon>{{country.flag}}</mat-icon>
+                        <span>{{country.name}}</span> |
+                        <small>{{country.region}}</small>
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
+                <br>
+                  <mat-form-field class="full-width" appearance="outline">
+                    <mat-label>Username</mat-label>
+                    <input matInput placeholder="username" formControlName="username">
+                  </mat-form-field>
+                  <br>
+                    <mat-form-field class="full-width" appearance="outline">
+                      <mat-label>Instagram</mat-label>
+                      <input matInput placeholder="Instagram" formControlName="instagram">
+                    </mat-form-field>
+                  </mat-dialog-content>
+                  <mat-dialog-actions>
+                    <button mat-button mat-dialog-close>Cancel</button>
+                    <button mat-button cdkFocusInitial type="submit">Update</button>
+                  </mat-dialog-actions>
+                </form>
+              }

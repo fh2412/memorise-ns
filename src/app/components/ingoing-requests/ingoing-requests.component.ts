@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, EventEmitter, inject, Inject, Input, Output } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
@@ -9,12 +9,7 @@ import { Friend } from '../../models/userInterface.model';
 import { FriendCardComponent } from "../friend-card/friend-card.component";
 @Component({
   selector: 'app-ingoing-requests',
-  imports: [CommonModule,
-    MatCardModule,
-    MatIconModule,
-    MatBadgeModule,
-    MatBottomSheetModule,
-    MatRippleModule],
+  imports: [MatCardModule, MatIconModule, MatBadgeModule, MatBottomSheetModule, MatRippleModule],
   templateUrl: './ingoing-requests.component.html',
   styleUrl: './ingoing-requests.component.scss'
 })
@@ -55,10 +50,9 @@ export class IngoingRequestsComponent {
   selector: 'app-friend-requests-bottom-sheet',
   standalone: true,
   imports: [
-    CommonModule,
     MatBottomSheetModule,
     FriendCardComponent
-  ],
+],
   template: `
     <div class="bottom-sheet-content">
       <app-friend-card

@@ -1,184 +1,199 @@
-<section class="bd-home-section bd-theme-memorise" *ngIf="memorydb">
-  <app-back-button [text]="'Back'" class="back-button"></app-back-button>
-
-  <div>
-    <mat-toolbar>
-      <h1>{{memorydb.title}}</h1>
-      <span class="example-spacer"></span>
-      @if (hasPrivileges) {
-      <button mat-stroked-button (click)="openDownloadPage()">
-        <mat-icon>download</mat-icon>
-        <span class="button-text">Download</span>
-      </button>
-      <button mat-stroked-button [routerLink]="['/editmemory', memoryId]" style="margin-left: 5px;">
-        <mat-icon>edit</mat-icon>
-        <span class="button-text">Edit</span>
-      </button>
-      }
-    </mat-toolbar>
-    @if (displayImages) {
-    <mat-card appearance="outlined">
-      <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-        @for (image of displayImages; track $index) {
-        <mat-grid-tile [colspan]="$index === 0 ? 2 : 1" [rowspan]="$index === 0 ? 2 : 1">
-          @if (isLoadingImages) {
-          <div class="spinner-wrapper">
-            <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
-          </div>
-          }
-          @else {
-          <img class="image-size" [src]="image.url" [alt]="'Memory picture ' + $index">
-          }
-        </mat-grid-tile>
-        }
-        <div style="position: absolute; bottom: 24px; right: 24px;">
-          <button mat-stroked-button (click)="openGallery()" class="show-all-btn">
-            <mat-icon>apps</mat-icon>
-            Show all pictures ({{imagesWithMetadata.length}})
+@if (memorydb) {
+  <section class="bd-home-section bd-theme-memorise">
+    <app-back-button [text]="'Back'" class="back-button"></app-back-button>
+    <div>
+      <mat-toolbar>
+        <h1>{{memorydb.title}}</h1>
+        <span class="example-spacer"></span>
+        @if (hasPrivileges) {
+          <button mat-stroked-button (click)="openDownloadPage()">
+            <mat-icon>download</mat-icon>
+            <span class="button-text">Download</span>
           </button>
-        </div>
-      </mat-grid-list>
-    </mat-card>
-
+          <button mat-stroked-button [routerLink]="['/editmemory', memoryId]" style="margin-left: 5px;">
+            <mat-icon>edit</mat-icon>
+            <span class="button-text">Edit</span>
+          </button>
+        }
+      </mat-toolbar>
+      @if (displayImages) {
+        <mat-card appearance="outlined">
+          <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+            @for (image of displayImages; track $index) {
+              <mat-grid-tile [colspan]="$index === 0 ? 2 : 1" [rowspan]="$index === 0 ? 2 : 1">
+                @if (isLoadingImages) {
+                  <div class="spinner-wrapper">
+                    <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
+                  </div>
+                }
+                @else {
+                <img class="image-size" [src]="image.url" [alt]="'Memory picture ' + $index">
+              }
+            </mat-grid-tile>
+          }
+          <div style="position: absolute; bottom: 24px; right: 24px;">
+            <button mat-stroked-button (click)="openGallery()" class="show-all-btn">
+              <mat-icon>apps</mat-icon>
+              Show all pictures ({{imagesWithMetadata.length}})
+            </button>
+          </div>
+        </mat-grid-list>
+      </mat-card>
     }
     <br><br>
     <div style="overflow: hidden;">
       <!--@if (activity && activity.id !== 1) {
       <br>
-      <mat-card class="activity-card" matRipple appearance="outlined" [style.cursor]="'pointer'"
-        (click)="openActivityPage()">
-        <mat-card-content class="card-content">
-          <div class="icon-section">
-            <mat-icon class="notification-icon">
-              info
-            </mat-icon>
-          </div>
-          <div class="text-section">
-            <h3 class="card-title">Activity: {{activity.title}}</h3>
-            <p class="card-subtitle">
-              This Memory was created with an activity. Click to view it!
-            </p>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    }-->
-      <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile colspan="3">
-          <div class="full-width">
-            <span>
-              {{ selectedDate | date }},
-              {{ memorydbFriends && memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory' }}
-            </span>
-            @if (memoryCreator) {
-            <div class="profile-row">
-              <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
-              <div class="text">
-                <b>{{ memoryCreator.name || 'name' }}</b><br>
-                <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
-              </div>
-              @if (memorydbFriends) {
-              <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
-              <app-friends-profile-pics [friends]="memorydbFriends"></app-friends-profile-pics>
-              }
+        <mat-card class="activity-card" matRipple appearance="outlined" [style.cursor]="'pointer'"
+          (click)="openActivityPage()">
+          <mat-card-content class="card-content">
+            <div class="icon-section">
+              <mat-icon class="notification-icon">
+                info
+              </mat-icon>
             </div>
-            }
-            <mat-card appearance="outlined" class="desc big-screen">
-              @if (memorydb.text.length > 0) {
-              <mat-card-content>
-                <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>
-                <div *ngIf="!showMore" class="custom-pre">{{ memorydb.text }}</div>
-                <button *ngIf="showMore" mat-stroked-button (click)="openFullDescDialog()">
+            <div class="text-section">
+              <h3 class="card-title">Activity: {{activity.title}}</h3>
+              <p class="card-subtitle">
+                This Memory was created with an activity. Click to view it!
+              </p>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        }-->
+        <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
+          <mat-grid-tile colspan="3">
+            <div class="full-width">
+              <span>
+                {{ selectedDate | date }},
+                {{ memorydbFriends && memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory' }}
+              </span>
+              @if (memoryCreator) {
+                <div class="profile-row">
+                  <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
+                  <div class="text">
+                    <b>{{ memoryCreator.name || 'name' }}</b><br>
+                    <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
+                  </div>
+                  @if (memorydbFriends) {
+                    <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
+                    <app-friends-profile-pics [friends]="memorydbFriends"></app-friends-profile-pics>
+                  }
+                </div>
+              }
+              <mat-card appearance="outlined" class="desc big-screen">
+                @if (memorydb.text.length > 0) {
+                  <mat-card-content>
+                    @if (showMore) {
+                      <div class="custom-pre">{{ truncatedDescription }}</div>
+                    }
+                    @if (!showMore) {
+                      <div class="custom-pre">{{ memorydb.text }}</div>
+                    }
+                    @if (showMore) {
+                      <button mat-stroked-button (click)="openFullDescDialog()">
+                        Show more
+                        <mat-icon>chevron_right</mat-icon>
+                      </button>
+                    }
+                  </mat-card-content>
+                }
+                @if (memorydb.text.length === 0) {
+                  <mat-card-content class="memory-card" appearance="outlined">
+                    There is no Discription added to your Memory yet!
+                    Provide more Information to remember your Adventure forever!
+                  </mat-card-content>
+                }
+              </mat-card>
+            </div>
+          </mat-grid-tile>
+          <mat-grid-tile>
+            <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
+          </mat-grid-tile>
+        </mat-grid-list>
+        <mat-card appearance="outlined" class="desc small-screen">
+          @if (memorydb.text.length>0) {
+            <mat-card-content>
+              @if (showMore) {
+                <div class="custom-pre">{{ truncatedDescription }}</div>
+              }
+              @if (!showMore) {
+                <div class="custom-pre">{{ memorydb.text }}</div>
+              }
+              @if (showMore) {
+                <button mat-stroked-button (click)="openFullDescDialog()">
                   Show more
                   <mat-icon>chevron_right</mat-icon>
                 </button>
-              </mat-card-content>
               }
-              @if (memorydb.text.length === 0) {
-              <mat-card-content class="memory-card" appearance="outlined">
-                There is no Discription added to your Memory yet!
-                Provide more Information to remember your Adventure forever!
-              </mat-card-content>
-              }
-            </mat-card>
-          </div>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
-        </mat-grid-tile>
-      </mat-grid-list>
-      <mat-card appearance="outlined" class="desc small-screen">
-        <mat-card-content *ngIf="memorydb.text.length>0">
-          <div *ngIf="showMore" class="custom-pre">{{ truncatedDescription }}</div>
-          <div *ngIf="!showMore" class="custom-pre">{{ memorydb.text }}</div>
-          <button *ngIf="showMore" mat-stroked-button (click)="openFullDescDialog()">
-            Show more
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </mat-card-content>
-        <mat-card-content *ngIf="memorydb.text.length === 0" class="memory-card" appearance="outlined">There is no
-          Discription added
-          to your Memory yet!
-          Provide more Information to remember your Adventure forever!</mat-card-content>
-      </mat-card>
-      <br><br>
-      <mat-card appearance="outlined" *ngIf="memorydbFriends !== null" style="overflow: hidden;">
-        <table mat-table [dataSource]="memorydbFriends">
-          <!-- Profile Picture Column -->
-          <ng-container matColumnDef="profilePicture">
-            <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
-            <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
-                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
-          </ng-container>
-
-          <!-- Name Column -->
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let user"> {{user.name}} </td>
-          </ng-container>
-
-          <!-- Birthday Column -->
-          <ng-container matColumnDef="birthday">
-            <th mat-header-cell *matHeaderCellDef> Birthday </th>
-            <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
-          </ng-container>
-
-          <!-- Country Column -->
-          <ng-container matColumnDef="country">
-            <th mat-header-cell *matHeaderCellDef> Country </th>
-            <td mat-cell *matCellDef="let user">{{user.country || 'Not Provided'}}</td>
-          </ng-container>
-
-          <!-- Shared Memories Column -->
-          <ng-container matColumnDef="sharedMemories">
-            <th mat-header-cell *matHeaderCellDef> Shared Memories </th>
-            <td mat-cell *matCellDef="let user">
-              @if (user.friendship_status !== "none") {
-              {{ user.sharedMemoriesCount }}
-              } @else {
-              <button mat-stroked-button (click)="addFriend(user)"><mat-icon>person_add</mat-icon>Add</button>
-              }
-            </td>
-          </ng-container>
-
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </mat-card>
-      <mat-card *ngIf="!memorydbFriends?.length" class="memory-card" appearance="outlined">
-        <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is
-          more fun together!</mat-card-content>
-      </mat-card>
-      <br>
-      <ng-container *ngIf="location !== null">
-        <div class="desc" style="height: 300px; border-radius: 0%;">
-          <app-map-snippet [lng]="location.longitude" [lat]="location.latitude"></app-map-snippet>
-        </div>
-      </ng-container>
-      <ng-container *ngIf="location === null">
-        <mat-card class="memory-card" appearance="outlined">
-          <mat-card-content>No location data available!</mat-card-content>
+            </mat-card-content>
+          }
+          @if (memorydb.text.length === 0) {
+            <mat-card-content class="memory-card" appearance="outlined">There is no
+              Discription added
+              to your Memory yet!
+            Provide more Information to remember your Adventure forever!</mat-card-content>
+          }
         </mat-card>
-      </ng-container>
-    </div>
-  </div>
-</section>
+        <br><br>
+        @if (memorydbFriends !== null) {
+          <mat-card appearance="outlined" style="overflow: hidden;">
+            <table mat-table [dataSource]="memorydbFriends">
+              <!-- Profile Picture Column -->
+              <ng-container matColumnDef="profilePicture">
+                <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
+                <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
+                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
+              </ng-container>
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+              </ng-container>
+              <!-- Birthday Column -->
+              <ng-container matColumnDef="birthday">
+                <th mat-header-cell *matHeaderCellDef> Birthday </th>
+                <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
+              </ng-container>
+              <!-- Country Column -->
+              <ng-container matColumnDef="country">
+                <th mat-header-cell *matHeaderCellDef> Country </th>
+                <td mat-cell *matCellDef="let user">{{user.country || 'Not Provided'}}</td>
+              </ng-container>
+              <!-- Shared Memories Column -->
+              <ng-container matColumnDef="sharedMemories">
+                <th mat-header-cell *matHeaderCellDef> Shared Memories </th>
+                <td mat-cell *matCellDef="let user">
+                  @if (user.friendship_status === "accepted" || user.user_id === loggedInUserId) {
+                    {{ user.sharedMemoriesCount }}
+                  } @else {
+                    <button mat-stroked-button (click)="addFriend(user)" [disabled]="user.friendship_status !== 'none'"><mat-icon>person_add</mat-icon>{{ user.friendship_status === 'none' ? 'Add' : 'Requested' }}</button>
+                  }
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </mat-card>
+        }
+        @if (!memorydbFriends?.length) {
+          <mat-card class="memory-card" appearance="outlined">
+            <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is
+            more fun together!</mat-card-content>
+          </mat-card>
+        }
+        <br>
+          @if (location !== null) {
+            <div class="desc" style="height: 300px; border-radius: 0%;">
+              <app-map-snippet [lng]="location.longitude" [lat]="location.latitude"></app-map-snippet>
+            </div>
+          }
+          @if (location === null) {
+            <mat-card class="memory-card" appearance="outlined">
+              <mat-card-content>No location data available!</mat-card-content>
+            </mat-card>
+          }
+        </div>
+      </div>
+    </section>
+  }

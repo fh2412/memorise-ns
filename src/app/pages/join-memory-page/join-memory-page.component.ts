@@ -3,13 +3,13 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
+
 import { JoinMemoryDialogComponent } from '../../components/_dialogs/join-memory-dialog/join-memory-dialog.component';
 
 @Component({
   selector: 'app-join-memory-page',
   standalone: true,
-  imports: [CommonModule, MatDialogModule],
+  imports: [MatDialogModule],
   template: `
     <div class="join-memory-page">
       <p>Loading memory invite...</p>
@@ -46,7 +46,7 @@ export class JoinMemoryPageComponent implements OnInit {
 
   openJoinDialog(token: string) {
     const dialogRef = this.dialog.open(JoinMemoryDialogComponent, {
-      width: '500px',
+      width: '900px',
       disableClose: false,
       data: { token }
     });

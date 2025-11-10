@@ -14,7 +14,9 @@
           <mat-form-field appearance="outline">
             <mat-label>Title</mat-label>
             <input matInput placeholder="Title" name="title" formControlName="title" required>
-            <mat-error *ngIf="memoryForm.get('title')?.hasError('required')">Title is required</mat-error>
+            @if (memoryForm.get('title')?.hasError('required')) {
+              <mat-error>Title is required</mat-error>
+            }
           </mat-form-field>
 
           <!-- Description Field -->
@@ -44,48 +46,48 @@
 
       <!-- Step 2: Location Details -->
       @if (!hasActivity) {
-      <mat-step [stepControl]="memoryForm" label="Location Details">
+        <mat-step [stepControl]="memoryForm" label="Location Details">
 
-        <form [formGroup]="memoryForm" class="details-form">
+          <form [formGroup]="memoryForm" class="details-form">
 
-          <!-- Location Button with Icon -->
-          <button mat-flat-button class="location-btn" (click)="openMapDialog()"
-            aria-label="Find address on map">
-            <mat-icon class="add-icon">search</mat-icon>
-            <span>Find Address on Map</span>
-          </button>
+            <!-- Location Button with Icon -->
+            <button mat-flat-button class="location-btn" (click)="openMapDialog()"
+              aria-label="Find address on map">
+              <mat-icon class="add-icon">search</mat-icon>
+              <span>Find Address on Map</span>
+            </button>
 
-          <!-- Location Fields -->
-          <div class="lat-long-div">
-            <mat-form-field appearance="outline" class="lat-field">
-              <mat-label>Latitude</mat-label>
-              <input matInput placeholder="Latitude" name="lat" formControlName="lat">
+            <!-- Location Fields -->
+            <div class="lat-long-div">
+              <mat-form-field appearance="outline" class="lat-field">
+                <mat-label>Latitude</mat-label>
+                <input matInput placeholder="Latitude" name="lat" formControlName="lat">
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="long-field">
+                <mat-label>Longitude</mat-label>
+                <input matInput placeholder="Longitude" name="lng" formControlName="lng">
+              </mat-form-field>
+            </div>
+            <mat-form-field appearance="outline">
+              <mat-label>City</mat-label>
+              <input matInput placeholder="City" name="city" formControlName="l_city">
             </mat-form-field>
-            <mat-form-field appearance="outline" class="long-field">
-              <mat-label>Longitude</mat-label>
-              <input matInput placeholder="Longitude" name="lng" formControlName="lng">
+            <mat-form-field appearance="outline">
+              <mat-label>Postcode</mat-label>
+              <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
             </mat-form-field>
-          </div>
-          <mat-form-field appearance="outline">
-            <mat-label>City</mat-label>
-            <input matInput placeholder="City" name="city" formControlName="l_city">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Postcode</mat-label>
-            <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Country</mat-label>
-            <input matInput placeholder="Country" name="country" formControlName="l_country">
-          </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Country</mat-label>
+              <input matInput placeholder="Country" name="country" formControlName="l_country">
+            </mat-form-field>
 
-          <!-- Stepper Navigation -->
-          <div>
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
-          </div>
-        </form>
-      </mat-step>
+            <!-- Stepper Navigation -->
+            <div>
+              <button mat-button matStepperPrevious>Back</button>
+              <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
+            </div>
+          </form>
+        </mat-step>
       }
       <!-- Step 3: Upload Photos and Videos -->
       <mat-step [stepControl]="memoryForm" label="Upload Photos and Videos">
@@ -93,7 +95,7 @@
 
           <!-- Image Upload Component -->
           <app-image-upload [memoryData]="memoryForm.value"
-            [friends_emails]="emailArray"></app-image-upload>
+          [friends_emails]="emailArray"></app-image-upload>
 
           <!-- Stepper Navigation -->
           <div>

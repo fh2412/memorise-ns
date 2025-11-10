@@ -1,11 +1,11 @@
 @if(dbConnection){
   <mat-card class="stats-card" appearance="outlined">
     <h2>MEMORISE STATS</h2>
-    @if (memoryCount !== null && memoryThisYearCount !== null && friendsCount !== null) {
+    @if (!loading) {
     <div class="user-details">
-      <h3>Total Memories: {{ memoryCount }}</h3>
-      <p>This year: {{ memoryThisYearCount }}</p>
-      <p>Friends: {{ friendsCount }}</p>
+      <p><b>Total Memories: {{ displayStats.memoryCount }}</b> / <span>{{ displayStats.allCount }}</span></p>
+      <p>This year: {{ displayStats.yearCount }}</p>
+      <p>Friends: {{ displayStats.friendCount }}</p>
     </div>
     } @else {
       <p>Loading stats...</p>

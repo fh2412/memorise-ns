@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { CommonModule } from '@angular/common';
+
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
@@ -20,12 +20,11 @@ export interface JoinMemoryDialogData {
   templateUrl: './join-memory-dialog.component.html',
   styleUrls: ['./join-memory-dialog.component.scss'],
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     MatSnackBarModule
-  ],
+],
 })
 export class JoinMemoryDialogComponent implements OnInit {
   memory?: Memory;

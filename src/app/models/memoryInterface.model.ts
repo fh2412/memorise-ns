@@ -35,6 +35,25 @@ export interface MemoryFormData {
   activity_id: number | null;
 }
 
+export interface PaginatedMemoryResponse {
+  data: Memory[];
+  page: number;
+  pageSize: number;
+  total: number;
+}
+
+export interface MemorySearchData {
+  memory_id: number;
+  title: string;
+  text: string;
+}
+
+export interface MemoryMapData {
+  memory_id: number;
+  latitude: string;
+  longitude: string;
+}
+
 export interface CreateMemoryResponse {
   message: string;
   memory_id: string;
@@ -59,4 +78,11 @@ export interface ValidateTokenResponse {
   valid: boolean;
   memory?: Memory;
   alreadyMember?: boolean;
+}
+
+export interface MemoryDisplayStats {
+    memoryCount: number;
+    yearCount: number;
+    allCount: number;
+    friendCount: number;
 }

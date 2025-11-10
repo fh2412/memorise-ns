@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
@@ -24,7 +24,6 @@ export interface ActivityBottomSheetData {
   selector: 'app-activity-bottom-sheet',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -34,7 +33,7 @@ export interface ActivityBottomSheetData {
     MatIconModule,
     MatDividerModule,
     MatCardModule
-  ],
+],
   templateUrl: 'activity-bottom-sheet.component.html',
   styleUrls: ['activity-bottom-sheet.component.scss'],
 })

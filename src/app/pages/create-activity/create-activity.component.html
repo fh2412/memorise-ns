@@ -15,9 +15,11 @@
               <mat-form-field appearance="outline" class="title-field">
                 <mat-label>Activity Title</mat-label>
                 <input matInput formControlName="title" required>
-                <mat-error *ngIf="activityForm.get('title')?.hasError('required')">
-                  Title is required
-                </mat-error>
+                @if (activityForm.get('title')?.hasError('required')) {
+                  <mat-error>
+                    Title is required
+                  </mat-error>
+                }
               </mat-form-field>
               <mat-slide-toggle formControlName="isPrivate">Public</mat-slide-toggle>
             </div>
@@ -36,144 +38,144 @@
                   <mat-icon>add_photo_alternate</mat-icon> Add Picture
                   <input #fileInput type="file" accept="image/*" (change)="selectFiles($event)"
                     style="display: none;" />
-                </button>
-              </mat-card>
-            </div>
+                  </button>
+                </mat-card>
+              </div>
 
-            <!-- Sliders -->
-            <div class="sliders-section">
-              <div class="slider-container">
-                <span>Group Size: {{ activityForm.get('groupSizeMin')?.value }} - {{
+              <!-- Sliders -->
+              <div class="sliders-section">
+                <div class="slider-container">
+                  <span>Group Size: {{ activityForm.get('groupSizeMin')?.value }} - {{
                   activityForm.get('groupSizeMax')?.value }}</span>
-                <mat-slider min="1" max="20" step="1" showTickMarks discrete>
-                  <input matSliderStartThumb formControlName="groupSizeMin">
-                  <input matSliderEndThumb formControlName="groupSizeMax">
-                </mat-slider>
+                  <mat-slider min="1" max="20" step="1" showTickMarks discrete>
+                    <input matSliderStartThumb formControlName="groupSizeMin">
+                    <input matSliderEndThumb formControlName="groupSizeMax">
+                  </mat-slider>
+                </div>
+                <div class="slider-container">
+                  <span>Cost: ${{ activityForm.get('costs')?.value }}</span>
+                  <mat-slider min="0" max="100" step="5" showTickMarks discrete>
+                    <input matSliderThumb formControlName="costs">
+                  </mat-slider>
+                </div>
               </div>
-              <div class="slider-container">
-                <span>Cost: ${{ activityForm.get('costs')?.value }}</span>
-                <mat-slider min="0" max="100" step="5" showTickMarks discrete>
-                  <input matSliderThumb formControlName="costs">
-                </mat-slider>
-              </div>
-            </div>
 
-            <!-- Navigation Buttons -->
-            <div class="step-navigation">
-              <button mat-button matStepperNext type="button">Next</button>
-            </div>
-          </form>
-        </div>
-      </mat-step>
-      <!-- Step 2: Details -->
-      <mat-step label="Details">
-        <div class="form-overlay">
-          <form [formGroup]="activityForm">
-            <!-- Description TextField -->
-            <div class="details-row">
-              <mat-form-field appearance="outline" class="flex">
-                <mat-label>Related Link</mat-label>
-                <input matInput formControlName="link">
-              </mat-form-field>
-              <!-- File Upload -->
-              <button mat-flat-button (click)="supportingFileInput.click()" class="flex file-upload-btn">
-                Upload Files
-                <input type="file" #supportingFileInput multiple (change)="onSupportingFileSelected($event)"
-                  style="display: none;">
-              </button>
-            </div>
-            <div class="details-row">
-              <!-- Link TextField -->
-              <mat-form-field appearance="outline" class="flex">
-                <mat-label>Event Description</mat-label>
-                <textarea matInput formControlName="description" rows="8"></textarea>
-              </mat-form-field>
-              <mat-card appearance="outlined" class="flex file-list">
-                @if (uploadedFiles.length > 0) {
-                <mat-list>
-                  @for (file of uploadedFiles; track $index) {
-                  <mat-list-item>
-                    <mat-icon matListItemIcon>folder</mat-icon>
-                    <div matListItemTitle>{{file.name}}
-                    </div>
-                    <div matListItemLine>{{file.size / 100000}} MB</div>
-                    <div matListItemMeta>
-                      <button mat-icon-button (click)="removeFile(file)"
-                        class="list-button"><mat-icon>delete</mat-icon></button>
-                    </div>
-                  </mat-list-item>
-                  }
-                </mat-list>
+              <!-- Navigation Buttons -->
+              <div class="step-navigation">
+                <button mat-button matStepperNext type="button">Next</button>
+              </div>
+            </form>
+          </div>
+        </mat-step>
+        <!-- Step 2: Details -->
+        <mat-step label="Details">
+          <div class="form-overlay">
+            <form [formGroup]="activityForm">
+              <!-- Description TextField -->
+              <div class="details-row">
+                <mat-form-field appearance="outline" class="flex">
+                  <mat-label>Related Link</mat-label>
+                  <input matInput formControlName="link">
+                </mat-form-field>
+                <!-- File Upload -->
+                <button mat-flat-button (click)="supportingFileInput.click()" class="flex file-upload-btn">
+                  Upload Files
+                  <input type="file" #supportingFileInput multiple (change)="onSupportingFileSelected($event)"
+                    style="display: none;">
+                  </button>
+                </div>
+                <div class="details-row">
+                  <!-- Link TextField -->
+                  <mat-form-field appearance="outline" class="flex">
+                    <mat-label>Event Description</mat-label>
+                    <textarea matInput formControlName="description" rows="8"></textarea>
+                  </mat-form-field>
+                  <mat-card appearance="outlined" class="flex file-list">
+                    @if (uploadedFiles.length > 0) {
+                      <mat-list>
+                        @for (file of uploadedFiles; track $index) {
+                          <mat-list-item>
+                            <mat-icon matListItemIcon>folder</mat-icon>
+                            <div matListItemTitle>{{file.name}}
+                            </div>
+                            <div matListItemLine>{{file.size / 100000}} MB</div>
+                            <div matListItemMeta>
+                              <button mat-icon-button (click)="removeFile(file)"
+                                class="list-button"><mat-icon>delete</mat-icon></button>
+                              </div>
+                            </mat-list-item>
+                          }
+                        </mat-list>
+                      }
+                    </mat-card>
+                  </div>
+                  <!-- Toggle Buttons -->
+                  <div class="toggle-section">
+                    <!-- Location Toggle -->
+                    <mat-button-toggle-group formControlName="indoor_outdoor_flag" matTooltip="Select Indoor/Outdoor">
+                      <mat-button-toggle value="indoor">
+                        <mat-icon>home</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="outdoor">
+                        <mat-icon>landscape</mat-icon>
+                      </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <!-- Season Toggle -->
+                    <mat-button-toggle-group formControlName="season" multiple matTooltip="Select Season(s)">
+                      <mat-button-toggle value="1">
+                        <mat-icon>grass</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="2">
+                        <mat-icon>wb_sunny</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="3">
+                        <mat-icon>park</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="4">
+                        <mat-icon>ac_unit</mat-icon>
+                      </mat-button-toggle>
+                    </mat-button-toggle-group>
+
+                    <!-- Weather Toggle -->
+                    <mat-button-toggle-group formControlName="weather" multiple matTooltip="Select Waether(s)">
+                      <mat-button-toggle value="1">
+                        <mat-icon>wb_sunny</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="3">
+                        <mat-icon>cloud</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="4">
+                        <mat-icon>water_drop</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="7">
+                        <mat-icon>air</mat-icon>
+                      </mat-button-toggle>
+                      <mat-button-toggle value="6">
+                        <mat-icon>ac_unit</mat-icon>
+                      </mat-button-toggle>
+                    </mat-button-toggle-group>
+                  </div>
+                </form>
+
+                <div class="step-navigation">
+                  <button mat-button matStepperPrevious>Back</button>
+                  <button mat-button matStepperNext>Next</button>
+                </div>
+              </div>
+            </mat-step>
+            <!-- Step 3: Lead Memory -->
+            <mat-step label="Lead Memory">
+              <div class="form-overlay">
+                @if (userId) {
+                  <app-memory-selecter [userId]="userId" (memorySelected)="onMemorySelected($event)"></app-memory-selecter>
                 }
-              </mat-card>
-            </div>
-            <!-- Toggle Buttons -->
-            <div class="toggle-section">
-              <!-- Location Toggle -->
-              <mat-button-toggle-group formControlName="indoor_outdoor_flag" matTooltip="Select Indoor/Outdoor">
-                <mat-button-toggle value="indoor">
-                  <mat-icon>home</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="outdoor">
-                  <mat-icon>landscape</mat-icon>
-                </mat-button-toggle>
-              </mat-button-toggle-group>
-
-              <!-- Season Toggle -->
-              <mat-button-toggle-group formControlName="season" multiple matTooltip="Select Season(s)">
-                <mat-button-toggle value="1">
-                  <mat-icon>grass</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="2">
-                  <mat-icon>wb_sunny</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="3">
-                  <mat-icon>park</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="4">
-                  <mat-icon>ac_unit</mat-icon>
-                </mat-button-toggle>
-              </mat-button-toggle-group>
-
-              <!-- Weather Toggle -->
-              <mat-button-toggle-group formControlName="weather" multiple matTooltip="Select Waether(s)">
-                <mat-button-toggle value="1">
-                  <mat-icon>wb_sunny</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="3">
-                  <mat-icon>cloud</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="4">
-                  <mat-icon>water_drop</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="7">
-                  <mat-icon>air</mat-icon>
-                </mat-button-toggle>
-                <mat-button-toggle value="6">
-                  <mat-icon>ac_unit</mat-icon>
-                </mat-button-toggle>
-              </mat-button-toggle-group>
-            </div>
-          </form>
-
-          <div class="step-navigation">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-button matStepperNext>Next</button>
-          </div>
-        </div>
-      </mat-step>
-      <!-- Step 3: Lead Memory -->
-      <mat-step label="Lead Memory">
-        <div class="form-overlay">
-          @if (userId) {
-          <app-memory-selecter [userId]="userId" (memorySelected)="onMemorySelected($event)"></app-memory-selecter>
-          }
-          <div class="step-navigation">
-            <button mat-button matStepperPrevious>Back</button>
-            <button mat-raised-button color="primary" (click)="onSubmit()">Create Activity</button>
-          </div>
-        </div>
-      </mat-step>
-    </mat-stepper>
-  </mat-card>
-</div>
+                <div class="step-navigation">
+                  <button mat-button matStepperPrevious>Back</button>
+                  <button mat-raised-button color="primary" (click)="onSubmit()">Create Activity</button>
+                </div>
+              </div>
+            </mat-step>
+          </mat-stepper>
+        </mat-card>
+      </div>

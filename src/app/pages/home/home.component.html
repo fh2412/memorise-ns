@@ -1,8 +1,8 @@
 <div class="wrapper">
     <div class="sticky-sidebar">
-        <ng-container *ngIf="fuid">
-            <app-stats [userid]="fuid"></app-stats>
-        </ng-container>
+        @if (fuid) {
+        <app-stats [userid]="fuid"></app-stats>
+        }
     </div>
     <div class="main-content">
         <div class="header">
@@ -15,6 +15,11 @@
                     <mat-checkbox formControlName="showFilter" aria-label="Toggle filter visibility">Show
                         Filter</mat-checkbox>
                 </section>
+                <button mat-icon-button (click)="toggleSortOrder()"
+                    [matTooltip]="sortOrder === 'desc' ? 'Sort ascending (oldest first)' : 'Sort descending (newest first)'"
+                    aria-label="Toggle sort order">
+                    <mat-icon>{{ sortOrder === 'desc' ? 'arrow_downward' : 'arrow_upward' }}</mat-icon>
+                </button>
                 <button mat-flat-button (click)="addMemory()" [disabled]="!canCreateNewMemory()"
                     [matTooltip]="getDisabledTooltip()" [matTooltipDisabled]="canCreateNewMemory()"
                     aria-label="Add a new memory">
@@ -23,46 +28,50 @@
                 </button>
             </div>
         </div>
-
-        <section [formGroup]="openForm" *ngIf="filterForm.get('showFilter')!.value">
+        @if (filterForm.get('showFilter')!.value) {
+        <section [formGroup]="openForm">
             <mat-form-field appearance="outline">
                 <mat-label>Search</mat-label>
                 <input matInput formControlName="search" (input)="filterItems()" aria-label="Search memories">
             </mat-form-field>
-            <mat-checkbox formControlName="showFriendsMemories" (change)="showAll($event.checked)"
+            <mat-checkbox formControlName="showFriendsMemories" (change)="toggleShowFriendsMemories($event.checked)"
                 aria-label="Show friends' memories">
                 Show Friends Memories
             </mat-checkbox>
         </section>
-
-        <div *ngIf="pagedData && pagedData.length > 0; else noMemorise">
-            <div *ngIf="selectedValue === 'map'">
-                <app-home-map-view [memories]="displayMemories"></app-home-map-view>
+        }
+        @if (pagedData && pagedData.length > 0) {
+        <div>
+            @if (selectedValue === 'map') {
+            <div>
+                <app-home-map-view [userId]="userdb.user_id"></app-home-map-view>
             </div>
-
-            <div *ngIf="selectedValue === 'standard'">
+            }
+            @if (selectedValue === 'standard') {
+            <div>
                 <mat-grid-list [cols]="3" rowHeight="1:1" gutterSize="5">
-                    <mat-grid-tile *ngFor="let item of pagedData">
+                    @for (item of pagedData; track item.memory_id) {
+                    <mat-grid-tile>
                         <app-memory-card [cardData]="item" class="fullcard"
                             (click)="openDetailedMemory(item.memory_id)">
                         </app-memory-card>
                     </mat-grid-tile>
+                    }
                 </mat-grid-list>
-
-                <mat-paginator [length]="displayMemories.length || 0" [pageSize]="pageSize" [pageIndex]="pageIndex"
+                <mat-paginator [length]="totalItems" [pageSize]="pageSize" [pageIndex]="pageIndex"
                     (page)="onPageChange($event)">
                 </mat-paginator>
             </div>
+            }
         </div>
+        } @else {
+        <div class="main-content">
+            <div class="image-div">
+                <img src="/assets/img/no_memories.jpg" class="image" alt="No memories found">
+                <p>You have not created any <span>MEMORIES</span> yet. Create one now and start <span>MEMORISING</span>!
+                </p>
+            </div>
+        </div>
+        }
     </div>
 </div>
-
-<ng-template #noMemorise>
-    <div class="main-content">
-        <div class="image-div">
-            <img src="/assets/img/no_memories.jpg" class="image" alt="No memories found">
-            <p>You have not created any <span>MEMORIES</span> yet. Create one now and start <span>MEMORISING</span>!
-            </p>
-        </div>
-    </div>
-</ng-template>

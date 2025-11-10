@@ -1,6 +1,7 @@
 <div class="wrapper">
   <app-back-button [text]="'Back'" class="back-button"></app-back-button>
-  <section style="margin-top: 7.5rem;" *ngIf="user">
+  @if (user) {
+  <section style="margin-top: 7.5rem;">
     <div class="columns">
       <div class="profile-section">
         <div>
@@ -39,7 +40,9 @@
               [disabled]="!(this.loggedInUserId===this.userId)">
               Change PW
             </button>
-            <app-logout-button *ngIf="(this.loggedInUserId===this.userId)"></app-logout-button>
+            @if ((this.loggedInUserId===this.userId)) {
+            <app-logout-button></app-logout-button>
+            }
           </div>
         </div>
       </div>
@@ -52,18 +55,27 @@
         <div style="margin-top: 2rem;">
           <div class="level">
             <h3 class="title is-4 level-left">Pinned Memories</h3>
-            <button mat-stroked-button (click)="openPinsDialog()">Customize your pins</button>
+            <button mat-stroked-button (click)="openPinsDialog()">
+              Customize your Pins
+            </button>
           </div>
-          <mat-grid-list cols="2" rowHeight="3:1" *ngIf="pinnedMemories">
-            <mat-grid-tile *ngFor="let memory of getMemoriesToDisplay()">
+          @if (pinnedMemories) {
+          <mat-grid-list cols="2" rowHeight="3:1">
+            @for (memory of getMemoriesToDisplay(); track memory) {
+            <mat-grid-tile>
               <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>
+            }
           </mat-grid-list>
+          }
         </div>
       </div>
     </div>
   </section>
+  }
 </div>
-<div *ngIf="isUploading" class="overlay">
+@if (isUploading) {
+<div class="overlay">
   <mat-spinner class="spinner-container"></mat-spinner>
 </div>
+}

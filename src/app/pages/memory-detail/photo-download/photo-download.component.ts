@@ -34,7 +34,7 @@ export class PhotoDownloadComponent implements OnInit {
   displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'size', 'uploadDate'];
   selectedUsers: MemoriseUser[] = [];
   userList: MemoryDetailFriend[] = [];
-  availableUsers: MemoriseUser[] = []; // Users who have uploaded photos
+  availableUsers: MemoriseUser[] = [];
   filterValue = '';
   isDownloading = false;
   isLoadingUsers = false;
@@ -44,7 +44,7 @@ export class PhotoDownloadComponent implements OnInit {
     private imageDataService: ImageGalleryService, 
     private friendsService: FriendsService, 
     private router: Router,
-    private userService: UserService // Add this injection
+    private userService: UserService
   ) {
     this.dataSource = new MatTableDataSource<ImageWithUserData>([]);
     const navigation = this.router.getCurrentNavigation();
@@ -90,7 +90,6 @@ export class PhotoDownloadComponent implements OnInit {
 
         this.dataSource.data = imagesWithUsers;
         this.availableUsers = users;
-        console.log("Users: ", this.availableUsers);
         this.isLoadingUsers = false;
       },
       error: (error) => {
@@ -174,6 +173,7 @@ export class PhotoDownloadComponent implements OnInit {
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
         this.isDownloading = true;
+        console.log("Selceted images: ", this.selection.selected);
         this.imageDataService.downloadSelectedZip(this.selection.selected, this.memorydb.title)
           .subscribe(() => {
             this.isDownloading = false;

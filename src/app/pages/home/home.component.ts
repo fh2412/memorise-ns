@@ -21,18 +21,22 @@ export class HomeComponent implements OnInit {
   openForm: FormGroup;
   userdb!: MemoriseUser;
   fuid: string | undefined;
-  userGeneratedMemories: Memory[] = [];
-  friendGeneratedMemories: Memory[] = [];
   displayMemories: Memory[] = [];
   showFriendsMemoriesBool = true;
 
+  sortOrder: 'asc' | 'desc' = 'desc';
   pageSize = 9;
   pageIndex = 0;
+  totalItems = 0;
   pagedData: Memory[] = [];
-  filteredItems: Memory[] = [];
 
   selectedValue = 'standard';
   noMemory = true;
+  isLoading = false;
+
+  // Cache for search results
+  private searchCache: Memory[] = [];
+  private isSearchActive = false;
 
   canCreateNewMemory = this.billingService.canCreateNewMemory;
   storageUsedGB = this.billingService.storageUsedGB;
@@ -55,8 +59,7 @@ export class HomeComponent implements OnInit {
     this.openForm.get('showFriendsMemories')?.setValue(this.showFriendsMemoriesBool);
     try {
       await this.initializeUserData();
-      await this.loadMemories();
-      this.initializeDataDisplay(this.showFriendsMemoriesBool);
+      await this.loadMemoriesPage();
     } catch (error) {
       console.error('Initialization error:', error);
     }
@@ -79,105 +82,152 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private async loadMemories(): Promise<void> {
+  private async loadMemoriesPage(): Promise<void> {
+    if (this.isSearchActive) {
+      // If search is active, filter from cached results
+      this.filterFromCache();
+      return;
+    }
+
+    this.isLoading = true;
     try {
-      await this.getCreatedMemories();
-      await this.getAddedMemories(this.showFriendsMemoriesBool);
+      const orderDirection = this.sortOrder === 'asc';
+      let result;
+
+      if (this.showFriendsMemoriesBool) {
+        result = await firstValueFrom(
+          this.memoryService.getUserCreatedAndAddedMemories(
+            this.userdb.user_id,
+            orderDirection,
+            this.pageIndex,
+            this.pageSize
+          )
+        );
+      } else {
+        result = await firstValueFrom(
+          this.memoryService.getUserCreatedMemories(
+            this.userdb.user_id,
+            orderDirection,
+            this.pageIndex,
+            this.pageSize
+          )
+        );
+      }
+
+      this.pagedData = result.data || [];
+      this.totalItems = result.total || 0;
+      this.noMemory = this.totalItems === 0;
+      this.displayMemories = this.pagedData;
     } catch (error) {
       console.error('Error loading memories:', error);
+      this.pagedData = [];
+      this.totalItems = 0;
+      this.noMemory = true;
+    } finally {
+      this.isLoading = false;
     }
-  }
-
-  private initializeDataDisplay(checked: boolean): void {
-    if (!this.noMemory) {
-      if (checked && this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
-      } else if (checked && this.friendGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.friendGeneratedMemories];
-      } else if (this.userGeneratedMemories.length > 0) {
-        this.displayMemories = [...this.userGeneratedMemories];
-      } else {
-        this.displayMemories = [];
-      }
-      this.filteredItems = [...this.displayMemories];
-    }
-
-    this.updatePagedData();
   }
 
   changeView(newView: string): void {
     this.selectedValue = newView;
   }
 
-  onPageChange(event: PageEvent): void {
+  async onPageChange(event: PageEvent): Promise<void> {
     this.pageIndex = event.pageIndex;
-    this.updatePagedData();
+    await this.loadMemoriesPage();
   }
 
-  filterItems(): void {
+  async filterItems(): Promise<void> {
     const searchTerm = this.openForm.get('search')?.value?.toLowerCase() || '';
-    this.filteredItems = this.noMemory
-      ? []
-      : this.displayMemories.filter(item => item.title.toLowerCase().includes(searchTerm));
-    this.updatePagedData();
+
+    if (!searchTerm) {
+      // Clear search - go back to normal pagination
+      this.isSearchActive = false;
+      this.searchCache = [];
+      this.pageIndex = 0;
+      await this.loadMemoriesPage();
+      return;
+    }
+
+    // Activate search mode - fetch ALL memories and cache them
+    if (!this.isSearchActive || this.searchCache.length === 0) {
+      await this.loadAllMemoriesForSearch();
+    }
+
+    this.isSearchActive = true;
+    this.filterFromCache();
   }
 
-  showAll(checked: boolean): void {
+  private async loadAllMemoriesForSearch(): Promise<void> {
+    this.isLoading = true;
+    try {
+      const orderDirection = this.sortOrder === 'asc';
+      let result;
+
+      // Fetch all memories (with a large page size)
+      if (this.showFriendsMemoriesBool) {
+        result = await firstValueFrom(
+          this.memoryService.getUserCreatedAndAddedMemories(
+            this.userdb.user_id,
+            orderDirection,
+            0,
+            10000 // Large number to get all memories
+          )
+        );
+      } else {
+        result = await firstValueFrom(
+          this.memoryService.getUserCreatedMemories(
+            this.userdb.user_id,
+            orderDirection,
+            0,
+            10000
+          )
+        );
+      }
+
+      this.searchCache = result.data || [];
+    } catch (error) {
+      console.error('Error loading all memories for search:', error);
+      this.searchCache = [];
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  private filterFromCache(): void {
+    const searchTerm = this.openForm.get('search')?.value?.toLowerCase() || '';
+    const filtered = this.searchCache.filter(item =>
+      item.title.toLowerCase().includes(searchTerm)
+    );
+
+    this.totalItems = filtered.length;
+    const startIndex = this.pageIndex * this.pageSize;
+    this.pagedData = filtered.slice(startIndex, startIndex + this.pageSize);
+    this.displayMemories = this.pagedData;
+  }
+
+  async toggleShowFriendsMemories(checked: boolean): Promise<void> {
     localStorage.setItem('showFriendsMemories', checked.toString());
     this.showFriendsMemoriesBool = checked;
-    if (!this.noMemory || this.friendGeneratedMemories.length > 0) {
-      if (checked) {
-        if (this.friendGeneratedMemories.length > 0 && this.userGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.userGeneratedMemories, ...this.friendGeneratedMemories];
-        } else if (this.userGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.userGeneratedMemories];
-        }
-        else if (this.friendGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.friendGeneratedMemories];
-        }
-      }
-      else {
-        if (this.userGeneratedMemories.length > 0) {
-          this.displayMemories = [...this.userGeneratedMemories];
-        } else {
-          this.displayMemories = [];
-        }
-      }
-      this.filteredItems = [...this.displayMemories];
-    }
 
-    if (this.openForm.get('search')?.value) {
-      this.filterItems();
-    } else {
-      this.filteredItems = [...this.displayMemories];
-      this.updatePagedData();
-    }
+    // Reset pagination and search
+    this.pageIndex = 0;
+    this.isSearchActive = false;
+    this.searchCache = [];
+    this.openForm.get('search')?.setValue('');
+
+    await this.loadMemoriesPage();
   }
 
-  private updatePagedData(): void {
-    const startIndex = this.pageIndex * this.pageSize;
-    this.pagedData = this.filteredItems.slice(startIndex, startIndex + this.pageSize);
-  }
+  async toggleSortOrder(): Promise<void> {
+    this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';
 
-  private async getCreatedMemories(): Promise<void> {
-    try {
-      const data = await firstValueFrom(this.memoryService.getCreatedMemory(this.userdb.user_id));
-      this.userGeneratedMemories = data;
-      this.noMemory = this.userGeneratedMemories.length === 0;
-    } catch (error) {
-      console.error('Error fetching user-created memories:', error);
-    }
-  }
+    // Reset pagination and search
+    this.pageIndex = 0;
+    this.isSearchActive = false;
+    this.searchCache = [];
 
-  private async getAddedMemories(showFriendsMemories: boolean): Promise<void> {
-    try {
-      this.friendGeneratedMemories = await firstValueFrom(this.memoryService.getAddedMemories(this.userdb.user_id));
-      if (this.noMemory === true && showFriendsMemories) {
-        this.noMemory = this.userGeneratedMemories.length === 0
-      }
-    } catch (error) {
-      console.error("Error fetching friend's memories data:", error);
-    }
+    await this.loadMemoriesPage();
   }
 
   getDisabledTooltip(): string {

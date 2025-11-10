@@ -44,9 +44,25 @@ html {
       ));
   }
 
-  @include mat.snack-bar-overrides((
-    container-shape: 24px,
-  ));
+    &[data-theme='system'] {
+    // Default to light
+    color-scheme: light;
+    @include mat.theme-overrides((
+        background: #ffffff,
+      ));
+    
+    // Override for dark mode
+    @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
+      @include mat.theme-overrides((
+          background: #0a0a0a,
+        ));
+    }
+  }
+
+
+  @include mat.snack-bar-overrides((container-shape: 24px,
+    ));
 }
 
 

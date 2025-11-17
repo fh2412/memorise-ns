@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Input } from '@angular/core';
+import { Component, ViewChild, OnInit, Input, inject } from '@angular/core';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
 import { Memory, MemoryMapData } from '../../../models/memoryInterface.model';
@@ -20,6 +20,9 @@ export interface CustomMarker {
   standalone: false
 })
 export class HomeMapViewComponent implements OnInit {
+  private router = inject(Router);
+  private memoryService = inject(MemoryService);
+
 
   @Input() userId = '';
   memories: MemoryMapData[] = [];
@@ -36,8 +39,6 @@ export class HomeMapViewComponent implements OnInit {
     maxZoom: 15,
   };
   currentMemory: Memory | null = null;
-
-  constructor(private router: Router, private memoryService: MemoryService) { }
 
   async ngOnInit(): Promise<void> {
     await this.loadMapMarkers(true);

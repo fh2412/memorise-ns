@@ -1,5 +1,5 @@
 // activity-card.component.ts
-import { Component, computed, Input } from '@angular/core';
+import { Component, computed, Input, inject } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -57,14 +57,17 @@ export interface ActivityTag {
   ],
 })
 export class ActivityCardComponent {
+  private router = inject(Router);
+  private userService = inject(UserService);
+  private bookmarkService = inject(BookmarkService);
+  private snackBar = inject(MatSnackBar);
+
   @Input() activity!: MemoriseUserActivity;
   @Input() myActivity = false;
   isBookmarked = computed(() => 
     this.bookmarkService.isBookmarked(this.activity?.activityId || 0)
   );
   loggedInUserId: string | null = null;
-
-  constructor(private router: Router, private userService: UserService, private bookmarkService: BookmarkService, private snackBar: MatSnackBar) { }
 
   viewDetails() {
     this.router.navigate(['activity/details/', this.activity.activityId]);

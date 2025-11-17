@@ -1,5 +1,5 @@
 // photo-download.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../../../components/_dialogs/confirm-dialog/confirm-dialog.component';
@@ -26,6 +26,12 @@ export interface ImageWithUserData extends ImageWithMetadata {
   styleUrls: ['./photo-download.component.scss']
 })
 export class PhotoDownloadComponent implements OnInit {
+  dialog = inject(MatDialog);
+  private imageDataService = inject(ImageGalleryService);
+  private friendsService = inject(FriendsService);
+  private router = inject(Router);
+  private userService = inject(UserService);
+
   photos: ImageWithUserData[] = [];
   memorydb!: Memory;
   dataSource: MatTableDataSource<ImageWithUserData>;
@@ -39,13 +45,7 @@ export class PhotoDownloadComponent implements OnInit {
   isDownloading = false;
   isLoadingUsers = false;
 
-  constructor(
-    public dialog: MatDialog, 
-    private imageDataService: ImageGalleryService, 
-    private friendsService: FriendsService, 
-    private router: Router,
-    private userService: UserService
-  ) {
+  constructor() {
     this.dataSource = new MatTableDataSource<ImageWithUserData>([]);
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras.state) {

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MemoriseUser } from '../../../models/userInterface.model';
@@ -12,17 +12,19 @@ import { map, Observable, startWith } from 'rxjs';
     standalone: false
 })
 export class EditUserDialogComponent implements OnInit {
+  private countryService = inject(CountryService);
+  dialogRef = inject<MatDialogRef<EditUserDialogComponent>>(MatDialogRef);
+  userdata = inject<MemoriseUser>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
+
   @Output() updateUserData = new EventEmitter<MemoriseUser>();
   userForm: FormGroup;
   countries: Country[] = [];
   filteredCountries!: Observable<Country[]>;
 
-  constructor(
-    private countryService: CountryService,
-    public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public userdata: MemoriseUser,
-    private fb: FormBuilder
-  ) {
+  constructor() {
+    const userdata = this.userdata;
+
     this.userForm = this.fb.group({
       name: [userdata.name, Validators.required],
       bio: [userdata.bio, Validators.maxLength(500)],

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { companyService } from '../../services/company.service';
 import { MemoriseUser } from '../../models/userInterface.model';
@@ -16,12 +16,16 @@ import { BookmarkService } from '../../services/bookmarking.service';
   standalone: false
 })
 export class ActivitiesComponent implements OnInit {
+  private router = inject(Router);
+  private userService = inject(UserService);
+  private activityService = inject(ActivityService);
+  private companyService = inject(companyService);
+  private bookmarkService = inject(BookmarkService);
+
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
   activities: MemoriseUserActivity[] = [];
   company!: MemoriseCompany;
-
-  constructor(private router: Router, private userService: UserService, private activityService: ActivityService, private companyService: companyService, private bookmarkService: BookmarkService) { }
   async ngOnInit() {
     this.loggedInUserId = this.userService.getLoggedInUserId();
     if (this.loggedInUserId) {

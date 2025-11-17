@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
@@ -11,16 +11,14 @@ import { AuthenticationService } from '../../services/authentication.service';
   standalone: false
 })
 export class LoginComponent implements OnInit {
+  private authenticationService = inject(AuthenticationService);
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   form!: FormGroup;
   isActionInProgress = false;
   isRegistering = false;
-
-  constructor(
-    private authenticationService: AuthenticationService,
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private snackBar: MatSnackBar
-  ) { }
 
   ngOnInit(): void {
     this.initializeForm();

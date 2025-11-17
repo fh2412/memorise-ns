@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivityCreator, ActivityDetails } from '../../models/activityInterface.model';
 import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -13,6 +13,11 @@ import { UserService } from '../../services/userService';
 })
 
 export class ActivityDetailComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private activitiesService = inject(ActivityService);
+  private router = inject(Router);
+  private userService = inject(UserService);
+
   activity!: ActivityDetails;
   mapOptions: google.maps.MapOptions = {};
   markerPosition!: google.maps.LatLngLiteral;
@@ -35,8 +40,6 @@ export class ActivityDetailComponent implements OnInit {
 
   isLoading = true;
   errorMessage = '';
-  
-  constructor(private route: ActivatedRoute, private activitiesService: ActivityService, private router: Router, private userService: UserService) {}
 
   ngOnInit(): void {
     this.route.paramMap.pipe(

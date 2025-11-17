@@ -1,4 +1,4 @@
-import { Component, Inject, ViewChild } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
 import { GeocodingService } from '../../../services/geocoding.service';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -19,7 +19,13 @@ import { MatButtonModule } from '@angular/material/button';
     ]
 })
 export class ChooseLocationComponent {
-  constructor(private geocodingService: GeocodingService, public dialogRef: MatDialogRef<ChooseLocationComponent>, @Inject(MAT_DIALOG_DATA) public data: { lat: number, long: number }) { }
+  private geocodingService = inject(GeocodingService);
+  dialogRef = inject<MatDialogRef<ChooseLocationComponent>>(MatDialogRef);
+  data = inject<{
+    lat: number;
+    long: number;
+}>(MAT_DIALOG_DATA);
+
 
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;

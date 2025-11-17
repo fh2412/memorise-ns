@@ -1,5 +1,5 @@
 // feedback.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -25,9 +25,9 @@ export interface FeedbackResponse {
   providedIn: 'root'
 })
 export class FeedbackService {
-  private apiUrl = `${environment.apiUrl}/feedback/new`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) { }
+  private apiUrl = `${environment.apiUrl}/feedback/new`;
 
   submitFeedback(feedback: FeedbackData): Observable<FeedbackResponse> {
     return this.http.post<FeedbackResponse>(this.apiUrl, feedback);

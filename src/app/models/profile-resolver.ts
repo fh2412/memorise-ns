@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
@@ -9,8 +9,9 @@ import { MemoriseUser } from './userInterface.model';
   providedIn: 'root'
 })
 export class ProfileResolver implements Resolve<MemoriseUser | null> {
+  private userService = inject(UserService);
+  private router = inject(Router);
 
-  constructor(private userService: UserService, private router: Router) {}
 
   resolve(route: ActivatedRouteSnapshot): Observable<MemoriseUser | null> {
     const userId = route.paramMap.get('userId');

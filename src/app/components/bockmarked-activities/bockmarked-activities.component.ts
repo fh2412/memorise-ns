@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, computed, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -21,6 +21,10 @@ import { Router } from '@angular/router';
   styleUrl: './bockmarked-activities.component.scss'
 })
 export class BockmarkedActivitiesComponent implements OnInit {
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+  private bookmarkService = inject(BookmarkService);
+
   @Input() userId: string | null = null;
   @Input() fullComponent = true;
   @Output() activitySelected = new EventEmitter<number>();
@@ -31,8 +35,6 @@ export class BockmarkedActivitiesComponent implements OnInit {
   canShowMore = false;
   private readonly maxInitialEntries = 5;
   emptyText = "There are no bookmarked Activities. Just add one by clicking the bookmark icon";
-
-  constructor(private router: Router, private snackBar: MatSnackBar, private bookmarkService: BookmarkService) { }
 
   activities = this.bookmarkService.bookmarkedActivities;
   displayActivities = computed(() => this.activities()); 

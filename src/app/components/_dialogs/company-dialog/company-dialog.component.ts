@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
@@ -16,13 +16,15 @@ export interface CompanyData {
     standalone: false
 })
 export class CompanyDialogComponent {
+  dialogRef = inject<MatDialogRef<CompanyDialogComponent>>(MatDialogRef);
+  data = inject<CompanyData>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
+
   companyForm: FormGroup;
 
-  constructor(
-    public dialogRef: MatDialogRef<CompanyDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: CompanyData,
-    private fb: FormBuilder
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.companyForm = this.fb.group({
       name: [data.name, Validators.required],
       phone: [data.phone, Validators.required],

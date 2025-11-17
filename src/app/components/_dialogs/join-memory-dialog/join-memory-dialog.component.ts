@@ -1,5 +1,5 @@
 // join-memory-dialog.component.ts
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -27,20 +27,17 @@ export interface JoinMemoryDialogData {
 ],
 })
 export class JoinMemoryDialogComponent implements OnInit {
+  dialogRef = inject<MatDialogRef<JoinMemoryDialogComponent>>(MatDialogRef);
+  data = inject<JoinMemoryDialogData>(MAT_DIALOG_DATA);
+  private memoryService = inject(MemoryService);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
+  private auth = inject(Auth);
+
   memory?: Memory;
   loading = true;
   error?: string;
   joining = false;
-
-  constructor(
-    public dialogRef: MatDialogRef<JoinMemoryDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: JoinMemoryDialogData,
-    private memoryService: MemoryService,
-    private snackBar: MatSnackBar,
-    private router: Router,
-    private auth: Auth,
-  ) {
-   }
 
   ngOnInit() {
     if (this.data.memory) {

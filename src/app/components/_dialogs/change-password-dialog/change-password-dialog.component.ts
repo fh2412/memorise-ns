@@ -13,6 +13,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   standalone: false
 })
 export class ChangePasswordDialogComponent implements OnDestroy {
+  dialogRef = inject<MatDialogRef<ChangePasswordDialogComponent>>(MatDialogRef);
+
   private auth: Auth = inject(Auth);
   private snackBar = inject(MatSnackBar);
   
@@ -36,7 +38,7 @@ export class ChangePasswordDialogComponent implements OnDestroy {
     symbol: false
   };
   
-  constructor(public dialogRef: MatDialogRef<ChangePasswordDialogComponent>) {
+  constructor() {
     this.userSubscription = this.user$.subscribe((aUser: User | null) => {
       if (aUser) {
         this.currentUser = aUser;

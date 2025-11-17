@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -44,17 +44,17 @@ interface FilterData {
   styleUrl: 'filter-bottom-sheet.component.scss'
 })
 export class FilterBottomSheetComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private bottomSheetRef = inject<MatBottomSheetRef<FilterBottomSheetComponent>>(MatBottomSheetRef);
+  private countryService = inject(CountryService);
+  dialog = inject(MatDialog);
+  data = inject<FilterData>(MAT_BOTTOM_SHEET_DATA);
+
   filterForm: FormGroup;
   currentLocation: GeocoderResponse | null = null;
   private initialFormValue: any;
 
-  constructor(
-    private fb: FormBuilder,
-    private bottomSheetRef: MatBottomSheetRef<FilterBottomSheetComponent>,
-    private countryService: CountryService,
-    public dialog: MatDialog,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: FilterData,
-  ) {
+  constructor() {
     this.filterForm = this.fb.group({
       location: [''],
       locationCoords: [{ lat: 0, lng: 0 }],

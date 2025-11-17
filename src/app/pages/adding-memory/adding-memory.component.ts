@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
@@ -19,6 +19,16 @@ import { firstValueFrom } from 'rxjs';
   standalone: false
 })
 export class AddingMemoryComponent implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private countryService = inject(CountryService);
+  dialog = inject(MatDialog);
+  private location = inject(Location);
+  memoryService = inject(MemoryService);
+  private userService = inject(UserService);
+  private locationService = inject(LocationService);
+  private activityService = inject(ActivityService);
+  private router = inject(Router);
+
 
   @ViewChild('datepicker') datepicker?: MatDatepicker<Date>;
   @ViewChild('rangePicker') rangePicker?: MatDatepicker<Date>;
@@ -30,17 +40,7 @@ export class AddingMemoryComponent implements OnInit {
   hasActivity = false;
 
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private countryService: CountryService,
-    public dialog: MatDialog,
-    private location: Location,
-    public memoryService: MemoryService,
-    private userService: UserService,
-    private locationService: LocationService,
-    private activityService: ActivityService,
-    private router: Router
-  ) {
+  constructor() {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId],
       title: ['', Validators.required],
@@ -102,8 +102,6 @@ export class AddingMemoryComponent implements OnInit {
       }
     );
   }
-
-
 
   private patchLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
     const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);

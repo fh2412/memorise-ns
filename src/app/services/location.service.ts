@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateLocationResponse, MemoriseLocation } from '../models/location.model';
@@ -11,9 +11,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class LocationService {
-  private apiUrl = `${environment.apiUrl}/locations`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private apiUrl = `${environment.apiUrl}/locations`;
 
   getLocationById(locationId: number): Observable<MemoriseLocation> {
     return this.http.get<MemoriseLocation>(`${this.apiUrl}/${locationId}`);

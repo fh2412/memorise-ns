@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -25,6 +25,8 @@ import { MatInputModule } from '@angular/material/input';
   ]
 })
 export class MemorySelectorComponent implements OnInit {
+  private memoryService = inject(MemoryService);
+
   @Input() userId!: string;
   @Input() memoryId: string | null = null;
   @Output() memorySelected = new EventEmitter<number>();
@@ -34,8 +36,6 @@ export class MemorySelectorComponent implements OnInit {
   searchControl = new FormControl('');
   selectedMemory: MemorySearchData | null = null;
   loading = true;
-
-  constructor(private memoryService: MemoryService) { }
 
   async ngOnInit(): Promise<void> {
     try {

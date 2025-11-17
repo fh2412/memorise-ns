@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { MemoryDisplayStats } from '../models/memoryInterface.model';
 import { Observable } from 'rxjs';
@@ -13,10 +13,9 @@ interface Count {
 })
 
 export class MemorystatsService {
+  private http = inject(HttpClient);
+
   private apiUrl = `${environment.apiUrl}`;
-
-
-  constructor(private http: HttpClient) { }
 
   getDisplayStats(user_id: string): Observable<MemoryDisplayStats>{
     return this.http.get<MemoryDisplayStats>(`${this.apiUrl}/memorystats/display/${user_id}`);

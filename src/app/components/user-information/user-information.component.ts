@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoriseUser } from '../../models/userInterface.model';
@@ -11,12 +11,11 @@ import { take } from 'rxjs/operators';
     standalone: false
 })
 export class UserInformationComponent implements OnInit {
+  private userService = inject(UserService);
+  private router = inject(Router);
+
   userdb!: MemoriseUser;
   loggedInUserId: string | null = null;
-  constructor(
-    private userService: UserService, 
-    private router: Router
-  ) {}
 
   async ngOnInit(): Promise<void> {
     try {

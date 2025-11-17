@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Memory } from '../../../models/memoryInterface.model';
 
@@ -15,6 +15,12 @@ export interface PinnedMemory {
     standalone: false
 })
 export class PinnedDialogComponent {
+  dialogRef = inject<MatDialogRef<PinnedDialogComponent>>(MatDialogRef);
+  data = inject<{
+    memories: Memory[];
+    pinned: Memory[];
+}>(MAT_DIALOG_DATA);
+
   favoriteMemories: PinnedMemory[] = [];
   allMemories: PinnedMemory[] = [];
   filteredMemories: PinnedMemory[] = [];
@@ -24,10 +30,7 @@ export class PinnedDialogComponent {
   hasChangesFlag = false;
   selectedCount = 0;
 
-  constructor(
-    public dialogRef: MatDialogRef<PinnedDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { memories: Memory[], pinned: Memory[] }
-  ) {
+  constructor() {
     this.initializeMemories();
   }
 

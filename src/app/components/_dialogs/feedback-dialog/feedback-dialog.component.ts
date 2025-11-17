@@ -1,5 +1,5 @@
 // feedback-dialog.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -27,17 +27,17 @@ import { Router } from '@angular/router';
   styleUrl: './feedback-dialog.component.scss',
 })
 export class FeedbackDialogComponent implements OnInit {
+  private dialogRef = inject<MatDialogRef<FeedbackDialogComponent>>(MatDialogRef);
+  private fb = inject(FormBuilder);
+  private feedbackService = inject(FeedbackService);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
+
   feedbackForm: FormGroup;
   currentUrl = '';
   username = '';
 
-  constructor(
-    private dialogRef: MatDialogRef<FeedbackDialogComponent>,
-    private fb: FormBuilder,
-    private feedbackService: FeedbackService,
-    private snackBar: MatSnackBar,
-    private router: Router
-  ) {
+  constructor() {
     this.feedbackForm = this.fb.group({
       type: ['bug', Validators.required],
       title: ['', Validators.required],

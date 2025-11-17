@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Auth, UserCredential, signInWithEmailAndPassword, sendPasswordResetEmail } from '@angular/fire/auth';
 import { catchError, from, Observable, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -9,11 +9,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class AuthenticationService {
+  private auth = inject(Auth);
+  private http = inject(HttpClient);
 
-  constructor(
-    private auth: Auth,
-    private http: HttpClient
-  ) { }
 
   signIn(params: SignIn): Observable<UserCredential> {
     return from(signInWithEmailAndPassword(

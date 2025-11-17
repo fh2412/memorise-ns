@@ -32,6 +32,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ]
 })
 export class FriendsAutocompletComponent implements OnInit {
+  private friendsService = inject(FriendsService);
+  private userService = inject(UserService);
+
   allfriends: string[] = [];
   friendCtrl = new FormControl('');
   filteredfriends: Observable<string[]> | undefined;
@@ -43,11 +46,6 @@ export class FriendsAutocompletComponent implements OnInit {
 
   announcer = inject(LiveAnnouncer);
   loggedInUserId: string | null = null;
-
-  constructor(
-    private friendsService: FriendsService,
-    private userService: UserService
-  ) { }
 
   async ngOnInit(): Promise<void> {
     await this.initializeFriendsList();

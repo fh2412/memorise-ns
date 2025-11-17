@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Friend, FriendStatus, MemoryDetailFriend } from '../models/userInterface.model';
@@ -9,13 +9,13 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class FriendsService {
+  private http = inject(HttpClient);
+
   private friendsDataSource = new BehaviorSubject<MemoryDetailFriend[]>([]);
   currentFriendData = this.friendsDataSource.asObservable();
 
 
   private apiUrl = `${environment.apiUrl}/friends`;
-
-  constructor(private http: HttpClient) { }
 
   updateFriendsData(friends: MemoryDetailFriend[]) {
     this.friendsDataSource.next(friends);

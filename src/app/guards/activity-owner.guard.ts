@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,12 +9,10 @@ import { UserService } from '../services/userService';
   providedIn: 'root'
 })
 export class ActivityOwnerGuard implements CanActivate {
+  private activityService = inject(ActivityService);
+  private userService = inject(UserService);
+  private router = inject(Router);
 
-  constructor(
-    private activityService: ActivityService,
-    private userService: UserService,
-    private router: Router
-  ) { }
 
   canActivate(
     route: ActivatedRouteSnapshot

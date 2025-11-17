@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { companyService } from '../../services/company.service';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,8 +13,9 @@ import { MemoriseCompany } from '../../models/company.model';
     standalone: false
 })
 export class CompanyInformationComponent {
+  private companyService = inject(companyService);
+  private dialog = inject(MatDialog);
 
-  constructor(private companyService: companyService, private dialog: MatDialog) {}
 
   @Input()company!: MemoriseCompany;
   @Input() userId!: string;

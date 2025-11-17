@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -16,13 +16,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   ]
 })
 export class UploadActivityDialogComponent {
+  dialogRef = inject<MatDialogRef<UploadActivityDialogComponent>>(MatDialogRef);
+
   progress = 0;
   currentStepLabel = 'Starting...';
   error: string | null = null;
-  
-  constructor(
-    public dialogRef: MatDialogRef<UploadActivityDialogComponent>
-  ) { }
   
   updateProgress(value: number, label: string): void {
     this.progress = value;

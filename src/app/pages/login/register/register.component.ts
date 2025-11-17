@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthenticationService } from '../../../services/authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -11,6 +11,11 @@ import { Router } from '@angular/router';
     standalone: false
 })
 export class RegisterComponent {
+  private fb = inject(FormBuilder);
+  private authenticationService = inject(AuthenticationService);
+  private snackBar = inject(MatSnackBar);
+  private router = inject(Router);
+
   registerForm: FormGroup;
   isSigningIn = false;
   isFirstTimeUser = false;
@@ -18,12 +23,7 @@ export class RegisterComponent {
 
   @Output() cancelRegistration = new EventEmitter<void>();
 
-  constructor(
-    private fb: FormBuilder,
-    private authenticationService: AuthenticationService,
-    private snackBar: MatSnackBar,
-    private router: Router,
-  ) {
+  constructor() {
     this.registerForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],

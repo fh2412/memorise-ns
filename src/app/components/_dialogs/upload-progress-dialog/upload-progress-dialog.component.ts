@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
@@ -19,37 +19,38 @@ import { firstValueFrom } from 'rxjs';
   standalone: false
 })
 export class UploadProgressDialogComponent implements OnInit {
+  data = inject<{
+    userId: string;
+    memoryId: string;
+    filesWithDimensions: ImageFileWithDimensions[];
+    memoryData: MemoryFormData;
+    friends_emails: string[];
+    picture_count: number;
+    googleStorageUrl: string;
+    starredIndex: number;
+}>(MAT_DIALOG_DATA);
+  private storageService = inject(FileUploadService);
+  private memoryService = inject(MemoryService);
+  private locationService = inject(LocationService);
+  private dialogRef = inject<MatDialogRef<UploadProgressDialogComponent>>(MatDialogRef);
+  private geocodingService = inject(GeocodingService);
+  private activityService = inject(ActivityService);
+  private billingService = inject(BillingService);
+  private snackbar = inject(MatSnackBar);
+
   progress: number[] = [];
   downloadURLs: string[] = [];
   uploadedCount = 0;
   memoryId = '';
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {
-      userId: string;
-      memoryId: string;
-      filesWithDimensions: ImageFileWithDimensions[];
-      memoryData: MemoryFormData;
-      friends_emails: string[];
-      picture_count: number;
-      googleStorageUrl: string;
-      starredIndex: number
-    },
-    private storageService: FileUploadService,
-    private memoryService: MemoryService,
-    private locationService: LocationService,
-    private dialogRef: MatDialogRef<UploadProgressDialogComponent>,
-    private geocodingService: GeocodingService,
-    private activityService: ActivityService,
-    private billingService: BillingService,
-    private snackbar: MatSnackBar,
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.progress = Array(data.filesWithDimensions.length).fill(0);
     this.downloadURLs = Array(data.filesWithDimensions.length).fill('');
   }
 
   ngOnInit() {
-    console.log("Dialog Data: ", this.data);
     this.batchUpload();
   }
 

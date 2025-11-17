@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core'; // Import Injectable
+import { Injectable, inject } from '@angular/core'; // Import Injectable
 import { ActivatedRouteSnapshot, CanActivate, Router, UrlTree } from '@angular/router';
 import { UserService } from '../services/userService';
 import { MemoryService } from '../services/memory.service';
@@ -7,7 +7,8 @@ import { MemoryService } from '../services/memory.service';
   providedIn: 'root'
 })
 class Permissions {
-  constructor(private memoryService: MemoryService) {}
+  private memoryService = inject(MemoryService);
+
 
   async canActivateEditMemory(loggedInuserId: string, memoryId: string): Promise<boolean> {
     if (!loggedInuserId || !memoryId) {
@@ -22,7 +23,10 @@ class Permissions {
   providedIn: 'root'
 })
 export class MemoryEditorGuard implements CanActivate {
-  constructor(private permissions: Permissions, private userService: UserService, private router: Router) {}
+  private permissions = inject(Permissions);
+  private userService = inject(UserService);
+  private router = inject(Router);
+
 
   async canActivate(route: ActivatedRouteSnapshot): Promise<boolean | UrlTree> {
     const loggedInUserId = await this.userService.getLoggedInUserId();

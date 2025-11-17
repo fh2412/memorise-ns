@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MemoriseCompany } from '../models/company.model';
@@ -9,9 +9,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class companyService {
-  private apiUrl = `${environment.apiUrl}/company`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private apiUrl = `${environment.apiUrl}/company`;
 
   getUserCompany(user_id: string) {
     return this.http.get<MemoriseCompany>(`${this.apiUrl}/${user_id}`);

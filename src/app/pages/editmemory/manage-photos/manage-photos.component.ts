@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
 import { FileUploadService } from '../../../services/file-upload.service';
@@ -13,21 +13,18 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     standalone: false
 })
 export class ManagePhotosComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private fileService = inject(FileUploadService);
+  private location = inject(Location);
+  private memoryService = inject(MemoryService);
+  private snackBar = inject(MatSnackBar);
+
   imagesToDelete: string[] = [];
   imageUrl: string | null = null;
 
   images: { url: string; isStarred: boolean }[] = []; // Array of image objects with URL and star status
   starredIndex: number | null = null;  // Index of the currently starred image
-  hoverIndex: number | null = null;    // Index of the currently hovered image
-
-  constructor(
-    private route: ActivatedRoute,
-    private fileService: FileUploadService,
-    private location: Location,
-    private memoryService: MemoryService,
-    private snackBar: MatSnackBar,
-
-  ) {}
+  hoverIndex: number | null = null;
 
   ngOnInit(): void {
     // Retrieve imageUrl from route params

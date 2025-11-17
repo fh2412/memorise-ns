@@ -1,11 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { FriendsService } from './friends.service';
 @Injectable({
     providedIn: 'root'
 })
 export class ManageFriendsService {
+    private friendshipService = inject(FriendsService);
 
-    constructor(private friendshipService: FriendsService) { }
 
     acceptFriendRequest(userId1: string, userId2: string) {
         this.friendshipService.acceptFriendRequest(userId1, userId2).subscribe(

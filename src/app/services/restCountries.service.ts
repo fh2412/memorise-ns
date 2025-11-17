@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -34,10 +34,10 @@ interface UserCountryResponse {
   providedIn: 'root'
 })
 export class CountryService {
+  private http = inject(HttpClient);
+
 
   private apiUrl = `${environment.apiUrl}`;
-
-  constructor(private http: HttpClient) { }
 
   getCountries(): Observable<Country[]> {
     return this.http.get<RawCountry[]>('https://restcountries.com/v3.1/all?fields=name,flag,region').pipe(

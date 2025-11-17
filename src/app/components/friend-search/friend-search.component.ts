@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { Friend } from '../../models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
@@ -11,6 +11,10 @@ import { FriendsService } from '../../services/friends.service';
     standalone: false
 })
 export class FriendSearchComponent implements OnInit {
+  private searchService = inject(UserService);
+  private friendsService = inject(FriendsService);
+  private cdRef = inject(ChangeDetectorRef);
+
   @Input() userId: string | null = null;
 
   searchTerm = '';
@@ -20,7 +24,7 @@ export class FriendSearchComponent implements OnInit {
   initState = true;
   private searchSubject = new Subject<string>();
 
-  constructor(private searchService: UserService, private friendsService: FriendsService, private cdRef: ChangeDetectorRef) {
+  constructor() {
     this.searchSubject.pipe(debounceTime(300)).subscribe(() => this.searchFriend());
   }
 

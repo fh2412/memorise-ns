@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { forkJoin, Observable } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
@@ -68,11 +68,11 @@ export interface AutocompleteResponse {
   providedIn: 'root'
 })
 export class GooglePlacesService {
+  private http = inject(HttpClient);
+
   private readonly AUTOCOMPLETE_URL = 'https://places.googleapis.com/v1/places:autocomplete';
   private readonly PLACE_DETAILS_URL = 'https://places.googleapis.com/v1/places';
   private readonly API_KEY = environment.googlePlacesKey;
-
-  constructor(private http: HttpClient) {}
 
   autocomplete(request: AutocompleteRequest): Observable<AutocompleteResponse> {
     const headers = new HttpHeaders({

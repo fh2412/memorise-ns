@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CreateUserResponse, Friend, MemoriseUser } from '../models/userInterface.model';
@@ -10,12 +10,14 @@ import { UserStorageData } from '../models/billing.model';
   providedIn: 'root'
 })
 export class UserService {
+  private http = inject(HttpClient);
+
   private loggedInUserId: string | null = null;
   private storageKey = 'loggedInUserId';
   private userIdSource = new BehaviorSubject<string | null>(null);
   userId$ = this.userIdSource.asObservable();
 
-  constructor(private http: HttpClient) {
+  constructor() {
     const storedUserId = localStorage.getItem(this.storageKey);
     if (storedUserId) {
       this.loggedInUserId = JSON.parse(storedUserId);

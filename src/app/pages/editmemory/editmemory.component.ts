@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '../../services/file-upload.service';
@@ -25,6 +25,18 @@ import { BillingService } from '../../services/billing.service';
   standalone: false
 })
 export class EditmemoryComponent implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private userService = inject(UserService);
+  private memoryService = inject(MemoryService);
+  private locationService = inject(LocationService);
+  private pinnedService = inject(PinnedMemoryService);
+  private firebaseService = inject(FileUploadService);
+  private dialog = inject(MatDialog);
+  private bottomSheet = inject(MatBottomSheet);
+  private billingService = inject(BillingService);
+
   loggedInUserId: string | null = null;
   memoryId = '';
   memory!: Memory;
@@ -50,19 +62,7 @@ export class EditmemoryComponent implements OnInit {
     this.isLargeScreen = window.innerWidth > 1500;
   }
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private router: Router,
-    private route: ActivatedRoute,
-    private userService: UserService,
-    private memoryService: MemoryService,
-    private locationService: LocationService,
-    private pinnedService: PinnedMemoryService,
-    private firebaseService: FileUploadService,
-    private dialog: MatDialog,
-    private bottomSheet: MatBottomSheet,
-    private billingService: BillingService
-  ) {
+  constructor() {
     this.memoryForm = this.initializeMemoryForm();
   }
 

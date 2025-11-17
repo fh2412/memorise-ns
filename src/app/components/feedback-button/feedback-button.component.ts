@@ -1,5 +1,5 @@
 // feedback-button.component.ts
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -39,7 +39,8 @@ import { FeedbackDialogComponent } from '../_dialogs/feedback-dialog/feedback-di
   `]
 })
 export class FeedbackButtonComponent {
-  constructor(private dialog: MatDialog) { }
+  private dialog = inject(MatDialog);
+
 
   openFeedbackDialog(): void {
     this.dialog.open(FeedbackDialogComponent, {

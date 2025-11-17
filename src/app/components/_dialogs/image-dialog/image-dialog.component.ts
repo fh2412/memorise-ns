@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,12 +18,13 @@ interface GalleryImage {
     ]
 })
 export class ImageDialogComponent implements OnInit {
-  currentIndex = 0;
+  dialogRef = inject<MatDialogRef<ImageDialogComponent>>(MatDialogRef);
+  data = inject<{
+    images: GalleryImage[];
+    initialIndex: number;
+}>(MAT_DIALOG_DATA);
 
-  constructor(
-    public dialogRef: MatDialogRef<ImageDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { images: GalleryImage[], initialIndex: number }
-  ) {}
+  currentIndex = 0;
 
   ngOnInit(): void {
     this.currentIndex = this.data.initialIndex;

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,11 +11,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrl: './comming-soon.component.scss'
 })
 export class CommingSoonComponent {
+  private snackBar = inject(MatSnackBar);
+
   @Input() featureName = 'New Feature';
   @Input() imageUrl = '';
   @Input() text = '';
-
-  constructor(private snackBar: MatSnackBar) { }
 
   notifyMe() {
     this.snackBar.open('You will be notified once Activities are fully available!', 'Great', { duration: 3000, verticalPosition: 'bottom' });

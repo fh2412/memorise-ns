@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { GeocoderResponse } from '../models/geocoder-response.model';
 import { Observable } from 'rxjs';
@@ -8,7 +8,8 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class GeocodingService {
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
+
 
   geocodeLatLng(location: google.maps.LatLngLiteral): Promise<GeocoderResponse> {
     const geocoder = new google.maps.Geocoder();

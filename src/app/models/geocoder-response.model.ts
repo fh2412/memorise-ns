@@ -8,3 +8,9 @@ export class GeocoderResponse {
       this.results = results;
     }
   }
+
+export  interface ParsedLocation {
+  country: string;
+  countryCode: string;
+  city: string;
+}

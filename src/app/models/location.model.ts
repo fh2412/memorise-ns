@@ -1,8 +1,9 @@
 export interface MemoriseLocation {
-  country: string;
   latitude: number;
   longitude: number;
-  locality: string | null;
+  country: string;
+  countryCode: string;
+  city: string | null;
   location_id: number;
 }
 

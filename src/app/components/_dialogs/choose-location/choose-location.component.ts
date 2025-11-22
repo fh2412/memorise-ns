@@ -2,7 +2,7 @@ import { Component, ViewChild, inject } from '@angular/core';
 import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
 import { GeocodingService } from '../../../services/geocoding.service';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { GeocoderResponse } from '../../../models/geocoder-response.model';
+import { GeocoderResponse, ParsedLocation } from '../../../models/geocoder-response.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -46,8 +46,8 @@ export class ChooseLocationComponent {
   geocoderWorking = false;
   geolocationWorking = false;
 
-  formattedAddress: string | null = null;
   locationCoords: google.maps.LatLng | null = null;
+  parsedLocation: ParsedLocation | undefined;
 
   markerOptions: google.maps.MarkerOptions = { draggable: false };
   markerPosition!: google.maps.LatLngLiteral;
@@ -61,12 +61,12 @@ export class ChooseLocationComponent {
   async submitAddress() {
     if (this.markerPosition) {
       this.fulladdress = await this.geocodingService.geocodeLatLng(this.markerPosition);
-      console.log("Full Adress: ", this.fulladdress.results[0]);
-      this.formattedAddress = this.fulladdress.results[0].formatted_address;
+      this.parsedLocation = await this.geocodingService.parseGeocodingResponse(this.fulladdress);
+      console.log(this.parsedLocation);
     }
     this.dialogRef.close(
       {
-        formattedAddress: this.formattedAddress,
+        parsedLocation: this.parsedLocation,
         markerPosition: this.markerPosition,
       }
     );

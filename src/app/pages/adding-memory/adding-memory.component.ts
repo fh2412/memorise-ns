@@ -11,6 +11,7 @@ import { Location } from '@angular/common';
 import { CountryService } from '../../services/restCountries.service';
 import { ActivityService } from '../../services/activity.service';
 import { firstValueFrom } from 'rxjs';
+import { ParsedLocation } from '../../models/geocoder-response.model';
 
 @Component({
   selector: 'app-adding-memory',
@@ -53,6 +54,7 @@ export class AddingMemoryComponent implements OnInit {
       lng: [''],
       lat: [''],
       l_country: [''],
+      l_countryCode: [''],
       l_city: [''],
       l_postcode: [''],
       quickActivityTitle: [''],
@@ -88,7 +90,7 @@ export class AddingMemoryComponent implements OnInit {
 
           dialogRef.afterClosed().subscribe(result => {
             if (result) {
-              this.patchLocationData(result.formattedAddress, result.markerPosition);
+              this.updateLocationData(result.parsedLocation, result.markerPosition);
             } else {
               console.error("Incomplete location data received from map dialog.");
             }
@@ -103,16 +105,15 @@ export class AddingMemoryComponent implements OnInit {
     );
   }
 
-  private patchLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
-    const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
-
+  private updateLocationData(parsedLocation: ParsedLocation, coordinates: { lat: number; lng: number }): void {
     this.memoryForm.patchValue({
-      l_city: addressComponents.city,
-      l_postcode: addressComponents.postalCode,
-      l_country: addressComponents.country,
+      l_city: parsedLocation.city,
+      l_country: parsedLocation.country,
+      l_countryCode: parsedLocation.countryCode,
       lat: coordinates.lat.toFixed(4),
       lng: coordinates.lng.toFixed(4),
     });
+    console.log("Location Data: ", this.memoryForm.value);
   }
 
   private async patchActivityData(): Promise<void> {

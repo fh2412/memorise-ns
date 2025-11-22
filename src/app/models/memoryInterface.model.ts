@@ -29,6 +29,7 @@ export interface MemoryFormData {
   lng: string;
   lat: string;
   l_country: string;
+  l_countryCode: string;
   l_city: string;
   l_postcode: string;
   quickActivityTitle: string;

@@ -17,6 +17,7 @@ import { firstValueFrom } from 'rxjs';
 import { ActivityBottomSheetData, ActivityBottomSheetComponent } from '../../components/_dialogs/activity-bottom-sheet/activity-bottom-sheet.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { BillingService } from '../../services/billing.service';
+import { ParsedLocation } from '../../models/geocoder-response.model';
 
 @Component({
   selector: 'app-editmemory',
@@ -236,11 +237,9 @@ export class EditmemoryComponent implements OnInit {
 
   private loadLocationAndOpenDialog(): void {
     this.loadLocation().then(() => {
-      // Open dialog after successfully loading the location
       this.openMapDialog(this.location.latitude, this.location.longitude);
     }).catch(error => {
       console.error('Error loading location:', error);
-      // Optionally handle error, e.g., show an alert or fallback
     });
   }
 
@@ -276,27 +275,26 @@ export class EditmemoryComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.updateLocationData(result.formattedAddress, result.markerPosition);
+        this.updateLocationData(result.parsedLocation, result.markerPosition);
       }
     });
   }
 
-  updateLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
-    const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
-
-    this.memoryForm.patchValue({
-      l_city: addressComponents.city,
-      l_postcode: addressComponents.postalCode,
-      l_country: addressComponents.country,
-      lat: coordinates.lat,
-      lng: coordinates.lng,
-    });
+  updateLocationData(parsedLocation: ParsedLocation, coordinates: { lat: number; lng: number }): void {
+    const locationData: MemoriseLocation = {
+      country: parsedLocation.country,
+      countryCode: parsedLocation.countryCode,
+      city: parsedLocation.city,
+      latitude: coordinates.lat,
+      longitude: coordinates.lng,
+      location_id: 0
+    };
 
     if (this.memory.location_id === 1) {
-      this.createLocation();
+      this.createLocation(locationData);
     }
     else {
-      this.updateLocation();
+      this.updateLocation(locationData);
     }
   }
 
@@ -313,17 +311,24 @@ export class EditmemoryComponent implements OnInit {
     });
   }
 
-  createLocation(): void {
-    this.locationService.createLocation(this.memoryForm.value).subscribe(
-      response => this.memoryService.updateMemoryLocation(this.memory.memory_id, response.locationId).subscribe(),
-      error => console.error('Error creating Location:', error)
-    );
+
+  async createLocation(locationData: MemoriseLocation): Promise<void> {
+    try {
+      const response = await firstValueFrom(this.locationService.createLocation(locationData));
+      await firstValueFrom(this.memoryService.updateMemoryLocation(this.memory.memory_id, response.locationId));
+      console.log('Location created and memory updated successfully');
+    } catch (error) {
+      console.error('Error creating Location:', error);
+    }
   }
 
-  updateLocation(): void {
-    this.locationService.updateLocation(this.memory.location_id, this.memoryForm.value)
-      .subscribe(response => console.log('Location updated:', response),
-        error => console.error('Error updating location:', error));
+  async updateLocation(locationData: MemoriseLocation): Promise<void> {
+    try {
+      const response = await firstValueFrom(this.locationService.updateLocation(this.memory.location_id, locationData));
+      console.log('Location updated:', response);
+    } catch (error) {
+      console.error('Error updating location:', error);
+    }
   }
 
   async confirmDeletion(status: string): Promise<void> {

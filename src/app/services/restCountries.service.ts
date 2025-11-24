@@ -8,12 +8,14 @@ export interface Country {
   name: string;
   flag: string;
   region: string;
+  cca2: string;
 }
 
 interface RawCountry {
   name: { common: string };
   flag: string;
   region: string;
+  cca2: string;
 }
 
 
@@ -36,16 +38,14 @@ interface UserCountryResponse {
 export class CountryService {
   private http = inject(HttpClient);
 
-
-  private apiUrl = `${environment.apiUrl}`;
-
   getCountries(): Observable<Country[]> {
-    return this.http.get<RawCountry[]>('https://restcountries.com/v3.1/all?fields=name,flag,region').pipe(
+    return this.http.get<RawCountry[]>('https://restcountries.com/v3.1/all?fields=name,flag,region,cca2').pipe(
       map(countries =>
         countries.map(country => ({
           name: country.name.common,
           flag: country.flag,
           region: country.region,
+          cca2: country.cca2,
         }))
       )
     );

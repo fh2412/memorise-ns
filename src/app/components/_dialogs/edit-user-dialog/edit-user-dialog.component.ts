@@ -31,6 +31,7 @@ export class EditUserDialogComponent implements OnInit {
       dob: [userdata.dob, Validators.required],
       gender: [userdata.gender, Validators.required],
       country: [userdata.country, Validators.required],
+      country_cca2: [''],
       username: [userdata.username],
       instagram: [userdata.instagram],
     });
@@ -60,6 +61,19 @@ export class EditUserDialogComponent implements OnInit {
       console.error('Form is invalid');
       return;
     }
+    
+    // Find the selected country and set the country_cca2
+    const selectedCountryName = this.userForm.get('country')?.value;
+    const selectedCountry = this.countries.find(
+      country => country.name.toLowerCase() === selectedCountryName.toLowerCase()
+    );
+    
+    if (selectedCountry) {
+      this.userForm.patchValue({
+        country_cca2: selectedCountry.cca2
+      });
+    }
+    
     this.updateUserData.emit(this.userForm.value);
     this.dialogRef.close();
   }

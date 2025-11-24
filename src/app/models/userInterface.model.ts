@@ -5,6 +5,7 @@ export interface MemoriseUser {
   email: string;
   bio: string;
   country: string;
+  country_cca2: string;
   gender: string;
   formatted_dob: string;
   dob: string;

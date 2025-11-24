@@ -6,11 +6,10 @@ import { UserService } from '../../services/userService';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
-import { LocationService } from '../../services/location.service';
 import { Location } from '@angular/common';
-import { CountryService } from '../../services/restCountries.service';
+import { Country, CountryService } from '../../services/restCountries.service';
 import { ActivityService } from '../../services/activity.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map, Observable, startWith } from 'rxjs';
 import { ParsedLocation } from '../../models/geocoder-response.model';
 
 @Component({
@@ -26,7 +25,6 @@ export class AddingMemoryComponent implements OnInit {
   private location = inject(Location);
   memoryService = inject(MemoryService);
   private userService = inject(UserService);
-  private locationService = inject(LocationService);
   private activityService = inject(ActivityService);
   private router = inject(Router);
 
@@ -40,6 +38,8 @@ export class AddingMemoryComponent implements OnInit {
   emailArray: string[] = [];
   hasActivity = false;
 
+  filteredCountries!: Observable<Country[]>;
+  countries: Country[] = [];
 
   constructor() {
     this.memoryForm = this.formBuilder.group({
@@ -70,6 +70,25 @@ export class AddingMemoryComponent implements OnInit {
       }
     });
     this.patchActivityData();
+    this.initializeCountries();
+  }
+
+  private initializeCountries() {
+    this.countryService.getCountries().subscribe(countries => {
+      this.countries = countries;
+      // Initialize filteredCountries after countries are fetched
+      this.filteredCountries = this.memoryForm.get('l_country')!.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterCountries(value || ''))
+      );
+    });
+  }
+
+  private _filterCountries(value: string): Country[] {
+    const filterValue = value.toLowerCase();
+    return this.countries.filter(country =>
+      country.name.toLowerCase().includes(filterValue)
+    );
   }
 
   onSelectedValuesChange(selectedValues: string[]): void {
@@ -134,6 +153,23 @@ export class AddingMemoryComponent implements OnInit {
       console.log(this.memoryForm.value);
     }
   }
+
+  updateCca2Code() {
+  if (this.memoryForm.valid) {
+    // Find the selected country and set the country_cca2
+    const selectedCountryName = this.memoryForm.get('l_country')?.value;
+    const selectedCountry = this.countries.find(
+      country => country.name.toLowerCase() === selectedCountryName?.toLowerCase()
+    );
+    
+    if (selectedCountry) {
+      this.memoryForm.patchValue({
+        l_countryCode: selectedCountry.cca2
+      });
+    }
+    console.log("Sat Code to: ", this.memoryForm.value);
+  }
+}
 
   cancelCreation(): void {
     this.router.navigate(['/home']);

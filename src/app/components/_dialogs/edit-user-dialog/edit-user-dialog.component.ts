@@ -39,6 +39,10 @@ export class EditUserDialogComponent implements OnInit {
 
   ngOnInit(): void {
     // Fetch countries from the service
+    this.initializeCountries();
+  }
+
+  private initializeCountries(){
     this.countryService.getCountries().subscribe(countries => {
       this.countries = countries;
       // Initialize filteredCountries after countries are fetched

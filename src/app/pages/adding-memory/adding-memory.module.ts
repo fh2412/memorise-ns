@@ -20,6 +20,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
 import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 const routes: Routes = [
   {
@@ -54,7 +55,8 @@ const routes: Routes = [
     MatGridListModule,
     FriendsAutocompletComponent,
     ImageUploadComponent,
-    BackButtonComponent
-  ]
+    BackButtonComponent,
+    MatAutocompleteModule
+]
 })
 export class AddingMemoryModule {}

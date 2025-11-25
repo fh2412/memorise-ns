@@ -35,6 +35,7 @@ export class UserProfileComponent implements OnInit {
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
   pinnedMemories: Memory[] = [];
+  memoriesToDisplay: Memory[] = [];
   allMemories: MemorySearchData[] = [];
   isUploading = false;
 
@@ -63,7 +64,10 @@ export class UserProfileComponent implements OnInit {
   /** Retrieves pinned memories for the user. */
   private getPinnedMemories(): void {
     this.pinnedService.getPinnedMemories(this.userId).subscribe(
-      (memories) => (this.pinnedMemories = memories),
+      (memories) => {
+        this.pinnedMemories = memories
+        this.updateMemoriesToDisplay();
+      },
       () => this.handleError('Error fetching pinned memories.')
     );
   }
@@ -106,6 +110,10 @@ export class UserProfileComponent implements OnInit {
 
     deletedIds.forEach(id => this.deletePinnedMemory(id));
     insertedIds.forEach(id => this.createPinnedMemory(id));
+  }
+
+  private updateMemoriesToDisplay(): void {
+    this.memoriesToDisplay = this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
   }
 
   onFileChange(event: Event) {
@@ -193,9 +201,4 @@ export class UserProfileComponent implements OnInit {
     console.error(message);
     this.showSnackBar(message);
   }
-
-  getMemoriesToDisplay(): Memory[] {
-    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
-  }
-
 }

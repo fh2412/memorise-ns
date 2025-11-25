@@ -61,7 +61,7 @@
           </div>
           @if (pinnedMemories) {
           <mat-grid-list cols="2" rowHeight="3:1">
-            @for (memory of getMemoriesToDisplay(); track memory) {
+            @for (memory of memoriesToDisplay; track memory) {
             <mat-grid-tile>
               <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
             </mat-grid-tile>
@@ -72,6 +72,7 @@
       </div>
     </div>
   </section>
+  <app-visited-country-map></app-visited-country-map>
   }
 </div>
 @if (isUploading) {

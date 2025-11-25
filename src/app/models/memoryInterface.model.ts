@@ -82,8 +82,12 @@ export interface ValidateTokenResponse {
 }
 
 export interface MemoryDisplayStats {
-    memoryCount: number;
-    yearCount: number;
-    allCount: number;
-    friendCount: number;
+  memoryCount: number;
+  yearCount: number;
+  allCount: number;
+  friendCount: number;
+}
+
+export interface VisitedCountry {
+  alpha_2_codes: string | null;
 }

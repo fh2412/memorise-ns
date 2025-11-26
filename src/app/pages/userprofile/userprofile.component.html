@@ -52,27 +52,34 @@
             <pre>{{ user.bio || 'no bio provided'}}</pre>
           </mat-card-content>
         </mat-card>
-        <div style="margin-top: 2rem;">
-          <div class="level">
-            <h3 class="title is-4 level-left">Pinned Memories</h3>
-            <button mat-stroked-button (click)="openPinsDialog()">
-              Customize your Pins
-            </button>
-          </div>
-          @if (pinnedMemories) {
-          <mat-grid-list cols="2" rowHeight="3:1">
-            @for (memory of memoriesToDisplay; track memory) {
-            <mat-grid-tile>
-              <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
-            </mat-grid-tile>
-            }
-          </mat-grid-list>
-          }
-        </div>
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+          <mat-tab label="Pinned Memories">
+            <div style="margin-top: 1rem;">
+              <div class="level">
+                <button mat-stroked-button (click)="openPinsDialog()">
+                  Customize your Pins
+                </button>
+              </div>
+              @if (pinnedMemories) {
+              <mat-grid-list cols="2" rowHeight="3:1">
+                @for (memory of memoriesToDisplay; track memory) {
+                <mat-grid-tile>
+                  <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
+                </mat-grid-tile>
+                }
+              </mat-grid-list>
+              }
+            </div>
+          </mat-tab>
+          <mat-tab label="Adventure Map">
+              <app-visited-country-map></app-visited-country-map>
+
+          </mat-tab>
+        </mat-tab-group>
+
       </div>
     </div>
   </section>
-  <app-visited-country-map></app-visited-country-map>
   }
 </div>
 @if (isUploading) {

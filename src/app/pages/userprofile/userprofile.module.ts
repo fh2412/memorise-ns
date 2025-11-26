@@ -22,6 +22,7 @@ import { BackButtonComponent } from "../../components/back-button/back-button.co
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 import { VisitedCountryMapComponent } from "../../components/visited-country-map/visited-country-map.component";
+import { MatTabGroup, MatTabsModule } from "@angular/material/tabs";
 
 const routes: Routes = [
   {
@@ -56,7 +57,9 @@ const routes: Routes = [
     PinCardComponent,
     MatAutocompleteModule,
     LogoutButtonComponent,
-    VisitedCountryMapComponent
+    VisitedCountryMapComponent,
+    MatTabGroup,
+    MatTabsModule
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

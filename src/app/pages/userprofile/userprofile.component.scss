@@ -1,5 +1,6 @@
 @use '../../../styles/components/mixins' as mixins;
 @use '../../../styles/components/spinner-overlay.scss';
+@use '@angular/material' as mat;
 
 .wrapper {
   display: flex;
@@ -19,6 +20,7 @@
   display: flex;
   justify-content: space-between;
   min-width: 1200px;
+
   @media (max-width: 1480px) {
     display: block;
   }
@@ -38,11 +40,12 @@
 
 .level {
   display: flex;
-  justify-content: space-between;
+  justify-content: end;
 }
 
 .profile-section {
   width: 25%;
+
   @media (max-width: 1480px) {
     display: flex;
     width: 50%;
@@ -138,4 +141,11 @@
 .memory-card {
   width: 98%;
   height: 95%;
+}
+
+mat-tab-group {
+  margin-top: 8px;
+  @include mat.tabs-overrides((
+    label-text-weight: 800,
+  ));
 }

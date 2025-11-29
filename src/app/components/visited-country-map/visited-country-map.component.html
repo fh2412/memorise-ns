@@ -1,5 +1,4 @@
-@for (country of countryList; track $index) {
-    @if (country !== null) {
-        <p>{{country.alpha_2_codes}}</p>
-    }
-}
+<div class="map-container">
+    <h2>Visited Countries Map</h2>
+    <svg #mapSvg></svg>
+</div>

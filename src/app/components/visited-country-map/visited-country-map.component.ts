@@ -5,6 +5,13 @@ import { UserService } from '../../services/userService';
 import { VisitedCountry } from '../../models/memoryInterface.model';
 import * as d3 from 'd3';
 import { ThemeService } from '../../services/theme.service';
+import { FeatureCollection, Feature, Geometry } from 'geojson';
+
+interface CountryProperties {
+  'ISO3166-1-Alpha-2': string;
+  'ISO3166-1-Alpha-3': string;
+  name: string;
+}
 
 @Component({
   selector: 'app-visited-country-map',
@@ -14,8 +21,6 @@ import { ThemeService } from '../../services/theme.service';
 })
 export class VisitedCountryMapComponent implements OnInit {
   @ViewChild('mapSvg', { static: true }) private svgRef!: ElementRef<SVGElement>;
-
-
   memoryStatsService = inject(MemorystatsService);
   userService = inject(UserService);
   themeService = inject(ThemeService);
@@ -25,7 +30,7 @@ export class VisitedCountryMapComponent implements OnInit {
   countryStrokeColor = '#c3c6d2';
   unvisitedColor = '#f9f9ff';
   visitedColor = '#FFA500';
-
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private svg: any;
   private marginTop = 24;
   private width = 928;
@@ -60,18 +65,22 @@ export class VisitedCountryMapComponent implements OnInit {
 
   private async loadMapData(): Promise<void> {
     try {
-      const countriesData = await d3.json('https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson');
-      this.createMap(countriesData);
+      const countriesData = await d3.json<FeatureCollection<Geometry, CountryProperties>>(
+        'https://raw.githubusercontent.com/datasets/geo-countries/master/data/countries.geojson'
+      );
+      if (countriesData) {
+        this.createMap(countriesData);
+      }
     } catch (error) {
       console.error('Error loading map data:', error);
     }
   }
 
-  private createMap(countriesData: any): void {
+  private createMap(countriesData: FeatureCollection<Geometry, CountryProperties>): void {
     const visitedCodes = new Set(
       this.countryList
         .map(c => c.alpha_2_codes)
-        .filter(code => code !== null)
+        .filter((code): code is string => code !== null)
     );
 
     // Setup projection with better padding
@@ -99,15 +108,15 @@ export class VisitedCountryMapComponent implements OnInit {
       .selectAll('path')
       .data(countriesData.features)
       .join('path')
-      .attr('fill', (d: any) => {
-        const alpha2: string = d.properties['ISO3166-1-Alpha-2'];
+      .attr('fill', (d: Feature<Geometry, CountryProperties>) => {
+        const alpha2 = d.properties['ISO3166-1-Alpha-2'];
         return visitedCodes.has(alpha2) ? this.visitedColor : this.unvisitedColor;
       })
       .attr('d', path)
       .attr('stroke', 'white')
       .attr('stroke-width', 0.5)
       .append('title')
-      .text((d: any) => {
+      .text((d: Feature<Geometry, CountryProperties>) => {
         const countryName = d.properties.name;
         const alpha2 = d.properties['ISO3166-1-Alpha-2'];
         const status = visitedCodes.has(alpha2) ? 'Visited' : 'Not visited';

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FileUploadService } from '../../../services/file-upload.service';
 import { MemoryService } from '../../../services/memory.service';
@@ -7,7 +7,7 @@ import { GeocodingService } from '../../../services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
 import { MemoryFormData } from '../../../models/memoryInterface.model';
 import { ActivityService } from '../../../services/activity.service';
-import { CreateLocationResponse } from '../../../models/location.model';
+import { MemoriseLocation } from '../../../models/location.model';
 import { BillingService } from '../../../services/billing.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
@@ -19,37 +19,38 @@ import { firstValueFrom } from 'rxjs';
   standalone: false
 })
 export class UploadProgressDialogComponent implements OnInit {
+  data = inject<{
+    userId: string;
+    memoryId: string;
+    filesWithDimensions: ImageFileWithDimensions[];
+    memoryData: MemoryFormData;
+    friends_emails: string[];
+    picture_count: number;
+    googleStorageUrl: string;
+    starredIndex: number;
+  }>(MAT_DIALOG_DATA);
+  private storageService = inject(FileUploadService);
+  private memoryService = inject(MemoryService);
+  private locationService = inject(LocationService);
+  private dialogRef = inject<MatDialogRef<UploadProgressDialogComponent>>(MatDialogRef);
+  private geocodingService = inject(GeocodingService);
+  private activityService = inject(ActivityService);
+  private billingService = inject(BillingService);
+  private snackbar = inject(MatSnackBar);
+
   progress: number[] = [];
   downloadURLs: string[] = [];
   uploadedCount = 0;
   memoryId = '';
 
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public data: {
-      userId: string;
-      memoryId: string;
-      filesWithDimensions: ImageFileWithDimensions[];
-      memoryData: MemoryFormData;
-      friends_emails: string[];
-      picture_count: number;
-      googleStorageUrl: string;
-      starredIndex: number
-    },
-    private storageService: FileUploadService,
-    private memoryService: MemoryService,
-    private locationService: LocationService,
-    private dialogRef: MatDialogRef<UploadProgressDialogComponent>,
-    private geocodingService: GeocodingService,
-    private activityService: ActivityService,
-    private billingService: BillingService,
-    private snackbar: MatSnackBar,
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.progress = Array(data.filesWithDimensions.length).fill(0);
     this.downloadURLs = Array(data.filesWithDimensions.length).fill('');
   }
 
   ngOnInit() {
-    console.log("Dialog Data: ", this.data);
     this.batchUpload();
   }
 
@@ -169,24 +170,40 @@ export class UploadProgressDialogComponent implements OnInit {
       const memoryData = { ...this.data.memoryData };
       memoryData.firestore_bucket_url = this.data.googleStorageUrl;
       memoryData.title_pic = this.downloadURLs[this.data.starredIndex] || '';
+      const locationData: MemoriseLocation = {
+        latitude: Number(memoryData.lat),
+        longitude: Number(memoryData.lng),
+        country: memoryData.l_country,
+        countryCode: memoryData.l_countryCode,
+        city: memoryData.l_city,
+        location_id: 0
+      }
+
 
       if (!memoryData.memory_end_date) {
         memoryData.memory_end_date = memoryData.memory_date;
       }
 
-      if (memoryData.lat && memoryData.lng) {
-        memoryData.location_id = await this.handleLocationCreation(memoryData);
-      } else if (memoryData.l_city || memoryData.l_country || memoryData.l_postcode) {
-        const coords = await this.get_geocoords(
-          memoryData.l_city,
-          memoryData.l_country,
-          memoryData.l_postcode
-        );
-        memoryData.lat = coords.lat.toString();
-        memoryData.lng = coords.lng.toString();
-        memoryData.location_id = await this.handleLocationCreation(memoryData);
-      } else {
+      const hasCoordinates = memoryData.lat && memoryData.lng;
+      const hasAddressInfo = memoryData.l_city || memoryData.l_country || memoryData.l_postcode;
+
+      if (!hasCoordinates && !hasAddressInfo) {
         memoryData.location_id = 1;
+      } else {
+        // Get coordinates if we don't have them yet
+        if (!hasCoordinates) {
+          const coords = await this.get_geocoords(
+            memoryData.l_city,
+            memoryData.l_country,
+            memoryData.l_postcode
+          );
+          memoryData.lat = coords.lat.toString();
+          memoryData.lng = coords.lng.toString();
+        }
+
+        // Create location with coordinates
+        const response = await firstValueFrom(this.locationService.createLocation(locationData));
+        memoryData.location_id = response.locationId;
       }
 
       if (memoryData.activity_id == 0) {
@@ -197,15 +214,6 @@ export class UploadProgressDialogComponent implements OnInit {
     } catch (error) {
       console.error('Error creating memory:', error);
     }
-  }
-
-  private handleLocationCreation(memoryData: MemoryFormData): Promise<number> {
-    return new Promise((resolve, reject) => {
-      this.locationService.createLocation(memoryData).subscribe(
-        (response: CreateLocationResponse) => resolve(response.locationId),
-        (error) => reject(`Error creating location: ${error}`)
-      );
-    });
   }
 
   private handleActivityCreation(memoryData: MemoryFormData): Promise<number | null> {

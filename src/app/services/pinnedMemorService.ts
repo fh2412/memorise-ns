@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Memory } from '../models/memoryInterface.model';
@@ -9,9 +9,9 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class PinnedMemoryService {
-  private apiUrl = `${environment.apiUrl}/pinned`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private apiUrl = `${environment.apiUrl}/pinned`;
 
   getPinnedMemories(userId: string): Observable<Memory[]> {
     const url = `${this.apiUrl}/${userId}/favourite-memories`;

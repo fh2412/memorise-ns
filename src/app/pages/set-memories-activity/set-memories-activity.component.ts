@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/userService';
 
@@ -9,10 +9,11 @@ import { UserService } from '../../services/userService';
   standalone: false,
 })
 export class SetMemoriesActivityComponent implements OnInit {
+  private userService = inject(UserService);
+  private router = inject(Router);
+
   quickActivity = '';
   loggedInUserId: string | null = null;
-
-  constructor(private userService: UserService, private router: Router) { }
 
   async ngOnInit() {
     this.loggedInUserId = this.userService.getLoggedInUserId();

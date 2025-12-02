@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MemoryService } from '../../services/memory.service';
@@ -6,11 +6,11 @@ import { UserService } from '../../services/userService';
 import { MatDatepicker } from '@angular/material/datepicker';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
-import { LocationService } from '../../services/location.service';
 import { Location } from '@angular/common';
-import { CountryService } from '../../services/restCountries.service';
+import { Country, CountryService } from '../../services/restCountries.service';
 import { ActivityService } from '../../services/activity.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, map, Observable, startWith } from 'rxjs';
+import { ParsedLocation } from '../../models/geocoder-response.model';
 
 @Component({
   selector: 'app-adding-memory',
@@ -19,6 +19,15 @@ import { firstValueFrom } from 'rxjs';
   standalone: false
 })
 export class AddingMemoryComponent implements OnInit {
+  private formBuilder = inject(FormBuilder);
+  private countryService = inject(CountryService);
+  dialog = inject(MatDialog);
+  private location = inject(Location);
+  memoryService = inject(MemoryService);
+  private userService = inject(UserService);
+  private activityService = inject(ActivityService);
+  private router = inject(Router);
+
 
   @ViewChild('datepicker') datepicker?: MatDatepicker<Date>;
   @ViewChild('rangePicker') rangePicker?: MatDatepicker<Date>;
@@ -29,18 +38,10 @@ export class AddingMemoryComponent implements OnInit {
   emailArray: string[] = [];
   hasActivity = false;
 
+  filteredCountries!: Observable<Country[]>;
+  countries: Country[] = [];
 
-  constructor(
-    private formBuilder: FormBuilder,
-    private countryService: CountryService,
-    public dialog: MatDialog,
-    private location: Location,
-    public memoryService: MemoryService,
-    private userService: UserService,
-    private locationService: LocationService,
-    private activityService: ActivityService,
-    private router: Router
-  ) {
+  constructor() {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId],
       title: ['', Validators.required],
@@ -53,6 +54,7 @@ export class AddingMemoryComponent implements OnInit {
       lng: [''],
       lat: [''],
       l_country: [''],
+      l_countryCode: [''],
       l_city: [''],
       l_postcode: [''],
       quickActivityTitle: [''],
@@ -68,6 +70,25 @@ export class AddingMemoryComponent implements OnInit {
       }
     });
     this.patchActivityData();
+    this.initializeCountries();
+  }
+
+  private initializeCountries() {
+    this.countryService.getCountries().subscribe(countries => {
+      this.countries = countries;
+      // Initialize filteredCountries after countries are fetched
+      this.filteredCountries = this.memoryForm.get('l_country')!.valueChanges.pipe(
+        startWith(''),
+        map(value => this._filterCountries(value || ''))
+      );
+    });
+  }
+
+  private _filterCountries(value: string): Country[] {
+    const filterValue = value.toLowerCase();
+    return this.countries.filter(country =>
+      country.name.toLowerCase().includes(filterValue)
+    );
   }
 
   onSelectedValuesChange(selectedValues: string[]): void {
@@ -88,7 +109,7 @@ export class AddingMemoryComponent implements OnInit {
 
           dialogRef.afterClosed().subscribe(result => {
             if (result) {
-              this.patchLocationData(result.formattedAddress, result.markerPosition);
+              this.updateLocationData(result.parsedLocation, result.markerPosition);
             } else {
               console.error("Incomplete location data received from map dialog.");
             }
@@ -103,18 +124,15 @@ export class AddingMemoryComponent implements OnInit {
     );
   }
 
-
-
-  private patchLocationData(formattedAddress: string, coordinates: { lat: number; lng: number }): void {
-    const addressComponents = this.locationService.parseFormattedAddress(formattedAddress);
-
+  private updateLocationData(parsedLocation: ParsedLocation, coordinates: { lat: number; lng: number }): void {
     this.memoryForm.patchValue({
-      l_city: addressComponents.city,
-      l_postcode: addressComponents.postalCode,
-      l_country: addressComponents.country,
+      l_city: parsedLocation.city,
+      l_country: parsedLocation.country,
+      l_countryCode: parsedLocation.countryCode,
       lat: coordinates.lat.toFixed(4),
       lng: coordinates.lng.toFixed(4),
     });
+    console.log("Location Data: ", this.memoryForm.value);
   }
 
   private async patchActivityData(): Promise<void> {
@@ -135,6 +153,23 @@ export class AddingMemoryComponent implements OnInit {
       console.log(this.memoryForm.value);
     }
   }
+
+  updateCca2Code() {
+  if (this.memoryForm.valid) {
+    // Find the selected country and set the country_cca2
+    const selectedCountryName = this.memoryForm.get('l_country')?.value;
+    const selectedCountry = this.countries.find(
+      country => country.name.toLowerCase() === selectedCountryName?.toLowerCase()
+    );
+    
+    if (selectedCountry) {
+      this.memoryForm.patchValue({
+        l_countryCode: selectedCountry.cca2
+      });
+    }
+    console.log("Sat Code to: ", this.memoryForm.value);
+  }
+}
 
   cancelCreation(): void {
     this.router.navigate(['/home']);

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,10 +14,9 @@ import { Router } from '@angular/router';
 ]
 })
 export class BackButtonComponent {
-  constructor(
-    private location: Location,
-    private router: Router
-  ) { }
+  private location = inject(Location);
+  private router = inject(Router);
+
 
   @Input() text = "Back";
 

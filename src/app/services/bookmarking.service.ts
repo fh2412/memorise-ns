@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, switchMap, take, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -8,6 +8,8 @@ import { BookmarkedActivity, MemoriseUserActivity } from '../models/activityInte
   providedIn: 'root'
 })
 export class BookmarkService {
+  private http = inject(HttpClient);
+
   private apiUrl = `${environment.apiUrl}/bookmarking`;
 
   private _bookmarkedActivities = signal<MemoriseUserActivity[]>([]);
@@ -15,8 +17,6 @@ export class BookmarkService {
   public readonly bookmarkedActivityIds = computed(() =>
     this._bookmarkedActivities().map(activity => activity.activityId)
   );
-
-  constructor(private http: HttpClient) { }
 
   private bookmarkedActivitiesSubject = new BehaviorSubject<MemoriseUserActivity[]>([]);
   bookmarkedActivities$ = this.bookmarkedActivitiesSubject.asObservable();

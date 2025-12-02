@@ -76,15 +76,28 @@
               <mat-label>Postcode</mat-label>
               <input matInput placeholder="Postcode" name="postcode" formControlName="l_postcode">
             </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Country</mat-label>
-              <input matInput placeholder="Country" name="country" formControlName="l_country">
-            </mat-form-field>
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Country</mat-label>
+                <input matInput
+                  aria-label="State"
+                  [matAutocomplete]="auto"
+                  formControlName="l_country"
+                  >
+                  <mat-autocomplete #auto="matAutocomplete">
+                    @for (country of filteredCountries | async; track country) {
+                      <mat-option [value]="country.name">
+                        <mat-icon>{{country.flag}}</mat-icon>
+                        <span>{{country.name}}</span> |
+                        <small>{{country.region}}</small>
+                      </mat-option>
+                    }
+                  </mat-autocomplete>
+                </mat-form-field>
 
             <!-- Stepper Navigation -->
             <div>
               <button mat-button matStepperPrevious>Back</button>
-              <button mat-button matStepperNext [disabled]="!memoryForm.valid">Next</button>
+              <button mat-button matStepperNext [disabled]="!memoryForm.valid" (click)="updateCca2Code()">Next</button>
             </div>
           </form>
         </mat-step>

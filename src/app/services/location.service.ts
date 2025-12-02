@@ -1,29 +1,29 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CreateLocationResponse, MemoriseLocation } from '../models/location.model';
-import { MemoryFormData } from '../models/memoryInterface.model';
 import { UpdateStandardResponse } from '../models/api-responses.model';
-import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LocationService {
-  private apiUrl = `${environment.apiUrl}/locations`;
+  private http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  private apiUrl = `${environment.apiUrl}/locations`;
 
   getLocationById(locationId: number): Observable<MemoriseLocation> {
     return this.http.get<MemoriseLocation>(`${this.apiUrl}/${locationId}`);
   }
   
-  createLocation(locationData: MemoryFormData): Observable<CreateLocationResponse> {
+  createLocation(locationData: MemoriseLocation): Observable<CreateLocationResponse> {
+    console.log("Creating Location: ", locationData);
     return this.http.post<CreateLocationResponse>(`${this.apiUrl}/createLocation`, locationData);
   }
-  updateLocation(locationId: number, locationData: FormGroup): Observable<UpdateStandardResponse> {
+  updateLocation(locationId: number, locationData: MemoriseLocation): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/updateLocation/${locationId}`;
+    console.log("Updating Location: ", locationData);
     return this.http.put<UpdateStandardResponse>(url, locationData);
   }
 

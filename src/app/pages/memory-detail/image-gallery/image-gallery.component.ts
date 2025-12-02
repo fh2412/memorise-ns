@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ImageGalleryService } from '../../../services/image-gallery.service';
 import { ImageDialogComponent } from '../../../components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -29,17 +29,15 @@ interface UserProfile {
 })
 
 export class ImageGalleryComponent implements OnInit {
+  private imageDataService = inject(ImageGalleryService);
+  private dialog = inject(MatDialog);
+
   portraitPictures: GalleryImage[] = [];
   landscapePictures: GalleryImage[] = [];
   layout: Layout[] = [];
   allPictures: GalleryImage[] = [];
   userIds: string[] = [];
   userProfiles: Record<string, string> = {};
-
-  constructor(
-    private imageDataService: ImageGalleryService,
-    private dialog: MatDialog
-  ) { }
 
   ngOnInit() {
     this.imageDataService.currentImageData.subscribe((images) => {

@@ -29,6 +29,7 @@ export interface MemoryFormData {
   lng: string;
   lat: string;
   l_country: string;
+  l_countryCode: string;
   l_city: string;
   l_postcode: string;
   quickActivityTitle: string;
@@ -81,8 +82,12 @@ export interface ValidateTokenResponse {
 }
 
 export interface MemoryDisplayStats {
-    memoryCount: number;
-    yearCount: number;
-    allCount: number;
-    friendCount: number;
+  memoryCount: number;
+  yearCount: number;
+  allCount: number;
+  friendCount: number;
+}
+
+export interface VisitedCountry {
+  alpha_2_codes: string | null;
 }

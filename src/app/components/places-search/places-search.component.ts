@@ -1,5 +1,5 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
@@ -34,6 +34,8 @@ export interface LocationResult {
   ]
 })
 export class PlacesSearchComponent implements OnInit {
+  private placesService = inject(GooglePlacesService);
+
   searchControl = new FormControl('');
   filteredLocations: Observable<LocationResult[]> = of([]);
   selectedLocation: LocationResult | null = null;
@@ -42,8 +44,6 @@ export class PlacesSearchComponent implements OnInit {
   // Aktuelle Position für bessere Suchergebnisse
   currentLatitude?: number;
   currentLongitude?: number;
-
-  constructor(private placesService: GooglePlacesService) {}
 
   ngOnInit() {
     this.setupAutocomplete();

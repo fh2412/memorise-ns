@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { map, Observable, startWith } from 'rxjs';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -33,6 +33,8 @@ export interface Activity {
   ],
 })
 export class QuickActivityAutocompleteComponent {
+  private router = inject(Router);
+
   activityCtrl = new FormControl('');
   filteredActivities: Observable<Activity[]>;
 
@@ -59,7 +61,7 @@ export class QuickActivityAutocompleteComponent {
     },
   ];
 
-  constructor( private router: Router) {
+  constructor() {
     this.filteredActivities = this.activityCtrl.valueChanges.pipe(
       startWith(''),
       map(activity => (activity ? this._filterStates(activity) : this.activities.slice())),

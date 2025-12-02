@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MemoriseUser } from '../../../models/userInterface.model';
@@ -12,23 +12,26 @@ import { map, Observable, startWith } from 'rxjs';
     standalone: false
 })
 export class EditUserDialogComponent implements OnInit {
+  private countryService = inject(CountryService);
+  dialogRef = inject<MatDialogRef<EditUserDialogComponent>>(MatDialogRef);
+  userdata = inject<MemoriseUser>(MAT_DIALOG_DATA);
+  private fb = inject(FormBuilder);
+
   @Output() updateUserData = new EventEmitter<MemoriseUser>();
   userForm: FormGroup;
   countries: Country[] = [];
   filteredCountries!: Observable<Country[]>;
 
-  constructor(
-    private countryService: CountryService,
-    public dialogRef: MatDialogRef<EditUserDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public userdata: MemoriseUser,
-    private fb: FormBuilder
-  ) {
+  constructor() {
+    const userdata = this.userdata;
+
     this.userForm = this.fb.group({
       name: [userdata.name, Validators.required],
       bio: [userdata.bio, Validators.maxLength(500)],
       dob: [userdata.dob, Validators.required],
       gender: [userdata.gender, Validators.required],
       country: [userdata.country, Validators.required],
+      country_cca2: [''],
       username: [userdata.username],
       instagram: [userdata.instagram],
     });
@@ -36,6 +39,10 @@ export class EditUserDialogComponent implements OnInit {
 
   ngOnInit(): void {
     // Fetch countries from the service
+    this.initializeCountries();
+  }
+
+  private initializeCountries(){
     this.countryService.getCountries().subscribe(countries => {
       this.countries = countries;
       // Initialize filteredCountries after countries are fetched
@@ -58,6 +65,19 @@ export class EditUserDialogComponent implements OnInit {
       console.error('Form is invalid');
       return;
     }
+    
+    // Find the selected country and set the country_cca2
+    const selectedCountryName = this.userForm.get('country')?.value;
+    const selectedCountry = this.countries.find(
+      country => country.name.toLowerCase() === selectedCountryName.toLowerCase()
+    );
+    
+    if (selectedCountry) {
+      this.userForm.patchValue({
+        country_cca2: selectedCountry.cca2
+      });
+    }
+    
     this.updateUserData.emit(this.userForm.value);
     this.dialogRef.close();
   }

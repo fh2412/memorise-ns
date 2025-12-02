@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MemoryService } from '../../services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
@@ -35,6 +35,17 @@ export interface ImageWithMetadata {
   standalone: false
 })
 export class MemoryDetailComponent implements OnInit {
+  private memoryService = inject(MemoryService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private userService = inject(UserService);
+  dialog = inject(MatDialog);
+  private locationService = inject(LocationService);
+  private imageDataService = inject(ImageGalleryService);
+  private friendsService = inject(FriendsService);
+  private activityService = inject(ActivityService);
+  private snackBar = inject(MatSnackBar);
+
   memorydb!: Memory;
   memoryId = 0;
   memoryCreator!: MemoriseUser;
@@ -54,8 +65,6 @@ export class MemoryDetailComponent implements OnInit {
   imagesWithMetadata: ImageWithMetadata[] = [];
   isLoadingImages = true;
   hasPrivileges = false;
-
-  constructor(private memoryService: MemoryService, private route: ActivatedRoute, private router: Router, private userService: UserService, public dialog: MatDialog, private locationService: LocationService, private imageDataService: ImageGalleryService, private friendsService: FriendsService, private activityService: ActivityService, private snackBar: MatSnackBar,) { }
 
   async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId();

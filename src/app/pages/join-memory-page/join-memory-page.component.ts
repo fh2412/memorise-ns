@@ -1,6 +1,6 @@
 // join-memory-page.component.ts
 // Create this file in: src/app/components/join-memory-page/join-memory-page.component.ts
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
@@ -27,11 +27,10 @@ import { JoinMemoryDialogComponent } from '../../components/_dialogs/join-memory
   `]
 })
 export class JoinMemoryPageComponent implements OnInit {
-  constructor(
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-    private router: Router
-  ) {}
+  private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
+  private router = inject(Router);
+
 
   ngOnInit() {
     const token = this.route.snapshot.paramMap.get('token');

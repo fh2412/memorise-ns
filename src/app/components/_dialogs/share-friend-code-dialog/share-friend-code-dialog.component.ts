@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -13,14 +13,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     ]
 })
 export class ShareFriendCodeDialogComponent implements OnInit {
+  private _snackBar = inject(MatSnackBar);
+  private data = inject<{
+    link: string;
+    text: string;
+}>(MAT_DIALOG_DATA);
+  private dialogRef = inject<MatDialogRef<ShareFriendCodeDialogComponent>>(MatDialogRef);
+
 
   link = '';
   header = '';
-
-  constructor(private _snackBar: MatSnackBar,
-    @Inject(MAT_DIALOG_DATA) private data: { link: string, text: string },
-    private dialogRef: MatDialogRef<ShareFriendCodeDialogComponent>
-  ) { }
 
   ngOnInit() {
     this.link = this.data.link;

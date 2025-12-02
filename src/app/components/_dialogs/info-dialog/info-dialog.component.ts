@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 
@@ -17,11 +17,9 @@ export interface InfoDialogData {
     ]
 })
 export class InfoDialogComponent {
+  dialogRef = inject<MatDialogRef<InfoDialogComponent>>(MatDialogRef);
+  data = inject<InfoDialogData>(MAT_DIALOG_DATA);
 
-  constructor(
-    public dialogRef: MatDialogRef<InfoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: InfoDialogData
-  ) {}
 
   onCloseClick(): void {
     this.dialogRef.close();

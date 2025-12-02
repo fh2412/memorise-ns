@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { firstValueFrom, Observable } from 'rxjs';
 import { AccountType, StorageLimit, UserStorageData } from '../models/billing.model';
@@ -14,6 +14,8 @@ export interface DeletionData {
   providedIn: 'root'
 })
 export class BillingService {
+  private http = inject(HttpClient);
+
 
   private userStorageData = signal<UserStorageData | null>(null);
 
@@ -61,8 +63,6 @@ export class BillingService {
 
 
   private apiUrl = `${environment.apiUrl}/billing`;
-
-  constructor(private http: HttpClient) { }
 
   updateFreeUserStorageUsed(user_id: string, data_size: number): Observable<any> {
     this.updateStorageUsed(data_size);

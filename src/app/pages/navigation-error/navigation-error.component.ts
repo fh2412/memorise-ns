@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
@@ -8,15 +8,13 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrl: './navigation-error.component.scss'
 })
 export class NavigationErrorComponent {
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
   errorCode: string = '';
   errorTitle: string = '';
   errorMessage: string = '';
   imagePath: string = '';
-
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router
-  ) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { InfoDialogComponent } from '../info-dialog/info-dialog.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,10 +19,9 @@ export interface ConfirmationDialogData {
     ]
 })
 export class ConfirmDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<InfoDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: ConfirmationDialogData
-  ) {}
+  dialogRef = inject<MatDialogRef<InfoDialogComponent>>(MatDialogRef);
+  data = inject<ConfirmationDialogData>(MAT_DIALOG_DATA);
+
 
   onCloseClick(confirmed: boolean): void {
     this.dialogRef.close(confirmed);

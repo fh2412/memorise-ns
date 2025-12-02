@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { ImageWithMetadata } from '../pages/memory-detail/memory-detail.component';
 import { HttpClient } from '@angular/common/http';
@@ -14,10 +14,10 @@ export interface ImageDownloadInfo {
   providedIn: 'root'
 })
 export class ImageGalleryService {
+  private http = inject(HttpClient);
+
   private imageDataSource = new BehaviorSubject<ImageWithMetadata[]>([]);
   currentImageData = this.imageDataSource.asObservable();
-
-  constructor(private http: HttpClient) { }
 
 
   // Method to update the data

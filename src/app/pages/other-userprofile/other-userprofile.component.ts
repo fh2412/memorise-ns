@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../../services/userService';
@@ -18,16 +18,20 @@ import { firstValueFrom } from 'rxjs';
     standalone: false
 })
 export class OtherUserprofileComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private pinnedService = inject(PinnedMemoryService);
+  private userService = inject(UserService);
+  private friendService = inject(FriendsService);
+  dialog = inject(MatDialog);
+  private router = inject(Router);
+  private _snackBar = inject(MatSnackBar);
+  private manageFriendService = inject(ManageFriendsService);
+
   user!: MemoriseUser;
   userId!: string;
   loggedInUserId: string | null = null;
   buttonText = 'Send Request';
   pinnedMemories: Memory[] = [];
-
-
-  constructor(private route: ActivatedRoute, private pinnedService: PinnedMemoryService, private userService: UserService, private friendService: FriendsService, public dialog: MatDialog, private router: Router, private _snackBar: MatSnackBar, private manageFriendService: ManageFriendsService) {
-
-  }
 
   async ngOnInit() {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;

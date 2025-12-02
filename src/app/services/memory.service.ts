@@ -12,10 +12,10 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class MemoryService {
+  private http = inject(HttpClient);
+
   private apiUrl = `${environment.apiUrl}`; // Replace with your API endpoint
   private storage = inject(Storage);
-
-  constructor(private http: HttpClient) { }
 
   getMemory(memory_id: number): Observable<Memory> {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);

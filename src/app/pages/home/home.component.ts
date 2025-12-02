@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '../../services/memory.service';
@@ -17,6 +17,13 @@ import { BillingService } from '../../services/billing.service';
   standalone: false
 })
 export class HomeComponent implements OnInit {
+  private auth = inject(Auth);
+  private userService = inject(UserService);
+  private billingService = inject(BillingService);
+  private router = inject(Router);
+  private memoryService = inject(MemoryService);
+  private _formBuilder = inject(FormBuilder);
+
   filterForm: FormGroup;
   openForm: FormGroup;
   userdb!: MemoriseUser;
@@ -41,14 +48,7 @@ export class HomeComponent implements OnInit {
   canCreateNewMemory = this.billingService.canCreateNewMemory;
   storageUsedGB = this.billingService.storageUsedGB;
 
-  constructor(
-    private auth: Auth,
-    private userService: UserService,
-    private billingService: BillingService,
-    private router: Router,
-    private memoryService: MemoryService,
-    private _formBuilder: FormBuilder
-  ) {
+  constructor() {
     this.filterForm = this._formBuilder.group({ showFilter: false });
     this.openForm = this._formBuilder.group({ search: '', showFriendsMemories: false });
   }

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MemorystatsService } from '../../services/memorystats.service';
 import { firstValueFrom } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
@@ -11,6 +11,8 @@ import { MemoryDisplayStats } from '../../models/memoryInterface.model';
     imports: [MatCardModule]
 })
 export class StatsComponent implements OnInit {
+  private memorystatsService = inject(MemorystatsService);
+
   @Input() userid = '';
   displayStats: MemoryDisplayStats = {
     memoryCount: 0,
@@ -20,8 +22,6 @@ export class StatsComponent implements OnInit {
   };
   dbConnection = true;
   loading = true;
-
-  constructor (private memorystatsService: MemorystatsService) {}
   
   ngOnInit(): void {
     this.getMemoryStats();

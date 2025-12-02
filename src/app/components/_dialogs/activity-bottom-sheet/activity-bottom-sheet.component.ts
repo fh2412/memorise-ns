@@ -1,5 +1,5 @@
 
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatButtonModule } from '@angular/material/button';
@@ -38,6 +38,10 @@ export interface ActivityBottomSheetData {
   styleUrls: ['activity-bottom-sheet.component.scss'],
 })
 export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
+  private bottomSheetRef = inject<MatBottomSheetRef<ActivityBottomSheetComponent>>(MatBottomSheetRef);
+  data = inject<ActivityBottomSheetData>(MAT_BOTTOM_SHEET_DATA);
+  private activityService = inject<ActivityService>(ActivityService);
+
   private destroy$ = new Subject<void>();
 
   currentActivity: ActivityDetails | null = null;
@@ -46,12 +50,6 @@ export class ActivityBottomSheetComponent implements OnInit, OnDestroy {
   selectedActivity: MemoriseUserActivity | null = null;
   isLoading = false;
   isSaving = false;
-
-  constructor(
-    private bottomSheetRef: MatBottomSheetRef<ActivityBottomSheetComponent>,
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: ActivityBottomSheetData,
-    @Inject(ActivityService) private activityService: ActivityService
-  ) { }
 
   ngOnInit(): void {
     if (this.data.activityId) {

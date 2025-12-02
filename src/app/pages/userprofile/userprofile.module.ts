@@ -21,6 +21,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { VisitedCountryMapComponent } from "../../components/visited-country-map/visited-country-map.component";
+import { MatTabGroup, MatTabsModule } from "@angular/material/tabs";
 
 const routes: Routes = [
   {
@@ -54,7 +56,10 @@ const routes: Routes = [
     BackButtonComponent,
     PinCardComponent,
     MatAutocompleteModule,
-    LogoutButtonComponent
+    LogoutButtonComponent,
+    VisitedCountryMapComponent,
+    MatTabGroup,
+    MatTabsModule
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -23,22 +23,21 @@ import { firstValueFrom } from 'rxjs';
   standalone: false
 })
 export class UserProfileComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
+  private userService = inject(UserService);
+  private memoryService = inject(MemoryService);
+  private pinnedService = inject(PinnedMemoryService);
+  private fileUploadService = inject(FileUploadService);
+
   userId!: string;
   user!: MemoriseUser;
   loggedInUserId: string | null = null;
   pinnedMemories: Memory[] = [];
+  memoriesToDisplay: Memory[] = [];
   allMemories: MemorySearchData[] = [];
   isUploading = false;
-
-  constructor(
-    private route: ActivatedRoute,
-    private dialog: MatDialog,
-    private snackBar: MatSnackBar,
-    private userService: UserService,
-    private memoryService: MemoryService,
-    private pinnedService: PinnedMemoryService,
-    private fileUploadService: FileUploadService
-  ) { }
 
   async ngOnInit(): Promise<void> {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;
@@ -65,7 +64,10 @@ export class UserProfileComponent implements OnInit {
   /** Retrieves pinned memories for the user. */
   private getPinnedMemories(): void {
     this.pinnedService.getPinnedMemories(this.userId).subscribe(
-      (memories) => (this.pinnedMemories = memories),
+      (memories) => {
+        this.pinnedMemories = memories
+        this.updateMemoriesToDisplay();
+      },
       () => this.handleError('Error fetching pinned memories.')
     );
   }
@@ -108,6 +110,10 @@ export class UserProfileComponent implements OnInit {
 
     deletedIds.forEach(id => this.deletePinnedMemory(id));
     insertedIds.forEach(id => this.createPinnedMemory(id));
+  }
+
+  private updateMemoriesToDisplay(): void {
+    this.memoriesToDisplay = this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
   }
 
   onFileChange(event: Event) {
@@ -195,9 +201,4 @@ export class UserProfileComponent implements OnInit {
     console.error(message);
     this.showSnackBar(message);
   }
-
-  getMemoriesToDisplay(): Memory[] {
-    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
-  }
-
 }

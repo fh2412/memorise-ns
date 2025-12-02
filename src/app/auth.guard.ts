@@ -1,5 +1,5 @@
 // auth.guard.ts - Enhanced to handle pending join requests
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { authState } from '@angular/fire/auth';
@@ -10,7 +10,9 @@ import { map, take, tap } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class authGuard implements CanActivate {
-  constructor(private auth: Auth, private router: Router) {}
+  private auth = inject(Auth);
+  private router = inject(Router);
+
 
   canActivate(
     next: ActivatedRouteSnapshot,

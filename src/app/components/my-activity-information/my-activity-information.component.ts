@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { MemoriseUser } from '../../models/userInterface.model';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -17,10 +17,11 @@ import { ActivityStats } from '../../models/activityInterface.model';
     ]
 })
 export class MyActivityInformationComponent implements OnInit {
+  private router = inject(Router);
+  private activityService = inject(ActivityService);
+
   @Input() user!: MemoriseUser;
   stats: ActivityStats | null = null;
-
-  constructor(private router: Router, private activityService: ActivityService){}
 
 
   ngOnInit(): void {

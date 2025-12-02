@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -45,6 +45,10 @@ import { ActivityDetails, MemoriseUserActivity } from '../../models/activityInte
   styleUrl: './activity-form.component.scss'
 })
 export class ActivityFormComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  dialog = inject(MatDialog);
+  private countryService = inject(CountryService);
+
   @Input() userId = '';
   @Input() activity!: ActivityDetails;
   @Input() mode = 'edit';
@@ -59,7 +63,7 @@ export class ActivityFormComponent implements OnInit {
   lng = 0;
   leadMemoryId: string | null = null;
 
-  constructor(private fb: FormBuilder, public dialog: MatDialog, private countryService: CountryService) {
+  constructor() {
     this.activityForm = this.fb.group({
       title: ['', Validators.required],
       isPrivate: [false],

@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, inject, Inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -75,12 +75,16 @@ export class IngoingRequestsComponent {
   `]
 })
 export class FriendRequestsBottomSheetComponent {
+  data = inject<{
+    friends: Friend[];
+}>(MAT_BOTTOM_SHEET_DATA);
+  private bottomSheetRef = inject<MatBottomSheetRef<FriendRequestsBottomSheetComponent>>(MatBottomSheetRef);
+
   currentFriends: Friend[] = [];
 
-  constructor(
-    @Inject(MAT_BOTTOM_SHEET_DATA) public data: { friends: Friend[] },
-    private bottomSheetRef: MatBottomSheetRef<FriendRequestsBottomSheetComponent>
-  ) {
+  constructor() {
+    const data = this.data;
+
     this.currentFriends = [...data.friends];
   }
 

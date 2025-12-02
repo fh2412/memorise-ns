@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FriendsService } from '../../services/friends.service';
 import { UserService } from '../../services/userService';
@@ -13,18 +13,16 @@ import { Router } from '@angular/router';
   standalone: false
 })
 export class FriendsComponent implements OnInit {
+  private dialog = inject(MatDialog);
+  private friendsService = inject(FriendsService);
+  private userService = inject(UserService);
+  private router = inject(Router);
+
 
   friends: Friend[] = [];
   pendingFriends: Friend[] = [];
   ingoingFriends: Friend[] = [];
   loggedInUserId: string | null = null;
-
-  constructor(
-    private dialog: MatDialog,
-    private friendsService: FriendsService,
-    private userService: UserService,
-    private router: Router
-  ) { }
 
   ngOnInit(): void {
     this.initializeUserData();

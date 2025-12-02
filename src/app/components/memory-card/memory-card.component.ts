@@ -1,6 +1,6 @@
 // memory-card.component.ts - Update the shareMemory method
 import { DatePipe } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Memory } from '../../models/memoryInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -14,17 +14,15 @@ import { Clipboard } from '@angular/cdk/clipboard';
     standalone: false
 })
 export class MemoryCardComponent {
+  private router = inject(Router);
+  private datePipe = inject(DatePipe);
+  private snackBar = inject(MatSnackBar);
+  private memoryService = inject(MemoryService);
+  private clipboard = inject(Clipboard);
+
   @Input() cardData!: Memory;
   titleUrl: string | undefined;
   isGeneratingLink = false;
-
-  constructor(
-    private router: Router, 
-    private datePipe: DatePipe, 
-    private snackBar: MatSnackBar,
-    private memoryService: MemoryService,
-    private clipboard: Clipboard
-  ) {}
 
   addPhotosMemory(event: Event) {
     this.router.navigate(['/editmemory', this.cardData.memory_id, 'addphotos']);

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { firstValueFrom, switchMap } from 'rxjs';
 import { ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,14 +17,19 @@ import { ActivityFormComponent } from '../../components/activity-form/activity-f
   styleUrl: './edit-activity.component.scss'
 })
 export class EditActivityComponent implements OnInit {
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private dialog = inject(MatDialog);
+  private activityService = inject(ActivityService);
+  private snackBar = inject(MatSnackBar);
+  private userService = inject(UserService);
+
   isLoading = true;
   activityId: string | null = null;
   userId: string | null = null;
   activity!: ActivityDetails;
 
   @ViewChild(ActivityFormComponent) activityFormComponent!: ActivityFormComponent;
-
-  constructor(private router: Router, private route: ActivatedRoute, private dialog: MatDialog, private activityService: ActivityService, private snackBar: MatSnackBar, private userService: UserService) { }
 
   ngOnInit(): void {
     this.route.paramMap.pipe(

@@ -10,10 +10,10 @@ import { UpdateStandardResponse } from '../models/api-responses.model';
   providedIn: 'root'
 })
 export class ActivityService {
+  private http = inject(HttpClient);
+
   private storage = inject(Storage);
   private apiUrl = `${environment.apiUrl}/activity`;
-
-  constructor(private http: HttpClient) { }
 
   createActivity(activityData: MemoriseUserActivity): Observable<CreateActivityResponse> {
     const url = `${this.apiUrl}/add-user-activity`;

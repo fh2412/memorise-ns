@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, OnInit, inject } from '@angular/core';
 import { UserService } from '../../services/userService';
 import { ManageFriendsService } from '../../services/friend-manage.service';
 import { Friend } from '../../models/userInterface.model';
@@ -20,6 +20,11 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   ],
 })
 export class FriendPreviewComponent implements OnInit {
+  private userService = inject(UserService);
+  private manageFriendsService = inject(ManageFriendsService);
+  private router = inject(Router);
+  private snackBar = inject(MatSnackBar);
+
   @Input() requested = false;
   @Input() buttonText = 'Request';
   @Input() requestedText = 'Requested';
@@ -33,8 +38,6 @@ export class FriendPreviewComponent implements OnInit {
 
   loggedInUserId: string | null = null;
   isLargeScreen = true;
-
-  constructor(private userService: UserService, private manageFriendsService: ManageFriendsService, private router: Router, private snackBar: MatSnackBar) { }
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {

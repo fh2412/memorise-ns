@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
 import { CountryService } from '../../services/restCountries.service';
@@ -19,6 +19,13 @@ import { Router } from '@angular/router';
   styleUrl: './create-activity.component.scss'
 })
 export class CreateActivityComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private countryService = inject(CountryService);
+  dialog = inject(MatDialog);
+  private userService = inject(UserService);
+  private activityService = inject(ActivityService);
+  private router = inject(Router);
+
   activityForm: FormGroup;
   selectedImageUrl = '';
   selectedImageFile: File | undefined;
@@ -29,7 +36,7 @@ export class CreateActivityComponent implements OnInit {
   uploadStarted = false;
   leadMemoryId: number | null = null;
 
-  constructor(private fb: FormBuilder, private countryService: CountryService, public dialog: MatDialog, private userService: UserService, private activityService: ActivityService, private router: Router,) {
+  constructor() {
     this.activityForm = this.fb.group({
       title: ['', Validators.required],
       isPrivate: [false],

@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -32,6 +32,10 @@ export interface ImageFileWithDimensions {
 })
 
 export class ImageUploadComponent implements OnInit {
+  private dialog = inject(MatDialog);
+  private router = inject(Router);
+  private userService = inject(UserService);
+
   @Input() memoryId = '';
   @Input() memoryData: MemoryFormData | null = null;
   @Input() friends_emails: string[] = [];
@@ -49,8 +53,6 @@ export class ImageUploadComponent implements OnInit {
 
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
-
-  constructor(private dialog: MatDialog, private router: Router, private userService: UserService) { }
 
   async ngOnInit(): Promise<void> {
     this.userService.userId$.subscribe(userId => {

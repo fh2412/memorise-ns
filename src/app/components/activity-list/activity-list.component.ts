@@ -52,6 +52,13 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 ],
 })
 export class ActivityListComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private router = inject(Router);
+  private activityService = inject(ActivityService);
+  private bookmarkedService = inject(BookmarkService);
+  private geocodingService = inject(GeocodingService);
+  private breakpointObserver = inject(BreakpointObserver);
+
   @Input() activities: MemoriseUserActivity[] = [];
   @Input() loggedInUserId = '';
 
@@ -70,14 +77,7 @@ export class ActivityListComponent implements OnInit {
 
   private _bottomSheet = inject(MatBottomSheet);
 
-  constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private activityService: ActivityService,
-    private bookmarkedService: BookmarkService,
-    private geocodingService: GeocodingService,
-    private breakpointObserver: BreakpointObserver
-  ) {
+  constructor() {
     this.filterForm = this.fb.group({
       name: [''],
       location: [''],

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { MemoryService } from '../../../services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 
@@ -9,15 +9,13 @@ import { ActivatedRoute } from '@angular/router';
     standalone: false
 })
 export class AddPhotosComponent implements OnInit {
+  private memoryService = inject(MemoryService);
+  private activatedRoute = inject(ActivatedRoute);
+
   memoryId = 1;
   firebasePath = ''; // Type as string if you expect a URL string
   pictureCount = 0;
   loaded = false;
-
-  constructor(
-    private memoryService: MemoryService,
-    private activatedRoute: ActivatedRoute
-  ) {}
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe(params => {

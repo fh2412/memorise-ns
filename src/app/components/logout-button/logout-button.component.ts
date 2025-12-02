@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,11 +16,10 @@ import { MatButtonModule } from '@angular/material/button';
     ]
   })
 export class LogoutButtonComponent {
-  constructor(
-    private auth: Auth,
-    private router: Router,
-    private dialog: MatDialog
-  ) {}
+  private auth = inject(Auth);
+  private router = inject(Router);
+  private dialog = inject(MatDialog);
+
 
   /**
    * Handles the click event for logout, displaying a confirmation dialog.

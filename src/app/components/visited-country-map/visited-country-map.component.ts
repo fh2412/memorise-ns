@@ -38,20 +38,17 @@ export class VisitedCountryMapComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     await this.getLoggedInUserId();
-    this.getVisitedCountries(this.loggedInUserId);
+    await this.getVisitedCountries(this.loggedInUserId);
     this.setDarkmodeColors();
     this.loadMapData();
   }
 
   async getLoggedInUserId() {
     this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
-    console.log("LoggedINUser: ", this.loggedInUserId);
   }
 
   async getVisitedCountries(userId: string) {
-    console.log(userId);
     this.countryList = await firstValueFrom(this.memoryStatsService.getVisitedCountries(userId));
-    console.log("Visited Countries: ", this.countryList);
   }
 
   async setDarkmodeColors() {

@@ -97,11 +97,15 @@ export class VisitedCountryMapComponent implements OnInit {
       .attr('width', this.width)
       .attr('height', this.height)
       .attr('viewBox', `0 0 ${this.width} ${this.height}`)
-      .attr('style', 'max-width: 100%; height: auto; cursor: grab;');
+      .attr('style', 'max-width: 100%; height: auto;');
 
-    // Add zoom behavior
+    // Add zoom behavior (without dragging)
     const zoom = d3.zoom<SVGElement, unknown>()
       .scaleExtent([1, 8])
+      .filter(() => {
+        // Disable all default zoom interactions (scroll, drag, etc.)
+        return false;
+      })
       .on('zoom', (event: d3.D3ZoomEvent<SVGElement, unknown>) => {
         this.g.attr('transform', event.transform.toString());
       });
@@ -177,12 +181,21 @@ export class VisitedCountryMapComponent implements OnInit {
 
     countries.on('click', (event: MouseEvent, d: CountryFeature) => {
       event.stopPropagation();
-      this.zoomToCountry(d, zoom);
+      
+      // If clicking the same country, reset zoom
+      if (this.activeCountry === d) {
+        this.resetZoom(zoom);
+      } else {
+        this.zoomToCountry(d, zoom);
+      }
     });
 
     // Add reset zoom on background click
-    this.svg.on('click', () => {
-      this.resetZoom(zoom);
+    this.svg.on('click', (event: MouseEvent) => {
+      // Only reset if clicking directly on the SVG background, not on countries
+      if (event.target === this.svgRef.nativeElement) {
+        this.resetZoom(zoom);
+      }
     });
 
     // Add tooltip container

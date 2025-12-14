@@ -12,10 +12,10 @@ import { Memory } from '../../models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
-    selector: 'app-other-userprofile',
-    templateUrl: './other-userprofile.component.html',
-    styleUrl: './other-userprofile.component.scss',
-    standalone: false
+  selector: 'app-other-userprofile',
+  templateUrl: './other-userprofile.component.html',
+  styleUrl: './other-userprofile.component.scss',
+  standalone: false
 })
 export class OtherUserprofileComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -33,32 +33,29 @@ export class OtherUserprofileComponent implements OnInit {
   buttonText = 'Send Request';
   pinnedMemories: Memory[] = [];
 
+
   async ngOnInit() {
     this.userId = this.route.snapshot.paramMap.get('userId') as string;
     this.loggedInUserId = this.userService.getLoggedInUserId();
-    this.getPinnedMemories();
 
     try {
-      this.user = await firstValueFrom(this.userService.getUser(this.userId));
+      // Run both operations in parallel
+      const [user, memories] = await Promise.all([
+        firstValueFrom(this.userService.getUser(this.userId)),
+        firstValueFrom(this.pinnedService.getPinnedMemories(this.userId))
+      ]);
+
+      this.user = user;
+      this.pinnedMemories = this.getMemoriesToDisplay(memories);
       this.checkFriendshipStatus();
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('Error fetching data:', error);
     }
   }
 
-  getPinnedMemories() {
-    this.pinnedService.getPinnedMemories(this.userId).subscribe(
-      memories => {
-        this.pinnedMemories = memories;
-      },
-      error => {
-        console.error('Error fetching pinned memories:', error);
-      }
-    );
-  }
 
-  getMemoriesToDisplay(): Memory[] {
-    return this.pinnedService.getPinnedMemoriesWithPlacholders(this.pinnedMemories);
+  getMemoriesToDisplay(memories: Memory[]): Memory[] {
+    return this.pinnedService.getPinnedMemoriesWithPlacholders(memories);
   }
 
   checkFriendshipStatus() {
@@ -134,7 +131,7 @@ export class OtherUserprofileComponent implements OnInit {
   }
 
   openSnackBar(message: string, action: string) {
-    this._snackBar.open(message, action, {duration: 2000});
+    this._snackBar.open(message, action, { duration: 2000 });
   }
 
   friendButtonClick(): void {

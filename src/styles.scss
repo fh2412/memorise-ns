@@ -61,8 +61,7 @@ html {
   }
 
 
-  @include mat.snack-bar-overrides((container-shape: 24px,
-    ));
+  @include mat.snack-bar-overrides((container-shape: 24px,));
 }
 
 

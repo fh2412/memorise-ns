@@ -7,7 +7,10 @@
 }
 
 .profile-picture-container {
-  margin: 20px;
+  position: relative;
+  width: 85%;
+  margin-top: 20px;
+  margin-bottom: 20px;
   aspect-ratio: 1 / 1;
 
   .profile-picture {

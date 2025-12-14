@@ -1,59 +1,65 @@
 <div class="wrapper">
   <app-back-button [text]="'Back'" class="back-button"></app-back-button>
   @if (user) {
-    <section style="margin-top: 7.5rem;">
-      <div class="columns">
-        <div class="profile-section">
-          <div>
-            <div class="profile-picture-container">
-              <img [src]="user.profilepic ? user.profilepic : '/assets/img/1.png'" alt="Profile Picture"
-                class="profile-picture">
-              </div>
-              <mat-card-title>{{user.name}}</mat-card-title>
-              <mat-card-subtitle>
-                <span>{{user.username}}</span> - <span>{{user.gender}}</span>
-              </mat-card-subtitle>
-              <button mat-stroked-button class="editbutton" (click)="friendButtonClick()">{{buttonText}}</button>
-            </div>
-            <div class="small-screen-list">
-              <mat-list class="list-wrapper">
-                <mat-list-item>
-                  <mat-icon matListItemIcon>location_on</mat-icon>
-                  <div matListItemTitle>{{user.country || 'Not provided'}}</div>
-                </mat-list-item>
-                <mat-list-item>
-                  <mat-icon matListItemIcon>calendar_today</mat-icon>
-                  <div matListItemTitle>{{user.dob | date}}</div>
-                </mat-list-item>
-                <mat-list-item>
-                  <mat-icon matListItemIcon>public</mat-icon>
-                  <div matListItemTitle>{{user.instagram || 'Not provided'}}</div>
-                </mat-list-item>
-              </mat-list>
-            </div>
+  <section style="margin-top: 7.5rem;">
+    <div class="columns">
+      <div class="profile-section">
+        <div>
+          <div class="profile-picture-container">
+            <img [src]="user.profilepic ? user.profilepic : '/assets/img/1.png'" alt="Profile Picture"
+              class="profile-picture">
           </div>
-          <div class="bio">
-            <mat-card appearance="outlined">
-              <mat-card-content class="bio-content">
-                <pre>{{ user.bio }}</pre>
-              </mat-card-content>
-            </mat-card>
+          <mat-card-title>{{user.name}}</mat-card-title>
+          <mat-card-subtitle>
+            <span>{{user.username}}</span> - <span>{{user.gender}}</span>
+          </mat-card-subtitle>
+          <button mat-stroked-button class="editbutton" (click)="friendButtonClick()">{{buttonText}}</button>
+        </div>
+        <div class="small-screen-list">
+          <mat-list class="list-wrapper">
+            <mat-list-item>
+              <mat-icon matListItemIcon>location_on</mat-icon>
+              <div matListItemTitle>{{user.country || 'Not provided'}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>calendar_today</mat-icon>
+              <div matListItemTitle>{{user.dob | date}}</div>
+            </mat-list-item>
+            <mat-list-item>
+              <mat-icon matListItemIcon>public</mat-icon>
+              <div matListItemTitle>{{user.instagram || 'Not provided'}}</div>
+            </mat-list-item>
+          </mat-list>
+        </div>
+      </div>
+      <div class="bio">
+        <mat-card appearance="outlined">
+          <mat-card-content class="bio-content">
+            <pre>{{ user.bio || 'no bio provided' }}</pre>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-tab-group mat-stretch-tabs="false" mat-align-tabs="start">
+          <mat-tab label="Pinned Memories">
             <div style="margin-top: 2rem;">
-              <div class="level">
-                <h3 class="title is-4 level-left">Pinned Memories</h3>
-              </div>
+
               @if (pinnedMemories) {
-                <mat-grid-list cols="2" rowHeight="3:1">
-                  @for (memory of getMemoriesToDisplay(); track memory) {
-                    <mat-grid-tile>
-                      <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
-                    </mat-grid-tile>
-                  }
-                </mat-grid-list>
+              <mat-grid-list cols="2" rowHeight="3:1">
+                @for (memory of pinnedMemories; track memory) {
+                <mat-grid-tile>
+                  <app-pin-card class="memory-card" [memory]="memory"></app-pin-card>
+                </mat-grid-tile>
+                }
+              </mat-grid-list>
               }
             </div>
-          </div>
-        </div>
-      </section>
-    }
-  </div>
+          </mat-tab>
+          <mat-tab label="Adventure Map">
+            <app-visited-country-map [userId]="userId"></app-visited-country-map>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+  </section>
+  }
+</div>

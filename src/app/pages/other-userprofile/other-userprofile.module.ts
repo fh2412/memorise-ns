@@ -10,6 +10,8 @@ import { MatListModule } from '@angular/material/list';
 import { BackButtonComponent } from "../../components/back-button/back-button.component";
 import { OtherUserprofileComponent } from './other-userprofile.component';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { MatTabsModule } from "@angular/material/tabs";
+import { VisitedCountryMapComponent } from "../../components/visited-country-map/visited-country-map.component";
 
 const routes: Routes = [
   {
@@ -32,7 +34,9 @@ const routes: Routes = [
     MatListModule,
     MatCardModule,
     BackButtonComponent,
-    PinCardComponent
+    PinCardComponent,
+    MatTabsModule,
+    VisitedCountryMapComponent
 ],
   providers: [DatePipe], // Add DatePipe here if needed
 })

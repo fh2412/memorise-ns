@@ -1,0 +1,16 @@
+@if (userAccountDetails !== undefined) {
+<div class="theme-controls">
+    <div class="storage-info-container">
+        <div class="storage-text-row">
+            <span>{{this.userAccountDetails.accountType}}</span>
+            <span class="storage-usage-label">{{userAccountDetails.storageUsedBytes/1000000000 | number:'1.0-1'}}/5GB</span>
+        </div>
+        <mat-progress-bar mode="determinate" [value]="storageUsed"></mat-progress-bar>
+    </div>
+    <div class="upgrade-action-container">
+        <button matIconButton aria-label="Feedback button" (click)="openChoosePlanComponent()">
+            <mat-icon>loyalty</mat-icon>
+        </button>
+    </div>
+</div>
+}

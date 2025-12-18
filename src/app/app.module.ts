@@ -42,6 +42,7 @@ import { routes } from './app-routing.module';
 import { FriendPreviewComponent } from './components/friend-preview/friend-preview.component';
 import { FeedbackButtonComponent } from "./components/feedback-button/feedback-button.component";
 import { ThemeSwitcherComponent } from "./components/theme-switcher/theme-switcher.component";
+import { SubscriptionStatusComponent } from "./components/subscription-status/subscription-status.component";
 
 @NgModule({
     declarations: [
@@ -84,7 +85,8 @@ import { ThemeSwitcherComponent } from "./components/theme-switcher/theme-switch
     ShareFriendCodeDialogComponent,
     FriendPreviewComponent,
     FeedbackButtonComponent,
-    ThemeSwitcherComponent
+    ThemeSwitcherComponent,
+    SubscriptionStatusComponent
 ],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),

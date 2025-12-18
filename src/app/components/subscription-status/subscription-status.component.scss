@@ -1,0 +1,28 @@
+.theme-controls {
+    display: flex;
+    align-items: center;
+    padding-left: 22px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface);
+    border: 1px solid var(--mat-sys-outline);
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+.storage-info-container {
+    width: 75%;
+}
+
+.storage-text-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.storage-usage-label {
+    font-size: x-small;
+    padding-top: 4px;
+}
+
+.upgrade-action-container {
+    width: 25%;
+}

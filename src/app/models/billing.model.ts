@@ -1,7 +1,8 @@
 export enum AccountType {
-  FREE = 'Free',
-  PREMIUM = 'Pro',
-  CORPORATE = 'Corporate'
+  FREE = 'FREE',
+  STANDARD = 'STANDARD',
+  PRO = 'PRO',
+  UNLIMITED = 'UNLIMITED'
 }
 
 export interface UserStorageData {

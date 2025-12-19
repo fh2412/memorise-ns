@@ -32,8 +32,8 @@ export class BillingService {
     if (!data) return false;
 
     // No limit for premium and corporate users
-    if (data.accountType === AccountType.PREMIUM ||
-      data.accountType === AccountType.CORPORATE) {
+    if (data.accountType === AccountType.PRO ||
+      data.accountType === AccountType.UNLIMITED) {
       return true;
     }
 

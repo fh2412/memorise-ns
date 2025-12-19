@@ -1,5 +1,5 @@
 @if (userAccountDetails !== undefined) {
-<div class="theme-controls">
+<div class="theme-controls account-{{userAccountDetails.accountType.toLowerCase()}}">
     <div class="storage-info-container">
         <div class="storage-text-row">
             <span>{{this.userAccountDetails.accountType}}</span>

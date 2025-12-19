@@ -33,10 +33,13 @@ export class SubscriptionStatusComponent implements OnInit {
     if (this.loggedInUserId) {
       this.userAccountDetails = {
         userId: this.loggedInUserId,
-        accountType: AccountType.UNLIMITED,
+        accountType: AccountType.FREE,
         storageUsedBytes: 2400000000,
       }
       this.storageUsed = (this.userAccountDetails.storageUsedBytes / this.maxStorage) * 100;
+      if(this.userAccountDetails.accountType === 'UNLIMITED'){
+        this.storageUsed = 100
+      }
     }
   }
 

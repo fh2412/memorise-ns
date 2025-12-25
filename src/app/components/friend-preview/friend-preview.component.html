@@ -1,27 +1,27 @@
 <div class="row">
-  <button class="profile-button" (click)="navigateToUserpage(friend.user_id)"
-    (keydown.enter)="navigateToUserpage(friend.user_id)" (keydown.space)="navigateToUserpage(friend.user_id)"
+  <button class="profile-button" (click)="navigateToUserpage(friend().user_id)"
+    (keydown.enter)="navigateToUserpage(friend().user_id)" (keydown.space)="navigateToUserpage(friend().user_id)"
     tabindex="0" aria-label="View user profile">
     <div class="profile-row">
-      <img [ngSrc]="friend.profilepic || '/assets/img/1.png'" alt="{{ friend.name || 'Default profile picture' }}"
+      <img [ngSrc]="friend().profilepic || '/assets/img/1.png'" alt="{{ friend().name || 'Default profile picture' }}"
         width="60" height="60">
       <div>
-        <b>{{ friend.name || 'Name' }}</b><br>
-        <span>{{ friend.dob | date }}, {{ friend.gender || 'Gender' }}</span>
+        <b>{{ friend().name || 'Name' }}</b><br>
+        <span>{{ friend().dob | date }}, {{ friend().gender || 'Gender' }}</span>
       </div>
     </div>
   </button>
-  @if (isLargeScreen && !declineButton) {
-  <button mat-stroked-button [color]="buttonColor" (click)="requestFriend(buttonText, requested)"
+  @if (isLargeScreen && !declineButton()) {
+  <button mat-stroked-button [color]="buttonColor()" (click)="requestFriend(buttonText(), requested)"
     [class.enabled]="requested" [class.disabled]="!requested">
-    <mat-icon>{{ buttonIcon }}</mat-icon>
-    {{ requested ? requestedText : buttonText }}
+    <mat-icon>{{ buttonIcon() }}</mat-icon>
+    {{ requested ? requestedText() : buttonText() }}
   </button>
   }
-  @else if(!isLargeScreen && !declineButton){
-  <button mat-icon-button (click)="requestFriend(buttonText, requested)" [class.enabled]="requested"
+  @else if(!isLargeScreen && !declineButton()){
+  <button mat-icon-button (click)="requestFriend(buttonText(), requested)" [class.enabled]="requested"
     [class.disabled]="!requested">
-    <mat-icon class="logout-icon">{{ buttonIcon }}</mat-icon>
+    <mat-icon class="logout-icon">{{ buttonIcon() }}</mat-icon>
   </button>
   }
   @else {

@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, computed, EventEmitter, OnInit, Output, inject, input } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -25,8 +25,8 @@ export class BockmarkedActivitiesComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private bookmarkService = inject(BookmarkService);
 
-  @Input() userId: string | null = null;
-  @Input() fullComponent = true;
+  readonly userId = input<string | null>(null);
+  readonly fullComponent = input(true);
   @Output() activitySelected = new EventEmitter<number>();
   
   //activities: MemoriseUserActivity[] | null = null;
@@ -40,11 +40,12 @@ export class BockmarkedActivitiesComponent implements OnInit {
   displayActivities = computed(() => this.activities()); 
 
   ngOnInit(): void {
-    if(!this.fullComponent){
+    if(!this.fullComponent()){
       this.emptyText = "You haven’t bookmarked any activities yet. Visit the Activity page to bookmark some, and they’ll show up here.";
       //Loading Bookmarks here because for the activity page it gets loaded in activities.component.ts
-      if(this.userId){
-      this.bookmarkService.getBookmarkedActivities(this.userId).subscribe(
+      const userId = this.userId();
+      if(userId){
+      this.bookmarkService.getBookmarkedActivities(userId).subscribe(
         (response) => {
           this.bookmarkService.setBookmarks(response);
         },
@@ -74,8 +75,9 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   deleteBookmark(activityId: number, event: MouseEvent) {
     event.stopPropagation();
-    if (this.activities() && this.userId) {
-      this.bookmarkService.removeBookmark(this.userId, activityId).subscribe({
+    const userId = this.userId();
+    if (this.activities() && userId) {
+      this.bookmarkService.removeBookmark(userId, activityId).subscribe({
         next: () => {
           this.updateDisplayedActivities();
           this.snackBar.open('Bookmark was removed!', 'Close', { duration: 3000, verticalPosition: 'bottom' });
@@ -88,7 +90,7 @@ export class BockmarkedActivitiesComponent implements OnInit {
   }
 
   viewDetails(activityId: number) {
-    if (this.fullComponent) {
+    if (this.fullComponent()) {
       this.router.navigate(['activity/details', activityId]);
     } else {
       this.activitySelected.emit(activityId);

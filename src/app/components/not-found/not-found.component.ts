@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-not-found',
@@ -7,6 +7,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './not-found.component.scss'
 })
 export class NotFoundComponent {
-  @Input() imageUrl = '';
-  @Input() text = '';
+  readonly imageUrl = input('');
+  readonly text = input('');
 }

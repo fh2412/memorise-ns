@@ -20,16 +20,16 @@
             </mat-list-item>
         </mat-list>
         <mat-card-actions>
-            @if (company.owner_id===userId) {
+            @if (company.owner_id===userId()) {
             <button mat-stroked-button class="editbutton" (click)="openEditCreateDialog()"
                 style="margin-right: 3px;">Edit</button>
             }
-            @if (company.owner_id===userId) {
+            @if (company.owner_id===userId()) {
             <button mat-stroked-button class="editbutton" (click)="openInviteDialog()"
                 style="margin-right: 3px;">Invite</button>
             }
-            <button mat-stroked-button class="editbutton" (click)="onLeaveClick(company.owner_id===userId)">
-                {{ company.owner_id === userId ? 'Delete' : 'Leave' }}
+            <button mat-stroked-button class="editbutton" (click)="onLeaveClick(company.owner_id===userId())">
+                {{ company.owner_id === userId() ? 'Delete' : 'Leave' }}
             </button>
         </mat-card-actions>
     </div>

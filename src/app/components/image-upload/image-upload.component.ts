@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -36,10 +36,12 @@ export class ImageUploadComponent implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
 
-  @Input() memoryId = '';
-  @Input() memoryData: MemoryFormData | null = null;
-  @Input() friends_emails: string[] = [];
-  @Input() picture_count = 0;
+  readonly memoryId = input('');
+  readonly memoryData = input<MemoryFormData | null>(null);
+  readonly friends_emails = input<string[]>([]);
+  readonly picture_count = input(0);
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() googleStorageUrl = "";
 
   userId: string | null = '';
@@ -58,7 +60,7 @@ export class ImageUploadComponent implements OnInit {
     this.userService.userId$.subscribe(userId => {
       if (userId) {
         this.userId = userId;
-        if (this.picture_count == 0) {
+        if (this.picture_count() == 0) {
           this.googleStorageUrl = this.userId.toString() + Date.now().toString();
           this.showStar = true;
         }
@@ -112,7 +114,7 @@ export class ImageUploadComponent implements OnInit {
       const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
         width: '300px',
         disableClose: true, // Prevent closing the dialog by clicking outside
-        data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, friends_emails: this.friends_emails, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
+        data: { userId: this.userId, memoryId: this.memoryId(), filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData(), friends_emails: this.friends_emails(), picture_count: this.picture_count(), googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
       });
 
       // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

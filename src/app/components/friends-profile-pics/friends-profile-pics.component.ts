@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,14 +11,14 @@ import { MemoryDetailFriend } from '@models/userInterface.model';
   styleUrl: './friends-profile-pics.component.scss'
 })
 export class FriendsProfilePicsComponent {
-@Input() friends: MemoryDetailFriend[] = [];
+readonly friends = input<MemoryDetailFriend[]>([]);
 
   get displayedFriends(): MemoryDetailFriend[] {
-    return this.friends.slice(0, 3);
+    return this.friends().slice(0, 3);
   }
 
   get remainingCount(): number {
-    return Math.max(0, this.friends.length - 3);
+    return Math.max(0, this.friends().length - 3);
   }
 
   getInitials(name: string): string {
@@ -47,7 +47,7 @@ export class FriendsProfilePicsComponent {
   }
 
   getRemainingTooltip(): string {
-    const remainingFriends = this.friends.slice(3);
+    const remainingFriends = this.friends().slice(3);
     const names = remainingFriends.slice(0, 5).map(f => f.name);
     
     if (remainingFriends.length > 5) {

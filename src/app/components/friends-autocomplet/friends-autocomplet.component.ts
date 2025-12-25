@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild, inject, OnInit, input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -40,7 +40,7 @@ export class FriendsAutocompletComponent implements OnInit {
   filteredfriends: Observable<string[]> | undefined;
   friends: string[] = [];
 
-  @Input() memoryId = "0";
+  readonly memoryId = input("0");
   @Output() selectedValuesChange = new EventEmitter<string[]>();
   @ViewChild('friendInput') friendInput!: ElementRef<HTMLInputElement>;
 
@@ -55,7 +55,7 @@ export class FriendsAutocompletComponent implements OnInit {
     try {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
       if (this.loggedInUserId) {
-        this.friendsService.getMemoriesMissingFriends(this.memoryId, this.loggedInUserId).subscribe(
+        this.friendsService.getMemoriesMissingFriends(this.memoryId(), this.loggedInUserId).subscribe(
           (friends) => {
             this.allfriends = friends.map(item => `${item.name} (${item.email})`);
             this.setFilteredFriends();

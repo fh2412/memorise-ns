@@ -18,5 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 ],
 })
 export class PinCardComponent {
+  // TODO: Skipped for migration because:
+  //  This input is used in a control flow expression (e.g. `@if` or `*ngIf`)
+  //  and migrating would break narrowing currently.
   @Input() memory!: Memory;
 }

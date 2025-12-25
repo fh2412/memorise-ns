@@ -23,6 +23,8 @@ export class FriendSearchComponent implements OnInit {
   private friendsService = inject(FriendsService);
   private cdRef = inject(ChangeDetectorRef);
 
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() userId: string | null = null;
 
   searchTerm = '';

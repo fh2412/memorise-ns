@@ -1,5 +1,5 @@
 // activity-card.component.ts
-import { Component, computed, Input, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -62,15 +62,15 @@ export class ActivityCardComponent {
   private bookmarkService = inject(BookmarkService);
   private snackBar = inject(MatSnackBar);
 
-  @Input() activity!: MemoriseUserActivity;
-  @Input() myActivity = false;
+  readonly activity = input.required<MemoriseUserActivity>();
+  readonly myActivity = input(false);
   isBookmarked = computed(() => 
-    this.bookmarkService.isBookmarked(this.activity?.activityId || 0)
+    this.bookmarkService.isBookmarked(this.activity()?.activityId || 0)
   );
   loggedInUserId: string | null = null;
 
   viewDetails() {
-    this.router.navigate(['activity/details/', this.activity.activityId]);
+    this.router.navigate(['activity/details/', this.activity().activityId]);
   }
 
   toggleBookmark(event: Event) {
@@ -79,7 +79,7 @@ export class ActivityCardComponent {
     this.loggedInUserId = this.userService.getLoggedInUserId();
 
     if (this.loggedInUserId) {
-      this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity, this.isBookmarked())
+      this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity(), this.isBookmarked())
         .subscribe({
           next: (result) => {
             console.log("Bookmarking result: ", result);

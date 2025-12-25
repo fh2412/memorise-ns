@@ -1,14 +1,14 @@
 <mat-card appearance="outlined">
   <mat-card-header>
-    <mat-card-title>{{ title }}</mat-card-title>
+    <mat-card-title>{{ title() }}</mat-card-title>
   </mat-card-header>
   @if (friends.length > 0) {
   <mat-card-content class="scrollable-content">
     <mat-list>
       @for (friend of friends; track $index; let last = $last) {
         <mat-list-item class="list-item">
-          <app-friend-preview [friend]="friend" [requested]="requested" [buttonText]="buttonText"
-            [requestedText]="requestedText" [buttonIcon]="buttonIcon" [declineButton]="declineButton"
+          <app-friend-preview [friend]="friend" [requested]="requested()" [buttonText]="buttonText()"
+            [requestedText]="requestedText()" [buttonIcon]="buttonIcon()" [declineButton]="declineButton()"
             (friendRequestProcessed)="onFriendRequestProcessed($event)"
             >
           </app-friend-preview>
@@ -21,11 +21,11 @@
   </mat-card-content>
   }
   @else {
-    @if (title === 'Your Friends') {
+    @if (title() === 'Your Friends') {
       <p>You do not have added any Friends yet :(</p>
     }
     @else{
-      <p>You have no {{ title }} :)</p>
+      <p>You have no {{ title() }} :)</p>
     }
   }
 </mat-card>

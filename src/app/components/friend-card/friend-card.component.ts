@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, input } from '@angular/core';
 import { Friend } from '@models/userInterface.model';
 import { MatCardModule } from "@angular/material/card";
 import { MatListModule } from "@angular/material/list";
@@ -11,13 +11,15 @@ import { FriendPreviewComponent } from "../friend-preview/friend-preview.compone
   imports: [MatCardModule, MatListModule, FriendPreviewComponent]
 })
 export class FriendCardComponent {
-  @Input() title = '';
+  readonly title = input('');
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() friends: Friend[] = [];
-  @Input() requested = false;
-  @Input() buttonText = 'Request';
-  @Input() requestedText = 'Requested';
-  @Input() declineButton = false;
-  @Input() buttonIcon = 'person_add';
+  readonly requested = input(false);
+  readonly buttonText = input('Request');
+  readonly requestedText = input('Requested');
+  readonly declineButton = input(false);
+  readonly buttonIcon = input('person_add');
 
   @Output() friendsChanged = new EventEmitter<Friend[]>();
 

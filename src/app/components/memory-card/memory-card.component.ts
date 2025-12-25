@@ -1,6 +1,6 @@
 // memory-card.component.ts - Update the shareMemory method
 import { DatePipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Memory } from '@models/memoryInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -24,12 +24,12 @@ export class MemoryCardComponent {
   private memoryService = inject(MemoryService);
   private clipboard = inject(Clipboard);
 
-  @Input() cardData!: Memory;
+  readonly cardData = input.required<Memory>();
   titleUrl: string | undefined;
   isGeneratingLink = false;
 
   addPhotosMemory(event: Event) {
-    this.router.navigate(['/editmemory', this.cardData.memory_id, 'addphotos']);
+    this.router.navigate(['/editmemory', this.cardData().memory_id, 'addphotos']);
     event.stopPropagation();
   }
 
@@ -42,7 +42,7 @@ export class MemoryCardComponent {
 
     this.isGeneratingLink = true;
 
-    this.memoryService.generateShareLink(this.cardData.memory_id).subscribe({
+    this.memoryService.generateShareLink(this.cardData().memory_id).subscribe({
       next: (response) => {
         // Copy the full share link to clipboard
         const success = this.clipboard.copy(response.directLink);

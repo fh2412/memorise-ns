@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, Output, OnInit, inject, input } from '@angular/core';
 import { UserService } from '@services/userService';
 import { ManageFriendsService } from '@services/friend-manage.service';
 import { Friend } from '@models/userInterface.model';
@@ -25,13 +25,15 @@ export class FriendPreviewComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() requested = false;
-  @Input() buttonText = 'Request';
-  @Input() requestedText = 'Requested';
-  @Input() buttonColor = 'primary';
-  @Input() buttonIcon = 'person_add';
-  @Input() declineButton = false;
-  @Input() friend!: Friend;
+  readonly buttonText = input('Request');
+  readonly requestedText = input('Requested');
+  readonly buttonColor = input('primary');
+  readonly buttonIcon = input('person_add');
+  readonly declineButton = input(false);
+  readonly friend = input.required<Friend>();
 
   @Output() buttonClicked = new EventEmitter<void>();
   @Output() friendRequestProcessed = new EventEmitter<{ friendId: string, action: 'accepted' | 'declined' }>();
@@ -53,18 +55,18 @@ export class FriendPreviewComponent implements OnInit {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
       if (this.loggedInUserId != null) {
         if (action === 'Accept') {
-          await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+          await this.manageFriendsService.acceptFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
         } else if (action === 'Remove') {
           if (req) {
-            await this.manageFriendsService.addFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.addFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
           } else {
-            await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.removeFriend(this.friend().user_id.toString(), this.loggedInUserId);
           }
         } else if (action === 'Request') {
           if (req) {
-            await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.removeFriend(this.friend().user_id.toString(), this.loggedInUserId);
           } else {
-            await this.manageFriendsService.sendFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.sendFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
           }
         }
       }
@@ -79,13 +81,13 @@ export class FriendPreviewComponent implements OnInit {
 async acceptFriendRequest(): Promise<void> {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if (this.loggedInUserId != null) {
-      await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+      await this.manageFriendsService.acceptFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
       
       this.snackBar.open("You have a new Friend!", 'Hurray!', { duration: 3000, verticalPosition: 'bottom' });
 
       // Emit event to parent after successful acceptance
       this.friendRequestProcessed.emit({ 
-        friendId: this.friend.user_id.toString(), 
+        friendId: this.friend().user_id.toString(), 
         action: 'accepted' 
       });
     }
@@ -94,12 +96,12 @@ async acceptFriendRequest(): Promise<void> {
   async declineFriendRequest(): Promise<void> {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if (this.loggedInUserId != null) {
-      await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+      await this.manageFriendsService.removeFriend(this.friend().user_id.toString(), this.loggedInUserId);
 
       this.snackBar.open("You declined a Request!", 'OK', { duration: 3000, verticalPosition: 'bottom' });
 
       this.friendRequestProcessed.emit({ 
-        friendId: this.friend.user_id.toString(), 
+        friendId: this.friend().user_id.toString(), 
         action: 'declined' 
       });
     }

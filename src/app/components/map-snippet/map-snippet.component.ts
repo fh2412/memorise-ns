@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, input } from '@angular/core';
 import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
 
 @Component({
@@ -12,8 +12,8 @@ import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps
 export class MapSnippetComponent implements OnInit {
   @ViewChild(GoogleMap, { static: false }) map!: GoogleMap;
   @ViewChild(MapInfoWindow, { static: false }) infoWindow!: MapInfoWindow;
-  @Input() lng!: number;
-  @Input() lat!: number;
+  readonly lng = input.required<number>();
+  readonly lat = input.required<number>();
 
   mapOptions: google.maps.MapOptions = {
     zoomControl: true,
@@ -28,8 +28,8 @@ export class MapSnippetComponent implements OnInit {
   markerPosition: google.maps.LatLngLiteral = { lat: 11.319161, lng: 18.684998 };
 
   ngOnInit() {
-    const lat = Number(this.lat);
-    const lng = Number(this.lng)
+    const lat = Number(this.lat());
+    const lng = Number(this.lng())
     this.mapCenter = { lat: lat, lng: lng };
     this.markerPosition = { lat: lat, lng: lng };
   }

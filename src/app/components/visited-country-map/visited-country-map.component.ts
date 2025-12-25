@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, inject, OnInit, ViewChild, input } from '@angular/core';
 import { MemorystatsService } from '@services/memorystats.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@services/userService';
@@ -23,7 +23,7 @@ type CountryFeature = Feature<Geometry, CountryProperties>;
 })
 export class VisitedCountryMapComponent implements OnInit {
   @ViewChild('mapSvg', { static: true }) private svgRef!: ElementRef<SVGElement>;
-  @Input() userId = '';
+  readonly userId = input('');
   memoryStatsService = inject(MemorystatsService);
   userService = inject(UserService);
   themeService = inject(ThemeService);
@@ -45,11 +45,12 @@ export class VisitedCountryMapComponent implements OnInit {
   private hoverTimeout: ReturnType<typeof setTimeout> | null = null;
 
   async ngOnInit(): Promise<void> {
-    if(this.userId == ''){
+    const userId = this.userId();
+    if(userId == ''){
       await this.getLoggedInUserId();
     }
     else{
-      this.loggedInUserId = this.userId
+      this.loggedInUserId = userId
     }
     await this.getVisitedCountries(this.loggedInUserId);
     this.setDarkmodeColors();

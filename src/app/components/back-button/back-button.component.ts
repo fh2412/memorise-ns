@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Location } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -18,7 +18,7 @@ export class BackButtonComponent {
   private router = inject(Router);
 
 
-  @Input() text = "Back";
+  readonly text = input("Back");
 
   cancelCreation(): void {
     const state = history.state;

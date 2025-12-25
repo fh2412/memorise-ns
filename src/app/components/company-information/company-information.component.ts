@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, Input, inject, input } from '@angular/core';
 import { companyService } from '@services/company.service';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,8 +17,11 @@ export class CompanyInformationComponent {
   private dialog = inject(MatDialog);
 
 
+  // TODO: Skipped for migration because:
+  //  This input is used in a control flow expression (e.g. `@if` or `*ngIf`)
+  //  and migrating would break narrowing currently.
   @Input()company!: MemoriseCompany;
-  @Input() userId!: string;
+  readonly userId = input.required<string>();
   confirmationData: ConfirmationDialogData | undefined;
 
   joinCompany() {
@@ -51,7 +54,7 @@ export class CompanyInformationComponent {
 
   leaveOrDeleteCompany(deleteBool: boolean) {
     
-    this.companyService.leaveCompany(this.userId).subscribe(
+    this.companyService.leaveCompany(this.userId()).subscribe(
       () => {
         if(deleteBool){
           console.log("delete")
@@ -89,7 +92,7 @@ export class CompanyInformationComponent {
             }
           );
         } else {
-          await this.companyService.createCompany(this.userId, result).subscribe(
+          await this.companyService.createCompany(this.userId(), result).subscribe(
             response => {
               console.log(response);
             },

@@ -14,6 +14,8 @@ import { FriendCardComponent } from "../friend-card/friend-card.component";
   styleUrl: './ingoing-requests.component.scss'
 })
 export class IngoingRequestsComponent {
+  // TODO: Skipped for migration because:
+  //  Your application code writes to the input. This prevents migration.
   @Input() friends: Friend[] = [];
   @Output() friendsUpdated = new EventEmitter<Friend[]>();
   

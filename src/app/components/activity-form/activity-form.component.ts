@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, input } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -49,9 +49,12 @@ export class ActivityFormComponent implements OnInit {
   dialog = inject(MatDialog);
   private countryService = inject(CountryService);
 
+  // TODO: Skipped for migration because:
+  //  This input is used in a control flow expression (e.g. `@if` or `*ngIf`)
+  //  and migrating would break narrowing currently.
   @Input() userId = '';
-  @Input() activity!: ActivityDetails;
-  @Input() mode = 'edit';
+  readonly activity = input.required<ActivityDetails>();
+  readonly mode = input('edit');
   selectedImageFile: File | undefined;
   imageChanged = false;
   selectedImageUrl = '';
@@ -81,8 +84,9 @@ export class ActivityFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.activity) {
-      this.populateForm(this.activity);
+    const activity = this.activity();
+    if (activity) {
+      this.populateForm(activity);
     }
   }
 
@@ -141,7 +145,7 @@ export class ActivityFormComponent implements OnInit {
                   latitude: this.lat,
                   longitude: this.lng,
                   locality: null,
-                  location_id: this.activity.location.location_id
+                  location_id: this.activity().location.location_id
                  };
                 this.activityForm.patchValue({ 
                   location: newLocation,

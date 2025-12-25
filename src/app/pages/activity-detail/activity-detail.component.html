@@ -123,20 +123,5 @@ Loading activity details...
             <p>{{ activity.description }}</p>
         </div>
     </div>
-
-    <!-- Supporting Documents 
-    <div class="documents-container" *ngIf="activity.supportingDocuments && activity.supportingDocuments.length > 0">
-        <h3>Supporting Documents</h3>
-        <mat-divider></mat-divider>
-        <mat-list>
-            <mat-list-item *ngFor="let doc of activity.supportingDocuments">
-                <mat-icon matListItemIcon>{{ getFileIcon(doc.type) }}</mat-icon>
-                <div matListItemTitle>{{ doc.name }}</div>
-                <button mat-icon-button matListItemMeta aria-label="Download">
-                    <mat-icon>download</mat-icon>
-                </button>
-            </mat-list-item>
-        </mat-list>
-    </div>-->
 </div>
 }

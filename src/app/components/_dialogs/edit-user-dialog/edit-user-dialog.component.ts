@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MemoriseUser } from '../../../models/userInterface.model';
-import { Country, CountryService } from '../../../services/restCountries.service';
+import { MemoriseUser } from '@models/userInterface.model';
+import { Country, CountryService } from '@services/restCountries.service';
 import { map, Observable, startWith } from 'rxjs';
 
 @Component({

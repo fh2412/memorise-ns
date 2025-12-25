@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
+import { UserService } from '@services/userService';
 import { Router } from '@angular/router';
-import { MemoryService } from '../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Memory } from '../../models/memoryInterface.model';
-import { MemoriseUser } from '../../models/userInterface.model';
+import { Memory } from '@models/memoryInterface.model';
+import { MemoriseUser } from '@models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent } from '@angular/material/paginator';
 import { Auth } from '@angular/fire/auth';
-import { BillingService } from '../../services/billing.service';
+import { BillingService } from '@services/billing.service';
 
 @Component({
   selector: 'app-home',

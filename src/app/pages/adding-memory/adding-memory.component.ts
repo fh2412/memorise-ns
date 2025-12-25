@@ -1,16 +1,16 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MemoryService } from '../../services/memory.service';
-import { UserService } from '../../services/userService';
+import { MemoryService } from '@services/memory.service';
+import { UserService } from '@services/userService';
 import { MatDatepicker } from '@angular/material/datepicker';
-import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
+import { ChooseLocationComponent } from '@components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Country, CountryService } from '../../services/restCountries.service';
-import { ActivityService } from '../../services/activity.service';
+import { Country, CountryService } from '@services/restCountries.service';
+import { ActivityService } from '@services/activity.service';
 import { firstValueFrom, map, Observable, startWith } from 'rxjs';
-import { ParsedLocation } from '../../models/geocoder-response.model';
+import { ParsedLocation } from '@models/geocoder-response.model';
 
 @Component({
   selector: 'app-adding-memory',

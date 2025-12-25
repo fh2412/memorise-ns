@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatIconModule } from '@angular/material/icon';
-import { MemoryDetailFriend } from '../../models/userInterface.model';
+import { MemoryDetailFriend } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-friends-profile-pics',

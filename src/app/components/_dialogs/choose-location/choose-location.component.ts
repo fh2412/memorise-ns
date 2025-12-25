@@ -1,8 +1,8 @@
 import { Component, ViewChild, inject } from '@angular/core';
 import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
-import { GeocodingService } from '../../../services/geocoding.service';
+import { GeocodingService } from '@services/geocoding.service';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { GeocoderResponse, ParsedLocation } from '../../../models/geocoder-response.model';
+import { GeocoderResponse, ParsedLocation } from '@models/geocoder-response.model';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 

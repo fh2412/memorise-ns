@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Memory } from '../../models/memoryInterface.model';
+import { Memory } from '@models/memoryInterface.model';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';

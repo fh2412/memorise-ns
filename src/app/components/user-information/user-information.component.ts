@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
+import { UserService } from '@services/userService';
 import { Router } from '@angular/router';
-import { MemoriseUser } from '../../models/userInterface.model';
+import { MemoriseUser } from '@models/userInterface.model';
 import { take } from 'rxjs/operators';
 
 @Component({

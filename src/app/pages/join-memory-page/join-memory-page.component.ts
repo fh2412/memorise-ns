@@ -4,7 +4,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
-import { JoinMemoryDialogComponent } from '../../components/_dialogs/join-memory-dialog/join-memory-dialog.component';
+import { JoinMemoryDialogComponent } from '@components/_dialogs/join-memory-dialog/join-memory-dialog.component';
 
 @Component({
   selector: 'app-join-memory-page',

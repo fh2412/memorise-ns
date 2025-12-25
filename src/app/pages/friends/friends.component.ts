@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FriendsService } from '../../services/friends.service';
-import { UserService } from '../../services/userService';
-import { ShareFriendCodeDialogComponent } from '../../components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
-import { Friend } from '../../models/userInterface.model';
+import { FriendsService } from '@services/friends.service';
+import { UserService } from '@services/userService';
+import { ShareFriendCodeDialogComponent } from '@components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
+import { Friend } from '@models/userInterface.model';
 import { Router } from '@angular/router';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivityCreator, ActivityDetails } from '../../models/activityInterface.model';
+import { ActivityCreator, ActivityDetails } from '@models/activityInterface.model';
 import { switchMap } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ActivityService } from '../../services/activity.service';
-import { UserService } from '../../services/userService';
+import { ActivityService } from '@services/activity.service';
+import { UserService } from '@services/userService';
 
 @Component({
   selector: 'app-activity-detail',

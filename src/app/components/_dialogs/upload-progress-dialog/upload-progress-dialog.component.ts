@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FileUploadService } from '../../../services/file-upload.service';
-import { MemoryService } from '../../../services/memory.service';
-import { LocationService } from '../../../services/location.service';
-import { GeocodingService } from '../../../services/geocoding.service';
+import { FileUploadService } from '@services/file-upload.service';
+import { MemoryService } from '@services/memory.service';
+import { LocationService } from '@services/location.service';
+import { GeocodingService } from '@services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
-import { MemoryFormData } from '../../../models/memoryInterface.model';
-import { ActivityService } from '../../../services/activity.service';
-import { MemoriseLocation } from '../../../models/location.model';
-import { BillingService } from '../../../services/billing.service';
+import { MemoryFormData } from '@models/memoryInterface.model';
+import { ActivityService } from '@services/activity.service';
+import { MemoriseLocation } from '@models/location.model';
+import { BillingService } from '@services/billing.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 

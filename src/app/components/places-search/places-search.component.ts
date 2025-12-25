@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Observable, of, startWith, debounceTime, distinctUntilChanged, switchMap, map, catchError } from 'rxjs';
-import { GooglePlacesService } from '../../services/googleplace.service';
+import { GooglePlacesService } from '@services/googleplace.service';
 
 export interface LocationResult {
   name: string;

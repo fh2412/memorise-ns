@@ -9,13 +9,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import {MatTabsModule} from '@angular/material/tabs'; 
-import { FriendCardComponent } from '../../components/friend-card/friend-card.component';
-import { FriendSearchComponent } from '../../components/friend-search/friend-search.component';
+import { FriendCardComponent } from '@components/friend-card/friend-card.component';
+import { FriendSearchComponent } from '@components/friend-search/friend-search.component';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
-import { UserInformationComponent } from '../../components/user-information/user-information.component';
-import { FriendPreviewComponent } from '../../components/friend-preview/friend-preview.component';
-import { IngoingRequestsComponent } from "../../components/ingoing-requests/ingoing-requests.component";
+import { UserInformationComponent } from '@components/user-information/user-information.component';
+import { FriendPreviewComponent } from '@components/friend-preview/friend-preview.component';
+import { IngoingRequestsComponent } from "@components/ingoing-requests/ingoing-requests.component";
 
 
 const routes: Routes = [

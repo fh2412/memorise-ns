@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/userService';
+import { UserService } from '@services/userService';
 
 @Component({
   selector: 'app-set-memories-activity',

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ImageGalleryService } from '../../../services/image-gallery.service';
-import { ImageDialogComponent } from '../../../components/_dialogs/image-dialog/image-dialog.component';
+import { ImageGalleryService } from '@services/image-gallery.service';
+import { ImageDialogComponent } from '@components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
 import { getDownloadURL, getStorage, ref } from '@angular/fire/storage';

@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MemoriseUser } from '../../models/userInterface.model';
+import { MemoriseUser } from '@models/userInterface.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/userService';
-import { FriendsService } from '../../services/friends.service';
-import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { UserService } from '@services/userService';
+import { FriendsService } from '@services/friends.service';
+import { ConfirmationDialogData, ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ManageFriendsService } from '../../services/friend-manage.service';
-import { PinnedMemoryService } from '../../services/pinnedMemorService';
-import { Memory } from '../../models/memoryInterface.model';
+import { ManageFriendsService } from '@services/friend-manage.service';
+import { PinnedMemoryService } from '@services/pinnedMemorService';
+import { Memory } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

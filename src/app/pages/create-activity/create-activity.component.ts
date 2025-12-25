@@ -1,14 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
-import { CountryService } from '../../services/restCountries.service';
+import { ChooseLocationComponent } from '@components/_dialogs/choose-location/choose-location.component';
+import { CountryService } from '@services/restCountries.service';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { UserService } from '../../services/userService';
-import { UploadActivityDialogComponent } from '../../components/_dialogs/upload-activity-dialog/upload-activity-dialog.component';
-import { ActivityService } from '../../services/activity.service';
+import { UserService } from '@services/userService';
+import { UploadActivityDialogComponent } from '@components/_dialogs/upload-activity-dialog/upload-activity-dialog.component';
+import { ActivityService } from '@services/activity.service';
 import { catchError, of } from 'rxjs';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
-import { MemoriseLocation } from '../../models/location.model';
+import { MemoriseUserActivity } from '@models/activityInterface.model';
+import { MemoriseLocation } from '@models/location.model';
 import { Router } from '@angular/router';
 
 

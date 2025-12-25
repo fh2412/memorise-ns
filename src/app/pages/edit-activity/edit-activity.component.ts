@@ -1,13 +1,13 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { firstValueFrom, switchMap } from 'rxjs';
-import { ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivityService } from '../../services/activity.service';
+import { ActivityService } from '@services/activity.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { UserService } from '../../services/userService';
-import { ActivityDetails } from '../../models/activityInterface.model';
-import { ActivityFormComponent } from '../../components/activity-form/activity-form.component';
+import { UserService } from '@services/userService';
+import { ActivityDetails } from '@models/activityInterface.model';
+import { ActivityFormComponent } from '@components/activity-form/activity-form.component';
 
 
 @Component({

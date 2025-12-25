@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Friend } from '../../models/userInterface.model';
+import { Friend } from '@models/userInterface.model';
 import { MatCardModule } from "@angular/material/card";
 import { MatListModule } from "@angular/material/list";
 import { FriendPreviewComponent } from "../friend-preview/friend-preview.component";

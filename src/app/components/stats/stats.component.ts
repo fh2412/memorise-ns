@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
-import { MemorystatsService } from '../../services/memorystats.service';
+import { MemorystatsService } from '@services/memorystats.service';
 import { firstValueFrom } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
-import { MemoryDisplayStats } from '../../models/memoryInterface.model';
+import { MemoryDisplayStats } from '@models/memoryInterface.model';
 
 @Component({
     selector: 'app-stats',

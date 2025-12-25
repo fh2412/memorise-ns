@@ -1,20 +1,20 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MemoryService } from '../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/userService';
+import { UserService } from '@services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "@angular/fire/storage";
 import { DateRange } from '@angular/material/datepicker';
-import { LocationService } from '../../services/location.service';
-import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
-import { ImageGalleryService } from '../../services/image-gallery.service';
-import { Memory } from '../../models/memoryInterface.model';
-import { MemoriseUser, MemoryDetailFriend } from '../../models/userInterface.model';
-import { MemoriseLocation } from '../../models/location.model';
-import { ActivityService } from '../../services/activity.service';
+import { LocationService } from '@services/location.service';
+import { FullDescriptionDialogComponent } from '@components/_dialogs/full-description-dialog/full-description-dialog.component';
+import { ImageGalleryService } from '@services/image-gallery.service';
+import { Memory } from '@models/memoryInterface.model';
+import { MemoriseUser, MemoryDetailFriend } from '@models/userInterface.model';
+import { MemoriseLocation } from '@models/location.model';
+import { ActivityService } from '@services/activity.service';
 import { firstValueFrom } from 'rxjs';
-import { FriendsService } from '../../services/friends.service';
-import { ActivityDetails } from '../../models/activityInterface.model';
+import { FriendsService } from '@services/friends.service';
+import { ActivityDetails } from '@models/activityInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 
@@ -134,7 +134,7 @@ export class MemoryDetailComponent implements OnInit {
     const imagesToShow = [...this.imagesWithMetadata];
     while (imagesToShow.length < 5) {
       imagesToShow.push({
-        url: '../../../assets/img/placeholder_image.png',
+        url: '@assets/img/placeholder_image.png',
         width: 0,
         height: 0,
         created: 'placeholder',

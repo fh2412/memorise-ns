@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Memory } from '../../../models/memoryInterface.model';
+import { Memory } from '@models/memoryInterface.model';
 
 export interface PinnedMemory {
   name: string;

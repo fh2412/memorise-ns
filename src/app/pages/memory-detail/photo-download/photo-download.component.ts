@@ -2,17 +2,17 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
-import { ConfirmationDialogData, ConfirmDialogComponent } from '../../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { ConfirmationDialogData, ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { ImageGalleryService } from '../../../services/image-gallery.service';
-import { Memory } from '../../../models/memoryInterface.model';
+import { ImageGalleryService } from '@services/image-gallery.service';
+import { Memory } from '@models/memoryInterface.model';
 import { ImageWithMetadata } from '../memory-detail.component';
 import { Router } from '@angular/router';
-import { FriendsService } from '../../../services/friends.service';
-import { MemoryDetailFriend } from '../../../models/userInterface.model';
-import { MemoriseUser } from '../../../models/userInterface.model';
+import { FriendsService } from '@services/friends.service';
+import { MemoryDetailFriend } from '@models/userInterface.model';
+import { MemoriseUser } from '@models/userInterface.model';
 import { forkJoin } from 'rxjs';
-import { UserService } from '../../../services/userService';
+import { UserService } from '@services/userService';
 
 // Extended interface to include user data
 export interface ImageWithUserData extends ImageWithMetadata {

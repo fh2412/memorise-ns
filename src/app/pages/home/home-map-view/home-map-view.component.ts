@@ -1,9 +1,9 @@
 import { Component, ViewChild, OnInit, Input, inject } from '@angular/core';
 import { MapInfoWindow, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
-import { Memory, MemoryMapData } from '../../../models/memoryInterface.model';
+import { Memory, MemoryMapData } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
-import { MemoryService } from '../../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 
 
 export interface CustomMarker {

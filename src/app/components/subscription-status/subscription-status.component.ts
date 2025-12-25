@@ -3,8 +3,8 @@ import { DecimalPipe } from '@angular/common';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
-import { AccountType, UserStorageData } from '../../models/billing.model';
-import { UserService } from '../../services/userService';
+import { AccountType, UserStorageData } from '@models/billing.model';
+import { UserService } from '@services/userService';
 
 @Component({
   selector: 'app-subscription-status',

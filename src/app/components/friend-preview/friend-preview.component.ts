@@ -1,7 +1,7 @@
 import { Component, EventEmitter, HostListener, Input, Output, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
-import { ManageFriendsService } from '../../services/friend-manage.service';
-import { Friend } from '../../models/userInterface.model';
+import { UserService } from '@services/userService';
+import { ManageFriendsService } from '@services/friend-manage.service';
+import { Friend } from '@models/userInterface.model';
 import { Router } from '@angular/router';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';

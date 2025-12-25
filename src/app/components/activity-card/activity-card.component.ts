@@ -6,11 +6,11 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { MemoriseUserActivity } from '@models/activityInterface.model';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
-import { BookmarkService } from '../../services/bookmarking.service';
-import { UserService } from '../../services/userService';
+import { BookmarkService } from '@services/bookmarking.service';
+import { UserService } from '@services/userService';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ActivityTag {

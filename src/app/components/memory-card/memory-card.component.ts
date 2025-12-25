@@ -2,9 +2,9 @@
 import { DatePipe } from '@angular/common';
 import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Memory } from '../../models/memoryInterface.model';
+import { Memory } from '@models/memoryInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MemoryService } from '../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 import { Clipboard } from '@angular/cdk/clipboard';
 
 @Component({

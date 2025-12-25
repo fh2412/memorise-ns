@@ -1,10 +1,10 @@
 import { Component, Input, inject } from '@angular/core';
-import { companyService } from '../../services/company.service';
+import { companyService } from '@services/company.service';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '../_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CompanyDialogComponent } from '../_dialogs/company-dialog/company-dialog.component';
 import { ShareFriendCodeDialogComponent } from '../_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
-import { MemoriseCompany } from '../../models/company.model';
+import { MemoriseCompany } from '@models/company.model';
 
 @Component({
     selector: 'app-company-information',

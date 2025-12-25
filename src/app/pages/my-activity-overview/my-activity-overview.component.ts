@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { ActivityService } from '../../services/activity.service';
+import { ActivityService } from '@services/activity.service';
 import { firstValueFrom } from 'rxjs';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
-import { UserService } from '../../services/userService';
+import { MemoriseUserActivity } from '@models/activityInterface.model';
+import { UserService } from '@services/userService';
 
 @Component({
   selector: 'app-my-activity-overview',

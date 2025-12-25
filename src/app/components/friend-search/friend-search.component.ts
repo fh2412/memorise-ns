@@ -1,8 +1,8 @@
 import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
-import { Friend } from '../../models/userInterface.model';
+import { UserService } from '@services/userService';
+import { Friend } from '@models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
-import { FriendsService } from '../../services/friends.service';
+import { FriendsService } from '@services/friends.service';
 
 @Component({
     selector: 'app-friend-search',

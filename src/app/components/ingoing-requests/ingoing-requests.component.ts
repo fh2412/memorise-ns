@@ -5,7 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
-import { Friend } from '../../models/userInterface.model';
+import { Friend } from '@models/userInterface.model';
 import { FriendCardComponent } from "../friend-card/friend-card.component";
 @Component({
   selector: 'app-ingoing-requests',

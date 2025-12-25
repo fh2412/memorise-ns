@@ -16,9 +16,9 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MemorySelectorComponent } from '../memory-selecter/memory-selecter.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CountryService } from '../../services/restCountries.service';
+import { CountryService } from '@services/restCountries.service';
 import { ChooseLocationComponent } from '../_dialogs/choose-location/choose-location.component';
-import { ActivityDetails, MemoriseUserActivity } from '../../models/activityInterface.model';
+import { ActivityDetails, MemoriseUserActivity } from '@models/activityInterface.model';
 
 @Component({
   selector: 'app-activity-form',

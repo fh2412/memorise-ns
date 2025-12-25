@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MemoryService } from '../../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({

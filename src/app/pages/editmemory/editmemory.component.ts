@@ -1,23 +1,23 @@
 import { Component, HostListener, OnInit, inject } from '@angular/core';
-import { MemoryService } from '../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FileUploadService } from '../../services/file-upload.service';
+import { FileUploadService } from '@services/file-upload.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
-import { LocationService } from '../../services/location.service';
-import { InfoDialogComponent, InfoDialogData } from '../../components/_dialogs/info-dialog/info-dialog.component';
-import { ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
-import { UserService } from '../../services/userService';
-import { PinnedMemoryService } from '../../services/pinnedMemorService';
-import { Memory } from '../../models/memoryInterface.model';
-import { Friend } from '../../models/userInterface.model';
-import { MemoriseLocation } from '../../models/location.model';
+import { ChooseLocationComponent } from '@components/_dialogs/choose-location/choose-location.component';
+import { LocationService } from '@services/location.service';
+import { InfoDialogComponent, InfoDialogData } from '@components/_dialogs/info-dialog/info-dialog.component';
+import { ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { UserService } from '@services/userService';
+import { PinnedMemoryService } from '@services/pinnedMemorService';
+import { Memory } from '@models/memoryInterface.model';
+import { Friend } from '@models/userInterface.model';
+import { MemoriseLocation } from '@models/location.model';
 import { firstValueFrom } from 'rxjs';
-import { ActivityBottomSheetData, ActivityBottomSheetComponent } from '../../components/_dialogs/activity-bottom-sheet/activity-bottom-sheet.component';
+import { ActivityBottomSheetData, ActivityBottomSheetComponent } from '@components/_dialogs/activity-bottom-sheet/activity-bottom-sheet.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { BillingService } from '../../services/billing.service';
-import { ParsedLocation } from '../../models/geocoder-response.model';
+import { BillingService } from '@services/billing.service';
+import { ParsedLocation } from '@models/geocoder-response.model';
 
 @Component({
   selector: 'app-editmemory',

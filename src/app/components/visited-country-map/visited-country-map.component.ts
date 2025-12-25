@@ -1,10 +1,10 @@
 import { Component, ElementRef, inject, Input, OnInit, ViewChild } from '@angular/core';
-import { MemorystatsService } from '../../services/memorystats.service';
+import { MemorystatsService } from '@services/memorystats.service';
 import { firstValueFrom } from 'rxjs';
-import { UserService } from '../../services/userService';
-import { VisitedCountry } from '../../models/memoryInterface.model';
+import { UserService } from '@services/userService';
+import { VisitedCountry } from '@models/memoryInterface.model';
 import * as d3 from 'd3';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeService } from '@services/theme.service';
 import { FeatureCollection, Feature, Geometry } from 'geojson';
 
 interface CountryProperties {

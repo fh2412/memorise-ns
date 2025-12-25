@@ -3,17 +3,17 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { UserService } from '../../services/userService';
-import { FileUploadService } from '../../services/file-upload.service';
-import { MemoryService } from '../../services/memory.service';
-import { PinnedMemoryService } from '../../services/pinnedMemorService';
+import { UserService } from '@services/userService';
+import { FileUploadService } from '@services/file-upload.service';
+import { MemoryService } from '@services/memory.service';
+import { PinnedMemoryService } from '@services/pinnedMemorService';
 
-import { EditUserDialogComponent } from '../../components/_dialogs/edit-user-dialog/edit-user-dialog.component';
-import { ChangePasswordDialogComponent } from '../../components/_dialogs/change-password-dialog/change-password-dialog.component';
-import { PinnedDialogComponent, PinnedMemory } from '../../components/_dialogs/pinned-dialog/pinned-dialog.component';
+import { EditUserDialogComponent } from '@components/_dialogs/edit-user-dialog/edit-user-dialog.component';
+import { ChangePasswordDialogComponent } from '@components/_dialogs/change-password-dialog/change-password-dialog.component';
+import { PinnedDialogComponent, PinnedMemory } from '@components/_dialogs/pinned-dialog/pinned-dialog.component';
 
-import { Memory, MemorySearchData } from '../../models/memoryInterface.model';
-import { MemoriseUser } from '../../models/userInterface.model';
+import { Memory, MemorySearchData } from '@models/memoryInterface.model';
+import { MemoriseUser } from '@models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

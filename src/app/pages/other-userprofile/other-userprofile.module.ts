@@ -21,23 +21,21 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    OtherUserprofileComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatGridListModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatListModule,
-    MatCardModule,
-    BackButtonComponent,
-    PinCardComponent,
-    MatTabsModule,
-    VisitedCountryMapComponent
-],
-  providers: [DatePipe], // Add DatePipe here if needed
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatGridListModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatListModule,
+        MatCardModule,
+        BackButtonComponent,
+        PinCardComponent,
+        MatTabsModule,
+        VisitedCountryMapComponent,
+        OtherUserprofileComponent
+    ],
+    providers: [DatePipe], // Add DatePipe here if needed
 })
 export class OtherUserProfileModule { }

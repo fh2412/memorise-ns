@@ -22,14 +22,14 @@ describe('SigninComponent', () => {
     snackBar = new SnackBarMock();
 
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
-      imports: [
+    imports: [
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
-          {path: 'home', component: HomeComponent}
-        ])
-      ]
-    })
+            { path: 'home', component: HomeComponent }
+        ]),
+        LoginComponent
+    ]
+})
     .overrideProvider(AuthenticationService, {useValue: authenticationService})
     .overrideProvider(MatSnackBar, {useValue: snackBar})
     .compileComponents();

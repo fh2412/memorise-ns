@@ -8,8 +8,8 @@ describe('ChangePasswordDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ChangePasswordDialogComponent]
-    })
+    imports: [ChangePasswordDialogComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(ChangePasswordDialogComponent);

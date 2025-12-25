@@ -8,8 +8,8 @@ describe('ViewSelecorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ViewSelectorComponent]
-    })
+    imports: [ViewSelectorComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(ViewSelectorComponent);

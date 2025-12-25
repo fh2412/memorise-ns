@@ -30,33 +30,31 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    AddingMemoryComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatInputModule,
-    MatButtonModule,
-    MatStepperModule,
-    ReactiveFormsModule,
-    MatProgressBarModule,
-    MatListModule,
-    MatDialogModule,
-    FormsModule,
-    MatChipsModule,
-    AsyncPipe,
-    MatSlideToggleModule,
-    MatGridListModule,
-    FriendsAutocompletComponent,
-    ImageUploadComponent,
-    BackButtonComponent,
-    MatAutocompleteModule
-]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatInputModule,
+        MatButtonModule,
+        MatStepperModule,
+        ReactiveFormsModule,
+        MatProgressBarModule,
+        MatListModule,
+        MatDialogModule,
+        FormsModule,
+        MatChipsModule,
+        AsyncPipe,
+        MatSlideToggleModule,
+        MatGridListModule,
+        FriendsAutocompletComponent,
+        ImageUploadComponent,
+        BackButtonComponent,
+        MatAutocompleteModule,
+        AddingMemoryComponent
+    ]
 })
 export class AddingMemoryModule {}

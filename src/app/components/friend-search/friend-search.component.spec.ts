@@ -8,8 +8,8 @@ describe('FriendSearchComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FriendSearchComponent]
-    })
+    imports: [FriendSearchComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(FriendSearchComponent);

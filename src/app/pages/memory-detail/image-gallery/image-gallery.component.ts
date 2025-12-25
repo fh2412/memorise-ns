@@ -4,6 +4,10 @@ import { ImageDialogComponent } from '@components/_dialogs/image-dialog/image-di
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
 import { getDownloadURL, getStorage, ref } from '@angular/fire/storage';
+import { BackButtonComponent } from '../../../components/back-button/back-button.component';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { PersonHintComponent } from '../../../components/person-hint/person-hint.component';
+import { NgOptimizedImage } from '@angular/common';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -22,10 +26,10 @@ interface UserProfile {
 }
 
 @Component({
-  selector: 'app-image-gallery',
-  templateUrl: './image-gallery.component.html',
-  styleUrls: ['./image-gallery.component.scss'],
-  standalone: false
+    selector: 'app-image-gallery',
+    templateUrl: './image-gallery.component.html',
+    styleUrls: ['./image-gallery.component.scss'],
+    imports: [BackButtonComponent, MatGridList, MatGridTile, PersonHintComponent, NgOptimizedImage]
 })
 
 export class ImageGalleryComponent implements OnInit {

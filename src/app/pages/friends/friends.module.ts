@@ -26,27 +26,25 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    FriendsComponent,
-    FriendSearchComponent,
-    UserInformationComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-    MatDividerModule,
-    MatListModule,
-    MatTabsModule,
-    FriendPreviewComponent,
-    MatInputModule,
-    FormsModule,
-    IngoingRequestsComponent,
-    FriendCardComponent
-]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatCardModule,
+        MatButtonModule,
+        MatIconModule,
+        MatDividerModule,
+        MatListModule,
+        MatTabsModule,
+        FriendPreviewComponent,
+        MatInputModule,
+        FormsModule,
+        IngoingRequestsComponent,
+        FriendCardComponent,
+        FriendsComponent,
+        FriendSearchComponent,
+        UserInformationComponent
+    ]
 })
 export class FriendsModule { }

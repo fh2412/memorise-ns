@@ -15,12 +15,24 @@ import { PinnedDialogComponent, PinnedMemory } from '@components/_dialogs/pinned
 import { Memory, MemorySearchData } from '@models/memoryInterface.model';
 import { MemoriseUser } from '@models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatCardTitle, MatCardSubtitle, MatCard, MatCardContent } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
+import { LogoutButtonComponent } from '../../components/logout-button/logout-button.component';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { VisitedCountryMapComponent } from '../../components/visited-country-map/visited-country-map.component';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-userprofile',
-  templateUrl: './userprofile.component.html',
-  styleUrls: ['./userprofile.component.scss'],
-  standalone: false
+    selector: 'app-userprofile',
+    templateUrl: './userprofile.component.html',
+    styleUrls: ['./userprofile.component.scss'],
+    imports: [BackButtonComponent, MatIcon, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatListItemIcon, MatListItemTitle, LogoutButtonComponent, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, MatProgressSpinner, DatePipe]
 })
 export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);

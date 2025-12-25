@@ -1,11 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-navigation-error',
-  standalone: false,
-  templateUrl: './navigation-error.component.html',
-  styleUrl: './navigation-error.component.scss'
+    selector: 'app-navigation-error',
+    templateUrl: './navigation-error.component.html',
+    styleUrl: './navigation-error.component.scss',
+    imports: [MatButton]
 })
 export class NavigationErrorComponent {
   private route = inject(ActivatedRoute);

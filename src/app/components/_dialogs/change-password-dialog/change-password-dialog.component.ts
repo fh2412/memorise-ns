@@ -1,16 +1,20 @@
 import { Component, EventEmitter, inject, OnDestroy, Output } from '@angular/core';
-import { MatDialogRef } from '@angular/material/dialog';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FirebaseError } from 'firebase/app';
 import { Auth, User, user, EmailAuthProvider, reauthenticateWithCredential, updatePassword } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatFormField, MatLabel, MatInput, MatError, MatSuffix, MatHint } from '@angular/material/input';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
-  selector: 'app-change-password-dialog',
-  templateUrl: './change-password-dialog.component.html',
-  styleUrls: ['./change-password-dialog.component.scss'],
-  standalone: false
+    selector: 'app-change-password-dialog',
+    templateUrl: './change-password-dialog.component.html',
+    styleUrls: ['./change-password-dialog.component.scss'],
+    imports: [MatDialogTitle, ReactiveFormsModule, CdkScrollable, MatDialogContent, MatFormField, MatLabel, MatInput, MatError, MatIconButton, MatSuffix, MatIcon, MatHint, MatDialogActions, MatButton, MatDialogClose]
 })
 export class ChangePasswordDialogComponent implements OnDestroy {
   dialogRef = inject<MatDialogRef<ChangePasswordDialogComponent>>(MatDialogRef);

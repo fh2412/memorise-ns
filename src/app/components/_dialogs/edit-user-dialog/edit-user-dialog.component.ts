@@ -1,15 +1,23 @@
 import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { MemoriseUser } from '@models/userInterface.model';
 import { Country, CountryService } from '@services/restCountries.service';
 import { map, Observable, startWith } from 'rxjs';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatFormField, MatLabel, MatInput, MatSuffix } from '@angular/material/input';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-edit-user-dialog',
     templateUrl: 'edit-user-dialog.component.html',
     styleUrls: ['edit-user-dialog.component.scss'],
-    standalone: false
+    imports: [MatDialogTitle, ReactiveFormsModule, CdkScrollable, MatDialogContent, MatFormField, MatLabel, MatInput, MatDatepickerInput, MatDatepickerToggle, MatSuffix, MatDatepicker, MatSelect, MatOption, MatAutocompleteTrigger, MatAutocomplete, MatIcon, MatDialogActions, MatButton, MatDialogClose, AsyncPipe]
 })
 export class EditUserDialogComponent implements OnInit {
   private countryService = inject(CountryService);

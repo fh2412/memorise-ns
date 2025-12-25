@@ -8,8 +8,8 @@ describe('MemoryDetailComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MemoryDetailComponent]
-    })
+    imports: [MemoryDetailComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(MemoryDetailComponent);

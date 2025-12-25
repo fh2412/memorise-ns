@@ -8,8 +8,8 @@ describe('ImageDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ImageDialogComponent]
-    })
+    imports: [ImageDialogComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(ImageDialogComponent);

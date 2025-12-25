@@ -8,8 +8,8 @@ describe('OpenlinkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [OpenlinkComponent]
-    })
+    imports: [OpenlinkComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(OpenlinkComponent);

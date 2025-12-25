@@ -2,19 +2,29 @@ import { Component, OnInit, inject } from '@angular/core';
 import { UserService } from '@services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '@services/memory.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Memory } from '@models/memoryInterface.model';
 import { MemoriseUser } from '@models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
-import { PageEvent } from '@angular/material/paginator';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { Auth } from '@angular/fire/auth';
 import { BillingService } from '@services/billing.service';
+import { StatsComponent } from '../../components/stats/stats.component';
+import { ViewSelectorComponent } from '../../components/view-selecor/view-selector.component';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatFormField, MatLabel, MatInput } from '@angular/material/input';
+import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  standalone: false
+    selector: 'app-home',
+    templateUrl: './home.component.html',
+    styleUrls: ['./home.component.scss'],
+    imports: [StatsComponent, ViewSelectorComponent, ReactiveFormsModule, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatButton, MatFormField, MatLabel, MatInput, HomeMapViewComponent, MatGridList, MatGridTile, MemoryCardComponent, MatPaginator]
 })
 export class HomeComponent implements OnInit {
   private auth = inject(Auth);

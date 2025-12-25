@@ -16,17 +16,15 @@ const routes: Routes = [
 ]
 
 @NgModule({
-    declarations: [
-      ManagePhotosComponent
-    ],
     imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    ImageUploadComponent,
-    MatGridListModule,
-    MatIconModule,
-    MatButtonModule,
-    BackButtonComponent
-]
+        CommonModule,
+        RouterModule.forChild(routes),
+        ImageUploadComponent,
+        MatGridListModule,
+        MatIconModule,
+        MatButtonModule,
+        BackButtonComponent,
+        ManagePhotosComponent
+    ]
 })
 export class ManagePhotosModule { }

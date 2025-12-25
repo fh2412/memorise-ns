@@ -3,14 +3,18 @@ import { ActivatedRoute } from '@angular/router';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
 import { FileUploadService } from '@services/file-upload.service';
 import { MemoryService } from '@services/memory.service';
-import { Location } from '@angular/common';
+import { Location, NgClass } from '@angular/common';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BackButtonComponent } from '../../../components/back-button/back-button.component';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 
 @Component({
     selector: 'app-manage-photos',
     templateUrl: './manage-photos.component.html',
     styleUrl: './manage-photos.component.scss',
-    standalone: false
+    imports: [BackButtonComponent, MatButton, MatIcon, MatGridList, MatGridTile, NgClass, MatIconButton]
 })
 export class ManagePhotosComponent implements OnInit {
   private route = inject(ActivatedRoute);

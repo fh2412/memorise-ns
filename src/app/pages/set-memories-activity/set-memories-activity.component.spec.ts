@@ -8,8 +8,8 @@ describe('SetMemoriesActivityComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SetMemoriesActivityComponent]
-    })
+    declarations: [SetMemoriesActivityComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(SetMemoriesActivityComponent);

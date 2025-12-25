@@ -13,14 +13,12 @@ const routes: Routes = [
 ]
 
 @NgModule({
-    declarations: [
-      AddPhotosComponent
-    ],
     imports: [
         CommonModule,
         RouterModule.forChild(routes),
         ImageUploadComponent,
-        BackButtonComponent
+        BackButtonComponent,
+        AddPhotosComponent
     ]
 })
 export class AddPhotosModule { }

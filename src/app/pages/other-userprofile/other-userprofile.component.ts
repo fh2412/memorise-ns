@@ -10,12 +10,22 @@ import { ManageFriendsService } from '@services/friend-manage.service';
 import { PinnedMemoryService } from '@services/pinnedMemorService';
 import { Memory } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { MatCardTitle, MatCardSubtitle, MatCard, MatCardContent } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { VisitedCountryMapComponent } from '../../components/visited-country-map/visited-country-map.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
-  selector: 'app-other-userprofile',
-  templateUrl: './other-userprofile.component.html',
-  styleUrl: './other-userprofile.component.scss',
-  standalone: false
+    selector: 'app-other-userprofile',
+    templateUrl: './other-userprofile.component.html',
+    styleUrl: './other-userprofile.component.scss',
+    imports: [BackButtonComponent, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe]
 })
 export class OtherUserprofileComponent implements OnInit {
   private route = inject(ActivatedRoute);

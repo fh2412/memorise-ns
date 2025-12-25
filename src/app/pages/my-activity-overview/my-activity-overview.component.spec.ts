@@ -8,8 +8,8 @@ describe('MyActivityOverviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MyActivityOverviewComponent]
-    })
+    declarations: [MyActivityOverviewComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(MyActivityOverviewComponent);

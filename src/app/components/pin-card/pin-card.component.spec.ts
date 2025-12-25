@@ -8,8 +8,8 @@ describe('PinCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PinCardComponent]
-    })
+    imports: [PinCardComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(PinCardComponent);

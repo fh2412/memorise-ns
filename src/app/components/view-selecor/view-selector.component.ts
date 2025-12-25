@@ -1,9 +1,11 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { MatFormField, MatLabel } from '@angular/material/input';
+import { MatSelect, MatOption } from '@angular/material/select';
 
 @Component({
     selector: 'app-view-selector',
     templateUrl: './view-selector.component.html',
-    standalone: false
+    imports: [MatFormField, MatLabel, MatSelect, MatOption]
 })
 export class ViewSelectorComponent {
   selectedValue: 'standard' | 'map' = 'standard';

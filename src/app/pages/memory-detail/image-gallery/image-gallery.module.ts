@@ -24,26 +24,24 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    ImageGalleryComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    GoogleMapsModule,
-    MatIconModule,
-    MatDividerModule,
-    MatButtonModule,
-    MatToolbarModule,
-    MatTableModule,
-    BackButtonComponent,
-    NgOptimizedImage,
-    PersonHintComponent
-]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        GoogleMapsModule,
+        MatIconModule,
+        MatDividerModule,
+        MatButtonModule,
+        MatToolbarModule,
+        MatTableModule,
+        BackButtonComponent,
+        NgOptimizedImage,
+        PersonHintComponent,
+        ImageGalleryComponent
+    ]
 })
 export class ImageGalleryModule { }

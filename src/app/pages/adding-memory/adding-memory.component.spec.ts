@@ -8,8 +8,8 @@ describe('AddingMemoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddingMemoryComponent]
-    })
+    imports: [AddingMemoryComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(AddingMemoryComponent);

@@ -1,12 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute } from '@angular/router';
+import { BackButtonComponent } from '../../../components/back-button/back-button.component';
+import { ImageUploadComponent } from '../../../components/image-upload/image-upload.component';
 
 @Component({
     selector: 'app-add-photos',
     templateUrl: './add-photos.component.html',
     styleUrls: ['./add-photos.component.scss'],
-    standalone: false
+    imports: [BackButtonComponent, ImageUploadComponent]
 })
 export class AddPhotosComponent implements OnInit {
   private memoryService = inject(MemoryService);

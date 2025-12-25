@@ -26,21 +26,21 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [PhotoDownloadComponent],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    FormsModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    MatCardModule,
-    MatTableModule,
-    MatInputModule,
-    MatIconModule,
-    MatProgressSpinnerModule,
-    BackButtonComponent,
-    MatSelectModule,
-    MatTooltipModule
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        FormsModule,
+        MatButtonModule,
+        MatCheckboxModule,
+        MatCardModule,
+        MatTableModule,
+        MatInputModule,
+        MatIconModule,
+        MatProgressSpinnerModule,
+        BackButtonComponent,
+        MatSelectModule,
+        MatTooltipModule,
+        PhotoDownloadComponent
+    ],
 })
 export class PhotoDownloadModule { }

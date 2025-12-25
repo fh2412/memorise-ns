@@ -1,9 +1,10 @@
 import { Component, ViewChild, OnInit, Input, inject } from '@angular/core';
-import { MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps';
 import { Router } from '@angular/router';
 import { Memory, MemoryMapData } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { MemoryService } from '@services/memory.service';
+import { MemoryCardComponent } from '../../../components/memory-card/memory-card.component';
 
 
 export interface CustomMarker {
@@ -14,10 +15,10 @@ export interface CustomMarker {
 }
 
 @Component({
-  selector: 'app-home-map-view',
-  templateUrl: './home-map-view.component.html',
-  styleUrl: './home-map-view.component.scss',
-  standalone: false
+    selector: 'app-home-map-view',
+    templateUrl: './home-map-view.component.html',
+    styleUrl: './home-map-view.component.scss',
+    imports: [GoogleMap, MapMarker, MapInfoWindow, MemoryCardComponent]
 })
 export class HomeMapViewComponent implements OnInit {
   private router = inject(Router);

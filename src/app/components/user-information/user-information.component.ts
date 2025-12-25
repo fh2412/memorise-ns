@@ -3,12 +3,17 @@ import { UserService } from '@services/userService';
 import { Router } from '@angular/router';
 import { MemoriseUser } from '@models/userInterface.model';
 import { take } from 'rxjs/operators';
+import { MatCard, MatCardTitle, MatCardSubtitle } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { DatePipe } from '@angular/common';
 
 @Component({
     selector: 'app-user-information',
     templateUrl: './user-information.component.html',
     styleUrls: ['./user-information.component.scss'],
-    standalone: false
+    imports: [MatCard, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, DatePipe]
 })
 export class UserInformationComponent implements OnInit {
   private userService = inject(UserService);

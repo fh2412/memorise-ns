@@ -29,30 +29,28 @@ const routes: Routes = [
 ]
 
 @NgModule({
-    declarations: [
-        EditmemoryComponent,
-    ],
     imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    GoogleMapsModule,
-    MatButtonModule,
-    MatDividerModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatIconModule,
-    FriendsAutocompletComponent,
-    ImageUploadComponent,
-    MatToolbarModule,
-    MatTableModule,
-    MatChipsModule,
-    BackButtonComponent,
-    MatTooltipModule
-]
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        GoogleMapsModule,
+        MatButtonModule,
+        MatDividerModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatIconModule,
+        FriendsAutocompletComponent,
+        ImageUploadComponent,
+        MatToolbarModule,
+        MatTableModule,
+        MatChipsModule,
+        BackButtonComponent,
+        MatTooltipModule,
+        EditmemoryComponent
+    ]
 })
 export class EditMemoryModule { }

@@ -1,6 +1,6 @@
 // photo-download.component.ts
 import { Component, OnInit, inject } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { SelectionModel } from '@angular/cdk/collections';
 import { ConfirmationDialogData, ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
@@ -13,6 +13,16 @@ import { MemoryDetailFriend } from '@models/userInterface.model';
 import { MemoriseUser } from '@models/userInterface.model';
 import { forkJoin } from 'rxjs';
 import { UserService } from '@services/userService';
+import { BackButtonComponent } from '../../../components/back-button/back-button.component';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatFormField, MatLabel } from '@angular/material/input';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatTooltip } from '@angular/material/tooltip';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatCard, MatCardImage } from '@angular/material/card';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { DatePipe } from '@angular/common';
 
 // Extended interface to include user data
 export interface ImageWithUserData extends ImageWithMetadata {
@@ -20,10 +30,10 @@ export interface ImageWithUserData extends ImageWithMetadata {
 }
 
 @Component({
-  selector: 'app-photo-download',
-  templateUrl: './photo-download.component.html',
-  standalone: false,
-  styleUrls: ['./photo-download.component.scss']
+    selector: 'app-photo-download',
+    templateUrl: './photo-download.component.html',
+    styleUrls: ['./photo-download.component.scss'],
+    imports: [BackButtonComponent, MatButton, MatFormField, MatLabel, MatSelect, MatOption, MatIconButton, MatTooltip, MatIcon, MatProgressSpinner, MatCard, MatCheckbox, MatCardImage, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe]
 })
 export class PhotoDownloadComponent implements OnInit {
   dialog = inject(MatDialog);

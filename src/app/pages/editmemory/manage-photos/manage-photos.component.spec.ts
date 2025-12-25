@@ -8,8 +8,8 @@ describe('ManagePhotosComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ManagePhotosComponent]
-    })
+    imports: [ManagePhotosComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(ManagePhotosComponent);

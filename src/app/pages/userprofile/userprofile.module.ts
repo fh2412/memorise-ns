@@ -32,35 +32,33 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    UserProfileComponent,
-    EditUserDialogComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatDividerModule,
-    MatButtonModule,
-    MatListModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatSelectModule,
-    BackButtonComponent,
-    PinCardComponent,
-    MatAutocompleteModule,
-    LogoutButtonComponent,
-    VisitedCountryMapComponent,
-    MatTabGroup,
-    MatTabsModule
-],
-  providers: [DatePipe], // Add DatePipe here if needed
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatDividerModule,
+        MatButtonModule,
+        MatListModule,
+        MatDialogModule,
+        MatProgressSpinnerModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatSelectModule,
+        BackButtonComponent,
+        PinCardComponent,
+        MatAutocompleteModule,
+        LogoutButtonComponent,
+        VisitedCountryMapComponent,
+        MatTabGroup,
+        MatTabsModule,
+        UserProfileComponent,
+        EditUserDialogComponent
+    ],
+    providers: [DatePipe], // Add DatePipe here if needed
 })
 export class UserProfileModule { }

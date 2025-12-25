@@ -25,26 +25,24 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    MemoryDetailComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatDividerModule,
-    MatButtonModule,
-    BackButtonComponent,
-    MatToolbarModule,
-    MatTableModule,
-    MatProgressSpinnerModule,
-    MapSnippetComponent,
-    FriendsProfilePicsComponent
-]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatDividerModule,
+        MatButtonModule,
+        BackButtonComponent,
+        MatToolbarModule,
+        MatTableModule,
+        MatProgressSpinnerModule,
+        MapSnippetComponent,
+        FriendsProfilePicsComponent,
+        MemoryDetailComponent
+    ]
 })
 export class MemoryModule { }

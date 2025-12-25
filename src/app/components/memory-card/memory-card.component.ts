@@ -6,12 +6,16 @@ import { Memory } from '@models/memoryInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MemoryService } from '@services/memory.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { MatCard } from '@angular/material/card';
+import { PersonHintComponent } from '../person-hint/person-hint.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-memory-card',
     templateUrl: './memory-card.component.html',
     styleUrl: './memory-card.component.scss',
-    standalone: false
+    imports: [MatCard, PersonHintComponent, MatIconButton, MatIcon]
 })
 export class MemoryCardComponent {
   private router = inject(Router);

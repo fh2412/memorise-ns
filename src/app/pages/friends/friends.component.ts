@@ -5,12 +5,18 @@ import { UserService } from '@services/userService';
 import { ShareFriendCodeDialogComponent } from '@components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
 import { Friend } from '@models/userInterface.model';
 import { Router } from '@angular/router';
+import { UserInformationComponent } from '../../components/user-information/user-information.component';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { IngoingRequestsComponent } from '../../components/ingoing-requests/ingoing-requests.component';
+import { FriendCardComponent } from '../../components/friend-card/friend-card.component';
+import { FriendSearchComponent } from '../../components/friend-search/friend-search.component';
 
 @Component({
-  selector: 'app-friends',
-  templateUrl: './friends.component.html',
-  styleUrl: './friends.component.scss',
-  standalone: false
+    selector: 'app-friends',
+    templateUrl: './friends.component.html',
+    styleUrl: './friends.component.scss',
+    imports: [UserInformationComponent, MatButton, MatIcon, IngoingRequestsComponent, FriendCardComponent, FriendSearchComponent]
 })
 export class FriendsComponent implements OnInit {
   private dialog = inject(MatDialog);

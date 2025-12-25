@@ -8,8 +8,8 @@ describe('UploadActivityDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UploadActivityDialogComponent]
-    })
+    imports: [UploadActivityDialogComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(UploadActivityDialogComponent);

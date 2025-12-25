@@ -8,8 +8,8 @@ describe('MemoryCardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MemoryCardComponent]
-    })
+    imports: [MemoryCardComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(MemoryCardComponent);

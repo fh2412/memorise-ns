@@ -162,8 +162,8 @@
           <!-- Step 3: Lead Memory -->
           <mat-step label="Lead Memory">
             <div class="form-overlay">
-              @if (userId) {
-                <app-memory-selecter [userId]="userId" [memoryId]="activity().baseMemoryId"
+              @if (userId(); as uid) {
+                <app-memory-selecter [userId]="uid" [memoryId]="activity().baseMemoryId"
                 (memorySelected)="onMemorySelected($event)"></app-memory-selecter>
               }
               <div class="step-navigation">

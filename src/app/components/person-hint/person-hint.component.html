@@ -1,7 +1,9 @@
-@if (username !== '') {
-<div class="creator-div">
-    <span>{{ username }}</span>
-</div>
+@if (username(); as uname) {
+    @if (uname !== '') {
+    <div class="creator-div">
+        <span>{{ uname }}</span>
+    </div>
+    }
 }
 @else {
 <div class="image-div">

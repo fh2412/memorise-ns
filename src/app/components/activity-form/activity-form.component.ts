@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -49,10 +49,7 @@ export class ActivityFormComponent implements OnInit {
   dialog = inject(MatDialog);
   private countryService = inject(CountryService);
 
-  // TODO: Skipped for migration because:
-  //  This input is used in a control flow expression (e.g. `@if` or `*ngIf`)
-  //  and migrating would break narrowing currently.
-  @Input() userId = '';
+  readonly userId = input.required<string>();
   readonly activity = input.required<ActivityDetails>();
   readonly mode = input('edit');
   selectedImageFile: File | undefined;
@@ -127,8 +124,8 @@ export class ActivityFormComponent implements OnInit {
   }
 
   openMapDialog(): void {
-    if (this.userId) {
-      this.countryService.getCountryGeocordsByUserId(this.userId).subscribe(
+    if (this.userId()) {
+      this.countryService.getCountryGeocordsByUserId(this.userId()).subscribe(
         response => {
           if (response) {
             const coords = response;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, Output, OnInit, inject, input } from '@angular/core';
+import { Component, HostListener, Input, OnInit, inject, input, output } from '@angular/core';
 import { UserService } from '@services/userService';
 import { ManageFriendsService } from '@services/friend-manage.service';
 import { Friend } from '@models/userInterface.model';
@@ -35,8 +35,11 @@ export class FriendPreviewComponent implements OnInit {
   readonly declineButton = input(false);
   readonly friend = input.required<Friend>();
 
-  @Output() buttonClicked = new EventEmitter<void>();
-  @Output() friendRequestProcessed = new EventEmitter<{ friendId: string, action: 'accepted' | 'declined' }>();
+  readonly buttonClicked = output<void>();
+  readonly friendRequestProcessed = output<{
+    friendId: string;
+    action: 'accepted' | 'declined';
+}>();
 
   loggedInUserId: string | null = null;
   isLargeScreen = true;
@@ -71,6 +74,7 @@ export class FriendPreviewComponent implements OnInit {
         }
       }
       this.requested = !this.requested;
+      // TODO: The 'emit' function requires a mandatory void argument
       this.buttonClicked.emit();  // Emit the button click event for parent components to listen to
 
     } catch (error) {

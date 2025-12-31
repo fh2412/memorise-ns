@@ -1,4 +1,4 @@
-import { Component, computed, EventEmitter, OnInit, Output, inject, input } from '@angular/core';
+import { Component, computed, OnInit, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
@@ -27,7 +27,7 @@ export class BockmarkedActivitiesComponent implements OnInit {
 
   readonly userId = input<string | null>(null);
   readonly fullComponent = input(true);
-  @Output() activitySelected = new EventEmitter<number>();
+  readonly activitySelected = output<number>();
   
   //activities: MemoriseUserActivity[] | null = null;
   //displayActivities: MemoriseUserActivity[] = [];

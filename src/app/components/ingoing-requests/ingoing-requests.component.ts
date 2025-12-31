@@ -1,5 +1,5 @@
 
-import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
+import { Component, inject, Input, output } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -17,7 +17,7 @@ export class IngoingRequestsComponent {
   // TODO: Skipped for migration because:
   //  Your application code writes to the input. This prevents migration.
   @Input() friends: Friend[] = [];
-  @Output() friendsUpdated = new EventEmitter<Friend[]>();
+  readonly friendsUpdated = output<Friend[]>();
   
   private bottomSheet = inject(MatBottomSheet);
   private currentBottomSheetRef: MatBottomSheetRef<FriendRequestsBottomSheetComponent> | null = null;

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatSelect, MatOption } from '@angular/material/select';
 
@@ -16,7 +16,7 @@ export class ViewSelectorComponent {
     // { value: 'calendar', label: 'Calendar' }
   ];
 
-  @Output() selectionChanged = new EventEmitter<string>();
+  readonly selectionChanged = output<string>();
 
   onChange(value: 'standard' | 'map') {
     this.selectedValue = value;

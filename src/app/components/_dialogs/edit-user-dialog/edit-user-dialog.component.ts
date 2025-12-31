@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { MemoriseUser } from '@models/userInterface.model';
@@ -25,7 +25,7 @@ export class EditUserDialogComponent implements OnInit {
   userdata = inject<MemoriseUser>(MAT_DIALOG_DATA);
   private fb = inject(FormBuilder);
 
-  @Output() updateUserData = new EventEmitter<MemoriseUser>();
+  readonly updateUserData = output<MemoriseUser>();
   userForm: FormGroup;
   countries: Country[] = [];
   filteredCountries!: Observable<Country[]>;

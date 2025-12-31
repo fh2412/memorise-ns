@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { AuthenticationService } from '@services/authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -25,7 +25,7 @@ export class RegisterComponent {
   isFirstTimeUser = false;
   email = '';
 
-  @Output() cancelRegistration = new EventEmitter<void>();
+  readonly cancelRegistration = output<void>();
 
   constructor() {
     this.registerForm = this.fb.group({

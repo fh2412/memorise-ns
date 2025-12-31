@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, output } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 
 @Component({
@@ -8,9 +8,10 @@ import { MatButton } from '@angular/material/button';
     imports: [MatButton]
 })
 export class WelcomePageComponent {
-  @Output() closeWelcomePage = new EventEmitter<void>();
+  readonly closeWelcomePage = output<void>();
 
   closeWelcomePageHandler(): void {
+    // TODO: The 'emit' function requires a mandatory void argument
     this.closeWelcomePage.emit();
   }
 }

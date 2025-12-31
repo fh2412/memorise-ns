@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, input } from '@angular/core';
+import { Component, Input, input, output } from '@angular/core';
 import { Friend } from '@models/userInterface.model';
 import { MatCardModule } from "@angular/material/card";
 import { MatListModule } from "@angular/material/list";
@@ -21,7 +21,7 @@ export class FriendCardComponent {
   readonly declineButton = input(false);
   readonly buttonIcon = input('person_add');
 
-  @Output() friendsChanged = new EventEmitter<Friend[]>();
+  readonly friendsChanged = output<Friend[]>();
 
   onFriendRequestProcessed(event: { friendId: string, action: 'accepted' | 'declined' }): void {
     this.friends = this.friends.filter(friend => friend.user_id.toString() !== event.friendId);

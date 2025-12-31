@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output, inject, input } from '@angular/core';
+import { Component, OnInit, inject, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -29,7 +29,7 @@ export class MemorySelectorComponent implements OnInit {
 
   readonly userId = input.required<string>();
   readonly memoryId = input<string | null>(null);
-  @Output() memorySelected = new EventEmitter<number>();
+  readonly memorySelected = output<number>();
 
   memories: MemorySearchData[] = [];
   filteredMemories!: Observable<MemorySearchData[]>;

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild, inject, OnInit, input } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, OnInit, input, output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
@@ -41,7 +41,7 @@ export class FriendsAutocompletComponent implements OnInit {
   friends: string[] = [];
 
   readonly memoryId = input("0");
-  @Output() selectedValuesChange = new EventEmitter<string[]>();
+  readonly selectedValuesChange = output<string[]>();
   @ViewChild('friendInput') friendInput!: ElementRef<HTMLInputElement>;
 
   announcer = inject(LiveAnnouncer);

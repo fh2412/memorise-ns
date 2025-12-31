@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnDestroy, Output } from '@angular/core';
+import { Component, inject, OnDestroy, output } from '@angular/core';
 import { MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose } from '@angular/material/dialog';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators, ReactiveFormsModule } from '@angular/forms';
 import { FirebaseError } from 'firebase/app';
@@ -26,7 +26,7 @@ export class ChangePasswordDialogComponent implements OnDestroy {
   userSubscription: Subscription;
   currentUser!: User;
   
-  @Output() updateUserPassword = new EventEmitter<void>();
+  readonly updateUserPassword = output<void>();
   
   changePasswordForm!: FormGroup;
   errorMessage: string | null = null;
@@ -135,6 +135,7 @@ export class ChangePasswordDialogComponent implements OnDestroy {
       
       // Success! Close dialog and show notification
       this.dialogRef.close(true);
+      // TODO: The 'emit' function requires a mandatory void argument
       this.updateUserPassword.emit();
       this.snackBar.open('Password updated successfully!', 'Close', {
         duration: 3000,

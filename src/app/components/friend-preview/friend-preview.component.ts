@@ -35,7 +35,7 @@ export class FriendPreviewComponent implements OnInit {
   readonly declineButton = input(false);
   readonly friend = input.required<Friend>();
 
-  readonly buttonClicked = output<void>();
+  readonly buttonClicked = output();
   readonly friendRequestProcessed = output<{
     friendId: string;
     action: 'accepted' | 'declined';
@@ -74,8 +74,7 @@ export class FriendPreviewComponent implements OnInit {
         }
       }
       this.requested = !this.requested;
-      // TODO: The 'emit' function requires a mandatory void argument
-      this.buttonClicked.emit();  // Emit the button click event for parent components to listen to
+      this.buttonClicked.emit();
 
     } catch (error) {
       console.error('Error handling friend request:', error);

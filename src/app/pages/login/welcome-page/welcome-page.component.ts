@@ -8,10 +8,9 @@ import { MatButton } from '@angular/material/button';
     imports: [MatButton]
 })
 export class WelcomePageComponent {
-  readonly closeWelcomePage = output<void>();
+  readonly closeWelcomePage = output();
 
   closeWelcomePageHandler(): void {
-    // TODO: The 'emit' function requires a mandatory void argument
     this.closeWelcomePage.emit();
   }
 }

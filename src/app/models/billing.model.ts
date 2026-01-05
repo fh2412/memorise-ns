@@ -10,8 +10,3 @@ export interface UserStorageData {
   accountType: AccountType;
   storageUsedBytes: number;
 }
-
-export interface StorageLimit {
-  maxStorageBytes: number;
-  isUnlimited: boolean;
-}

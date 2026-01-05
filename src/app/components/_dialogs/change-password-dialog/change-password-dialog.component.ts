@@ -26,7 +26,7 @@ export class ChangePasswordDialogComponent implements OnDestroy {
   userSubscription: Subscription;
   currentUser!: User;
   
-  readonly updateUserPassword = output<void>();
+  readonly updateUserPassword = output();
   
   changePasswordForm!: FormGroup;
   errorMessage: string | null = null;
@@ -135,7 +135,6 @@ export class ChangePasswordDialogComponent implements OnDestroy {
       
       // Success! Close dialog and show notification
       this.dialogRef.close(true);
-      // TODO: The 'emit' function requires a mandatory void argument
       this.updateUserPassword.emit();
       this.snackBar.open('Password updated successfully!', 'Close', {
         duration: 3000,

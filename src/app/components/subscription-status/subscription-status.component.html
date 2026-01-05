@@ -4,7 +4,7 @@
         <div class="storage-text-row">
             <span>{{this.userAccountDetails.accountType}}</span>
             @if (userAccountDetails.accountType !== 'UNLIMITED') {
-                <span class="storage-usage-label">{{userAccountDetails.storageUsedBytes/1000000000 | number:'1.0-1'}}/{{maxStorage/1000000000}}GB</span>
+                <span class="storage-usage-label">{{userAccountDetails.storageUsedBytes | number:'1.0-1'}}/{{maxStorage}}GB</span>
             }
         </div>
         <mat-progress-bar mode="determinate" [value]="storageUsed"></mat-progress-bar>

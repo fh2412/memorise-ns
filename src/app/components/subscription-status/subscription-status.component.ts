@@ -3,8 +3,16 @@ import { DecimalPipe } from '@angular/common';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
-import { AccountType, UserStorageData } from '@models/billing.model';
+import { UserStorageData } from '@models/billing.model';
 import { UserService } from '@services/userService';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+
+
+const STORAGE_LIMITS: Record<string, number> = {
+  FREE: 5,
+  PRO: 50,
+  UNLIMITED: -1
+};
 
 @Component({
   selector: 'app-subscription-status',
@@ -15,10 +23,11 @@ import { UserService } from '@services/userService';
 export class SubscriptionStatusComponent implements OnInit {
   private userService = inject(UserService);
 
+
   storageUsed = 0;
   userAccountDetails: UserStorageData | undefined
   loggedInUserId: string | null = null;
-  maxStorage = 5000000000;
+  maxStorage = 5;
 
   async ngOnInit(): Promise<void> {
     try {
@@ -29,15 +38,15 @@ export class SubscriptionStatusComponent implements OnInit {
     }
   }
 
-  getUserAccountDetails() {
+  async getUserAccountDetails() {
     if (this.loggedInUserId) {
-      this.userAccountDetails = {
-        userId: this.loggedInUserId,
-        accountType: AccountType.FREE,
-        storageUsedBytes: 2400000000,
+      this.userAccountDetails = await firstValueFrom(this.userService.getUserAccountType(this.loggedInUserId));
+      if (this.userAccountDetails.storageUsedBytes !== 0) {
+        this.userAccountDetails.storageUsedBytes = this.userAccountDetails.storageUsedBytes / (1024 * 1024 * 1024);
       }
+      this.maxStorage = STORAGE_LIMITS[this.userAccountDetails.accountType] ?? 5;
       this.storageUsed = (this.userAccountDetails.storageUsedBytes / this.maxStorage) * 100;
-      if(this.userAccountDetails.accountType === 'UNLIMITED'){
+      if (this.userAccountDetails.accountType === 'UNLIMITED') {
         this.storageUsed = 100
       }
     }

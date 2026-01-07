@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject, input } from '@angular/core';
+import { Component, OnInit, effect, inject, input, signal } from '@angular/core';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -40,10 +40,9 @@ export class ImageUploadComponent implements OnInit {
   readonly memoryData = input<MemoryFormData | null>(null);
   readonly friends_emails = input<string[]>([]);
   readonly picture_count = input(0);
-  // TODO: Skipped for migration because:
-  //  Your application code writes to the input. This prevents migration.
-  @Input() googleStorageUrl = "";
+  readonly googleStorageUrlInput = input("");
 
+  readonly googleStorageUrl = signal("");
   userId: string | null = '';
 
   selectedFiles: File[] = [];
@@ -56,12 +55,22 @@ export class ImageUploadComponent implements OnInit {
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
 
+
+  constructor() {
+    effect(() => {
+      const inputUrl = this.googleStorageUrlInput();
+      if (inputUrl) {
+        this.googleStorageUrl.set(inputUrl);
+      }
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     this.userService.userId$.subscribe(userId => {
       if (userId) {
         this.userId = userId;
         if (this.picture_count() == 0) {
-          this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+          this.googleStorageUrl.set(this.userId.toString() + Date.now().toString());
           this.showStar = true;
         }
       }

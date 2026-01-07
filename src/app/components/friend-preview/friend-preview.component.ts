@@ -1,4 +1,4 @@
-import { Component, HostListener, Input, OnInit, inject, input, output } from '@angular/core';
+import { Component, HostListener, OnInit, effect, inject, input, output, signal } from '@angular/core';
 import { UserService } from '@services/userService';
 import { ManageFriendsService } from '@services/friend-manage.service';
 import { Friend } from '@models/userInterface.model';
@@ -25,9 +25,8 @@ export class FriendPreviewComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  // TODO: Skipped for migration because:
-  //  Your application code writes to the input. This prevents migration.
-  @Input() requested = false;
+  readonly requestedInput = input(false)
+  requested = signal(false);
   readonly buttonText = input('Request');
   readonly requestedText = input('Requested');
   readonly buttonColor = input('primary');
@@ -36,21 +35,24 @@ export class FriendPreviewComponent implements OnInit {
   readonly friend = input.required<Friend>();
 
   readonly buttonClicked = output();
-  readonly friendRequestProcessed = output<{
-    friendId: string;
-    action: 'accepted' | 'declined';
-}>();
+  readonly friendRequestProcessed = output<{ friendId: string; action: 'accepted' | 'declined'; }>();
 
   loggedInUserId: string | null = null;
   isLargeScreen = true;
 
-  @HostListener('window:resize', ['$event'])
+  constructor() {
+    effect(() => {
+      this.requested.set(this.requestedInput());
+    });
+  }
+
+  @HostListener('window:resize')
   onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
   }
 
   ngOnInit() {
-    this.onResize(); // Check initial screen size
+    this.onResize();
   }
 
   async requestFriend(action: string, req: boolean): Promise<void> {
@@ -73,7 +75,7 @@ export class FriendPreviewComponent implements OnInit {
           }
         }
       }
-      this.requested = !this.requested;
+      this.requested.update(value => !value);
       this.buttonClicked.emit();
 
     } catch (error) {
@@ -81,17 +83,17 @@ export class FriendPreviewComponent implements OnInit {
     }
   }
 
-async acceptFriendRequest(): Promise<void> {
+  async acceptFriendRequest(): Promise<void> {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if (this.loggedInUserId != null) {
       await this.manageFriendsService.acceptFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
-      
+
       this.snackBar.open("You have a new Friend!", 'Hurray!', { duration: 3000, verticalPosition: 'bottom' });
 
       // Emit event to parent after successful acceptance
-      this.friendRequestProcessed.emit({ 
-        friendId: this.friend().user_id.toString(), 
-        action: 'accepted' 
+      this.friendRequestProcessed.emit({
+        friendId: this.friend().user_id.toString(),
+        action: 'accepted'
       });
     }
   }
@@ -103,9 +105,9 @@ async acceptFriendRequest(): Promise<void> {
 
       this.snackBar.open("You declined a Request!", 'OK', { duration: 3000, verticalPosition: 'bottom' });
 
-      this.friendRequestProcessed.emit({ 
-        friendId: this.friend().user_id.toString(), 
-        action: 'declined' 
+      this.friendRequestProcessed.emit({
+        friendId: this.friend().user_id.toString(),
+        action: 'declined'
       });
     }
   }

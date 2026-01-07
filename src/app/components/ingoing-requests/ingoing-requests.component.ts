@@ -1,5 +1,4 @@
-
-import { Component, inject, Input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { MatRippleModule } from '@angular/material/core';
@@ -7,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet, MatBottomSheetModule, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { Friend } from '@models/userInterface.model';
 import { FriendCardComponent } from "../friend-card/friend-card.component";
+
 @Component({
   selector: 'app-ingoing-requests',
   imports: [MatCardModule, MatIconModule, MatBadgeModule, MatBottomSheetModule, MatRippleModule],
@@ -14,36 +14,26 @@ import { FriendCardComponent } from "../friend-card/friend-card.component";
   styleUrl: './ingoing-requests.component.scss'
 })
 export class IngoingRequestsComponent {
-  // TODO: Skipped for migration because:
-  //  Your application code writes to the input. This prevents migration.
-  @Input() friends: Friend[] = [];
+  readonly ingoingFriends = input<Friend[]>([]);
   readonly friendsUpdated = output<Friend[]>();
   
   private bottomSheet = inject(MatBottomSheet);
-  private currentBottomSheetRef: MatBottomSheetRef<FriendRequestsBottomSheetComponent> | null = null;
 
   openBottomSheet(): void {
-    this.currentBottomSheetRef = this.bottomSheet.open(FriendRequestsBottomSheetComponent, {
-      data: { friends: this.friends },
+    const bottomSheetRef = this.bottomSheet.open(FriendRequestsBottomSheetComponent, {
+      data: { 
+        friends: this.ingoingFriends(),
+        onFriendsChanged: (updatedFriends: Friend[]) => {
+          this.friendsUpdated.emit(updatedFriends);
+        }
+      },
     });
 
-    this.currentBottomSheetRef.afterDismissed().subscribe((updatedFriends?: Friend[]) => {
-      
+    // Handle any final updates when sheet closes
+    bottomSheetRef.afterDismissed().subscribe((updatedFriends?: Friend[]) => {
       if (updatedFriends !== undefined) {
-        this.friends = updatedFriends;
-        
-        this.friendsUpdated.emit(this.friends);
-      } else {
-        if (this.currentBottomSheetRef?.instance) {
-          const currentFriends = this.currentBottomSheetRef.instance.currentFriends;
-          if (currentFriends.length !== this.friends.length) {
-            this.friends = currentFriends;
-            this.friendsUpdated.emit(this.friends);
-          }
-        }
+        this.friendsUpdated.emit(updatedFriends);
       }
-      
-      this.currentBottomSheetRef = null;
     });
   }
 }
@@ -54,7 +44,7 @@ export class IngoingRequestsComponent {
   imports: [
     MatBottomSheetModule,
     FriendCardComponent
-],
+  ],
   template: `
     <div class="bottom-sheet-content">
       <app-friend-card
@@ -79,20 +69,23 @@ export class IngoingRequestsComponent {
 export class FriendRequestsBottomSheetComponent {
   data = inject<{
     friends: Friend[];
-}>(MAT_BOTTOM_SHEET_DATA);
+    onFriendsChanged: (friends: Friend[]) => void;
+  }>(MAT_BOTTOM_SHEET_DATA);
+  
   private bottomSheetRef = inject<MatBottomSheetRef<FriendRequestsBottomSheetComponent>>(MatBottomSheetRef);
-
+  
   currentFriends: Friend[] = [];
 
   constructor() {
-    const data = this.data;
-
-    this.currentFriends = [...data.friends];
+    this.currentFriends = [...this.data.friends];
   }
 
   onFriendsChanged(updatedFriends: Friend[]): void {
     this.currentFriends = updatedFriends;
     
+    this.data.onFriendsChanged(updatedFriends);
+    
+    // Close bottom sheet if no friends left
     if (updatedFriends.length === 0) {
       this.bottomSheetRef.dismiss(updatedFriends);
     }

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, input } from '@angular/core';
 import { UserService } from '@services/userService';
 import { Friend } from '@models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
@@ -23,10 +23,7 @@ export class FriendSearchComponent implements OnInit {
   private friendsService = inject(FriendsService);
   private cdRef = inject(ChangeDetectorRef);
 
-  // TODO: Skipped for migration because:
-  //  Your application code writes to the input. This prevents migration.
-  @Input() userId: string | null = null;
-
+  readonly userId = input<string | null>(null);
   searchTerm = '';
   searchResults: Friend[] = [];
   enter = false;
@@ -39,7 +36,7 @@ export class FriendSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSuggestedFriends(this.userId);
+    this.getSuggestedFriends(this.userId());
   }
 
   onSearchTermChange(term: string): void {
@@ -55,11 +52,12 @@ searchFriend(): void {
     return;
   }
   
-  if (this.userId != null) {
+  if (this.userId() !== null) {
     this.enter = true;
+    const uid = this.userId()
     this.searchResults = [];
     
-    this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
+    this.searchService.searchUsers(this.searchTerm, uid!).subscribe(
       (results) => {
         this.searchResults = results;
         this.errorMessage = '';

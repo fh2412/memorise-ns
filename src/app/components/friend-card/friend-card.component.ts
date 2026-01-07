@@ -1,4 +1,4 @@
-import { Component, Input, input, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Friend } from '@models/userInterface.model';
 import { MatCardModule } from "@angular/material/card";
 import { MatListModule } from "@angular/material/list";
@@ -12,9 +12,7 @@ import { FriendPreviewComponent } from "../friend-preview/friend-preview.compone
 })
 export class FriendCardComponent {
   readonly title = input('');
-  // TODO: Skipped for migration because:
-  //  Your application code writes to the input. This prevents migration.
-  @Input() friends: Friend[] = [];
+  readonly friends = input<Friend[]>([]);
   readonly requested = input(false);
   readonly buttonText = input('Request');
   readonly requestedText = input('Requested');
@@ -24,8 +22,9 @@ export class FriendCardComponent {
   readonly friendsChanged = output<Friend[]>();
 
   onFriendRequestProcessed(event: { friendId: string, action: 'accepted' | 'declined' }): void {
-    this.friends = this.friends.filter(friend => friend.user_id.toString() !== event.friendId);
-
-    this.friendsChanged.emit(this.friends);
+    const updatedFriends = this.friends().filter(
+      friend => friend.user_id.toString() !== event.friendId
+    );
+    this.friendsChanged.emit(updatedFriends);
   }
 }

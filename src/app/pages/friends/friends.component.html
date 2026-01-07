@@ -21,15 +21,15 @@
     </div>
     <br>
     @if (ingoingFriends.length > 0) {
-    <app-ingoing-requests [friends]="ingoingFriends" (friendsUpdated)="onIngoingFriendsUpdated($event)"></app-ingoing-requests>
+    <app-ingoing-requests [ingoingFriends]="ingoingFriends" (friendsUpdated)="onIngoingFriendsUpdated($event)"></app-ingoing-requests>
     }
     <div class="friends-container">
+      @if (friends.length > 0) {
       <div class="suggestions-card">
         <app-friend-card [friends]="friends" [title]="'Your Friends'" [requested]='false' [buttonText]="'Remove'"
           [requestedText]="'Undo'" [buttonIcon]="'person_remove'"></app-friend-card>
       </div>
-
-      <!-- Right side: Suggestions Card -->
+    }
       <div class="suggestions-card">
         <app-friend-search [userId]="loggedInUserId"></app-friend-search>
       </div>

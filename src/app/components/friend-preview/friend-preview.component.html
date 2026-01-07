@@ -12,15 +12,15 @@
     </div>
   </button>
   @if (isLargeScreen && !declineButton()) {
-  <button mat-stroked-button [color]="buttonColor()" (click)="requestFriend(buttonText(), requested)"
-    [class.enabled]="requested" [class.disabled]="!requested">
+  <button mat-stroked-button [color]="buttonColor()" (click)="requestFriend(buttonText(), requested())"
+    [class.enabled]="requested()" [class.disabled]="!requested()">
     <mat-icon>{{ buttonIcon() }}</mat-icon>
-    {{ requested ? requestedText() : buttonText() }}
+    {{ requested() ? requestedText() : buttonText() }}
   </button>
   }
   @else if(!isLargeScreen && !declineButton()){
-  <button mat-icon-button (click)="requestFriend(buttonText(), requested)" [class.enabled]="requested"
-    [class.disabled]="!requested">
+  <button mat-icon-button (click)="requestFriend(buttonText(), requested())" [class.enabled]="requested()"
+    [class.disabled]="!requested()">
     <mat-icon class="logout-icon">{{ buttonIcon() }}</mat-icon>
   </button>
   }

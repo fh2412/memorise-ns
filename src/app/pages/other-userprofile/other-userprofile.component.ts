@@ -20,12 +20,13 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 import { VisitedCountryMapComponent } from '../../components/visited-country-map/visited-country-map.component';
 import { DatePipe } from '@angular/common';
+import { MatChip } from "@angular/material/chips";
 
 @Component({
     selector: 'app-other-userprofile',
     templateUrl: './other-userprofile.component.html',
     styleUrl: './other-userprofile.component.scss',
-    imports: [BackButtonComponent, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe]
+    imports: [BackButtonComponent, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, MatChip]
 })
 export class OtherUserprofileComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -49,13 +50,13 @@ export class OtherUserprofileComponent implements OnInit {
     this.loggedInUserId = this.userService.getLoggedInUserId();
 
     try {
-      // Run both operations in parallel
       const [user, memories] = await Promise.all([
         firstValueFrom(this.userService.getUser(this.userId)),
         firstValueFrom(this.pinnedService.getPinnedMemories(this.userId))
       ]);
 
       this.user = user;
+      console.log(this.user);
       this.pinnedMemories = this.getMemoriesToDisplay(memories);
       this.checkFriendshipStatus();
     } catch (error) {

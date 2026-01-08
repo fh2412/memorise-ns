@@ -1,4 +1,6 @@
 @use '../userprofile/userprofile.component.scss';
+@use '@angular/material' as mat;
+
 
 .profile-picture-container {
     cursor: auto;
@@ -7,4 +9,19 @@
             filter: none;
         }
     }
+
+    .badge-pro {
+    @include mat.chips-overrides((
+      label-text-color: var(--mat-sys-secondary),
+      outline-color: var(--mat-sys-secondary),
+    ));
+
+    background-color: var(--mat-sys-secondary-container);
+
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    text-transform: uppercase;
+  }
 }

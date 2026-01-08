@@ -63,6 +63,9 @@ export class VisitedCountryMapComponent implements OnInit {
 
   async getVisitedCountries(userId: string): Promise<void> {
     this.countryList = await firstValueFrom(this.memoryStatsService.getVisitedCountries(userId));
+    if(this.countryList === null){
+      this.countryList = []
+    }
   }
 
   setDarkmodeColors(): void {

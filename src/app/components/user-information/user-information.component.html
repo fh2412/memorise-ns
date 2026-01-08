@@ -2,6 +2,12 @@
 <mat-card class="user-card" appearance="outlined">
   <div class="profile-picture-container">
     <img [src]="userdb.profilepic || '/assets/img/1.png'" alt="Profile Picture" class="profile-picture">
+    @if (userdb.account_type === 'PRO') {
+    <mat-chip class="badge-pro">
+      <mat-icon matChipTrailingIcon>diamond</mat-icon>
+      PRO
+    </mat-chip>
+    }
   </div>
   <div class="user-details">
     <mat-card-title>{{ userdb.name || 'No Name Provided' }}</mat-card-title>
@@ -29,5 +35,5 @@
 </mat-card>
 }
 @else {
-  <mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
+<mat-card class="no-connection" appearance="outlined">No Database Connection</mat-card>
 }

@@ -1,5 +1,8 @@
+import { AccountType } from "./billing.model";
+
 export interface MemoriseUser {
   user_id: string;
+  account_type: AccountType;
   username: string;
   name: string;
   email: string;

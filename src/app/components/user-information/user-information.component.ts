@@ -8,12 +8,13 @@ import { MatButton } from '@angular/material/button';
 import { MatList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
+import { MatChip, MatChipTrailingIcon } from "@angular/material/chips";
 
 @Component({
-    selector: 'app-user-information',
-    templateUrl: './user-information.component.html',
-    styleUrls: ['./user-information.component.scss'],
-    imports: [MatCard, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, DatePipe]
+  selector: 'app-user-information',
+  templateUrl: './user-information.component.html',
+  styleUrls: ['./user-information.component.scss'],
+  imports: [MatCard, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, DatePipe, MatChip, MatChipTrailingIcon]
 })
 export class UserInformationComponent implements OnInit {
   private userService = inject(UserService);
@@ -38,6 +39,8 @@ export class UserInformationComponent implements OnInit {
         .subscribe(
           (data) => {
             this.userdb = data;
+            console.log("User: ", this.userdb);
+
           },
           (error: Error) => {
             console.error('Error fetching user data:', error);

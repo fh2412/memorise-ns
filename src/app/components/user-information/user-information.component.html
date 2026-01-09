@@ -3,10 +3,10 @@
   <div class="profile-picture-container">
     <img [src]="userdb.profilepic || '/assets/img/1.png'" alt="Profile Picture" class="profile-picture">
     @if (userdb.account_type === 'PRO') {
-    <mat-chip class="badge-pro">
-      <mat-icon matChipTrailingIcon>diamond</mat-icon>
-      PRO
-    </mat-chip>
+    <app-pro-badge class="badge"></app-pro-badge>
+    }
+    @else if(userdb.account_type === 'UNLIMITED') {
+    <app-unlimited-badge class="badge"></app-unlimited-badge>
     }
   </div>
   <div class="user-details">

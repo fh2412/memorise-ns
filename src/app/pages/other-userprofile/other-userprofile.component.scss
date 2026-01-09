@@ -10,14 +10,7 @@
         }
     }
 
-    .badge-pro {
-    @include mat.chips-overrides((
-      label-text-color: var(--mat-sys-secondary),
-      outline-color: var(--mat-sys-secondary),
-    ));
-
-    background-color: var(--mat-sys-secondary-container);
-
+  .badge {
     position: absolute;
     bottom: 0;
     right: 0;

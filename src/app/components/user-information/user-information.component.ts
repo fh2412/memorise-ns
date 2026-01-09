@@ -8,13 +8,14 @@ import { MatButton } from '@angular/material/button';
 import { MatList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { DatePipe } from '@angular/common';
-import { MatChip, MatChipTrailingIcon } from "@angular/material/chips";
+import { UnlimitedBadgeComponent } from "@components/badges/unlimited-badge/unlimited-badge.component";
+import { ProBadgeComponent } from "@components/badges/pro-badge/pro-badge.component";
 
 @Component({
   selector: 'app-user-information',
   templateUrl: './user-information.component.html',
   styleUrls: ['./user-information.component.scss'],
-  imports: [MatCard, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, DatePipe, MatChip, MatChipTrailingIcon]
+  imports: [MatCard, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, DatePipe, UnlimitedBadgeComponent, ProBadgeComponent]
 })
 export class UserInformationComponent implements OnInit {
   private userService = inject(UserService);

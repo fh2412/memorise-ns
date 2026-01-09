@@ -20,13 +20,14 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 import { VisitedCountryMapComponent } from '../../components/visited-country-map/visited-country-map.component';
 import { DatePipe } from '@angular/common';
-import { MatChip } from "@angular/material/chips";
+import { ProBadgeComponent } from "@components/badges/pro-badge/pro-badge.component";
+import { UnlimitedBadgeComponent } from "@components/badges/unlimited-badge/unlimited-badge.component";
 
 @Component({
     selector: 'app-other-userprofile',
     templateUrl: './other-userprofile.component.html',
     styleUrl: './other-userprofile.component.scss',
-    imports: [BackButtonComponent, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, MatChip]
+    imports: [BackButtonComponent, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, ProBadgeComponent, UnlimitedBadgeComponent]
 })
 export class OtherUserprofileComponent implements OnInit {
   private route = inject(ActivatedRoute);

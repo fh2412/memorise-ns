@@ -1,0 +1,8 @@
+  @use '@angular/material' as mat;
+
+  .badge-pro {
+      @include mat.chips-overrides((elevated-container-color: var(--mat-sys-secondary-container),
+              label-text-color: var(--mat-sys-secondary),
+              outline-color: var(--mat-sys-secondary),
+          ));
+  }

@@ -54,6 +54,14 @@
   }
 }
 
+.badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  text-transform: uppercase;
+}
+
 .bio {
   width: 80%;
   margin-left: 5%;
@@ -145,7 +153,6 @@
 
 mat-tab-group {
   margin-top: 8px;
-  @include mat.tabs-overrides((
-    label-text-weight: 800,
-  ));
+  @include mat.tabs-overrides((label-text-weight: 800,
+    ));
 }

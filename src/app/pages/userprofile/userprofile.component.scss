@@ -1,5 +1,5 @@
-@use '../../../styles/components/mixins' as mixins;
-@use '../../../styles/components/spinner-overlay.scss';
+@use 'components/mixins' as mixins;
+@use 'components/spinner-overlay.scss';
 @use '@angular/material' as mat;
 
 .wrapper {

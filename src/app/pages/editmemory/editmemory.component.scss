@@ -1,5 +1,5 @@
-@use '../../../styles/components/mixins' as mixins;
-@use '../../../styles/components/memory-card-empty.scss' as memory-card-empty-mixin;
+@use 'components/mixins' as mixins;
+@use 'components/memory-card-empty.scss' as memory-card-empty-mixin;
 
 .bd-home-section {
   @include mixins.background-gradient;

@@ -1,5 +1,5 @@
-@use '../../../styles/components/memory-card-empty' as card-mixin;
-@use '../../../styles/components/mixins' as mixins;
+@use 'components/memory-card-empty' as card-mixin;
+@use 'components/mixins' as mixins;
 @use '@angular/material' as mat;
 
 

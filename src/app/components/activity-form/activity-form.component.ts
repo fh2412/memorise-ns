@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, input } from '@angular/core';
 import { ReactiveFormsModule, FormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -16,9 +16,9 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MemorySelectorComponent } from '../memory-selecter/memory-selecter.component';
 import { MatDialog } from '@angular/material/dialog';
-import { CountryService } from '../../services/restCountries.service';
+import { CountryService } from '@services/restCountries.service';
 import { ChooseLocationComponent } from '../_dialogs/choose-location/choose-location.component';
-import { ActivityDetails, MemoriseUserActivity } from '../../models/activityInterface.model';
+import { ActivityDetails, MemoriseUserActivity } from '@models/activityInterface.model';
 
 @Component({
   selector: 'app-activity-form',
@@ -49,9 +49,9 @@ export class ActivityFormComponent implements OnInit {
   dialog = inject(MatDialog);
   private countryService = inject(CountryService);
 
-  @Input() userId = '';
-  @Input() activity!: ActivityDetails;
-  @Input() mode = 'edit';
+  readonly userId = input.required<string>();
+  readonly activity = input.required<ActivityDetails>();
+  readonly mode = input('edit');
   selectedImageFile: File | undefined;
   imageChanged = false;
   selectedImageUrl = '';
@@ -81,8 +81,9 @@ export class ActivityFormComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.activity) {
-      this.populateForm(this.activity);
+    const activity = this.activity();
+    if (activity) {
+      this.populateForm(activity);
     }
   }
 
@@ -123,8 +124,8 @@ export class ActivityFormComponent implements OnInit {
   }
 
   openMapDialog(): void {
-    if (this.userId) {
-      this.countryService.getCountryGeocordsByUserId(this.userId).subscribe(
+    if (this.userId()) {
+      this.countryService.getCountryGeocordsByUserId(this.userId()).subscribe(
         response => {
           if (response) {
             const coords = response;
@@ -141,7 +142,7 @@ export class ActivityFormComponent implements OnInit {
                   latitude: this.lat,
                   longitude: this.lng,
                   locality: null,
-                  location_id: this.activity.location.location_id
+                  location_id: this.activity().location.location_id
                  };
                 this.activityForm.patchValue({ 
                   location: newLocation,

@@ -1,17 +1,21 @@
 // memory-card.component.ts - Update the shareMemory method
 import { DatePipe } from '@angular/common';
-import { Component, Input, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { Memory } from '../../models/memoryInterface.model';
+import { Memory } from '@models/memoryInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MemoryService } from '../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { MatCard } from '@angular/material/card';
+import { PersonHintComponent } from '../person-hint/person-hint.component';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
     selector: 'app-memory-card',
     templateUrl: './memory-card.component.html',
     styleUrl: './memory-card.component.scss',
-    standalone: false
+    imports: [MatCard, PersonHintComponent, MatIconButton, MatIcon]
 })
 export class MemoryCardComponent {
   private router = inject(Router);
@@ -20,12 +24,12 @@ export class MemoryCardComponent {
   private memoryService = inject(MemoryService);
   private clipboard = inject(Clipboard);
 
-  @Input() cardData!: Memory;
+  readonly cardData = input.required<Memory>();
   titleUrl: string | undefined;
   isGeneratingLink = false;
 
   addPhotosMemory(event: Event) {
-    this.router.navigate(['/editmemory', this.cardData.memory_id, 'addphotos']);
+    this.router.navigate(['/editmemory', this.cardData().memory_id, 'addphotos']);
     event.stopPropagation();
   }
 
@@ -38,7 +42,7 @@ export class MemoryCardComponent {
 
     this.isGeneratingLink = true;
 
-    this.memoryService.generateShareLink(this.cardData.memory_id).subscribe({
+    this.memoryService.generateShareLink(this.cardData().memory_id).subscribe({
       next: (response) => {
         // Copy the full share link to clipboard
         const success = this.clipboard.copy(response.directLink);

@@ -1,71 +1,63 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { FriendsService } from '../../services/friends.service';
-import { UserService } from '../../services/userService';
-import { ShareFriendCodeDialogComponent } from '../../components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
-import { Friend } from '../../models/userInterface.model';
+import { FriendsService } from '@services/friends.service';
+import { UserService } from '@services/userService';
+import { ShareFriendCodeDialogComponent } from '@components/_dialogs/share-friend-code-dialog/share-friend-code-dialog.component';
+import { Friend } from '@models/userInterface.model';
 import { Router } from '@angular/router';
+import { UserInformationComponent } from '../../components/user-information/user-information.component';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { IngoingRequestsComponent } from '../../components/ingoing-requests/ingoing-requests.component';
+import { FriendCardComponent } from '../../components/friend-card/friend-card.component';
+import { FriendSearchComponent } from '../../components/friend-search/friend-search.component';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-friends',
   templateUrl: './friends.component.html',
   styleUrl: './friends.component.scss',
-  standalone: false
+  imports: [UserInformationComponent, MatButton, MatIcon, IngoingRequestsComponent, FriendCardComponent, FriendSearchComponent]
 })
 export class FriendsComponent implements OnInit {
   private dialog = inject(MatDialog);
-  private friendsService = inject(FriendsService);
-  private userService = inject(UserService);
+  private readonly friendsService = inject(FriendsService);
+  private readonly userService = inject(UserService);
   private router = inject(Router);
 
 
   friends: Friend[] = [];
-  pendingFriends: Friend[] = [];
   ingoingFriends: Friend[] = [];
   loggedInUserId: string | null = null;
 
-  ngOnInit(): void {
-    this.initializeUserData();
-  }
-
-  private initializeUserData(): void {
+  async ngOnInit(): Promise<void> {
     this.loggedInUserId = this.userService.getLoggedInUserId() || '';
     if (this.loggedInUserId) {
-      this.loadFriendsData();
+      await this.loadFriendsData(this.loggedInUserId);
     }
   }
 
-  private async loadFriendsData(): Promise<void> {
-    if (this.loggedInUserId != null) {
-      this.fetchFriends(this.loggedInUserId);
-      //this.fetchPendingFriends(this.loggedInUserId);
-      this.fetchIngoingFriends(this.loggedInUserId);
+  private async loadFriendsData(userId: string): Promise<void> {
+    await Promise.all([
+      this.fetchFriends(userId),
+      this.fetchIngoingFriends(userId)
+    ]);
+  }
+
+  private async fetchFriends(userId: string): Promise<void> {
+    try {
+      this.friends = await firstValueFrom(this.friendsService.getUserFriends(userId));
+    } catch (error) {
+      console.error(`error fetching friends:`, error);
     }
   }
 
-  private fetchFriends(userId: string): void {
-    this.friendsService.getUserFriends(userId).subscribe(
-      (friends) => this.friends = friends,
-      (error) => this.handleFetchError('user friends', error)
-    );
-  }
-
-  /*private fetchPendingFriends(userId: string): void {
-    this.friendsService.getPendingFriends(userId).subscribe(
-      (friends) => this.pendingFriends = friends,
-      (error) => this.handleFetchError('pending friends', error)
-    );
-  }*/
-
-  private fetchIngoingFriends(userId: string): void {
-    this.friendsService.getIngoingFriends(userId).subscribe(
-      (friends) => this.ingoingFriends = friends,
-      (error) => this.handleFetchError('ingoing friends', error)
-    );
-  }
-
-  private handleFetchError(dataType: string, error: Error): void {
-    console.error(`Error fetching ${dataType}:`, error);
+  private async fetchIngoingFriends(userId: string): Promise<void> {
+    try {
+      this.ingoingFriends = await firstValueFrom(this.friendsService.getIngoingFriends(userId));
+    } catch (error) {
+      console.error(`error fetching ingoing friends`, error);
+    }
   }
 
   openLinkModal(): void {

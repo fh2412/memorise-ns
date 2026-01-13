@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, Injectable, signal, inject } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { firstValueFrom, Observable } from 'rxjs';
-import { AccountType, StorageLimit, UserStorageData } from '../models/billing.model';
+import { AccountType, UserStorageData } from '../models/billing.model';
 
 export interface DeletionData {
   size: number;
@@ -26,14 +26,20 @@ export class BillingService {
     return data.storageUsedBytes / (1024 * 1024 * 1024);
   });
 
+  // Computed signal for Accounttype
+  readonly accountType = computed(() => {
+    const data = this.userStorageData();
+    if (!data) return AccountType.FREE;
+    return data.accountType;
+  });
+
   // Computed signal to check if user can create new memory
   readonly canCreateNewMemory = computed(() => {
     const data = this.userStorageData();
     if (!data) return false;
 
     // No limit for premium and corporate users
-    if (data.accountType === AccountType.PREMIUM ||
-      data.accountType === AccountType.CORPORATE) {
+    if (data.accountType === AccountType.UNLIMITED) {
       return true;
     }
 
@@ -59,7 +65,6 @@ export class BillingService {
 
     return `Storage: ${storageGB.toFixed(2)} GB (Unlimited)`;
   });
-
 
 
   private apiUrl = `${environment.apiUrl}/billing`;
@@ -93,9 +98,6 @@ export class BillingService {
     this.userStorageData.set(data);
   }
 
-  /**
-   * Update only the storage used (e.g., after uploading/deleting files)
-   */
   updateStorageUsed(storageUsedBytes: number): void {
     const currentData = this.userStorageData();
     if (currentData) {
@@ -104,35 +106,5 @@ export class BillingService {
         storageUsedBytes
       });
     }
-  }
-
-  /**
-   * Get current storage data
-   */
-  getUserStorageData(): UserStorageData | null {
-    return this.userStorageData();
-  }
-
-  /**
-   * Get storage limit for current user
-   */
-  getStorageLimit(): StorageLimit {
-    const data = this.userStorageData();
-    
-    if (!data) {
-      return { maxStorageBytes: 0, isUnlimited: false };
-    }
-    
-    if (data.accountType === AccountType.FREE) {
-      return {
-        maxStorageBytes: 5 * 1024 * 1024 * 1024, // 5GB in bytes
-        isUnlimited: false
-      };
-    }
-    
-    return {
-      maxStorageBytes: 0,
-      isUnlimited: true
-    };
   }
 }

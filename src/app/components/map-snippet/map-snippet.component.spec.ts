@@ -8,8 +8,8 @@ describe('MapSnippetComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapSnippetComponent]
-    })
+    imports: [MapSnippetComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(MapSnippetComponent);

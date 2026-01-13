@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LoginComponent } from './login.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AuthenticationService } from '../../services/authentication.service';
+import { AuthenticationService } from '@services/authentication.service';
 import { Subject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HomeComponent } from '../home/home.component';
@@ -22,14 +22,14 @@ describe('SigninComponent', () => {
     snackBar = new SnackBarMock();
 
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
-      imports: [
+    imports: [
         ReactiveFormsModule,
         RouterTestingModule.withRoutes([
-          {path: 'home', component: HomeComponent}
-        ])
-      ]
-    })
+            { path: 'home', component: HomeComponent }
+        ]),
+        LoginComponent
+    ]
+})
     .overrideProvider(AuthenticationService, {useValue: authenticationService})
     .overrideProvider(MatSnackBar, {useValue: snackBar})
     .compileComponents();

@@ -8,8 +8,8 @@ describe('MemorySelecterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MemorySelecterComponent]
-    })
+    imports: [MemorySelecterComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(MemorySelecterComponent);

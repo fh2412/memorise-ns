@@ -10,13 +10,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatCheckboxModule} from '@angular/material/checkbox'; 
-import { MyActivityInformationComponent } from '../../components/my-activity-information/my-activity-information.component';
+import { MyActivityInformationComponent } from '@components/my-activity-information/my-activity-information.component';
 import { MatListModule } from '@angular/material/list';
-import { CompanyInformationComponent } from '../../components/company-information/company-information.component';
-import { ActivityListComponent } from "../../components/activity-list/activity-list.component";
-import { ColorTestComponent } from "../../components/color-test/color-test.component";
-import { BockmarkedActivitiesComponent } from "../../components/bockmarked-activities/bockmarked-activities.component";
-import { NotFoundComponent } from "../../components/not-found/not-found.component";
+import { CompanyInformationComponent } from '@components/company-information/company-information.component';
+import { ActivityListComponent } from "@components/activity-list/activity-list.component";
+import { ColorTestComponent } from "@components/color-test/color-test.component";
+import { BockmarkedActivitiesComponent } from "@components/bockmarked-activities/bockmarked-activities.component";
+import { NotFoundComponent } from "@components/not-found/not-found.component";
 
 const routes: Routes = [
   {

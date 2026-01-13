@@ -1,9 +1,9 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, OnInit, effect, inject, input, signal } from '@angular/core';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/userService';
-import { MemoryFormData } from '../../models/memoryInterface.model';
+import { UserService } from '@services/userService';
+import { MemoryFormData } from '@models/memoryInterface.model';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -36,12 +36,13 @@ export class ImageUploadComponent implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
 
-  @Input() memoryId = '';
-  @Input() memoryData: MemoryFormData | null = null;
-  @Input() friends_emails: string[] = [];
-  @Input() picture_count = 0;
-  @Input() googleStorageUrl = "";
+  readonly memoryId = input('');
+  readonly memoryData = input<MemoryFormData | null>(null);
+  readonly friends_emails = input<string[]>([]);
+  readonly picture_count = input(0);
+  readonly googleStorageUrlInput = input("");
 
+  readonly googleStorageUrl = signal("");
   userId: string | null = '';
 
   selectedFiles: File[] = [];
@@ -54,12 +55,22 @@ export class ImageUploadComponent implements OnInit {
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
 
+
+  constructor() {
+    effect(() => {
+      const inputUrl = this.googleStorageUrlInput();
+      if (inputUrl) {
+        this.googleStorageUrl.set(inputUrl);
+      }
+    });
+  }
+
   async ngOnInit(): Promise<void> {
     this.userService.userId$.subscribe(userId => {
       if (userId) {
         this.userId = userId;
-        if (this.picture_count == 0) {
-          this.googleStorageUrl = this.userId.toString() + Date.now().toString();
+        if (this.picture_count() == 0) {
+          this.googleStorageUrl.set(this.userId.toString() + Date.now().toString());
           this.showStar = true;
         }
       }
@@ -112,7 +123,7 @@ export class ImageUploadComponent implements OnInit {
       const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
         width: '300px',
         disableClose: true, // Prevent closing the dialog by clicking outside
-        data: { userId: this.userId, memoryId: this.memoryId, filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData, friends_emails: this.friends_emails, picture_count: this.picture_count, googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
+        data: { userId: this.userId, memoryId: this.memoryId(), filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData(), friends_emails: this.friends_emails(), picture_count: this.picture_count(), googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
       });
 
       // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

@@ -1,22 +1,32 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
-import { MemoryService } from '../../services/memory.service';
-import { UserService } from '../../services/userService';
-import { MatDatepicker } from '@angular/material/datepicker';
-import { ChooseLocationComponent } from '../../components/_dialogs/choose-location/choose-location.component';
+import { MemoryService } from '@services/memory.service';
+import { UserService } from '@services/userService';
+import { MatDatepicker, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatDateRangePicker } from '@angular/material/datepicker';
+import { ChooseLocationComponent } from '@components/_dialogs/choose-location/choose-location.component';
 import { Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { Country, CountryService } from '../../services/restCountries.service';
-import { ActivityService } from '../../services/activity.service';
+import { Location, AsyncPipe } from '@angular/common';
+import { Country, CountryService } from '@services/restCountries.service';
+import { ActivityService } from '@services/activity.service';
 import { firstValueFrom, map, Observable, startWith } from 'rxjs';
-import { ParsedLocation } from '../../models/geocoder-response.model';
+import { ParsedLocation } from '@models/geocoder-response.model';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { MatCard } from '@angular/material/card';
+import { MatStepper, MatStep, MatStepLabel, MatStepperNext, MatStepperPrevious } from '@angular/material/stepper';
+import { MatFormField, MatLabel, MatInput, MatError, MatSuffix } from '@angular/material/input';
+import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
+import { MatOption } from '@angular/material/select';
+import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
 
 @Component({
-  selector: 'app-adding-memory',
-  templateUrl: './adding-memory.component.html',
-  styleUrls: ['./adding-memory.component.scss'],
-  standalone: false
+    selector: 'app-adding-memory',
+    templateUrl: './adding-memory.component.html',
+    styleUrls: ['./adding-memory.component.scss'],
+    imports: [BackButtonComponent, MatCard, MatStepper, MatStep, ReactiveFormsModule, MatStepLabel, MatFormField, MatLabel, MatInput, MatError, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatSuffix, MatDateRangePicker, FriendsAutocompletComponent, MatButton, MatStepperNext, MatIcon, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatStepperPrevious, ImageUploadComponent, AsyncPipe]
 })
 export class AddingMemoryComponent implements OnInit {
   private formBuilder = inject(FormBuilder);

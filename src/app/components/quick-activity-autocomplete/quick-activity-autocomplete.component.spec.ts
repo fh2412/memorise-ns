@@ -8,8 +8,8 @@ describe('QuickActivityAutocompleteComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [QuickActivityAutocompleteComponent]
-    })
+    imports: [QuickActivityAutocompleteComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(QuickActivityAutocompleteComponent);

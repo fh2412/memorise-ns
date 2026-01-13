@@ -1,8 +1,8 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { MemorystatsService } from '../../services/memorystats.service';
+import { Component, OnInit, inject, input } from '@angular/core';
+import { MemorystatsService } from '@services/memorystats.service';
 import { firstValueFrom } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
-import { MemoryDisplayStats } from '../../models/memoryInterface.model';
+import { MemoryDisplayStats } from '@models/memoryInterface.model';
 
 @Component({
     selector: 'app-stats',
@@ -13,7 +13,7 @@ import { MemoryDisplayStats } from '../../models/memoryInterface.model';
 export class StatsComponent implements OnInit {
   private memorystatsService = inject(MemorystatsService);
 
-  @Input() userid = '';
+  readonly userid = input('');
   displayStats: MemoryDisplayStats = {
     memoryCount: 0,
     yearCount: 0,
@@ -30,7 +30,7 @@ export class StatsComponent implements OnInit {
   async getMemoryStats(): Promise<void> {
     this.loading = true;
     try {
-        this.displayStats = await firstValueFrom(this.memorystatsService.getDisplayStats(this.userid));
+        this.displayStats = await firstValueFrom(this.memorystatsService.getDisplayStats(this.userid()));
     } finally {
         this.loading = false;
     }

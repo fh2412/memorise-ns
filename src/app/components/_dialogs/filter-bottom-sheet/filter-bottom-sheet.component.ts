@@ -11,9 +11,9 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
-import { GeocoderResponse } from '../../../models/geocoder-response.model';
+import { GeocoderResponse } from '@models/geocoder-response.model';
 import { MatDividerModule } from '@angular/material/divider';
-import { CountryService } from '../../../services/restCountries.service';
+import { CountryService } from '@services/restCountries.service';
 import { ChooseLocationComponent } from '../choose-location/choose-location.component';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';

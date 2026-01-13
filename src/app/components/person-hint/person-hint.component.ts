@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 @Component({
   selector: 'app-person-hint',
@@ -7,6 +7,6 @@ import { Component, Input } from '@angular/core';
   styleUrl: './person-hint.component.scss'
 })
 export class PersonHintComponent {
-  @Input() username = '';
-  @Input() url = '';
+  readonly username = input<string>();
+  readonly url = input('');
 }

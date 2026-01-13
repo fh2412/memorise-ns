@@ -1,14 +1,14 @@
 <mat-card class="coming-soon-card" appearance="outlined">
-    <img mat-card-image [src]="imageUrl || '/assets/placeholder-image.jpg'" [alt]="featureName + ' coming soon'"
+    <img mat-card-image [src]="imageUrl() || '/assets/placeholder-image.jpg'" [alt]="featureName() + ' coming soon'"
         class="feature-image">
     <mat-card-content>
         <div class="coming-soon-badge">
             <mat-icon>access_time</mat-icon>
             <span>Coming Soon</span>
         </div>
-        <h2 class="feature-title">{{ featureName }}</h2>
+        <h2 class="feature-title">{{ featureName() }}</h2>
         <p class="feature-description">
-            {{text}}
+            {{text()}}
         </p>
     </mat-card-content>
     <mat-card-actions>

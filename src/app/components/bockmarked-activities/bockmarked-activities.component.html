@@ -20,7 +20,7 @@
                         <span>{{ activity.title }}</span>
                     </div>
                 </button>
-                @if (fullComponent) {
+                @if (fullComponent()) {
                 <button mat-icon-button (click)="deleteBookmark(activity.activityId, $event)"
                     [attr.aria-label]="'Delete bookmark for ' + activity.title"> <mat-icon
                         class="delete-icon">delete</mat-icon>

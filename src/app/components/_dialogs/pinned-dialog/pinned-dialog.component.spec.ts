@@ -8,8 +8,8 @@ describe('PinnedDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PinnedDialogComponent]
-    })
+    imports: [PinnedDialogComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(PinnedDialogComponent);

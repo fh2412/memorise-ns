@@ -8,8 +8,8 @@ describe('UploadProgressDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [UploadProgressDialogComponent]
-    })
+    imports: [UploadProgressDialogComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(UploadProgressDialogComponent);

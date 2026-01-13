@@ -13,6 +13,12 @@
             </label>
             <input type="file" id="fileInput" accept="image/*" style="display: none;" class="pointer"
               (change)="onFileChange($event)" [disabled]="!(this.loggedInUserId===this.userId)" />
+            @if (user.account_type === 'PRO') {
+            <app-pro-badge class="badge"></app-pro-badge>
+            }
+            @else if(user.account_type === 'UNLIMITED') {
+            <app-unlimited-badge class="badge"></app-unlimited-badge>
+            }
           </div>
           <mat-card-title>{{user.name || 'no name provided'}}</mat-card-title>
           <mat-card-subtitle>
@@ -73,7 +79,7 @@
             </div>
           </mat-tab>
           <mat-tab label="Adventure Map">
-              <app-visited-country-map></app-visited-country-map>
+            <app-visited-country-map></app-visited-country-map>
           </mat-tab>
         </mat-tab-group>
 

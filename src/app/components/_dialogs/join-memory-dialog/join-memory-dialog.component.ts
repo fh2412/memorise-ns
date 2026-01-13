@@ -7,8 +7,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
-import { Memory } from '../../../models/memoryInterface.model';
-import { MemoryService } from '../../../services/memory.service';
+import { Memory } from '@models/memoryInterface.model';
+import { MemoryService } from '@services/memory.service';
 
 export interface JoinMemoryDialogData {
   token: string;

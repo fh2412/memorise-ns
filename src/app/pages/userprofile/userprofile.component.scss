@@ -1,5 +1,5 @@
-@use '../../../styles/components/mixins' as mixins;
-@use '../../../styles/components/spinner-overlay.scss';
+@use 'components/mixins' as mixins;
+@use 'components/spinner-overlay.scss';
 @use '@angular/material' as mat;
 
 .wrapper {
@@ -52,6 +52,14 @@
     margin: auto;
     margin-bottom: 30px;
   }
+}
+
+.badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+
+  text-transform: uppercase;
 }
 
 .bio {
@@ -145,7 +153,6 @@
 
 mat-tab-group {
   margin-top: 8px;
-  @include mat.tabs-overrides((
-    label-text-weight: 800,
-  ));
+  @include mat.tabs-overrides((label-text-weight: 800,
+    ));
 }

@@ -39,6 +39,9 @@
               "src/styles.scss",
               "src/styles/themes/styles_theme-colors.scss"
             ],
+            "stylePreprocessorOptions": {
+              "includePaths": ["src/styles"]
+            },
             "scripts": []
           },
           "configurations": {

@@ -1,0 +1,48 @@
+ @use '@angular/material' as mat;
+
+  .badge-unlimited {    
+    @include mat.chips-overrides((
+      label-text-color: var(--mat-sys-error),
+      outline-color: transparent,
+      elevated-container-color: var(--mat-sys-surface),
+    ));
+    
+    // Animated glowing border
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(
+        90deg,
+        var(--mat-sys-error),
+        var(--mat-sys-secondary),
+        var(--mat-sys-primary),
+        var(--mat-sys-outline),
+        var(--mat-sys-error),
+        var(--mat-sys-secondary),
+      );
+      background-size: 200% 200%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: gradient-rotate 3s linear infinite;
+    }
+    
+    // Additional glow on the badge itself
+    box-shadow: 
+      0 0 15px rgba(255, 64, 129, 0.3),
+      0 0 25px rgba(156, 39, 176, 0.2);
+  }
+
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}

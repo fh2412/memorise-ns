@@ -6,7 +6,7 @@ import {
   OnInit,
   Renderer2,
 } from '@angular/core';
-import { ThemeService, Theme } from '../../services/theme.service';
+import { ThemeService, Theme } from '@services/theme.service';
 
 @Component({
   selector: 'app-theme-switcher',

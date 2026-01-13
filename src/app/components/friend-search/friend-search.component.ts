@@ -1,22 +1,29 @@
-import { ChangeDetectorRef, Component, Input, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
-import { Friend } from '../../models/userInterface.model';
+import { ChangeDetectorRef, Component, OnInit, inject, input } from '@angular/core';
+import { UserService } from '@services/userService';
+import { Friend } from '@models/userInterface.model';
 import { debounceTime, Subject } from 'rxjs';
-import { FriendsService } from '../../services/friends.service';
+import { FriendsService } from '@services/friends.service';
+import { MatCard, MatCardHeader, MatCardTitle, MatCardContent } from '@angular/material/card';
+import { MatFormField, MatLabel, MatInput } from '@angular/material/input';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatList, MatListItem } from '@angular/material/list';
+import { FriendPreviewComponent } from '../friend-preview/friend-preview.component';
+import { MatDivider } from '@angular/material/divider';
 
 @Component({
     selector: 'app-friend-search',
     templateUrl: './friend-search.component.html',
     styleUrls: ['./friend-search.component.scss'],
-    standalone: false
+    imports: [MatCard, MatCardHeader, MatCardTitle, MatCardContent, MatFormField, MatLabel, MatInput, ReactiveFormsModule, FormsModule, MatIconButton, MatIcon, MatList, MatListItem, FriendPreviewComponent, MatDivider]
 })
 export class FriendSearchComponent implements OnInit {
   private searchService = inject(UserService);
   private friendsService = inject(FriendsService);
   private cdRef = inject(ChangeDetectorRef);
 
-  @Input() userId: string | null = null;
-
+  readonly userId = input<string | null>(null);
   searchTerm = '';
   searchResults: Friend[] = [];
   enter = false;
@@ -29,7 +36,7 @@ export class FriendSearchComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getSuggestedFriends(this.userId);
+    this.getSuggestedFriends(this.userId());
   }
 
   onSearchTermChange(term: string): void {
@@ -45,11 +52,12 @@ searchFriend(): void {
     return;
   }
   
-  if (this.userId != null) {
+  if (this.userId() !== null) {
     this.enter = true;
+    const uid = this.userId()
     this.searchResults = [];
     
-    this.searchService.searchUsers(this.searchTerm, this.userId).subscribe(
+    this.searchService.searchUsers(this.searchTerm, uid!).subscribe(
       (results) => {
         this.searchResults = results;
         this.errorMessage = '';

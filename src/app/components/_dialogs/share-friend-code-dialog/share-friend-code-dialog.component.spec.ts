@@ -8,8 +8,8 @@ describe('LinkModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [LinkModalComponent]
-    })
+    imports: [LinkModalComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(LinkModalComponent);

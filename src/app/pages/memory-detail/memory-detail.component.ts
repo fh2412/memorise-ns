@@ -1,21 +1,33 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MemoryService } from '../../services/memory.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/userService';
+import { MemoryService } from '@services/memory.service';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { UserService } from '@services/userService';
 import { MatDialog } from '@angular/material/dialog';
 import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "@angular/fire/storage";
-import { DateRange } from '@angular/material/datepicker';
-import { LocationService } from '../../services/location.service';
-import { FullDescriptionDialogComponent } from '../../components/_dialogs/full-description-dialog/full-description-dialog.component';
-import { ImageGalleryService } from '../../services/image-gallery.service';
-import { Memory } from '../../models/memoryInterface.model';
-import { MemoriseUser, MemoryDetailFriend } from '../../models/userInterface.model';
-import { MemoriseLocation } from '../../models/location.model';
-import { ActivityService } from '../../services/activity.service';
+import { DateRange, MatCalendar } from '@angular/material/datepicker';
+import { LocationService } from '@services/location.service';
+import { FullDescriptionDialogComponent } from '@components/_dialogs/full-description-dialog/full-description-dialog.component';
+import { ImageGalleryService } from '@services/image-gallery.service';
+import { Memory } from '@models/memoryInterface.model';
+import { MemoriseUser, MemoryDetailFriend } from '@models/userInterface.model';
+import { MemoriseLocation } from '@models/location.model';
+import { ActivityService } from '@services/activity.service';
 import { firstValueFrom } from 'rxjs';
-import { FriendsService } from '../../services/friends.service';
-import { ActivityDetails } from '../../models/activityInterface.model';
+import { FriendsService } from '@services/friends.service';
+import { ActivityDetails } from '@models/activityInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatCard, MatCardContent } from '@angular/material/card';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatDivider } from '@angular/material/divider';
+import { FriendsProfilePicsComponent } from '../../components/friends-profile-pics/friends-profile-pics.component';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { MapSnippetComponent } from '../../components/map-snippet/map-snippet.component';
+import { DatePipe } from '@angular/common';
 
 
 export interface ImageWithMetadata {
@@ -29,10 +41,10 @@ export interface ImageWithMetadata {
 
 
 @Component({
-  selector: 'app-memory-detail',
-  templateUrl: './memory-detail.component.html',
-  styleUrl: 'memory-detail.component.scss',
-  standalone: false
+    selector: 'app-memory-detail',
+    templateUrl: './memory-detail.component.html',
+    styleUrl: 'memory-detail.component.scss',
+    imports: [BackButtonComponent, MatToolbar, MatButton, MatIcon, RouterLink, MatCard, MatGridList, MatGridTile, MatProgressSpinner, MatDivider, FriendsProfilePicsComponent, MatCardContent, MatCalendar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MapSnippetComponent, DatePipe]
 })
 export class MemoryDetailComponent implements OnInit {
   private memoryService = inject(MemoryService);
@@ -134,7 +146,7 @@ export class MemoryDetailComponent implements OnInit {
     const imagesToShow = [...this.imagesWithMetadata];
     while (imagesToShow.length < 5) {
       imagesToShow.push({
-        url: '../../../assets/img/placeholder_image.png',
+        url: '@assets/img/placeholder_image.png',
         width: 0,
         height: 0,
         created: 'placeholder',

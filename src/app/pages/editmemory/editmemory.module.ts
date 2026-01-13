@@ -16,9 +16,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTableModule } from '@angular/material/table';
 import { MatChipsModule } from '@angular/material/chips';
-import { BackButtonComponent } from "../../components/back-button/back-button.component";
-import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
-import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
+import { BackButtonComponent } from "@components/back-button/back-button.component";
+import { FriendsAutocompletComponent } from '@components/friends-autocomplet/friends-autocomplet.component';
+import { ImageUploadComponent } from '@components/image-upload/image-upload.component';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 const routes: Routes = [
@@ -29,30 +29,28 @@ const routes: Routes = [
 ]
 
 @NgModule({
-    declarations: [
-        EditmemoryComponent,
-    ],
     imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatFormFieldModule,
-    MatGridListModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    GoogleMapsModule,
-    MatButtonModule,
-    MatDividerModule,
-    ReactiveFormsModule,
-    MatInputModule,
-    MatIconModule,
-    FriendsAutocompletComponent,
-    ImageUploadComponent,
-    MatToolbarModule,
-    MatTableModule,
-    MatChipsModule,
-    BackButtonComponent,
-    MatTooltipModule
-]
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatFormFieldModule,
+        MatGridListModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        GoogleMapsModule,
+        MatButtonModule,
+        MatDividerModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatIconModule,
+        FriendsAutocompletComponent,
+        ImageUploadComponent,
+        MatToolbarModule,
+        MatTableModule,
+        MatChipsModule,
+        BackButtonComponent,
+        MatTooltipModule,
+        EditmemoryComponent
+    ]
 })
 export class EditMemoryModule { }

@@ -42,50 +42,50 @@ import { routes } from './app-routing.module';
 import { FriendPreviewComponent } from './components/friend-preview/friend-preview.component';
 import { FeedbackButtonComponent } from "./components/feedback-button/feedback-button.component";
 import { ThemeSwitcherComponent } from "./components/theme-switcher/theme-switcher.component";
+import { SubscriptionStatusComponent } from "./components/subscription-status/subscription-status.component";
 
 @NgModule({
-    declarations: [
-        AppComponent,
+    declarations: [AppComponent],
+    bootstrap: [AppComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        RouterModule.forRoot(routes, {
+            errorHandler: (error) => {
+                console.error('Navigation Error:', error);
+                alert("A navigation error occurred. Please try again later.");
+            }
+        }),
+        AppRoutingModule,
+        MatSidenavModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatListModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        FormsModule,
+        MatButtonModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        MatSelectModule,
+        MatProgressBarModule,
+        GoogleMapsModule,
+        MatCheckboxModule,
+        ConfirmDialogComponent,
+        FullDescriptionDialogComponent,
+        ImageDialogComponent,
+        InfoDialogComponent,
+        ShareFriendCodeDialogComponent,
+        FriendPreviewComponent,
+        FeedbackButtonComponent,
+        ThemeSwitcherComponent,
+        SubscriptionStatusComponent,
         MainNavComponent,
         ChangePasswordDialogComponent,
         UploadProgressDialogComponent,
         PinnedDialogComponent,
-        CompanyDialogComponent,
+        CompanyDialogComponent
     ],
-    bootstrap: [AppComponent],
-    imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    RouterModule.forRoot(routes, {
-        errorHandler: (error) => {
-            console.error('Navigation Error:', error);
-            alert("A navigation error occurred. Please try again later.");
-        }
-    }),
-    AppRoutingModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatListModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    FormsModule,
-    MatButtonModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatSelectModule,
-    MatProgressBarModule,
-    GoogleMapsModule,
-    MatCheckboxModule,
-    ConfirmDialogComponent,
-    FullDescriptionDialogComponent,
-    ImageDialogComponent,
-    InfoDialogComponent,
-    ShareFriendCodeDialogComponent,
-    FriendPreviewComponent,
-    FeedbackButtonComponent,
-    ThemeSwitcherComponent
-],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),
         provideAuth(() => getAuth()),

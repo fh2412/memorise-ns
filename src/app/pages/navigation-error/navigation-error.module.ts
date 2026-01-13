@@ -12,13 +12,11 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    NavigationErrorComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatButtonModule,
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatButtonModule,
+        NavigationErrorComponent,
+    ],
 })
 export class NavigationErrorModule { }

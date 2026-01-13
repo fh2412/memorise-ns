@@ -1,11 +1,11 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
+import { Component, OnInit, inject, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Observable, startWith, map, firstValueFrom } from 'rxjs';
-import { MemoryService } from '../../services/memory.service';
-import { MemorySearchData } from '../../models/memoryInterface.model';
+import { MemoryService } from '@services/memory.service';
+import { MemorySearchData } from '@models/memoryInterface.model';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -27,9 +27,9 @@ import { MatInputModule } from '@angular/material/input';
 export class MemorySelectorComponent implements OnInit {
   private memoryService = inject(MemoryService);
 
-  @Input() userId!: string;
-  @Input() memoryId: string | null = null;
-  @Output() memorySelected = new EventEmitter<number>();
+  readonly userId = input.required<string>();
+  readonly memoryId = input<string | null>(null);
+  readonly memorySelected = output<number>();
 
   memories: MemorySearchData[] = [];
   filteredMemories!: Observable<MemorySearchData[]>;
@@ -41,8 +41,9 @@ export class MemorySelectorComponent implements OnInit {
     try {
       await this.loadMemoriesSearchData();
 
-      if (this.memoryId) {
-        this.selectInitMemory(this.memoryId);
+      const memoryId = this.memoryId();
+      if (memoryId) {
+        this.selectInitMemory(memoryId);
       }
 
       // Set up filtering based on search input
@@ -59,7 +60,7 @@ export class MemorySelectorComponent implements OnInit {
     this.loading = true;
     try {
       this.memories = await firstValueFrom(
-        this.memoryService.getMemoriesSearchData(this.userId, true)
+        this.memoryService.getMemoriesSearchData(this.userId(), true)
       );
     } catch (error) {
       console.error('Error loading memories:', error);

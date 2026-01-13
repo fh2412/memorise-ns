@@ -2,18 +2,18 @@
   [style.cursor]="'pointer'">
   <mat-card-content class="card-content">
     <div class="icon-section">
-      <mat-icon class="notification-icon" [matBadge]="friends.length" matBadgeColor="accent"
-        [matBadgeHidden]="friends.length === 0">
+      <mat-icon class="notification-icon" [matBadge]="ingoingFriends().length" matBadgeColor="accent"
+        [matBadgeHidden]="ingoingFriends().length === 0">
         person_add
       </mat-icon>
     </div>
     <div class="text-section">
       <h3 class="card-title">Friend Requests</h3>
       <p class="card-subtitle">
-        @if (friends.length === 1) {
+        @if (ingoingFriends().length === 1) {
         You have 1 pending friend request
         } @else {
-        You have {{ friends.length }} pending friend requests
+        You have {{ ingoingFriends().length }} pending friend requests
         }
       </p>
     </div>

@@ -1,22 +1,24 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FileUploadService } from '../../../services/file-upload.service';
-import { MemoryService } from '../../../services/memory.service';
-import { LocationService } from '../../../services/location.service';
-import { GeocodingService } from '../../../services/geocoding.service';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
+import { FileUploadService } from '@services/file-upload.service';
+import { MemoryService } from '@services/memory.service';
+import { LocationService } from '@services/location.service';
+import { GeocodingService } from '@services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
-import { MemoryFormData } from '../../../models/memoryInterface.model';
-import { ActivityService } from '../../../services/activity.service';
-import { MemoriseLocation } from '../../../models/location.model';
-import { BillingService } from '../../../services/billing.service';
+import { MemoryFormData } from '@models/memoryInterface.model';
+import { ActivityService } from '@services/activity.service';
+import { MemoriseLocation } from '@models/location.model';
+import { BillingService } from '@services/billing.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-  selector: 'app-upload-progress-dialog',
-  templateUrl: './upload-progress-dialog.component.html',
-  styleUrl: './upload-progress-dialog.component.scss',
-  standalone: false
+    selector: 'app-upload-progress-dialog',
+    templateUrl: './upload-progress-dialog.component.html',
+    styleUrl: './upload-progress-dialog.component.scss',
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatProgressBar]
 })
 export class UploadProgressDialogComponent implements OnInit {
   data = inject<{

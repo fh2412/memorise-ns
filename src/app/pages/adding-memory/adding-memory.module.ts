@@ -17,9 +17,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 import { MatGridListModule } from '@angular/material/grid-list';
-import { BackButtonComponent } from '../../components/back-button/back-button.component';
-import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
-import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
+import { BackButtonComponent } from '@components/back-button/back-button.component';
+import { FriendsAutocompletComponent } from '@components/friends-autocomplet/friends-autocomplet.component';
+import { ImageUploadComponent } from '@components/image-upload/image-upload.component';
 import { MatAutocompleteModule } from "@angular/material/autocomplete";
 
 const routes: Routes = [
@@ -30,33 +30,31 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    AddingMemoryComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatCardModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatInputModule,
-    MatButtonModule,
-    MatStepperModule,
-    ReactiveFormsModule,
-    MatProgressBarModule,
-    MatListModule,
-    MatDialogModule,
-    FormsModule,
-    MatChipsModule,
-    AsyncPipe,
-    MatSlideToggleModule,
-    MatGridListModule,
-    FriendsAutocompletComponent,
-    ImageUploadComponent,
-    BackButtonComponent,
-    MatAutocompleteModule
-]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatCardModule,
+        MatIconModule,
+        MatFormFieldModule,
+        MatDatepickerModule,
+        MatNativeDateModule,
+        MatInputModule,
+        MatButtonModule,
+        MatStepperModule,
+        ReactiveFormsModule,
+        MatProgressBarModule,
+        MatListModule,
+        MatDialogModule,
+        FormsModule,
+        MatChipsModule,
+        AsyncPipe,
+        MatSlideToggleModule,
+        MatGridListModule,
+        FriendsAutocompletComponent,
+        ImageUploadComponent,
+        BackButtonComponent,
+        MatAutocompleteModule,
+        AddingMemoryComponent
+    ]
 })
 export class AddingMemoryModule {}

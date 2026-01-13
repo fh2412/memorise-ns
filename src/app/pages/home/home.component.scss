@@ -1,5 +1,5 @@
-@use '../../../styles/components/mixins' as mixins;
-@use '../../../styles/components/page.scss';
+@use 'components/mixins' as mixins;
+@use 'components/page.scss';
 
 .header-group {
   display: flex;

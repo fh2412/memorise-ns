@@ -11,8 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule, MatSelectionListChange } from '@angular/material/list';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
-import { ActivityDetails, MemoriseUserActivity, ActivityFilter } from '../../../models/activityInterface.model';
-import { ActivityService } from '../../../services/activity.service';
+import { ActivityDetails, MemoriseUserActivity, ActivityFilter } from '@models/activityInterface.model';
+import { ActivityService } from '@services/activity.service';
 
 export interface ActivityBottomSheetData {
   activityId: number | string;

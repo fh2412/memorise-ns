@@ -18,20 +18,17 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    LoginComponent,
-    RegisterComponent,
-    WelcomePageComponent
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    ReactiveFormsModule,
-
-    MatButtonModule,
-    MatInputModule,
-    MatProgressSpinnerModule,
-    MatSnackBarModule
-  ]
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        ReactiveFormsModule,
+        MatButtonModule,
+        MatInputModule,
+        MatProgressSpinnerModule,
+        MatSnackBarModule,
+        LoginComponent,
+        RegisterComponent,
+        WelcomePageComponent
+    ]
 })
 export class LoginModule { }

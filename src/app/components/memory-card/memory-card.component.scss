@@ -1,9 +1,9 @@
-@use '../../../styles/components/mixins' as mixins;
+@use 'components/mixins' as mixins;
 
 .card {
   @include mixins.full-size();
   cursor: pointer;
-
+  
   &:hover {
     border: 2px solid var(--mat-sys-primary);
 

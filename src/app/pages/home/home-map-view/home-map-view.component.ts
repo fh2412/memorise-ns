@@ -1,9 +1,10 @@
-import { Component, ViewChild, OnInit, Input, inject } from '@angular/core';
-import { MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { Component, ViewChild, OnInit, inject, input } from '@angular/core';
+import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps';
 import { Router } from '@angular/router';
-import { Memory, MemoryMapData } from '../../../models/memoryInterface.model';
+import { Memory, MemoryMapData } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
-import { MemoryService } from '../../../services/memory.service';
+import { MemoryService } from '@services/memory.service';
+import { MemoryCardComponent } from '../../../components/memory-card/memory-card.component';
 
 
 export interface CustomMarker {
@@ -14,17 +15,17 @@ export interface CustomMarker {
 }
 
 @Component({
-  selector: 'app-home-map-view',
-  templateUrl: './home-map-view.component.html',
-  styleUrl: './home-map-view.component.scss',
-  standalone: false
+    selector: 'app-home-map-view',
+    templateUrl: './home-map-view.component.html',
+    styleUrl: './home-map-view.component.scss',
+    imports: [GoogleMap, MapMarker, MapInfoWindow, MemoryCardComponent]
 })
 export class HomeMapViewComponent implements OnInit {
   private router = inject(Router);
   private memoryService = inject(MemoryService);
 
 
-  @Input() userId = '';
+  readonly userId = input('');
   memories: MemoryMapData[] = [];
   markers: CustomMarker[] = [];
 
@@ -48,7 +49,7 @@ export class HomeMapViewComponent implements OnInit {
   private async loadMapMarkers(includeShared: boolean): Promise<void> {
     try {
       this.memories = await firstValueFrom(
-        this.memoryService.getMemoriesMapData(this.userId, includeShared)
+        this.memoryService.getMemoriesMapData(this.userId(), includeShared)
       );
       console.log(this.memories);
     } catch (error) {

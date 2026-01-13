@@ -1,18 +1,24 @@
-@if (memory && memory.title) {
-  <mat-card class="memory-card" appearance="outlined">
-    <mat-card-content>
-      <mat-card-title-group>
-        <div class="truncate-title"><mat-card-title class="truncate">{{memory.title}}</mat-card-title></div>
-        <mat-chip>Public</mat-chip>
-      </mat-card-title-group>
-      <mat-card-subtitle class="two-line-truncate">{{memory.text}}</mat-card-subtitle>
-      <span class="tag">
-        <mat-icon aria-hidden="true">circle</mat-icon>
-        Beta Memory
-      </span>
-    </mat-card-content>
-  </mat-card>
-
+@if (memory(); as mem) {
+  @if (mem.title) {
+    <mat-card class="memory-card" appearance="outlined">
+      <mat-card-content>
+        <mat-card-title-group>
+          <div class="truncate-title">
+            <mat-card-title class="truncate">{{ mem.title }}</mat-card-title>
+          </div>
+          <mat-chip>Public</mat-chip>
+        </mat-card-title-group>
+        <mat-card-subtitle class="two-line-truncate">{{ mem.text }}</mat-card-subtitle>
+        <span class="tag">
+          <mat-icon aria-hidden="true">circle</mat-icon>
+          Beta Memory
+        </span>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card class="memory-card-empty" appearance="outlined">
+    </mat-card>
+  }
 } @else {
   <mat-card class="memory-card-empty" appearance="outlined">
   </mat-card>

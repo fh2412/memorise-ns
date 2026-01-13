@@ -1,14 +1,18 @@
-import { Component, EventEmitter, Output, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AuthenticationService } from '../../../services/authentication.service';
+import { Component, inject, output } from '@angular/core';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AuthenticationService } from '@services/authentication.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { MatFormField, MatLabel, MatInput, MatError } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { WelcomePageComponent } from '../welcome-page/welcome-page.component';
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
-    standalone: false
+    imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, MatProgressSpinner, WelcomePageComponent]
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);
@@ -21,7 +25,7 @@ export class RegisterComponent {
   isFirstTimeUser = false;
   email = '';
 
-  @Output() cancelRegistration = new EventEmitter<void>();
+  readonly cancelRegistration = output<void>();
 
   constructor() {
     this.registerForm = this.fb.group({

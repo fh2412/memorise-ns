@@ -7,11 +7,11 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { BackButtonComponent } from "../../components/back-button/back-button.component";
+import { BackButtonComponent } from "@components/back-button/back-button.component";
 import { OtherUserprofileComponent } from './other-userprofile.component';
-import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { PinCardComponent } from '@components/pin-card/pin-card.component';
 import { MatTabsModule } from "@angular/material/tabs";
-import { VisitedCountryMapComponent } from "../../components/visited-country-map/visited-country-map.component";
+import { VisitedCountryMapComponent } from "@components/visited-country-map/visited-country-map.component";
 
 const routes: Routes = [
   {
@@ -21,23 +21,21 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [
-    OtherUserprofileComponent,
-  ],
-  imports: [
-    CommonModule,
-    RouterModule.forChild(routes),
-    MatGridListModule,
-    MatNativeDateModule,
-    MatIconModule,
-    MatButtonModule,
-    MatListModule,
-    MatCardModule,
-    BackButtonComponent,
-    PinCardComponent,
-    MatTabsModule,
-    VisitedCountryMapComponent
-],
-  providers: [DatePipe], // Add DatePipe here if needed
+    imports: [
+        CommonModule,
+        RouterModule.forChild(routes),
+        MatGridListModule,
+        MatNativeDateModule,
+        MatIconModule,
+        MatButtonModule,
+        MatListModule,
+        MatCardModule,
+        BackButtonComponent,
+        PinCardComponent,
+        MatTabsModule,
+        VisitedCountryMapComponent,
+        OtherUserprofileComponent
+    ],
+    providers: [DatePipe], // Add DatePipe here if needed
 })
 export class OtherUserProfileModule { }

@@ -1,0 +1,137 @@
+// choose-plan-dialog.component.scss
+@use '@angular/material' as mat;
+
+h2[mat-dialog-title] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 24px 24px 16px;
+    font-weight: 700;
+    font-size: xx-large;
+
+    .close-button {
+        margin-right: -12px;
+    }
+}
+
+.plans-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 16px;
+    margin-bottom: 8px;
+
+    @media (max-width: 960px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+mat-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    transition: transform 0.2s, box-shadow 0.2s;
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    &.highlighted {
+        box-shadow: 0 0 15px var(--mat-sys-error),
+        0 0 25px rgba(156, 39, 176, 0.2);
+
+        mat-card-header mat-card-title {
+            color: var(--mat-sys-error);
+        }
+    }
+
+    &.current-plan {
+        opacity: 0.8;
+    }
+}
+
+.current-plan-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 1;
+}
+
+@keyframes gradient-rotate {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+
+.price-section {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--mat-sys-surface-container);
+    border-radius: 8px;
+
+    .currency {
+        font-size: 24px;
+        font-weight: 500;
+        margin-right: 4px;
+    }
+
+    .amount {
+        font-size: 48px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .period {
+        font-size: 16px;
+        opacity: 0.7;
+        margin-left: 4px;
+    }
+}
+
+.features-list {
+    padding: 0;
+
+    mat-list-item {
+        height: auto;
+        min-height: 48px;
+        padding: 8px 0;
+
+        &.not-included {
+            opacity: 0.4;
+
+            mat-icon {
+                color: var(--mat-sys-outline);
+            }
+        }
+
+        mat-icon {
+            color: var(--mat-sys-primary);
+            margin-right: 12px;
+        }
+
+        span {
+            font-size: 14px;
+        }
+    }
+}
+
+mat-card-actions {
+    padding: 16px;
+    margin: 0;
+
+    button {
+        width: 100%;
+        height: 48px;
+        font-weight: 500;
+    }
+}

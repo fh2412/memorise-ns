@@ -1,21 +1,33 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MemoriseUser } from '../../models/userInterface.model';
+import { MemoriseUser } from '@models/userInterface.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UserService } from '../../services/userService';
-import { FriendsService } from '../../services/friends.service';
-import { ConfirmationDialogData, ConfirmDialogComponent } from '../../components/_dialogs/confirm-dialog/confirm-dialog.component';
+import { UserService } from '@services/userService';
+import { FriendsService } from '@services/friends.service';
+import { ConfirmationDialogData, ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { ManageFriendsService } from '../../services/friend-manage.service';
-import { PinnedMemoryService } from '../../services/pinnedMemorService';
-import { Memory } from '../../models/memoryInterface.model';
+import { ManageFriendsService } from '@services/friend-manage.service';
+import { PinnedMemoryService } from '@services/pinnedMemorService';
+import { Memory } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
+import { BackButtonComponent } from '../../components/back-button/back-button.component';
+import { MatCardTitle, MatCardSubtitle, MatCard, MatCardContent } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatList, MatListItem, MatListItemIcon, MatListItemTitle } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { PinCardComponent } from '../../components/pin-card/pin-card.component';
+import { VisitedCountryMapComponent } from '../../components/visited-country-map/visited-country-map.component';
+import { DatePipe } from '@angular/common';
+import { ProBadgeComponent } from "@components/badges/pro-badge/pro-badge.component";
+import { UnlimitedBadgeComponent } from "@components/badges/unlimited-badge/unlimited-badge.component";
 
 @Component({
-  selector: 'app-other-userprofile',
-  templateUrl: './other-userprofile.component.html',
-  styleUrl: './other-userprofile.component.scss',
-  standalone: false
+    selector: 'app-other-userprofile',
+    templateUrl: './other-userprofile.component.html',
+    styleUrl: './other-userprofile.component.scss',
+    imports: [BackButtonComponent, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatIcon, MatListItemIcon, MatListItemTitle, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, ProBadgeComponent, UnlimitedBadgeComponent]
 })
 export class OtherUserprofileComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -39,13 +51,13 @@ export class OtherUserprofileComponent implements OnInit {
     this.loggedInUserId = this.userService.getLoggedInUserId();
 
     try {
-      // Run both operations in parallel
       const [user, memories] = await Promise.all([
         firstValueFrom(this.userService.getUser(this.userId)),
         firstValueFrom(this.pinnedService.getPinnedMemories(this.userId))
       ]);
 
       this.user = user;
+      console.log(this.user);
       this.pinnedMemories = this.getMemoriesToDisplay(memories);
       this.checkFriendshipStatus();
     } catch (error) {

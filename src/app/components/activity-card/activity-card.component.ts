@@ -1,16 +1,16 @@
 // activity-card.component.ts
-import { Component, computed, Input, inject } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
 import { MatChipsModule } from '@angular/material/chips';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { MemoriseUserActivity } from '@models/activityInterface.model';
 import { Router } from '@angular/router';
 import { trigger, transition, style, animate, keyframes } from '@angular/animations';
-import { BookmarkService } from '../../services/bookmarking.service';
-import { UserService } from '../../services/userService';
+import { BookmarkService } from '@services/bookmarking.service';
+import { UserService } from '@services/userService';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 export interface ActivityTag {
@@ -62,15 +62,15 @@ export class ActivityCardComponent {
   private bookmarkService = inject(BookmarkService);
   private snackBar = inject(MatSnackBar);
 
-  @Input() activity!: MemoriseUserActivity;
-  @Input() myActivity = false;
+  readonly activity = input.required<MemoriseUserActivity>();
+  readonly myActivity = input(false);
   isBookmarked = computed(() => 
-    this.bookmarkService.isBookmarked(this.activity?.activityId || 0)
+    this.bookmarkService.isBookmarked(this.activity()?.activityId || 0)
   );
   loggedInUserId: string | null = null;
 
   viewDetails() {
-    this.router.navigate(['activity/details/', this.activity.activityId]);
+    this.router.navigate(['activity/details/', this.activity().activityId]);
   }
 
   toggleBookmark(event: Event) {
@@ -79,7 +79,7 @@ export class ActivityCardComponent {
     this.loggedInUserId = this.userService.getLoggedInUserId();
 
     if (this.loggedInUserId) {
-      this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity, this.isBookmarked())
+      this.bookmarkService.toggleBookmark(this.loggedInUserId, this.activity(), this.isBookmarked())
         .subscribe({
           next: (result) => {
             console.log("Bookmarking result: ", result);

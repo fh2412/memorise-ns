@@ -1,11 +1,11 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
-import { MemoriseUser } from '../../models/userInterface.model';
+import { Component, OnInit, inject, input } from '@angular/core';
+import { MemoriseUser } from '@models/userInterface.model';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
-import { ActivityService } from '../../services/activity.service';
+import { ActivityService } from '@services/activity.service';
 import { firstValueFrom } from 'rxjs';
-import { ActivityStats } from '../../models/activityInterface.model';
+import { ActivityStats } from '@models/activityInterface.model';
 
 @Component({
     selector: 'app-my-activity-information',
@@ -20,7 +20,7 @@ export class MyActivityInformationComponent implements OnInit {
   private router = inject(Router);
   private activityService = inject(ActivityService);
 
-  @Input() user!: MemoriseUser;
+  readonly user = input.required<MemoriseUser>();
   stats: ActivityStats | null = null;
 
 
@@ -29,13 +29,13 @@ export class MyActivityInformationComponent implements OnInit {
   }
 
   async getActivityStats() {
-    this.stats = await firstValueFrom(this.activityService.getActivityStats(this.user.user_id));
+    this.stats = await firstValueFrom(this.activityService.getActivityStats(this.user().user_id));
     console.log("stats: ",this.stats);
   }
 
   navigateMyActivities() {
-    this.router.navigate(['activity/overview/', this.user.user_id], {
-      state: { userName: this.user.name }
+    this.router.navigate(['activity/overview/', this.user().user_id], {
+      state: { userName: this.user().name }
     });
   }
 }

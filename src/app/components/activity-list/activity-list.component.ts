@@ -1,5 +1,5 @@
 
-import { Component, inject, Input, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, inject, OnInit, signal, WritableSignal, input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
@@ -13,15 +13,15 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSliderModule } from '@angular/material/slider';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
+import { MemoriseUserActivity } from '@models/activityInterface.model';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { ActivityCardComponent } from "../activity-card/activity-card.component";
 import { Router } from '@angular/router';
-import { ActivityService } from '../../services/activity.service';
-import { BookmarkService } from '../../services/bookmarking.service';
+import { ActivityService } from '@services/activity.service';
+import { BookmarkService } from '@services/bookmarking.service';
 import { NotFoundComponent } from "../not-found/not-found.component";
-import { GeocodingService } from '../../services/geocoding.service';
-import { GeocoderResponse } from '../../models/geocoder-response.model';
+import { GeocodingService } from '@services/geocoding.service';
+import { GeocoderResponse } from '@models/geocoder-response.model';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FilterBottomSheetComponent } from '../_dialogs/filter-bottom-sheet/filter-bottom-sheet.component';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
@@ -59,8 +59,8 @@ export class ActivityListComponent implements OnInit {
   private geocodingService = inject(GeocodingService);
   private breakpointObserver = inject(BreakpointObserver);
 
-  @Input() activities: MemoriseUserActivity[] = [];
-  @Input() loggedInUserId = '';
+  readonly activities = input<MemoriseUserActivity[]>([]);
+  readonly loggedInUserId = input('');
 
   filteredActivities: WritableSignal<MemoriseUserActivity[]> = signal([]);
   bookmarkedActivities = this.bookmarkedService.bookmarkedActivities;
@@ -97,9 +97,10 @@ export class ActivityListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.filteredActivities.set([...this.activities]);
+    const activities = this.activities();
+    this.filteredActivities.set([...activities]);
     this.paginatorLength = this.filteredActivities().length;
-    this.updatePaginatedActivities(this.activities);
+    this.updatePaginatedActivities(activities);
     this.getCurrentLocation();
     this.setupSearchSubscription();
   }
@@ -135,7 +136,7 @@ export class ActivityListComponent implements OnInit {
       data: {
         currentFilters: this.filterForm.value,
         currentLocation: this.fulladdress,
-        userId: this.loggedInUserId
+        userId: this.loggedInUserId()
       },
       panelClass: 'filter-bottom-sheet-panel'
     });
@@ -154,7 +155,7 @@ export class ActivityListComponent implements OnInit {
     this.isLoading = true;
     console.log("Filters", filters);
 
-    this.activityService.getFilteredActivities(filters, this.loggedInUserId).subscribe({
+    this.activityService.getFilteredActivities(filters, this.loggedInUserId()).subscribe({
       next: (response) => {
         this.filteredActivities.set(response);
         this.currentPage = 0;
@@ -182,10 +183,11 @@ export class ActivityListComponent implements OnInit {
     });
 
     this.searchControl.setValue('', { emitEvent: false });
-    this.filteredActivities.set([...this.activities]);
+    const activities = this.activities();
+    this.filteredActivities.set([...activities]);
     this.currentPage = 0;
-    this.paginatorLength = this.activities.length;
-    this.updatePaginatedActivities(this.activities);
+    this.paginatorLength = activities.length;
+    this.updatePaginatedActivities(activities);
   }
 
   hasActiveFilters(): boolean {

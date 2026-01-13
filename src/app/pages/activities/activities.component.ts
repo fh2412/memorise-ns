@@ -1,12 +1,12 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
-import { companyService } from '../../services/company.service';
-import { MemoriseUser } from '../../models/userInterface.model';
-import { MemoriseCompany } from '../../models/company.model';
+import { UserService } from '@services/userService';
+import { companyService } from '@services/company.service';
+import { MemoriseUser } from '@models/userInterface.model';
+import { MemoriseCompany } from '@models/company.model';
 import { Router } from '@angular/router';
-import { ActivityService } from '../../services/activity.service';
-import { MemoriseUserActivity } from '../../models/activityInterface.model';
-import { BookmarkService } from '../../services/bookmarking.service';
+import { ActivityService } from '@services/activity.service';
+import { MemoriseUserActivity } from '@models/activityInterface.model';
+import { BookmarkService } from '@services/bookmarking.service';
 
 
 @Component({

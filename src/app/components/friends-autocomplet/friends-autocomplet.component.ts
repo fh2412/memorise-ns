@@ -1,12 +1,12 @@
-import { Component, ElementRef, EventEmitter, Input, Output, ViewChild, inject, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, inject, OnInit, input, output } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { FriendsService } from '../../services/friends.service';
-import { UserService } from '../../services/userService';
+import { FriendsService } from '@services/friends.service';
+import { UserService } from '@services/userService';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -40,8 +40,8 @@ export class FriendsAutocompletComponent implements OnInit {
   filteredfriends: Observable<string[]> | undefined;
   friends: string[] = [];
 
-  @Input() memoryId = "0";
-  @Output() selectedValuesChange = new EventEmitter<string[]>();
+  readonly memoryId = input("0");
+  readonly selectedValuesChange = output<string[]>();
   @ViewChild('friendInput') friendInput!: ElementRef<HTMLInputElement>;
 
   announcer = inject(LiveAnnouncer);
@@ -55,7 +55,7 @@ export class FriendsAutocompletComponent implements OnInit {
     try {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
       if (this.loggedInUserId) {
-        this.friendsService.getMemoriesMissingFriends(this.memoryId, this.loggedInUserId).subscribe(
+        this.friendsService.getMemoriesMissingFriends(this.memoryId(), this.loggedInUserId).subscribe(
           (friends) => {
             this.allfriends = friends.map(item => `${item.name} (${item.email})`);
             this.setFilteredFriends();

@@ -8,8 +8,8 @@ describe('CompanyDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CompanyDialogComponent]
-    })
+    imports: [CompanyDialogComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(CompanyDialogComponent);

@@ -1,0 +1,148 @@
+@use '@angular/material' as mat;
+
+.theme-controls {
+    display: flex;
+    align-items: center;
+    padding-left: 22px;
+    border-radius: 12px;
+    background: var(--mat-sys-surface);
+    font-weight: 500;
+    margin-top: 6px;
+}
+
+/* Account type specific shadows */
+.theme-controls.account-free {
+    box-shadow:
+        0 2px 4px var(--mat-sys-outline),
+        0 2px 4px var(--mat-sys-outline) inset;
+    @include mat.progress-bar-overrides((
+        active-indicator-color: var(--mat-sys-outline),
+    ));
+}
+
+.theme-controls.account-standard {
+    box-shadow:
+        0 2px 4px var(--mat-sys-primary),
+        0 2px 4px var(--mat-sys-primary) inset;
+    @include mat.progress-bar-overrides((
+        active-indicator-color: var(--mat-sys-primary),
+    ));
+}
+
+.theme-controls.account-pro {
+    box-shadow:
+        0 2px 4px var(--mat-sys-secondary),
+        0 2px 4px var(--mat-sys-secondary) inset;
+    @include mat.progress-bar-overrides((
+        active-indicator-color: var(--mat-sys-secondary),
+    ));
+}
+
+.theme-controls.account-unlimited {
+    position: relative;
+    background: var(--mat-sys-surface);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    @include mat.progress-bar-overrides((
+        active-indicator-color: var(--mat-sys-error),
+    ));
+}
+
+.theme-controls.account-unlimited::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 12px;
+    padding: 2px;
+    background: linear-gradient(
+        90deg,
+        var(--mat-sys-error),
+        var(--mat-sys-secondary),
+        var(--mat-sys-primary),
+        var(--mat-sys-outline),
+        var(--mat-sys-error)
+    );
+    -webkit-mask: 
+        linear-gradient(#fff 0 0) content-box, 
+        linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    z-index: -1;
+    opacity: 0.8;
+}
+
+.theme-controls.account-unlimited:hover::before {
+    animation: gradient-rotate 3s linear infinite;
+    opacity: 1;
+}
+
+@keyframes gradient-rotate {
+    0% {
+        background: linear-gradient(
+            0deg,
+            var(--mat-sys-error),
+            var(--mat-sys-secondary),
+            var(--mat-sys-primary),
+            var(--mat-sys-outline),
+            var(--mat-sys-error)
+        );
+    }
+    25% {
+        background: linear-gradient(
+            90deg,
+            var(--mat-sys-error),
+            var(--mat-sys-secondary),
+            var(--mat-sys-primary),
+            var(--mat-sys-outline),
+            var(--mat-sys-error)
+        );
+    }
+    50% {
+        background: linear-gradient(
+            180deg,
+            var(--mat-sys-error),
+            var(--mat-sys-secondary),
+            var(--mat-sys-primary),
+            var(--mat-sys-outline),
+            var(--mat-sys-error)
+        );
+    }
+    75% {
+        background: linear-gradient(
+            270deg,
+            var(--mat-sys-error),
+            var(--mat-sys-secondary),
+            var(--mat-sys-primary),
+            var(--mat-sys-outline),
+            var(--mat-sys-error)
+        );
+    }
+    100% {
+        background: linear-gradient(
+            360deg,
+            var(--mat-sys-error),
+            var(--mat-sys-secondary),
+            var(--mat-sys-primary),
+            var(--mat-sys-outline),
+            var(--mat-sys-error)
+        );
+    }
+}
+
+.storage-info-container {
+    width: 75%;
+}
+
+.storage-text-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.storage-usage-label {
+    font-size: x-small;
+    padding-top: 4px;
+}
+
+.upgrade-action-container {
+    width: 25%;
+}

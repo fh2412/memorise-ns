@@ -33,9 +33,6 @@ import { FeedbackDialogComponent } from '../_dialogs/feedback-dialog/feedback-di
     font-weight: 500;
     margin-bottom: 4px;
   }
-    .feedback-button {
-
-    }
   `]
 })
 export class FeedbackButtonComponent {

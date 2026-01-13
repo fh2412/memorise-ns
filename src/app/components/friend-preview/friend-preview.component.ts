@@ -1,7 +1,7 @@
-import { Component, EventEmitter, HostListener, Input, Output, OnInit, inject } from '@angular/core';
-import { UserService } from '../../services/userService';
-import { ManageFriendsService } from '../../services/friend-manage.service';
-import { Friend } from '../../models/userInterface.model';
+import { Component, HostListener, OnInit, effect, inject, input, output, signal } from '@angular/core';
+import { UserService } from '@services/userService';
+import { ManageFriendsService } from '@services/friend-manage.service';
+import { Friend } from '@models/userInterface.model';
 import { Router } from '@angular/router';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,27 +25,34 @@ export class FriendPreviewComponent implements OnInit {
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
 
-  @Input() requested = false;
-  @Input() buttonText = 'Request';
-  @Input() requestedText = 'Requested';
-  @Input() buttonColor = 'primary';
-  @Input() buttonIcon = 'person_add';
-  @Input() declineButton = false;
-  @Input() friend!: Friend;
+  readonly requestedInput = input(false)
+  requested = signal(false);
+  readonly buttonText = input('Request');
+  readonly requestedText = input('Requested');
+  readonly buttonColor = input('primary');
+  readonly buttonIcon = input('person_add');
+  readonly declineButton = input(false);
+  readonly friend = input.required<Friend>();
 
-  @Output() buttonClicked = new EventEmitter<void>();
-  @Output() friendRequestProcessed = new EventEmitter<{ friendId: string, action: 'accepted' | 'declined' }>();
+  readonly buttonClicked = output();
+  readonly friendRequestProcessed = output<{ friendId: string; action: 'accepted' | 'declined'; }>();
 
   loggedInUserId: string | null = null;
   isLargeScreen = true;
 
-  @HostListener('window:resize', ['$event'])
+  constructor() {
+    effect(() => {
+      this.requested.set(this.requestedInput());
+    });
+  }
+
+  @HostListener('window:resize')
   onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
   }
 
   ngOnInit() {
-    this.onResize(); // Check initial screen size
+    this.onResize();
   }
 
   async requestFriend(action: string, req: boolean): Promise<void> {
@@ -53,40 +60,40 @@ export class FriendPreviewComponent implements OnInit {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
       if (this.loggedInUserId != null) {
         if (action === 'Accept') {
-          await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+          await this.manageFriendsService.acceptFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
         } else if (action === 'Remove') {
           if (req) {
-            await this.manageFriendsService.addFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.addFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
           } else {
-            await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.removeFriend(this.friend().user_id.toString(), this.loggedInUserId);
           }
         } else if (action === 'Request') {
           if (req) {
-            await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.removeFriend(this.friend().user_id.toString(), this.loggedInUserId);
           } else {
-            await this.manageFriendsService.sendFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
+            await this.manageFriendsService.sendFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
           }
         }
       }
-      this.requested = !this.requested;
-      this.buttonClicked.emit();  // Emit the button click event for parent components to listen to
+      this.requested.update(value => !value);
+      this.buttonClicked.emit();
 
     } catch (error) {
       console.error('Error handling friend request:', error);
     }
   }
 
-async acceptFriendRequest(): Promise<void> {
+  async acceptFriendRequest(): Promise<void> {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if (this.loggedInUserId != null) {
-      await this.manageFriendsService.acceptFriendRequest(this.friend.user_id.toString(), this.loggedInUserId);
-      
+      await this.manageFriendsService.acceptFriendRequest(this.friend().user_id.toString(), this.loggedInUserId);
+
       this.snackBar.open("You have a new Friend!", 'Hurray!', { duration: 3000, verticalPosition: 'bottom' });
 
       // Emit event to parent after successful acceptance
-      this.friendRequestProcessed.emit({ 
-        friendId: this.friend.user_id.toString(), 
-        action: 'accepted' 
+      this.friendRequestProcessed.emit({
+        friendId: this.friend().user_id.toString(),
+        action: 'accepted'
       });
     }
   }
@@ -94,13 +101,13 @@ async acceptFriendRequest(): Promise<void> {
   async declineFriendRequest(): Promise<void> {
     this.loggedInUserId = await this.userService.getLoggedInUserId();
     if (this.loggedInUserId != null) {
-      await this.manageFriendsService.removeFriend(this.friend.user_id.toString(), this.loggedInUserId);
+      await this.manageFriendsService.removeFriend(this.friend().user_id.toString(), this.loggedInUserId);
 
       this.snackBar.open("You declined a Request!", 'OK', { duration: 3000, verticalPosition: 'bottom' });
 
-      this.friendRequestProcessed.emit({ 
-        friendId: this.friend.user_id.toString(), 
-        action: 'declined' 
+      this.friendRequestProcessed.emit({
+        friendId: this.friend().user_id.toString(),
+        action: 'declined'
       });
     }
   }

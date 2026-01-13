@@ -1,6 +1,13 @@
 import { Component, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { Memory } from '../../../models/memoryInterface.model';
+import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent, MatDialogActions } from '@angular/material/dialog';
+import { Memory } from '@models/memoryInterface.model';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MatDivider } from '@angular/material/divider';
+import { MatFormField, MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 
 export interface PinnedMemory {
   name: string;
@@ -12,7 +19,7 @@ export interface PinnedMemory {
     selector: 'app-pinned-dialog',
     templateUrl: './pinned-dialog.component.html',
     styleUrl: './pinned-dialog.component.scss',
-    standalone: false
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatList, MatListItem, MatCheckbox, ReactiveFormsModule, FormsModule, MatDivider, MatFormField, MatInput, MatDialogActions, MatButton]
 })
 export class PinnedDialogComponent {
   dialogRef = inject<MatDialogRef<PinnedDialogComponent>>(MatDialogRef);

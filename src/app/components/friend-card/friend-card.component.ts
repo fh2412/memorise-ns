@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Friend } from '../../models/userInterface.model';
+import { Component, input, output } from '@angular/core';
+import { Friend } from '@models/userInterface.model';
 import { MatCardModule } from "@angular/material/card";
 import { MatListModule } from "@angular/material/list";
 import { FriendPreviewComponent } from "../friend-preview/friend-preview.component";
@@ -11,19 +11,20 @@ import { FriendPreviewComponent } from "../friend-preview/friend-preview.compone
   imports: [MatCardModule, MatListModule, FriendPreviewComponent]
 })
 export class FriendCardComponent {
-  @Input() title = '';
-  @Input() friends: Friend[] = [];
-  @Input() requested = false;
-  @Input() buttonText = 'Request';
-  @Input() requestedText = 'Requested';
-  @Input() declineButton = false;
-  @Input() buttonIcon = 'person_add';
+  readonly title = input('');
+  readonly friends = input<Friend[]>([]);
+  readonly requested = input(false);
+  readonly buttonText = input('Request');
+  readonly requestedText = input('Requested');
+  readonly declineButton = input(false);
+  readonly buttonIcon = input('person_add');
 
-  @Output() friendsChanged = new EventEmitter<Friend[]>();
+  readonly friendsChanged = output<Friend[]>();
 
   onFriendRequestProcessed(event: { friendId: string, action: 'accepted' | 'declined' }): void {
-    this.friends = this.friends.filter(friend => friend.user_id.toString() !== event.friendId);
-
-    this.friendsChanged.emit(this.friends);
+    const updatedFriends = this.friends().filter(
+      friend => friend.user_id.toString() !== event.friendId
+    );
+    this.friendsChanged.emit(updatedFriends);
   }
 }

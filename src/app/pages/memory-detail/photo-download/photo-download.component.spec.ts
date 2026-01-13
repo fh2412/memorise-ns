@@ -8,8 +8,8 @@ describe('PhotoDownloadComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PhotoDownloadComponent]
-    })
+    imports: [PhotoDownloadComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(PhotoDownloadComponent);

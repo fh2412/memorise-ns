@@ -8,8 +8,8 @@ describe('EditUserDialogComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditUserDialogComponent]
-    })
+    imports: [EditUserDialogComponent]
+})
     .compileComponents();
     
     fixture = TestBed.createComponent(EditUserDialogComponent);

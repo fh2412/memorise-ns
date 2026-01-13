@@ -1,4 +1,6 @@
 @use '../userprofile/userprofile.component.scss';
+@use '@angular/material' as mat;
+
 
 .profile-picture-container {
     cursor: auto;
@@ -7,4 +9,12 @@
             filter: none;
         }
     }
+
+  .badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    text-transform: uppercase;
+  }
 }

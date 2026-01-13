@@ -6,6 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { UserStorageData } from '@models/billing.model';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
+//import { ChoosePlanDialogComponent } from '@components/_dialogs/choose-plan-dialog/choose-plan-dialog.component';
+//import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 const STORAGE_LIMITS: Record<string, number> = {
@@ -22,12 +25,14 @@ const STORAGE_LIMITS: Record<string, number> = {
 })
 export class SubscriptionStatusComponent implements OnInit {
   private userService = inject(UserService);
-
+  private snackbar = inject(MatSnackBar);
+  //private dialog = inject(MatDialog);
 
   storageUsed = 0;
   userAccountDetails: UserStorageData | undefined
   loggedInUserId: string | null = null;
   maxStorage = 5;
+
 
   async ngOnInit(): Promise<void> {
     try {
@@ -53,6 +58,28 @@ export class SubscriptionStatusComponent implements OnInit {
   }
 
   openChoosePlanComponent() {
-    throw new Error('Method not implemented.');
+
+    //FOR BETA USE I DISPLAY ONLY A SNACKBAR
+    this.snackbar.open(
+      'Subscriptions are not available in beta mode',
+      'Close',
+      {
+        duration: 5000,
+        horizontalPosition: 'center',
+      }
+    );
+
+    /*const dialogRef = this.dialog.open(ChoosePlanDialogComponent, {
+      width: '90vw',
+      maxWidth: '1200px',
+      data: { currentPlan: "FREE" }
+    });
+
+    dialogRef.afterClosed().subscribe(selectedPlan => {
+      if (selectedPlan) {
+        console.log('User selected:', selectedPlan);
+        // Handle plan upgrade/downgrade logic
+      }
+    });*/
   }
 }

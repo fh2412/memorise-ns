@@ -3,7 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
-import { UserStorageData } from '@models/billing.model';
+import { AccountType, UserStorageData } from '@models/billing.model';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 //import { ChoosePlanDialogComponent } from '@components/_dialogs/choose-plan-dialog/choose-plan-dialog.component';
@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 const STORAGE_LIMITS: Record<string, number> = {
   FREE: 5,
-  PRO: 50,
+  PRO: 100,
   UNLIMITED: -1
 };
 
@@ -29,7 +29,11 @@ export class SubscriptionStatusComponent implements OnInit {
   //private dialog = inject(MatDialog);
 
   storageUsed = 0;
-  userAccountDetails: UserStorageData | undefined
+  userAccountDetails: UserStorageData = {
+    userId: '',
+    accountType: AccountType.FREE,
+    storageUsedBytes: 0
+  }
   loggedInUserId: string | null = null;
   maxStorage = 5;
 
@@ -58,7 +62,6 @@ export class SubscriptionStatusComponent implements OnInit {
   }
 
   openChoosePlanComponent() {
-
     //FOR BETA USE I DISPLAY ONLY A SNACKBAR
     this.snackbar.open(
       'Subscriptions are not available in beta mode',
@@ -72,7 +75,7 @@ export class SubscriptionStatusComponent implements OnInit {
     /*const dialogRef = this.dialog.open(ChoosePlanDialogComponent, {
       width: '90vw',
       maxWidth: '1200px',
-      data: { currentPlan: "FREE" }
+      data: { currentPlan: this.userAccountDetails.accountType }
     });
 
     dialogRef.afterClosed().subscribe(selectedPlan => {

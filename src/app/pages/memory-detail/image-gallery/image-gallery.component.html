@@ -1,7 +1,10 @@
 <section class="bd-home-section bd-theme-memorise">
   <app-back-button [text]="'Back'" class="back-button"></app-back-button>
+  @if (isLoading()) {
+    <app-loading-spinner [message]="'Loading Images'"/>
+  } @else {
   <div class="container">
-    @for (l of layout; track trackByLayoutType($index, l)) {
+    @for (l of layout(); track trackByLayoutType($index, l)) {
     <div>
       @switch (l.type) {
       @case (1) {
@@ -13,7 +16,7 @@
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
             (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
             tabindex="0" aria-label="View landscape image">
-            <img [ngSrc]="l.landscapes[0].url" alt="Landscape Image" fill>
+            <img [ngSrc]="l.landscapes[0].url" alt="Landscape Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -31,7 +34,7 @@
           <button class="image-button" type="button" (click)="openImageDialog(portrait)"
             (keydown.enter)="openImageDialog(portrait)" (keydown.space)="openImageDialog(portrait)" tabindex="0"
             aria-label="View portrait image">
-            <img [ngSrc]="portrait.url" alt="Portrait Image" fill>
+            <img [ngSrc]="portrait.url" alt="Portrait Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -49,7 +52,7 @@
           <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
             (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
             tabindex="0" aria-label="View portrait image">
-            <img [ngSrc]="l.portraits[0].url" alt="Portrait Image" fill>
+            <img [ngSrc]="l.portraits[0].url" alt="Portrait Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -62,7 +65,7 @@
           <button class="image-button" type="button" (click)="openImageDialog(landscape)"
             (keydown.enter)="openImageDialog(landscape)" (keydown.space)="openImageDialog(landscape)" tabindex="0"
             aria-label="View landscape image">
-            <img [ngSrc]="landscape.url" alt="Landscape Image" fill>
+            <img [ngSrc]="landscape.url" alt="Landscape Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -80,7 +83,7 @@
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
             (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
             tabindex="0" aria-label="View landscape image">
-            <img [ngSrc]="l.landscapes[0].url" alt="Landscape Image" fill>
+            <img [ngSrc]="l.landscapes[0].url" alt="Landscape Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -88,11 +91,11 @@
         </mat-grid-tile>
         <mat-grid-tile rowspan="12" colspan="9">
           @if (l.portraits[0]) {
-           <app-person-hint [url]="userProfiles[l.portraits[0].userId]" class="person-hint"></app-person-hint>
+          <app-person-hint [url]="userProfiles[l.portraits[0].userId]" class="person-hint"></app-person-hint>
           <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
             (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
             tabindex="0" aria-label="View portrait image">
-            <img [ngSrc]="l.portraits[0].url" alt="Portrait Image" fill>
+            <img [ngSrc]="l.portraits[0].url" alt="Portrait Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -104,7 +107,7 @@
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[1])"
             (keydown.enter)="openImageDialog(l.landscapes[1])" (keydown.space)="openImageDialog(l.landscapes[1])"
             tabindex="0" aria-label="View landscape image">
-            <img [ngSrc]="l.landscapes[1].url" alt="Landscape Image" fill>
+            <img [ngSrc]="l.landscapes[1].url" alt="Landscape Image" fill priority>
           </button>
           } @else {
           <div class="empty-slot"></div>
@@ -117,4 +120,5 @@
     </div>
     }
   </div>
+  }
 </section>

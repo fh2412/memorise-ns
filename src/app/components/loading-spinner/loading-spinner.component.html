@@ -1,0 +1,7 @@
+<div class="spinner-container">
+    <mat-spinner [diameter]="diameter()" [strokeWidth]="strokeWidth()" [color]="color()">
+    </mat-spinner>
+    @if (message()) {
+    <p class="spinner-message">{{ message() }}</p>
+    }
+</div>

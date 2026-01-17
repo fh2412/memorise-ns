@@ -97,7 +97,6 @@ export class MemoryDetailComponent implements OnInit {
     try {
       const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryId));
       this.memorydb = memoryData;
-      console.log(this.memorydb.text);
 
       await this.initializeMemoryDetails();
       const activityData = await firstValueFrom(this.activityService.getActivityDetails(this.memorydb.activity_id));
@@ -105,7 +104,6 @@ export class MemoryDetailComponent implements OnInit {
 
       const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryId, this.loggedInUserId));
       this.memorydbFriends = friendsData.length ? friendsData : null;
-      console.log("Friend Data: ", this.memorydbFriends);
 
       const memoryCreator = await firstValueFrom(this.userService.getUser(this.memorydb.user_id.toString()));
       this.memoryCreator = memoryCreator;
@@ -146,7 +144,7 @@ export class MemoryDetailComponent implements OnInit {
     const imagesToShow = [...this.imagesWithMetadata];
     while (imagesToShow.length < 5) {
       imagesToShow.push({
-        url: '@assets/img/placeholder_image.png',
+        url: 'assets/img/placeholder_image.png',
         width: 0,
         height: 0,
         created: 'placeholder',

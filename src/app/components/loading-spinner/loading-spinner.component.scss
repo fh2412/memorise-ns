@@ -1,0 +1,15 @@
+   .spinner-container {
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       padding: 2rem;
+       min-height: 200px;
+   }
+
+   .spinner-message {
+       margin-top: 1rem;
+       color: rgba(0, 0, 0, 0.6);
+       font-size: 14px;
+       text-align: center;
+   }

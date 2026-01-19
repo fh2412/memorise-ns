@@ -26,8 +26,9 @@ export class DiashowComponent implements OnInit, OnDestroy {
 
   currentIndex = 0;
   private intervalId?: number;
-  private readonly SLIDE_INTERVAL = 5000; // 5 seconds
+  slideInterval = 5000;
   isPaused = false;
+  isSpeedMenuOpen = false;
 
   ngOnInit(): void {
     this.currentIndex = this.data.initialIndex || 0;
@@ -41,7 +42,7 @@ export class DiashowComponent implements OnInit, OnDestroy {
   private startAutoplay(): void {
     this.intervalId = window.setInterval(() => {
       this.nextImage();
-    }, this.SLIDE_INTERVAL);
+    }, this.slideInterval);
   }
 
   private stopAutoplay(): void {
@@ -70,6 +71,20 @@ export class DiashowComponent implements OnInit, OnDestroy {
 
   onCloseClick(): void {
     this.dialogRef.close();
+  }
+
+  toggleSpeedMenu(): void {
+    this.isSpeedMenuOpen = !this.isSpeedMenuOpen;
+  }
+
+  changeSpeed(seconds: number): void {
+    this.slideInterval = seconds * 1000;
+    this.isSpeedMenuOpen = false;
+
+    if (!this.isPaused) {
+      this.stopAutoplay();
+      this.startAutoplay();
+    }
   }
 
   @HostListener('document:keydown', ['$event'])

@@ -53,6 +53,51 @@
   }
 }
 
+.speed-control {
+  position: relative;
+}
+
+.speed-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  
+  &.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+  }
+}
+
+.speed-option {
+  border-radius: 50%;
+  background-color: var(--mat-sys-surface-bright);
+  color: var(--mat-sys-on-surface-bright);
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  
+  &:hover {
+  background-color: var(--mat-sys-surface);
+    transform: scale(1.05);
+  }
+  
+  &.active {
+  background-color: var(--mat-sys-surface);
+    border: 2px solid var(--mat-sys-primary);;
+  }
+}
+
+
 .progress-indicator {
   position: absolute;
   bottom: 20px;

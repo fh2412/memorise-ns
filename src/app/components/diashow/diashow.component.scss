@@ -1,0 +1,66 @@
+.diashow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--mat-sys-background);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diashow-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  user-select: none;
+}
+
+.nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--mat-sys-surface-bright);
+  color: var(--mat-sys-on-surface-bright);
+  
+  &:hover {
+    background-color: var(--mat-sys-surface);
+  }
+  
+  &.left {
+    left: 20px;
+  }
+  
+  &.right {
+    right: 20px;
+  }
+}
+
+.controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.control-button {
+  background-color: var(--mat-sys-surface-bright);
+  
+  &:hover {
+    background-color: var(--mat-sys-surface);
+  }
+}
+
+.progress-indicator {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--mat-sys-on-surface-bright);
+  background-color: var(--mat-sys-surface-bright);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 14px;
+}

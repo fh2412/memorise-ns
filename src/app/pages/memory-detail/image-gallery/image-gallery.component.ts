@@ -14,6 +14,7 @@ import { MemoryService } from '@services/memory.service';
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatButton } from '@angular/material/button';
+import { DiashowComponent } from '@components/diashow/diashow.component';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -277,7 +278,21 @@ export class ImageGalleryComponent implements OnInit {
     return layout.type;
   }
 
-  startDiashow() {
-    throw new Error('Method not implemented.');
+  startDiashow(selectedImageUrl?: GalleryImage): void {
+    this.allPictures = this.createImageArrayFromLayouts(this.layout());
+    const initialIndex = selectedImageUrl
+      ? this.allPictures.indexOf(selectedImageUrl)
+      : 0;
+
+    this.dialog.open(DiashowComponent, {
+      data: {
+        images: this.allPictures,
+        initialIndex: initialIndex >= 0 ? initialIndex : 0
+      },
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      width: '100vw',
+      height: '100vh'
+    });
   }
 }

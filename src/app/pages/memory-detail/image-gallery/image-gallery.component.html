@@ -1,7 +1,15 @@
 <section class="bd-home-section bd-theme-memorise">
-  <app-back-button [text]="'Back'" class="back-button"></app-back-button>
+  <div class="btn-header">
+  <app-back-button [text]="'Back'"></app-back-button>
+  <button mat-flat-button (click)="startDiashow()" class="diashow-btn">
+    <mat-icon>
+      photo_library
+    </mat-icon>
+    Start Diashow
+  </button>
+  </div>
   @if (isLoading()) {
-    <app-loading-spinner [message]="'Loading Images'"/>
+  <app-loading-spinner [message]="'Loading Images'" />
   } @else {
   <div class="container">
     @for (l of layout(); track trackByLayoutType($index, l)) {

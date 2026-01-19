@@ -12,6 +12,8 @@ import { ImageWithMetadata } from '../memory-detail.component';
 import { ActivatedRoute } from '@angular/router';
 import { MemoryService } from '@services/memory.service';
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
+import { MatIcon } from "@angular/material/icon";
+import { MatButton } from '@angular/material/button';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -33,7 +35,7 @@ interface UserProfile {
   selector: 'app-image-gallery',
   templateUrl: './image-gallery.component.html',
   styleUrls: ['./image-gallery.component.scss'],
-  imports: [BackButtonComponent, MatGridList, MatGridTile, PersonHintComponent, NgOptimizedImage, LoadingSpinnerComponent]
+  imports: [BackButtonComponent, MatGridList, MatGridTile, PersonHintComponent, NgOptimizedImage, LoadingSpinnerComponent, MatIcon, MatButton]
 })
 
 export class ImageGalleryComponent implements OnInit {
@@ -258,25 +260,24 @@ export class ImageGalleryComponent implements OnInit {
   }
 
   openImageDialog(selectedImageUrl: GalleryImage): void {
-    // Only open dialog if the image is not null/empty
     if (!selectedImageUrl) return;
 
     this.allPictures = this.createImageArrayFromLayouts(this.layout());
     const initialIndex = this.allPictures.indexOf(selectedImageUrl);
 
-    const dialogRef = this.dialog.open(ImageDialogComponent, {
+    this.dialog.open(ImageDialogComponent, {
       data: {
         images: this.allPictures,
-        initialIndex
+        initialIndex,
       }
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      console.log('Dialog was closed');
     });
   }
 
   trackByLayoutType(index: number, layout: Layout): number {
     return layout.type;
+  }
+
+  startDiashow() {
+    throw new Error('Method not implemented.');
   }
 }

@@ -35,7 +35,7 @@ export class BillingService {
   readonly accountType = computed(() => {
     const data = this.userStorageData();
     if (!data) return AccountType.FREE;
-    return data.accountType.toUpperCase();
+    return data.accountType;
   });
 
   // Computed signal to check if user can create new memory

@@ -35,7 +35,6 @@ export class HomeComponent implements OnInit {
   filterForm: FormGroup;
   openForm: FormGroup;
   userdb!: MemoriseUser;
-  fuid: string | undefined;
   displayMemories: Memory[] = [];
   showFriendsMemoriesBool = true;
 

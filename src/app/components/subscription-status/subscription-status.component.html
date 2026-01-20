@@ -1,13 +1,18 @@
-@if (userAccountDetails !== undefined) {
-<div class="theme-controls account-{{userAccountDetails.accountType.toLowerCase()}}">
+@if (accountType() !== undefined) {
+<div class="theme-controls account-{{accountType().toLowerCase()}}">
     <div class="storage-info-container">
         <div class="storage-text-row">
-            <span>{{this.userAccountDetails.accountType}}</span>
-            @if (userAccountDetails.accountType !== 'UNLIMITED') {
-                <span class="storage-usage-label">{{userAccountDetails.storageUsedBytes | number:'1.0-1'}}/{{maxStorage}}GB</span>
+            <span>{{accountType()}}</span>
+            @if (accountType() !== 'UNLIMITED') {
+            <span class="storage-usage-label">{{storageUsedGB() | number:'1.0-1'}}/{{storageMaxGB()}}GB</span>
             }
         </div>
-        <mat-progress-bar mode="determinate" [value]="storageUsed"></mat-progress-bar>
+        @if (accountType() !== 'UNLIMITED') {
+        <mat-progress-bar mode="determinate" [value]="storageMaxGB()"></mat-progress-bar>
+        }
+        @else {
+        <mat-progress-bar mode="determinate" value="100"></mat-progress-bar>
+        }
     </div>
     <div class="upgrade-action-container">
         <button matIconButton aria-label="Feedback button" (click)="openChoosePlanComponent()">

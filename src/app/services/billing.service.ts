@@ -25,11 +25,17 @@ export class BillingService {
     return data.storageUsedBytes / (1024 * 1024 * 1024);
   });
 
+  readonly storageMaxGB = computed(() => {
+    const data = this.userStorageData();
+    if (!data) return 0;
+    return data.stroageMaxBytes;
+  });
+
   // Computed signal for Accounttype
   readonly accountType = computed(() => {
     const data = this.userStorageData();
     if (!data) return AccountType.FREE;
-    return data.accountType;
+    return data.accountType.toUpperCase();
   });
 
   // Computed signal to check if user can create new memory

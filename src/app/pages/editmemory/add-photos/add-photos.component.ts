@@ -19,6 +19,7 @@ export class AddPhotosComponent implements OnInit {
 
   canCreateNewMemory = this.billingService.canCreateNewMemory;
   storageUsedGB = this.billingService.storageUsedGB;
+  storageMaxGB = this.billingService.storageMaxGB;
 
   memoryId = 1;
   firebasePath = '';
@@ -47,12 +48,5 @@ export class AddPhotosComponent implements OnInit {
         console.error('Error loading memory:', error);
       }
     );
-  }
-
-  getDisabledTooltip(): string {
-    if (this.canCreateNewMemory()) {
-      return '';
-    }
-    return `Storage limit reached. Free users are limited to 5 GB. Current usage: ${this.storageUsedGB().toFixed(2)} GB. Please upgrade to Premium or Corporate for unlimited storage.`;
   }
 }

@@ -27,7 +27,8 @@ export function initializeUserData(): Promise<void> {
         billingService.setUserStorageData({
           userId: user.uid,
           accountType: useraccount.accountType,
-          storageUsedBytes: useraccount.storageUsedBytes
+          storageUsedBytes: useraccount.storageUsedBytes,
+          stroageMaxBytes: useraccount.stroageMaxBytes
         });
       }
     } catch (error) {

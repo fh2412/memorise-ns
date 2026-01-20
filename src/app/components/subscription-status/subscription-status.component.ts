@@ -3,19 +3,12 @@ import { DecimalPipe } from '@angular/common';
 import { MatProgressBarModule } from "@angular/material/progress-bar";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from '@angular/material/button';
-import { AccountType, UserStorageData } from '@models/billing.model';
 import { UserService } from '@services/userService';
-import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 //import { ChoosePlanDialogComponent } from '@components/_dialogs/choose-plan-dialog/choose-plan-dialog.component';
 //import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { BillingService } from '@services/billing.service';
 
-
-const STORAGE_LIMITS: Record<string, number> = {
-  FREE: 5,
-  PRO: 100,
-  UNLIMITED: -1
-};
 
 @Component({
   selector: 'app-subscription-status',
@@ -26,39 +19,16 @@ const STORAGE_LIMITS: Record<string, number> = {
 export class SubscriptionStatusComponent implements OnInit {
   private userService = inject(UserService);
   private snackbar = inject(MatSnackBar);
+  private billingService = inject(BillingService);
   //private dialog = inject(MatDialog);
 
-  storageUsed = 0;
-  userAccountDetails: UserStorageData = {
-    userId: '',
-    accountType: AccountType.FREE,
-    storageUsedBytes: 0
-  }
-  loggedInUserId: string | null = null;
-  maxStorage = 5;
+  storageUsedGB = this.billingService.storageUsedGB;
+  storageMaxGB = this.billingService.storageMaxGB;
+  accountType = this.billingService.accountType;
 
 
   async ngOnInit(): Promise<void> {
-    try {
-      this.loggedInUserId = await this.userService.getLoggedInUserId() || '';
-      this.getUserAccountDetails();
-    } catch (error) {
-      console.error('Error fetching logged in user ID:', error);
-    }
-  }
-
-  async getUserAccountDetails() {
-    if (this.loggedInUserId) {
-      this.userAccountDetails = await firstValueFrom(this.userService.getUserAccountType(this.loggedInUserId));
-      if (this.userAccountDetails.storageUsedBytes !== 0) {
-        this.userAccountDetails.storageUsedBytes = this.userAccountDetails.storageUsedBytes / (1024 * 1024 * 1024);
-      }
-      this.maxStorage = STORAGE_LIMITS[this.userAccountDetails.accountType] ?? 5;
-      this.storageUsed = (this.userAccountDetails.storageUsedBytes / this.maxStorage) * 100;
-      if (this.userAccountDetails.accountType === 'UNLIMITED') {
-        this.storageUsed = 100
-      }
-    }
+    console.log("Account Type: ", this.accountType());
   }
 
   openChoosePlanComponent() {

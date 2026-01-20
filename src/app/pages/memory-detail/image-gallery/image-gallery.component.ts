@@ -111,6 +111,8 @@ export class ImageGalleryComponent implements OnInit {
         this.splitImagesByOrientation(this.imagesWithMetadata());
         this.layout.set(this.generateLayoutDistribution());
         this.isLoading.set(false);
+        console.log(this.imagesWithMetadata());
+
       });
     }).catch((error) => {
       console.error('Error listing items:', error);

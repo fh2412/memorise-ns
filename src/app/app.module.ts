@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, provideAppInitializer } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
@@ -11,7 +11,6 @@ import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { environment } from '../environments/environment';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MainNavComponent } from './components/mainnav/mainnav.component';
 
@@ -43,13 +42,13 @@ import { FriendPreviewComponent } from './components/friend-preview/friend-previ
 import { FeedbackButtonComponent } from "./components/feedback-button/feedback-button.component";
 import { ThemeSwitcherComponent } from "./components/theme-switcher/theme-switcher.component";
 import { SubscriptionStatusComponent } from "./components/subscription-status/subscription-status.component";
+import { initializeUserData } from './app.initializer';
 
 @NgModule({
     declarations: [AppComponent],
     bootstrap: [AppComponent],
     imports: [
         BrowserModule,
-        BrowserAnimationsModule,
         RouterModule.forRoot(routes, {
             errorHandler: (error) => {
                 console.error('Navigation Error:', error);
@@ -98,6 +97,7 @@ import { SubscriptionStatusComponent } from "./components/subscription-status/su
             useClass: AuthInterceptor,
             multi: true,
         },
+        provideAppInitializer(initializeUserData)
     ]
 })
 export class AppModule { }

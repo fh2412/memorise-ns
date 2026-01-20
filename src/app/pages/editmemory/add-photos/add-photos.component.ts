@@ -3,27 +3,36 @@ import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 import { ImageUploadComponent } from '../../../components/image-upload/image-upload.component';
+import { BillingService } from '@services/billing.service';
 
 @Component({
-    selector: 'app-add-photos',
-    templateUrl: './add-photos.component.html',
-    styleUrls: ['./add-photos.component.scss'],
-    imports: [BackButtonComponent, ImageUploadComponent]
+  selector: 'app-add-photos',
+  templateUrl: './add-photos.component.html',
+  styleUrls: ['./add-photos.component.scss'],
+  imports: [BackButtonComponent, ImageUploadComponent]
 })
 export class AddPhotosComponent implements OnInit {
   private memoryService = inject(MemoryService);
   private activatedRoute = inject(ActivatedRoute);
+  private billingService = inject(BillingService);
+
+
+  canCreateNewMemory = this.billingService.canCreateNewMemory;
+  storageUsedGB = this.billingService.storageUsedGB;
 
   memoryId = 1;
-  firebasePath = ''; // Type as string if you expect a URL string
+  firebasePath = '';
   pictureCount = 0;
   loaded = false;
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.activatedRoute.params.subscribe(params => {
-      this.memoryId = +params['id'] || this.memoryId; // Ensures memoryId is a number
+      this.memoryId = +params['id'] || this.memoryId;
       this.loadMemory();
     });
+    if(this.storageUsedGB() === 0 && this.canCreateNewMemory() === false) {
+      return
+    }
   }
 
   loadMemory(): void {
@@ -38,5 +47,12 @@ export class AddPhotosComponent implements OnInit {
         console.error('Error loading memory:', error);
       }
     );
+  }
+
+  getDisabledTooltip(): string {
+    if (this.canCreateNewMemory()) {
+      return '';
+    }
+    return `Storage limit reached. Free users are limited to 5 GB. Current usage: ${this.storageUsedGB().toFixed(2)} GB. Please upgrade to Premium or Corporate for unlimited storage.`;
   }
 }

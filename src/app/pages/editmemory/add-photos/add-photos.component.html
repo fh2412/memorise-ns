@@ -6,9 +6,10 @@
     <app-back-button class="back-button"></app-back-button>
   </div>
 </div>
+<p>{{canCreateNewMemory()}} {{storageUsedGB()}}</p>
 
 @if (loaded) {
-  <div class="body">
+  <div class="photo-container">
     <app-image-upload
       [memoryId]="memoryId.toString()"
       [picture_count]="pictureCount"

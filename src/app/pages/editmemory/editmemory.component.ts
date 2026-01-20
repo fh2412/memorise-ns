@@ -16,7 +16,6 @@ import { MemoriseLocation } from '@models/location.model';
 import { firstValueFrom } from 'rxjs';
 import { ActivityBottomSheetData, ActivityBottomSheetComponent } from '@components/_dialogs/activity-bottom-sheet/activity-bottom-sheet.component';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
-import { BillingService } from '@services/billing.service';
 import { ParsedLocation } from '@models/geocoder-response.model';
 import { BackButtonComponent } from '../../components/back-button/back-button.component';
 import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
@@ -50,7 +49,6 @@ export class EditmemoryComponent implements OnInit {
   private firebaseService = inject(FileUploadService);
   private dialog = inject(MatDialog);
   private bottomSheet = inject(MatBottomSheet);
-  private billingService = inject(BillingService);
 
   loggedInUserId: string | null = null;
   memoryId = '';
@@ -69,10 +67,7 @@ export class EditmemoryComponent implements OnInit {
 
   isLargeScreen = true;
 
-  canCreateNewMemory = this.billingService.canCreateNewMemory;
-  storageUsedGB = this.billingService.storageUsedGB;
-
-  @HostListener('window:resize', ['$event'])
+  @HostListener('window:resize')
   onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
   }
@@ -360,13 +355,6 @@ export class EditmemoryComponent implements OnInit {
         error => console.error('Error checking pinned memory:', error)
       );
     }
-  }
-
-  getDisabledTooltip(): string {
-    if (this.canCreateNewMemory()) {
-      return '';
-    }
-    return `Storage limit reached. Free users are limited to 5 GB. Current usage: ${this.storageUsedGB().toFixed(2)} GB. Please upgrade to Premium or Corporate for unlimited storage.`;
   }
 
   openConfirmationDialog(title: string, message: string): Promise<boolean> {

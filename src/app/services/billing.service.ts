@@ -16,7 +16,6 @@ export interface DeletionData {
 export class BillingService {
   private http = inject(HttpClient);
 
-
   private userStorageData = signal<UserStorageData | null>(null);
 
   // Computed signal for storage in GB
@@ -24,6 +23,12 @@ export class BillingService {
     const data = this.userStorageData();
     if (!data) return 0;
     return data.storageUsedBytes / (1024 * 1024 * 1024);
+  });
+
+  readonly storageMaxGB = computed(() => {
+    const data = this.userStorageData();
+    if (!data) return 0;
+    return data.stroageMaxBytes;
   });
 
   // Computed signal for Accounttype
@@ -38,12 +43,14 @@ export class BillingService {
     const data = this.userStorageData();
     if (!data) return false;
 
-    // No limit for premium and corporate users
     if (data.accountType === AccountType.UNLIMITED) {
       return true;
     }
 
-    // Free users have 5GB limit
+    if (data.accountType === AccountType.PRO) {
+      return this.storageUsedGB() < 50;
+    }
+
     if (data.accountType === AccountType.FREE) {
       const storageGB = this.storageUsedGB();
       return storageGB < 5;

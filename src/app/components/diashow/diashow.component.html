@@ -1,0 +1,52 @@
+<div class="diashow-container">
+  <img [src]="data.images[currentIndex].url" alt="Slideshow Image" class="diashow-image">
+  
+  <button mat-icon-button (click)="previousImage()" class="nav-button left">
+    <mat-icon>chevron_left</mat-icon>
+  </button>
+  
+  <button mat-icon-button (click)="nextImage()" class="nav-button right">
+    <mat-icon>chevron_right</mat-icon>
+  </button>
+  
+  <div class="controls">
+    <button mat-icon-button (click)="togglePause()" class="control-button">
+      <mat-icon>{{ isPaused ? 'play_arrow' : 'pause' }}</mat-icon>
+    </button>
+    
+    <div class="speed-control">
+      <button mat-icon-button (click)="toggleSpeedMenu()" class="control-button">
+        <mat-icon>speed</mat-icon>
+      </button>
+      
+      <div class="speed-menu" [class.open]="isSpeedMenuOpen">
+        <button mat-icon-button 
+                (click)="changeSpeed(3)" 
+                class="speed-option"
+                [class.active]="slideInterval === 3000">
+          3s
+        </button>
+        <button mat-icon-button 
+                (click)="changeSpeed(5)" 
+                class="speed-option"
+                [class.active]="slideInterval === 5000">
+          5s
+        </button>
+        <button mat-icon-button 
+                (click)="changeSpeed(10)" 
+                class="speed-option"
+                [class.active]="slideInterval === 10000">
+          10s
+        </button>
+      </div>
+    </div>
+
+    <button mat-icon-button (click)="onCloseClick()" class="control-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <div class="progress-indicator">
+    {{ currentIndex + 1 }} / {{ data.images.length }}
+  </div>
+</div>

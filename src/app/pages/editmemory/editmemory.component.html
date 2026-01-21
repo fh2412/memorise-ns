@@ -30,9 +30,7 @@
                 <mat-icon>apps</mat-icon>
                 Manage Pictures
               </button>
-              <button mat-flat-button (click)="navigateToAddPhotos()" [disabled]="!canCreateNewMemory()"
-                [matTooltip]="getDisabledTooltip()" [matTooltipDisabled]="canCreateNewMemory()"
-                aria-label="Add new Photos">
+              <button mat-flat-button (click)="navigateToAddPhotos()">
                 <mat-icon>add_photo_alternate</mat-icon>
                 Add Photos
               </button>

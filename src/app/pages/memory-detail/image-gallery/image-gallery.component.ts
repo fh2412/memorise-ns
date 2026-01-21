@@ -1,13 +1,20 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ImageGalleryService } from '@services/image-gallery.service';
 import { ImageDialogComponent } from '@components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { getDownloadURL, getStorage, ref } from '@angular/fire/storage';
+import { catchError, firstValueFrom, forkJoin, from, map, Observable, of } from 'rxjs';
+import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
 import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { PersonHintComponent } from '../../../components/person-hint/person-hint.component';
 import { NgOptimizedImage } from '@angular/common';
+import { ImageWithMetadata } from '../memory-detail.component';
+import { ActivatedRoute } from '@angular/router';
+import { MemoryService } from '@services/memory.service';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
+import { MatIcon } from "@angular/material/icon";
+import { MatButton } from '@angular/material/button';
+import { DiashowComponent } from '@components/diashow/diashow.component';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -26,28 +33,89 @@ interface UserProfile {
 }
 
 @Component({
-    selector: 'app-image-gallery',
-    templateUrl: './image-gallery.component.html',
-    styleUrls: ['./image-gallery.component.scss'],
-    imports: [BackButtonComponent, MatGridList, MatGridTile, PersonHintComponent, NgOptimizedImage]
+  selector: 'app-image-gallery',
+  templateUrl: './image-gallery.component.html',
+  styleUrls: ['./image-gallery.component.scss'],
+  imports: [BackButtonComponent, MatGridList, MatGridTile, PersonHintComponent, NgOptimizedImage, LoadingSpinnerComponent, MatIcon, MatButton]
 })
 
 export class ImageGalleryComponent implements OnInit {
   private imageDataService = inject(ImageGalleryService);
+  private memoryService = inject(MemoryService);
   private dialog = inject(MatDialog);
+  private route = inject(ActivatedRoute);
 
   portraitPictures: GalleryImage[] = [];
   landscapePictures: GalleryImage[] = [];
-  layout: Layout[] = [];
+  layout = signal<Layout[]>([]);
   allPictures: GalleryImage[] = [];
   userIds: string[] = [];
   userProfiles: Record<string, string> = {};
+  imagesWithMetadata = signal<ImageWithMetadata[]>([])
+  memoryId: string | null = null;
+
+  isLoading = signal<boolean>(true);
 
   ngOnInit() {
-    this.imageDataService.currentImageData.subscribe((images) => {
-      this.getUsers(images);
-      this.splitImagesByOrientation(images);
-      this.layout = this.generateLayoutDistribution();
+    this.imageDataService.currentImageData.subscribe(async (images) => {
+
+      if (this.imagesWithMetadata().length > 0) {
+        this.isLoading.set(false);
+        return;
+      }
+
+      if (images.length === 0) {
+        this.memoryId = this.route.snapshot.paramMap.get('id');
+        if (this.memoryId) {
+          const imagePath = await this.getMemoriesImagePath(this.memoryId)
+          await this.getImages(imagePath);
+        }
+      }
+      else {
+        this.imagesWithMetadata.set(images)
+        await this.getUsers(this.imagesWithMetadata());
+        this.splitImagesByOrientation(this.imagesWithMetadata());
+        this.layout.set(this.generateLayoutDistribution());
+        this.isLoading.set(false);
+      }
+    });
+  }
+
+  private async getMemoriesImagePath(memoryId: string): Promise<string> {
+    const memory = await firstValueFrom(this.memoryService.getMemory(Number(memoryId)))
+    return memory.image_url;
+  }
+
+  private getImages(imageId: string): void {
+    const storage = getStorage();
+    const listRef = ref(storage, `memories/${imageId}`);
+    listAll(listRef).then((res) => {
+      const fetchPromises = res.items.map((itemRef) => {
+
+        const fullRef = ref(storage, itemRef.fullPath);
+        return getDownloadURL(fullRef).then((url) =>
+          getMetadata(fullRef).then((metadata) => ({
+            url,
+            width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
+            height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
+            created: metadata.timeCreated,
+            size: metadata.size,
+            userId: metadata.customMetadata?.['userId'] || '',
+          }))
+        );
+      });
+
+      Promise.all(fetchPromises).then((images) => {
+        this.imagesWithMetadata.set(images);
+        this.getUsers(this.imagesWithMetadata());
+        this.splitImagesByOrientation(this.imagesWithMetadata());
+        this.layout.set(this.generateLayoutDistribution());
+        this.isLoading.set(false);
+        console.log(this.imagesWithMetadata());
+
+      });
+    }).catch((error) => {
+      console.error('Error listing items:', error);
     });
   }
 
@@ -57,7 +125,6 @@ export class ImageGalleryComponent implements OnInit {
     });
     const uniqueUserIds = Array.from(new Set(this.userIds)).filter(id => id !== 'unknown');
 
-    // Fetch profile pictures for unique user IDs
     const profilePicObservables: Observable<UserProfile>[] = uniqueUserIds.map(userId => {
       const storage = getStorage();
       const profilePicRef = ref(storage, `profile-pictures/${userId}/thumbnail.jpg`);
@@ -196,25 +263,38 @@ export class ImageGalleryComponent implements OnInit {
   }
 
   openImageDialog(selectedImageUrl: GalleryImage): void {
-    // Only open dialog if the image is not null/empty
     if (!selectedImageUrl) return;
 
-    this.allPictures = this.createImageArrayFromLayouts(this.layout);
+    this.allPictures = this.createImageArrayFromLayouts(this.layout());
     const initialIndex = this.allPictures.indexOf(selectedImageUrl);
 
-    const dialogRef = this.dialog.open(ImageDialogComponent, {
+    this.dialog.open(ImageDialogComponent, {
       data: {
         images: this.allPictures,
-        initialIndex
+        initialIndex,
       }
-    });
-
-    dialogRef.afterClosed().subscribe(() => {
-      console.log('Dialog was closed');
     });
   }
 
   trackByLayoutType(index: number, layout: Layout): number {
     return layout.type;
+  }
+
+  startDiashow(selectedImageUrl?: GalleryImage): void {
+    this.allPictures = this.createImageArrayFromLayouts(this.layout());
+    const initialIndex = selectedImageUrl
+      ? this.allPictures.indexOf(selectedImageUrl)
+      : 0;
+
+    this.dialog.open(DiashowComponent, {
+      data: {
+        images: this.allPictures,
+        initialIndex: initialIndex >= 0 ? initialIndex : 0
+      },
+      maxWidth: '100vw',
+      maxHeight: '100vh',
+      width: '100vw',
+      height: '100vh'
+    });
   }
 }

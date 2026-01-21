@@ -5,23 +5,23 @@ import { BackButtonComponent } from '../../../components/back-button/back-button
 import { ImageUploadComponent } from '../../../components/image-upload/image-upload.component';
 
 @Component({
-    selector: 'app-add-photos',
-    templateUrl: './add-photos.component.html',
-    styleUrls: ['./add-photos.component.scss'],
-    imports: [BackButtonComponent, ImageUploadComponent]
+  selector: 'app-add-photos',
+  templateUrl: './add-photos.component.html',
+  styleUrls: ['./add-photos.component.scss'],
+  imports: [BackButtonComponent, ImageUploadComponent]
 })
 export class AddPhotosComponent implements OnInit {
   private memoryService = inject(MemoryService);
   private activatedRoute = inject(ActivatedRoute);
 
   memoryId = 1;
-  firebasePath = ''; // Type as string if you expect a URL string
+  firebasePath = '';
   pictureCount = 0;
   loaded = false;
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.activatedRoute.params.subscribe(params => {
-      this.memoryId = +params['id'] || this.memoryId; // Ensures memoryId is a number
+      this.memoryId = +params['id'] || this.memoryId;
       this.loadMemory();
     });
   }

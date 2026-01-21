@@ -8,4 +8,5 @@ export interface UserStorageData {
   userId: string;
   accountType: AccountType;
   storageUsedBytes: number;
+  stroageMaxBytes: number;
 }

@@ -7,7 +7,6 @@ import { Memory } from '@models/memoryInterface.model';
 import { MemoriseUser } from '@models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
-import { Auth } from '@angular/fire/auth';
 import { BillingService } from '@services/billing.service';
 import { StatsComponent } from '../../components/stats/stats.component';
 import { ViewSelectorComponent } from '../../components/view-selecor/view-selector.component';
@@ -21,13 +20,12 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
 
 @Component({
-    selector: 'app-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.scss'],
-    imports: [StatsComponent, ViewSelectorComponent, ReactiveFormsModule, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatButton, MatFormField, MatLabel, MatInput, HomeMapViewComponent, MatGridList, MatGridTile, MemoryCardComponent, MatPaginator]
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.scss'],
+  imports: [StatsComponent, ViewSelectorComponent, ReactiveFormsModule, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatButton, MatFormField, MatLabel, MatInput, HomeMapViewComponent, MatGridList, MatGridTile, MemoryCardComponent, MatPaginator]
 })
 export class HomeComponent implements OnInit {
-  private auth = inject(Auth);
   private userService = inject(UserService);
   private billingService = inject(BillingService);
   private router = inject(Router);
@@ -37,7 +35,6 @@ export class HomeComponent implements OnInit {
   filterForm: FormGroup;
   openForm: FormGroup;
   userdb!: MemoriseUser;
-  fuid: string | undefined;
   displayMemories: Memory[] = [];
   showFriendsMemoriesBool = true;
 
@@ -75,21 +72,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
-  private async initializeUserData(): Promise<void> {
-    const user = this.auth.currentUser;
-    this.fuid = this.auth.currentUser?.uid;
-    if (!user?.email) throw new Error('No authenticated user found');
-
-    this.userdb = await firstValueFrom(this.userService.getUser(user.uid));
-    if (this.userdb?.user_id) {
-      this.userService.setLoggedInUserId(this.userdb.user_id);
-      const useraccount = await firstValueFrom(this.userService.getUserAccountType(user.uid));
-      console.log("useraccount: ", useraccount);
-      this.billingService.setUserStorageData({
-        userId: user.uid,
-        accountType: useraccount.accountType,
-        storageUsedBytes: useraccount.storageUsedBytes
-      });
+  public async initializeUserData(): Promise<void> {
+    const loggedInUserId = this.userService.getLoggedInUserId();
+    if (loggedInUserId) {
+      this.userdb = await firstValueFrom(this.userService.getUser(loggedInUserId));
     }
   }
 

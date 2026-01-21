@@ -1,7 +1,7 @@
 <div class="wrapper">
     <div class="sticky-sidebar">
-        @if (fuid) {
-        <app-stats [userid]="fuid"></app-stats>
+        @if (userdb) {
+        <app-stats [userid]="userdb.user_id"></app-stats>
         }
     </div>
     <div class="main-content">

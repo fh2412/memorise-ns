@@ -30,7 +30,6 @@ mat-grid-list{
 }
 
 
-/* Hint container styling */
 p {
   display: flex;
   align-items: center;
@@ -38,9 +37,7 @@ p {
   padding: 12px 16px;
   margin: 16px 0;
   background-color: var(--mat-sys-surface-bright);
-  border: 1px solid var(--mat-sys-inverse-primary);
   border-radius: 8px;
-  color: var(--mat-sys-primary);
   font-size: 14px;
   line-height: 1.4;
   span{
@@ -48,10 +45,28 @@ p {
   }
 }
 
-/* Icon styling */
+.out-of-storage-p{
+  border: 1px solid var(--mat-sys-error);
+  span{
+    font-weight: bold;
+    color: var(--mat-sys-error);
+  }
+}
+
+.note-p{
+  border: 1px solid var(--mat-sys-inverse-primary);
+}
+
 p mat-icon {
-  color: var(--mat-sys-secondary);
   font-size: 20px;
   width: 20px;
   height: 20px;
+}
+
+.out-of-storage-icon{
+  color: var(--mat-sys-error);
+}
+
+.note-icon{
+  color: var(--mat-sys-secondary);
 }

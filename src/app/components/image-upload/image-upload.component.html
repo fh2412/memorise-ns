@@ -7,15 +7,21 @@
     </button>
   </div>
   <div>
-    <button mat-flat-button [disabled]="selectedFiles.length <= 0" (click)="uploadFiles()">
+    <button mat-flat-button [disabled]="selectedFiles.length <= 0 && canUploadImages()" (click)="uploadFiles()">
       <mat-icon>file_upload</mat-icon>
       <span>Upload</span>
     </button>
   </div>
 </div>
+@if (!canUploadImages()) {
+<p class="out-of-storage-p">
+  <mat-icon fontIcon="priority_high" class="out-of-storage-icon"></mat-icon>
+  <span>Attention:</span> You are out of Storage! Clean up old Memories or upgrade
+</p>
+}
 @if (picture_count() === 0) {
-<p>
-  <mat-icon fontIcon="lightbulb"></mat-icon>
+<p class="note-p">
+  <mat-icon fontIcon="lightbulb" class="note-icon"></mat-icon>
   <span>Note:</span> the Photo marked with a star will be your Memories Title-Picture
 </p>
 }

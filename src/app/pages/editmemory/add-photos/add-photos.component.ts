@@ -3,7 +3,6 @@ import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute } from '@angular/router';
 import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 import { ImageUploadComponent } from '../../../components/image-upload/image-upload.component';
-import { BillingService } from '@services/billing.service';
 
 @Component({
   selector: 'app-add-photos',
@@ -14,12 +13,6 @@ import { BillingService } from '@services/billing.service';
 export class AddPhotosComponent implements OnInit {
   private memoryService = inject(MemoryService);
   private activatedRoute = inject(ActivatedRoute);
-  private billingService = inject(BillingService);
-
-
-  canCreateNewMemory = this.billingService.canCreateNewMemory;
-  storageUsedGB = this.billingService.storageUsedGB;
-  storageMaxGB = this.billingService.storageMaxGB;
 
   memoryId = 1;
   firebasePath = '';
@@ -31,9 +24,6 @@ export class AddPhotosComponent implements OnInit {
       this.memoryId = +params['id'] || this.memoryId;
       this.loadMemory();
     });
-    if(this.storageUsedGB() === 0 && this.canCreateNewMemory() === false) {
-      return
-    }
   }
 
   loadMemory(): void {

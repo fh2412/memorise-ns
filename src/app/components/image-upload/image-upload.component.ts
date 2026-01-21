@@ -1,4 +1,4 @@
-import { Component, OnInit, effect, inject, input, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, inject, input, signal } from '@angular/core';
 import { UploadProgressDialogComponent } from '../_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { BillingService } from '@services/billing.service';
 
 export interface ImageFileWithDimensions {
   file: File;
@@ -35,12 +36,18 @@ export class ImageUploadComponent implements OnInit {
   private dialog = inject(MatDialog);
   private router = inject(Router);
   private userService = inject(UserService);
+  private billingService = inject(BillingService);
+
 
   readonly memoryId = input('');
   readonly memoryData = input<MemoryFormData | null>(null);
   readonly friends_emails = input<string[]>([]);
   readonly picture_count = input(0);
   readonly googleStorageUrlInput = input("");
+
+  storageUsedGB = this.billingService.storageUsedGB;
+  storageMaxGB = this.billingService.storageMaxGB;
+  canCreateNewMemory = this.billingService.canCreateNewMemory;
 
   readonly googleStorageUrl = signal("");
   userId: string | null = '';
@@ -50,7 +57,21 @@ export class ImageUploadComponent implements OnInit {
 
   previews: string[] = [];
   downloadURL: string | undefined;
-  imageFileWithDimensions: ImageFileWithDimensions[] = [];
+  imageFileWithDimensions = signal<ImageFileWithDimensions[]>([]);
+  imageToUploadSize = computed(() => {
+    return this.imageFileWithDimensions().reduce((acc, item) => acc + item.file.size, 0);
+  });
+
+  canUploadImages = computed(() => {
+    const bytes = this.imageToUploadSize();
+    if (bytes === 0) return this.canCreateNewMemory();
+    const gb = bytes / (1024 * 1024 * 1024);
+    const total = gb + this.storageUsedGB()
+    if (total < this.storageMaxGB() || this.storageMaxGB() === -1) {
+      return true
+    }
+    return false
+  });
 
   starredIndex: number | null = 0;
   hoverIndex: number | null = null;
@@ -77,13 +98,14 @@ export class ImageUploadComponent implements OnInit {
     });
   }
 
+
   selectFiles(event: Event): void {
     const input = event.target as HTMLInputElement;
     const newFiles = input.files;
 
     // Combine existing files with new ones (if applicable)
     this.selectedFiles = newFiles ? [...this.selectedFiles, ...Array.from(newFiles)] : this.selectedFiles;
-    this.imageFileWithDimensions = [];
+    this.imageFileWithDimensions.set([]);
     this.previews = [];
 
     if (newFiles) {
@@ -102,8 +124,7 @@ export class ImageUploadComponent implements OnInit {
               width: img.naturalWidth,
               height: img.naturalHeight,
             };
-            this.imageFileWithDimensions.push(fileWithDimensions);
-            this.previews.push(preview);
+            this.imageFileWithDimensions.update(current => [...current, fileWithDimensions]); this.previews.push(preview);
           };
           img.src = preview;
         };
@@ -123,7 +144,7 @@ export class ImageUploadComponent implements OnInit {
       const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
         width: '300px',
         disableClose: true, // Prevent closing the dialog by clicking outside
-        data: { userId: this.userId, memoryId: this.memoryId(), filesWithDimensions: this.imageFileWithDimensions, memoryData: this.memoryData(), friends_emails: this.friends_emails(), picture_count: this.picture_count(), googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
+        data: { userId: this.userId, memoryId: this.memoryId(), filesWithDimensions: this.imageFileWithDimensions(), memoryData: this.memoryData(), friends_emails: this.friends_emails(), picture_count: this.picture_count(), googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
       });
 
       // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed
@@ -135,7 +156,11 @@ export class ImageUploadComponent implements OnInit {
 
   removeImage(index: number): void {
     this.previews.splice(index, 1);
-    this.imageFileWithDimensions.splice(index, 1);
+    this.imageFileWithDimensions.update(current => {
+      const updated = [...current];
+      updated.splice(index, 1);
+      return updated;
+    });
     if (this.previews.length === 0) {
       this.selectedFiles = [];
     }

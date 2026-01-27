@@ -9,6 +9,7 @@ import { MemorySearchData } from '@models/memoryInterface.model';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-memory-selecter',
@@ -21,8 +22,9 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    MatProgressSpinnerModule
-  ]
+    MatProgressSpinnerModule,
+    LoadingSpinnerComponent
+]
 })
 export class MemorySelectorComponent implements OnInit {
   private memoryService = inject(MemoryService);

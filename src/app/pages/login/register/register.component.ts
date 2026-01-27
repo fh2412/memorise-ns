@@ -5,14 +5,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { MatFormField, MatLabel, MatInput, MatError } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { WelcomePageComponent } from '../welcome-page/welcome-page.component';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 @Component({
     selector: 'app-register',
     templateUrl: './register.component.html',
     styleUrls: ['./register.component.scss'],
-    imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, MatProgressSpinner, WelcomePageComponent]
+    imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, WelcomePageComponent, LoadingSpinnerComponent]
 })
 export class RegisterComponent {
   private fb = inject(FormBuilder);

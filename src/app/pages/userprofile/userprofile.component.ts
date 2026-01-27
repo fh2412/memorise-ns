@@ -25,16 +25,16 @@ import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { PinCardComponent } from '../../components/pin-card/pin-card.component';
 import { VisitedCountryMapComponent } from '../../components/visited-country-map/visited-country-map.component';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { DatePipe } from '@angular/common';
 import { UnlimitedBadgeComponent } from "@components/badges/unlimited-badge/unlimited-badge.component";
 import { ProBadgeComponent } from "@components/badges/pro-badge/pro-badge.component";
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 @Component({
     selector: 'app-userprofile',
     templateUrl: './userprofile.component.html',
     styleUrls: ['./userprofile.component.scss'],
-    imports: [BackButtonComponent, MatIcon, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatListItemIcon, MatListItemTitle, LogoutButtonComponent, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, MatProgressSpinner, DatePipe, UnlimitedBadgeComponent, ProBadgeComponent]
+    imports: [BackButtonComponent, MatIcon, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatListItemIcon, MatListItemTitle, LogoutButtonComponent, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, UnlimitedBadgeComponent, ProBadgeComponent, LoadingSpinnerComponent]
 })
 export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);

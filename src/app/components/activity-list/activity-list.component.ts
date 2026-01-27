@@ -26,6 +26,7 @@ import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { FilterBottomSheetComponent } from '../_dialogs/filter-bottom-sheet/filter-bottom-sheet.component';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { BreakpointObserver } from '@angular/cdk/layout';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 @Component({
   selector: 'app-activity-list',
@@ -48,7 +49,8 @@ import { BreakpointObserver } from '@angular/cdk/layout';
     MatChipsModule,
     MatProgressSpinnerModule,
     ActivityCardComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    LoadingSpinnerComponent
 ],
 })
 export class ActivityListComponent implements OnInit {

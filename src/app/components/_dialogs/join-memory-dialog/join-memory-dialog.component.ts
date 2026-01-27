@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { Auth } from '@angular/fire/auth';
 import { Memory } from '@models/memoryInterface.model';
 import { MemoryService } from '@services/memory.service';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 export interface JoinMemoryDialogData {
   token: string;
@@ -23,7 +24,8 @@ export interface JoinMemoryDialogData {
     MatDialogModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    LoadingSpinnerComponent
 ],
 })
 export class JoinMemoryDialogComponent implements OnInit {

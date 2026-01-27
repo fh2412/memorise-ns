@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Subject, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs';
 import { ActivityDetails, MemoriseUserActivity, ActivityFilter } from '@models/activityInterface.model';
 import { ActivityService } from '@services/activity.service';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 export interface ActivityBottomSheetData {
   activityId: number | string;
@@ -32,7 +33,8 @@ export interface ActivityBottomSheetData {
     MatProgressSpinnerModule,
     MatIconModule,
     MatDividerModule,
-    MatCardModule
+    MatCardModule,
+    LoadingSpinnerComponent
 ],
   templateUrl: 'activity-bottom-sheet.component.html',
   styleUrls: ['activity-bottom-sheet.component.scss'],

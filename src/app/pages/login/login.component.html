@@ -37,7 +37,7 @@
         @if (isActionInProgress) {
           <button mat-button color="primary" class="button-loader recover-password"
             test-id="recover-password-loader">
-            <mat-spinner color="primary" diameter="20"></mat-spinner>
+            <app-loading-spinner [diameter]="20"></app-loading-spinner>
           </button>
         }
       </div>
@@ -51,7 +51,7 @@
         @if (isActionInProgress) {
           <button mat-raised-button color="primary" class="button-loader"
             test-id="login-loader">
-            <mat-spinner color="accent" diameter="20"></mat-spinner>
+            <app-loading-spinner [diameter]="20" [color]="'accent'"></app-loading-spinner>
           </button>
         }
         <button mat-stroked-button color="primary" class="reg-button" (click)="toggleRegister()">REGISTER</button>

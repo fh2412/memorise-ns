@@ -33,10 +33,7 @@
 
     <!-- Loading Spinner -->
     @if (isLoading) {
-      <div class="loading-container">
-        <mat-spinner diameter="40"></mat-spinner>
-        <p>Searching activities...</p>
-      </div>
+      <app-loading-spinner [diameter]="40"></app-loading-spinner>
     }
 
     <!-- Search Results -->
@@ -89,7 +86,7 @@
         <button mat-button (click)="close()">Cancel</button>
         <button mat-raised-button color="primary" (click)="saveActivity()" [disabled]="isSaving">
           @if (isSaving) {
-            <mat-spinner diameter="20"></mat-spinner>
+            <app-loading-spinner [diameter]="20"></app-loading-spinner>
           }
           {{ isSaving ? 'Saving...' : 'Save Activity' }}
         </button>

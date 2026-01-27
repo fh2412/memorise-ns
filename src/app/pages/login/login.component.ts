@@ -5,14 +5,14 @@ import { Router } from '@angular/router';
 import { AuthenticationService } from '@services/authentication.service';
 import { MatFormField, MatLabel, MatInput, MatError } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { RegisterComponent } from './register/register.component';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 @Component({
     selector: 'app-login',
     templateUrl: './login.component.html',
     styleUrls: ['./login.component.scss'],
-    imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, MatProgressSpinner, RegisterComponent]
+    imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, RegisterComponent, LoadingSpinnerComponent]
 })
 export class LoginComponent implements OnInit {
   private authenticationService = inject(AuthenticationService);

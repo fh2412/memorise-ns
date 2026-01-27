@@ -19,10 +19,10 @@ import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatSelect, MatOption } from '@angular/material/select';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatCard, MatCardImage } from '@angular/material/card';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { DatePipe } from '@angular/common';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 // Extended interface to include user data
 export interface ImageWithUserData extends ImageWithMetadata {
@@ -33,7 +33,7 @@ export interface ImageWithUserData extends ImageWithMetadata {
     selector: 'app-photo-download',
     templateUrl: './photo-download.component.html',
     styleUrls: ['./photo-download.component.scss'],
-    imports: [BackButtonComponent, MatButton, MatFormField, MatLabel, MatSelect, MatOption, MatIconButton, MatTooltip, MatIcon, MatProgressSpinner, MatCard, MatCheckbox, MatCardImage, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe]
+    imports: [BackButtonComponent, MatButton, MatFormField, MatLabel, MatSelect, MatOption, MatIconButton, MatTooltip, MatIcon, MatCard, MatCheckbox, MatCardImage, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, LoadingSpinnerComponent]
 })
 export class PhotoDownloadComponent implements OnInit {
   dialog = inject(MatDialog);

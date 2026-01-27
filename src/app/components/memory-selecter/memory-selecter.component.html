@@ -30,10 +30,7 @@
     </div>
   }
   @if (loading) {
-    <div class="loading">
-      <mat-spinner diameter="40"></mat-spinner>
-      <span>Loading memories...</span>
-    </div>
+    <app-loading-spinner [diameter]="40" [message]="'Loading memories...'"></app-loading-spinner>
   }
 </div>
 

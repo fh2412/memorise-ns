@@ -44,12 +44,8 @@
     </div>
   </div>
 
-  <!-- Loading indicator -->
   @if (isLoadingUsers) {
-    <div class="loading-container">
-      <mat-spinner diameter="30"></mat-spinner>
-      <span>Loading user data...</span>
-    </div>
+    <app-loading-spinner [diameter]="30" [message]="'Loading user data...'"></app-loading-spinner>
   }
 
   <!-- Grid View -->
@@ -145,6 +141,6 @@
 
 @if (isDownloading) {
   <div class="overlay">
-    <mat-spinner class="spinner-container"></mat-spinner>
+    <app-loading-spinner></app-loading-spinner>
   </div>
 }

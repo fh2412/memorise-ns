@@ -16,6 +16,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MemorySelectorComponent } from "@components/memory-selecter/memory-selecter.component";
 import { ActivityFormComponent } from "@components/activity-form/activity-form.component";
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 const routes: Routes = [
     {
@@ -44,7 +45,8 @@ const routes: Routes = [
     MatButtonToggleModule,
     MemorySelectorComponent,
     ActivityFormComponent,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    LoadingSpinnerComponent
 ]
 })
 export class EditActivityModule { }

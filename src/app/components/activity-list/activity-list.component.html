@@ -89,10 +89,7 @@
 
     <!-- Loading State -->
     @if (isLoading) {
-    <div class="loading-container">
-        <mat-spinner></mat-spinner>
-        <p>Loading activities...</p>
-    </div>
+    <app-loading-spinner [message]="'Loading activities...'"></app-loading-spinner>
     }
 
     <!-- No Results Message -->

@@ -1,25 +1,25 @@
 @if (memory(); as mem) {
-  @if (mem.title) {
-    <mat-card class="memory-card" appearance="outlined">
-      <mat-card-content>
-        <mat-card-title-group>
-          <div class="truncate-title">
-            <mat-card-title class="truncate">{{ mem.title }}</mat-card-title>
-          </div>
-          <mat-chip>Public</mat-chip>
-        </mat-card-title-group>
-        <mat-card-subtitle class="two-line-truncate">{{ mem.text }}</mat-card-subtitle>
-        <span class="tag">
-          <mat-icon aria-hidden="true">circle</mat-icon>
-          Beta Memory
-        </span>
-      </mat-card-content>
-    </mat-card>
-  } @else {
-    <mat-card class="memory-card-empty" appearance="outlined">
-    </mat-card>
-  }
+@if (mem.title) {
+<mat-card class="memory-card" appearance="outlined">
+  <mat-card-content class="memory-card-content">
+    <img [src]="mem.title_pic" class="memory-image" alt="Pinned Memory Image">
+    <div class="memory-card-text">
+      <mat-card-title class="truncated-title">{{ mem.title }}</mat-card-title>
+      <mat-card-subtitle class="truncated-description">{{ mem.text }}</mat-card-subtitle>
+      <div class="memory-items">
+        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="image_arrow_up"></mat-icon>
+        <strong>{{mem.picture_count}}</strong>
+        <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="date_range" class="second-icon"></mat-icon>
+        {{mem.memory_date | date}}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>
 } @else {
-  <mat-card class="memory-card-empty" appearance="outlined">
-  </mat-card>
+<mat-card class="memory-card-empty" appearance="outlined">
+</mat-card>
+}
+} @else {
+<mat-card class="memory-card-empty" appearance="outlined">
+</mat-card>
 }

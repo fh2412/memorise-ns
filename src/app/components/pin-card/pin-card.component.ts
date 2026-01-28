@@ -1,20 +1,20 @@
 import { Component, input } from '@angular/core';
-import { Memory } from '@models/memoryInterface.model';
-
-import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
+import { Memory } from '@models/memoryInterface.model';
+import { MatIcon } from "@angular/material/icon";
+import { DatePipe } from '@angular/common';
+
 
 @Component({
     selector: 'app-pin-card',
     templateUrl: './pin-card.component.html',
     styleUrl: './pin-card.component.scss',
     imports: [
-    MatButtonModule,
-    MatIconModule,
     MatCardModule,
-    MatChipsModule
+    MatChipsModule,
+    MatIcon,
+    DatePipe,
 ],
 })
 export class PinCardComponent {

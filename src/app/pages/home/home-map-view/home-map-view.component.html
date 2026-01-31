@@ -17,7 +17,7 @@
   <map-info-window>
     <div class="size">
       @if (currentMemory) {
-        <app-memory-card [cardData]="currentMemory" class="fullcard" (click)="onButtonClick(currentMemory)"></app-memory-card>
+        <app-memory-card [cardData]="currentMemory" [showUserName]="false" class="fullcard" (click)="onButtonClick(currentMemory)"></app-memory-card>
       }
     </div>
   </map-info-window>

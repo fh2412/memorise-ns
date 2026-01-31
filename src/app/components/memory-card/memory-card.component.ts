@@ -24,7 +24,10 @@ export class MemoryCardComponent {
   private memoryService = inject(MemoryService);
   private clipboard = inject(Clipboard);
 
+
   readonly cardData = input.required<Memory>();
+  readonly showUserName = input<boolean>(true);
+
   titleUrl: string | undefined;
   isGeneratingLink = false;
 

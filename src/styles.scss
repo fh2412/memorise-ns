@@ -87,3 +87,14 @@ h1 {
 mat-card {
   overflow: hidden;
 }
+
+.gm-ui-hover-effect {
+  span{
+    background-color: var(--mat-sys-on-surface);
+    opacity: 1;
+  }
+}
+
+.gm-style .gm-style-iw-c {
+  background-color: var(--mat-sys-surface);
+}

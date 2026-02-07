@@ -7,8 +7,10 @@ mat-card {
 }
 
 .scrollable-content {
-    max-height: 50vh;
+    max-height: 60vh;
     overflow-y: auto;
+    margin-top: 16px;
+    margin-bottom: 16px;
 }
 
 .list-item{

@@ -84,13 +84,8 @@
               <mat-card appearance="outlined" class="desc big-screen">
                 @if (memorydb.text.length > 0) {
                   <mat-card-content>
-                    @if (showMore) {
-                      <div class="custom-pre">{{ truncatedDescription }}</div>
-                    }
-                    @if (!showMore) {
-                      <div class="custom-pre">{{ memorydb.text }}</div>
-                    }
-                    @if (showMore) {
+                    <div class="truncated-description" #descriptionText>{{ memorydb.text }}</div>
+                    @if (showMoreButton) {
                       <button mat-stroked-button (click)="openFullDescDialog()">
                         Show more
                         <mat-icon>chevron_right</mat-icon>
@@ -114,13 +109,8 @@
         <mat-card appearance="outlined" class="desc small-screen">
           @if (memorydb.text.length>0) {
             <mat-card-content>
-              @if (showMore) {
-                <div class="custom-pre">{{ truncatedDescription }}</div>
-              }
-              @if (!showMore) {
-                <div class="custom-pre">{{ memorydb.text }}</div>
-              }
-              @if (showMore) {
+              <div class="truncated-description" #descriptionTextSmall>{{ memorydb.text }}</div>
+              @if (showMoreButton) {
                 <button mat-stroked-button (click)="openFullDescDialog()">
                   Show more
                   <mat-icon>chevron_right</mat-icon>

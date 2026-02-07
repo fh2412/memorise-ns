@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
 import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { UserService } from '@services/userService';
@@ -41,10 +41,10 @@ export interface ImageWithMetadata {
 
 
 @Component({
-    selector: 'app-memory-detail',
-    templateUrl: './memory-detail.component.html',
-    styleUrl: 'memory-detail.component.scss',
-    imports: [BackButtonComponent, MatToolbar, MatButton, MatIcon, RouterLink, MatCard, MatGridList, MatGridTile, MatProgressSpinner, MatDivider, FriendsProfilePicsComponent, MatCardContent, MatCalendar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MapSnippetComponent, DatePipe]
+  selector: 'app-memory-detail',
+  templateUrl: './memory-detail.component.html',
+  styleUrl: 'memory-detail.component.scss',
+  imports: [BackButtonComponent, MatToolbar, MatButton, MatIcon, RouterLink, MatCard, MatGridList, MatGridTile, MatProgressSpinner, MatDivider, FriendsProfilePicsComponent, MatCardContent, MatCalendar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MapSnippetComponent, DatePipe]
 })
 export class MemoryDetailComponent implements OnInit {
   private memoryService = inject(MemoryService);
@@ -71,9 +71,11 @@ export class MemoryDetailComponent implements OnInit {
 
   displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
 
-  showMore = false;
-  truncatedDescription = '';
-  characterLimit = 500;
+  showMoreButton = false;
+  @ViewChild('descriptionText') descriptionText!: ElementRef;
+  @ViewChild('descriptionTextSmall') descriptionTextSmall!: ElementRef;
+
+
   imagesWithMetadata: ImageWithMetadata[] = [];
   isLoadingImages = true;
   hasPrivileges = false;
@@ -83,7 +85,9 @@ export class MemoryDetailComponent implements OnInit {
     this.memoryId = this.route.snapshot.params['id'];
     await this.getUsersPermissions();
     await this.getMemoryInfo();
+    this.checkTruncation()
   }
+
 
   private async getUsersPermissions(): Promise<void> {
     if (this.loggedInUserId) {
@@ -114,7 +118,6 @@ export class MemoryDetailComponent implements OnInit {
   }
 
   private initializeMemoryDetails(): void {
-    this.truncateDescription();
     this.selectedDate = new Date(this.memorydb.memory_date);
     this.endDate = new Date(this.memorydb.memory_end_date);
     this.dateRange = new DateRange(this.selectedDate, this.endDate);
@@ -131,12 +134,18 @@ export class MemoryDetailComponent implements OnInit {
     );
   }
 
-  truncateDescription() {
-    if (this.memorydb.text.length > this.characterLimit) {
-      this.truncatedDescription = this.memorydb.text.substring(0, this.characterLimit) + '...';
-      this.showMore = true;
+  checkTruncation() {
+    const elements = [
+      this.descriptionText?.nativeElement,
+      this.descriptionTextSmall?.nativeElement
+    ];
+
+    const activeElement = elements.find(el => el && el.offsetHeight > 0);
+
+    if (activeElement) {
+      this.showMoreButton = activeElement.scrollHeight > activeElement.offsetHeight + 1;
     } else {
-      this.truncatedDescription = this.memorydb.text;
+      this.showMoreButton = false;
     }
   }
 

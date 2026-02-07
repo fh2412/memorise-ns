@@ -78,11 +78,16 @@ h1 {
 .desc {
   margin-top: 5px;
 
-  .custom-pre {
+  .truncated-description {
     font-family: monospace;
+    display: -webkit-box;
+    overflow: hidden;
+    white-space: pre-wrap;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    line-clamp: 6;
     font-size: large;
     margin-bottom: 0.5rem;
-    white-space: pre-wrap;
     line-height: 1.13rem;
   }
 }

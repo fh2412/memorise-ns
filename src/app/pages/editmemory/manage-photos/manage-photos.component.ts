@@ -24,17 +24,17 @@ export class ManagePhotosComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
 
   imagesToDelete: string[] = [];
-  imageUrl: string | null = null;
+  memoryId: string | null = null;
 
   images: { url: string; isStarred: boolean }[] = []; // Array of image objects with URL and star status
   starredIndex: number | null = null;  // Index of the currently starred image
   hoverIndex: number | null = null;
 
   ngOnInit(): void {
-    // Retrieve imageUrl from route params
+    // Retrieve memoryId from route params
     this.route.paramMap.subscribe(params => {
-      this.imageUrl = params.get('imageUrl');
-      this.getImages(this.imageUrl);
+      this.memoryId = params.get('memoryId');
+      this.getImages(this.memoryId);
     });
   }
 
@@ -81,23 +81,23 @@ export class ManagePhotosComponent implements OnInit {
     if (this.starredIndex !== null) {
       this.snackBar.open('Title Picutre changed!', 'Nice', { duration: 3000 });
       this.fileService.starImage(index, this.starredIndex, this.images[this.starredIndex].url, this.images[index].url);
-      this.memoryService.updateTitlePic(this.imageUrl, this.images[index].url).subscribe();
+      this.memoryService.updateTitlePic(this.memoryId, this.images[index].url).subscribe();
       this.starredIndex = index;
     }
   }
 
   /**
    * Mark image for deletion and remove from display list.
-   * @param imageUrl The URL of the image to delete.
+   * @param memoryId The URL of the image to delete.
    */
-  onDelete(imageUrl: string) {
-    const imageToDelete = this.images.find(item => item.url === imageUrl);
+  onDelete(memoryId: string) {
+    const imageToDelete = this.images.find(item => item.url === memoryId);
     
     if (imageToDelete) {
       this.imagesToDelete.push(imageToDelete.url);
-      this.images = this.images.filter(item => item.url !== imageUrl);
+      this.images = this.images.filter(item => item.url !== memoryId);
 
-      if (this.starredIndex !== null && this.images[this.starredIndex]?.url === imageUrl) {
+      if (this.starredIndex !== null && this.images[this.starredIndex]?.url === memoryId) {
         this.starredIndex = null;
       }
     }
@@ -105,15 +105,15 @@ export class ManagePhotosComponent implements OnInit {
 
   /**
    * Remove image from delete list and restore it in display list.
-   * @param imageUrl The URL of the image to restore.
+   * @param memoryId The URL of the image to restore.
    */
-  removeFromDeleteList(imageUrl: string) {
-    const imageToRestore = this.imagesToDelete.find(item => item === imageUrl);
+  removeFromDeleteList(memoryId: string) {
+    const imageToRestore = this.imagesToDelete.find(item => item === memoryId);
   
     if (imageToRestore) {
-      const restoredImage = { url: imageUrl, isStarred: false };
+      const restoredImage = { url: memoryId, isStarred: false };
       this.images.push(restoredImage);
-      this.imagesToDelete = this.imagesToDelete.filter(item => item !== imageUrl);
+      this.imagesToDelete = this.imagesToDelete.filter(item => item !== memoryId);
     }
   }
 

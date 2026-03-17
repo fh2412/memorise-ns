@@ -29,7 +29,6 @@ export class AddPhotosComponent implements OnInit {
   loadMemory(): void {
     this.memoryService.getMemory(this.memoryId).subscribe(
       response => {
-        this.firebasePath = response.image_url;
         this.pictureCount = response.picture_count || 0;
         this.loaded = true;
         console.log("Memory data loaded:", response);

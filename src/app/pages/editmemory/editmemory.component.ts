@@ -106,7 +106,6 @@ export class EditmemoryComponent implements OnInit {
       this.memoryService.getMemory(Number(this.memoryId)).subscribe(
         response => {
           this.memory = response;
-          this.firebaseId = response.image_url;
           this.memoryForm.patchValue({
             description: response.text,
             title: response.title,
@@ -161,7 +160,7 @@ export class EditmemoryComponent implements OnInit {
         await firstValueFrom(this.pinnedService.deleteMemoryFromAllPins(Number(this.memoryId)));
       }
       await firstValueFrom(this.memoryService.deleteMemoryAndFriends(this.memoryId));
-      await firstValueFrom(this.firebaseService.deleteMemorysFolder(this.firebaseId));
+      await firstValueFrom(this.firebaseService.deleteMemorysFolder(this.memoryId));
       this.router.navigate(['/home']);
     } catch (error) {
       console.error('Error deleting memory and friends:', error);
@@ -231,7 +230,7 @@ export class EditmemoryComponent implements OnInit {
   }
 
   navigateToManagePhotos(): void {
-    this.router.navigate(['/editmemory/managephotos', this.memory.image_url]);
+    this.router.navigate(['/editmemory/managephotos', this.memory.memory_id]);
   }
 
   initialiseMapDialog(): void {

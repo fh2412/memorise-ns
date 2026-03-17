@@ -63,14 +63,7 @@ export class ImageUploadComponent implements OnInit {
   });
 
   canUploadImages = computed(() => {
-    const bytes = this.imageToUploadSize();
-    if (bytes === 0) return this.canCreateNewMemory();
-    const gb = bytes / (1024 * 1024 * 1024);
-    const total = gb + this.storageUsedGB()
-    if (total < this.storageMaxGB() || this.storageMaxGB() === -1) {
-      return true
-    }
-    return false
+    return this.canCreateNewMemory();
   });
 
   starredIndex: number | null = 0;

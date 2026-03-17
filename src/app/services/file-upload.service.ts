@@ -140,6 +140,9 @@ export class FileUploadService {
     const path = `memories/${memoryId}/${uniqueId}.jpg`;
     const storageRef = ref(this.storage, path);
 
+    console.log("Uploading images to: ", path);
+
+
     const metadata = {
       customMetadata: {
         width: file.width.toString(),

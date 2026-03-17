@@ -23,7 +23,6 @@ export class PinnedMemoryService {
     const emptyMemory: Memory = {
       memory_id: 0,
       user_id: '',
-      image_url: '',
       latitude: '',
       longitude: '',
       location_id: 0,

@@ -121,7 +121,7 @@ export class MemoryDetailComponent implements OnInit {
     this.selectedDate = new Date(this.memorydb.memory_date);
     this.endDate = new Date(this.memorydb.memory_end_date);
     this.dateRange = new DateRange(this.selectedDate, this.endDate);
-    this.getImages(this.memorydb.image_url);
+    this.getImages(this.memorydb.memory_id);
     this.fetchLocationData(this.memorydb.location_id);
   }
 
@@ -165,7 +165,7 @@ export class MemoryDetailComponent implements OnInit {
   }
 
 
-  private getImages(imageId: string): void {
+  private getImages(imageId: number): void {
     const storage = getStorage();
     const listRef = ref(storage, `memories/${imageId}`);
     this.isLoadingImages = true;

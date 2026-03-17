@@ -43,13 +43,13 @@ export class MemoryService {
   }
 
   getMemoriesMapData(userId: string, includeShared: boolean): Observable<MemoryMapData[]> {
-  return this.http.get<MemoryMapData[]>(
-    `${this.apiUrl}/memories/mapData/${userId}`,
-    {
-      params: { includeShared: includeShared.toString() }
-    }
-  );
-}
+    return this.http.get<MemoryMapData[]>(
+      `${this.apiUrl}/memories/mapData/${userId}`,
+      {
+        params: { includeShared: includeShared.toString() }
+      }
+    );
+  }
 
   async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
     const path = `memories/${memoryId}/picture_${starredIndex + 1}.jpg`;
@@ -90,8 +90,8 @@ export class MemoryService {
     return this.http.put<UpdateStandardResponse>(url, { locationId });
   }
 
-  updateTitlePic(imageId: string | null, imageUrl: string): Observable<UpdateStandardResponse> {
-    const url = `${this.apiUrl}/memories/updateTitlePic/${imageId}`;
+  updateTitlePic(memoryId: string | null, imageUrl: string): Observable<UpdateStandardResponse> {
+    const url = `${this.apiUrl}/memories/updateTitlePic/${memoryId}`;
     return this.http.put<UpdateStandardResponse>(url, { imageUrl });
   }
 

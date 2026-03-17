@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { FileUploadService } from '@services/file-upload.service';
 import { MemoryService } from '@services/memory.service';
@@ -7,7 +7,6 @@ import { GeocodingService } from '@services/geocoding.service';
 import { ImageFileWithDimensions } from '../../image-upload/image-upload.component';
 import { MemoryFormData } from '@models/memoryInterface.model';
 import { ActivityService } from '@services/activity.service';
-import { MemoriseLocation } from '@models/location.model';
 import { BillingService } from '@services/billing.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
@@ -15,13 +14,13 @@ import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBar } from '@angular/material/progress-bar';
 
 @Component({
-    selector: 'app-upload-progress-dialog',
-    templateUrl: './upload-progress-dialog.component.html',
-    styleUrl: './upload-progress-dialog.component.scss',
-    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatProgressBar]
+  selector: 'app-upload-progress-dialog',
+  templateUrl: './upload-progress-dialog.component.html',
+  styleUrl: './upload-progress-dialog.component.scss',
+  imports: [MatDialogTitle, CdkScrollable, MatDialogContent, MatProgressBar]
 })
 export class UploadProgressDialogComponent implements OnInit {
-  data = inject<{
+  readonly data = inject<{
     userId: string;
     memoryId: string;
     filesWithDimensions: ImageFileWithDimensions[];
@@ -31,253 +30,164 @@ export class UploadProgressDialogComponent implements OnInit {
     googleStorageUrl: string;
     starredIndex: number;
   }>(MAT_DIALOG_DATA);
-  private storageService = inject(FileUploadService);
-  private memoryService = inject(MemoryService);
-  private locationService = inject(LocationService);
-  private dialogRef = inject<MatDialogRef<UploadProgressDialogComponent>>(MatDialogRef);
-  private geocodingService = inject(GeocodingService);
-  private activityService = inject(ActivityService);
-  private billingService = inject(BillingService);
-  private snackbar = inject(MatSnackBar);
 
-  progress: number[] = [];
+  private readonly storageService = inject(FileUploadService);
+  private readonly memoryService = inject(MemoryService);
+  private readonly locationService = inject(LocationService);
+  private readonly dialogRef = inject(MatDialogRef<UploadProgressDialogComponent>);
+  private readonly geocodingService = inject(GeocodingService);
+  private readonly activityService = inject(ActivityService);
+  private readonly billingService = inject(BillingService);
+  private readonly snackbar = inject(MatSnackBar);
+
+  // Using signals for progress tracking (Angular 21 standard)
+  progress = signal<number[]>([]);
+  uploadedCount = signal(0);
   downloadURLs: string[] = [];
-  uploadedCount = 0;
-  memoryId = '';
 
   constructor() {
-    const data = this.data;
-
-    this.progress = Array(data.filesWithDimensions.length).fill(0);
-    this.downloadURLs = Array(data.filesWithDimensions.length).fill('');
+    this.progress.set(Array(this.data.filesWithDimensions.length).fill(0));
+    this.downloadURLs = Array(this.data.filesWithDimensions.length).fill('');
   }
 
   ngOnInit() {
-    this.batchUpload();
+    this.startProcessing();
   }
 
-  async batchUpload() {
-    this.uploadedCount = 0;
-
-    // Calculate total size upfront
-    const totalSizeBytes = this.data.filesWithDimensions.reduce(
-      (sum, img) => sum + img.file.size,
-      0
-    );
-
-    // Use atomic increment for storage quota
-    let hasStorageSpace = false;
-    try {
-      hasStorageSpace = await this.billingService
-        .updateFreeUserStorageUsed(this.data.userId, totalSizeBytes)
-        .toPromise();
-    } catch {
-      this.snackbar.open(
-        'Your Storage is full! Delete old Images or upgrade to Premium.',
-        'Close',
-        {
-          duration: 5000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
-        }
-      );
-      this.dialogRef.close(null);
-      return;
-    }
-
-    if (!hasStorageSpace) {
-      this.snackbar.open(
-        'Your Storage is full! Delete old Images or upgrade to Premium.',
-        'Close',
-        {
-          duration: 5000,
-          horizontalPosition: 'center',
-          verticalPosition: 'top'
-        }
-      );
-      this.dialogRef.close(null);
-      return;
-    }
-
-    // Upload all files concurrently
-    const uploadPromises = this.data.filesWithDimensions.map((file, index) => {
-      const isStarred = (index === this.data.starredIndex);
-
-      return new Promise<void>((resolve, reject) => {
-        this.storageService.uploadMemoryPicture(
-          this.data.googleStorageUrl,
-          file,
-          this.data.userId,
-          isStarred
-        ).subscribe({
-          next: (result) => {
-            if (result.progress !== undefined) {
-              this.progress[index] = result.progress;
-            }
-            if (result.downloadURL) {
-              this.downloadURLs[index] = result.downloadURL;
-            }
-          },
-          error: (error) => {
-            console.error(`Error uploading picture ${index}:`, error);
-            reject(error);
-          },
-          complete: () => {
-            this.uploadedCount++;
-            resolve();
-          }
-        });
-      });
-    });
+  async startProcessing() {
+    const totalSizeBytes = this.data.filesWithDimensions.reduce((sum, img) => sum + img.file.size, 0);
 
     try {
-      await Promise.all(uploadPromises);
-      console.log("All uploads finished!");
+      // 1. Storage Check
+      const hasSpace = await firstValueFrom(this.billingService.updateFreeUserStorageUsed(this.data.userId, totalSizeBytes));
+      if (!hasSpace) throw new Error('STORAGE_FULL');
 
+      // 2. Create Memory Structure First
+      let currentMemoryId = this.data.memoryId;
       if (this.data.picture_count === 0) {
-        await this.createMemory();
-        console.log("Memory Created: ", this.memoryId);
+        currentMemoryId = await this.orchestrateMemoryCreation();
       }
 
-      const incrementResult = await firstValueFrom(this.memoryService.incrementPictureCount(this.memoryId || this.data.googleStorageUrl, this.data.filesWithDimensions.length));
-      console.log(`Picture count updated to: ${incrementResult?.newCount}`);
-      this.snackbar.open(
-        'Successfully created Memory!',
-        'Yeay',
-        { duration: 3000 }
-      );
+      // 3. Batch Upload Images using the new Memory ID
+      await this.performBatchUpload(currentMemoryId);
+
+      // 4. Update the Starred Image (Title Pic)
+      const starredUrl = this.downloadURLs[this.data.starredIndex];
+      if (starredUrl) {
+        await firstValueFrom(this.memoryService.updateTitlePic(currentMemoryId, starredUrl));
+      }
+
+      // 5. Finalize
+      await firstValueFrom(this.memoryService.incrementPictureCount(currentMemoryId, this.data.filesWithDimensions.length));
+
+      this.snackbar.open('Successfully created Memory!', 'Success', { duration: 3000 });
       this.dialogRef.close(this.data.googleStorageUrl);
+
     } catch (error) {
-      console.error('Error during upload process:', error);
+      console.error('Process failed:', error);
 
-      // Rollback storage quota on failure
-      const updatedStroage = await firstValueFrom(this.billingService.updateFreeUserStorageUsed(this.data.userId, -totalSizeBytes));
+      // Rollback storage on failure
+      await firstValueFrom(this.billingService.updateFreeUserStorageUsed(this.data.userId, -totalSizeBytes));
 
-      this.snackbar.open(
-        'Upload failed. Please try again.',
-        'Close',
-        { duration: 3000 }
-      );
-      this.dialogRef.close(updatedStroage);
+      const message = error === 'STORAGE_FULL'
+        ? 'Your Storage is full! Delete old images or upgrade.'
+        : 'Upload failed. Please try again.';
+
+      this.snackbar.open(message, 'Close', { duration: 5000 });
+      this.dialogRef.close(null);
     }
   }
 
-  async createMemory() {
-    try {
-      if (!this.data.memoryData) {
-        console.error('Form is not valid. Please fill in all required fields.');
-        return;
-      }
+  private async orchestrateMemoryCreation(): Promise<string> {
+    const memoryData = { ...this.data.memoryData };
 
-      const memoryData = { ...this.data.memoryData };
-      memoryData.firestore_bucket_url = this.data.googleStorageUrl;
-      memoryData.title_pic = this.downloadURLs[this.data.starredIndex] || '';
-      const locationData: MemoriseLocation = {
+    // Handle Geocoding if missing
+    if (!memoryData.lat || !memoryData.lng) {
+      if (!(memoryData.l_city && memoryData.l_country && memoryData.l_postcode)) {
+        memoryData.location_id = 1;
+      }
+      else {
+        const coords = await this.get_geocoords(memoryData.l_city, memoryData.l_postcode, memoryData.l_country);
+        memoryData.lat = coords.lat.toString();
+        memoryData.lng = coords.lng.toString();
+      }
+    }
+
+    // Create Location
+    if (memoryData.location_id !== 1) {
+      const locResponse = await firstValueFrom(this.locationService.createLocation({
         latitude: Number(memoryData.lat),
         longitude: Number(memoryData.lng),
         country: memoryData.l_country,
         countryCode: memoryData.l_countryCode,
         city: memoryData.l_city,
         location_id: 0
-      }
-
-
-      if (!memoryData.memory_end_date) {
-        memoryData.memory_end_date = memoryData.memory_date;
-      }
-
-      const hasCoordinates = memoryData.lat && memoryData.lng;
-      const hasAddressInfo = memoryData.l_city || memoryData.l_country || memoryData.l_postcode;
-
-      if (!hasCoordinates && !hasAddressInfo) {
-        memoryData.location_id = 1;
-      } else {
-        // Get coordinates if we don't have them yet
-        if (!hasCoordinates) {
-          const coords = await this.get_geocoords(
-            memoryData.l_city,
-            memoryData.l_country,
-            memoryData.l_postcode
-          );
-          memoryData.lat = coords.lat.toString();
-          memoryData.lng = coords.lng.toString();
-        }
-
-        // Create location with coordinates
-        const response = await firstValueFrom(this.locationService.createLocation(locationData));
-        memoryData.location_id = response.locationId;
-      }
-
-      if (memoryData.activity_id == 0) {
-        memoryData.activity_id = await this.handleActivityCreation(memoryData);
-      }
-
-      await this.handleMemoryCreation(memoryData);
-    } catch (error) {
-      console.error('Error creating memory:', error);
+      }));
+      memoryData.location_id = locResponse.locationId;
     }
+    // Create Activity if needed
+    if (memoryData.activity_id === 0 && memoryData.quickActivityTitle) {
+      const actResponse = await firstValueFrom(this.activityService.createQuickActivity(memoryData.quickActivityTitle));
+      memoryData.activity_id = actResponse.activityId;
+    }
+
+    // Set dates
+    if (!memoryData.memory_end_date) memoryData.memory_end_date = memoryData.memory_date;
+    memoryData.firestore_bucket_url = this.data.googleStorageUrl;
+
+    // Create Memory
+    const memResponse = await firstValueFrom(this.memoryService.createMemory(memoryData));
+
+    // Add Friends
+    if (this.data.friends_emails.length > 0) {
+      await firstValueFrom(this.memoryService.addFriendToMemory({
+        emails: this.data.friends_emails,
+        memoryId: memResponse.memory_id
+      }));
+    }
+
+    return memResponse.memory_id;
   }
 
-  private handleActivityCreation(memoryData: MemoryFormData): Promise<number | null> {
-    return new Promise((resolve, reject) => {
-      if (!memoryData.quickActivityTitle) {
-        resolve(null);
-        return;
-      }
+  private async performBatchUpload(memoryId: string) {
+    const uploadPromises = this.data.filesWithDimensions.map((file, index) => {
+      const isStarred = index === this.data.starredIndex;
 
-      this.activityService.createQuickActivity(memoryData.quickActivityTitle).subscribe(
-        (response: { activityId: number }) => resolve(response.activityId),
-        (error) => reject(`Error creating activity: ${error}`)
-      );
+      return new Promise<void>((resolve, reject) => {
+        this.storageService.uploadMemoryPicture(memoryId, file, this.data.userId, isStarred)
+          .subscribe({
+            next: (result) => {
+              if (result.progress !== undefined) {
+                const currentProgress = [...this.progress()];
+                currentProgress[index] = result.progress;
+                this.progress.set(currentProgress);
+              }
+              if (result.downloadURL) {
+                this.downloadURLs[index] = result.downloadURL;
+              }
+            },
+            error: reject,
+            complete: () => {
+              this.uploadedCount.update(c => c + 1);
+              resolve();
+            }
+          });
+      });
     });
+
+    await Promise.all(uploadPromises);
   }
 
-  private handleMemoryCreation(memoryData: MemoryFormData): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.memoryService.createMemory(memoryData).subscribe(
-        async (response: { memory_id: string }) => {
-          this.memoryId = response.memory_id;
-          console.log('Memory created successfully:', response);
-
-          if (this.data.friends_emails.length > 0) {
-            await this.addFriendsToMemory(this.memoryId, this.data.friends_emails);
-          }
-
-          resolve();
-        },
-        (error) => reject(`Error creating memory: ${error}`)
-      );
-    });
-  }
-
-  private addFriendsToMemory(memoryId: string, friendsEmails: string[]): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const friendData = { emails: friendsEmails, memoryId };
-      this.memoryService.addFriendToMemory(friendData).subscribe(
-        () => {
-          console.log('Friends added to memory successfully.');
-          resolve();
-        },
-        (error) => reject(`Error adding friends to memory: ${error}`)
-      );
-    });
-  }
-
-  async get_geocoords(
-    city: string,
-    postcode: string,
-    country: string
-  ): Promise<{ lat: number, lng: number }> {
+  async get_geocoords(city: string, postcode: string, country: string): Promise<{ lat: number, lng: number }> {
     const address = await this.geocodingService.geocodeAddress(country, city, postcode);
-
     if (address && address.results && address.results.length > 0) {
       const geometry = address.results[0].geometry;
-
       if (geometry.bounds) {
         const ne = geometry.bounds.getNorthEast();
         const sw = geometry.bounds.getSouthWest();
         const lat = (ne.lat() + sw.lat()) / 2;
         const lng = (ne.lng() + sw.lng()) / 2;
+
         return { lat, lng };
       } else if (geometry.location) {
         return {
@@ -286,7 +196,6 @@ export class UploadProgressDialogComponent implements OnInit {
         };
       }
     }
-
     throw new Error('Geocoding failed to return results');
   }
 }

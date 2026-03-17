@@ -2,7 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { ImageGalleryService } from '@services/image-gallery.service';
 import { ImageDialogComponent } from '@components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, firstValueFrom, forkJoin, from, map, Observable, of } from 'rxjs';
+import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
 import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
@@ -67,8 +67,7 @@ export class ImageGalleryComponent implements OnInit {
       if (images.length === 0) {
         this.memoryId = this.route.snapshot.paramMap.get('id');
         if (this.memoryId) {
-          const imagePath = await this.getMemoriesImagePath(this.memoryId)
-          await this.getImages(imagePath);
+          await this.getImages(this.memoryId);
         }
       }
       else {
@@ -79,11 +78,6 @@ export class ImageGalleryComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
-  }
-
-  private async getMemoriesImagePath(memoryId: string): Promise<string> {
-    const memory = await firstValueFrom(this.memoryService.getMemory(Number(memoryId)))
-    return memory.image_url;
   }
 
   private getImages(imageId: string): void {

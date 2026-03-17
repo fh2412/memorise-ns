@@ -1,9 +1,26 @@
-<h2 mat-dialog-title>Uploading...</h2>
-<mat-dialog-content>
-  @for (file of data.filesWithDimensions; track file; let i = $index) {
-    <div>
-      <p>{{ file.file.name }}</p>
-      <mat-progress-bar mode="determinate" [value]="progress[i]"></mat-progress-bar>
-    </div>
+<h2 mat-dialog-title>
+  @if (uploadedCount() === data.filesWithDimensions.length) {
+    Upload Complete!
+  } @else {
+    Uploading {{ uploadedCount() + 1 }} of {{ data.filesWithDimensions.length }}...
   }
+</h2>
+
+<mat-dialog-content> 
+  <div class="upload-container">
+    @for (file of data.filesWithDimensions; track file.file.name; let i = $index) {
+      <div class="file-row">
+        <div class="file-info">
+          <span>{{ file.file.name }}</span>
+          <span class="percentage">{{ progress()[i] }}%</span>
+        </div>
+        
+        <mat-progress-bar 
+          mode="determinate" 
+          [value]="progress()[i]"
+          [color]="progress()[i] === 100 ? 'accent' : 'primary'">
+        </mat-progress-bar>
+      </div>
+    }
+  </div>
 </mat-dialog-content>

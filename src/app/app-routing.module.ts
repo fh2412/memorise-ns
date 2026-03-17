@@ -48,7 +48,7 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'editmemory/managephotos/:imageUrl',
+    path: 'editmemory/managephotos/:memoryId',
     loadChildren: () => import('./pages/editmemory/manage-photos/manage-photos.module').then(m => m.ManagePhotosModule),
     canActivate: [authGuard]
   },

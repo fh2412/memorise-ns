@@ -168,7 +168,12 @@ export class PhotoDownloadComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
     dialogRef.afterClosed().subscribe((confirmed) => {
       if (confirmed) {
-        this.imageDataService.downloadZip(this.memorydb.memory_id.toString(), this.memorydb.title).subscribe();
+        this.isDownloading = true;
+        this.imageDataService.downloadZip(this.memorydb.memory_id.toString(), this.memorydb.title).subscribe(() => {
+            this.isDownloading = false;
+          }, () => {
+            this.isDownloading = false;
+          });
       }
     });
   }

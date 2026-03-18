@@ -15,8 +15,8 @@
     "@angular/animations": "^20.3.16",
     "@angular/cdk": "^20.2.8",
     "@angular/common": "^20.3.16",
-    "@angular/compiler": "^20.3.16",
-    "@angular/core": "^20.3.16",
+    "@angular/compiler": "^20.3.18",
+    "@angular/core": "^20.3.18",
     "@angular/fire": "^20.0.1",
     "@angular/forms": "^20.3.16",
     "@angular/google-maps": "^20.2.8",
@@ -36,8 +36,8 @@
     "zone.js": "~0.15.0"
   },
   "devDependencies": {
-    "@angular/build": "^20.3.17",
-    "@angular/cli": "^20.3.17",
+    "@angular/build": "^20.3.20",
+    "@angular/cli": "^20.3.20",
     "@angular/compiler-cli": "^20.3.16",
     "@eslint/js": "^9.28.0",
     "@types/d3": "^7.4.3",

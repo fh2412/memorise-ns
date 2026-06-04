@@ -63,12 +63,12 @@ export class PinnedMemoryService {
   }
 
   checkMemoryPin(memoryId: number): Observable<Memory[]> {
-    const url = `${this.apiUrl}/favourite-memorie/${memoryId}`;
+    const url = `${this.apiUrl}/favourite-memory/${memoryId}`;
     return this.http.get<Memory[]>(url);
   }
 
   deleteMemoryFromAllPins(memoryId: number): Observable<Memory[]> {
-    const url = `${this.apiUrl}/favourite-memorie/${memoryId}`;
+    const url = `${this.apiUrl}/favourite-memory/${memoryId}`;
     return this.http.delete<Memory[]>(url);
   }
   

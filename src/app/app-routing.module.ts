@@ -85,6 +85,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     resolve: { user: ProfileResolver }
   },
+  {
+    path: 'plans',
+    loadComponent: () => import('./pages/plans/plans.component').then(m => m.PlansComponent),
+    canActivate: [authGuard]
+  },
   /*{
     path: 'activities',
     loadChildren: () => import('./pages/activities/activites.module').then(m => m.ActivitiesModule),

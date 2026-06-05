@@ -50,14 +50,11 @@
         max-width: 500px;
         width: 100%;
 
-        h1 {
-            font: var(--mat-sys-headline-large);
-            margin-bottom: 8px;
+        h2 {
             color: var(--mat-sys-on-surface);
         }
 
         .hub-subtitle {
-            font: var(--mat-sys-body-large);
             color: var(--mat-sys-on-surface-variant);
             margin-bottom: 32px;
         }
@@ -95,14 +92,10 @@
     .card-text {
         h3 {
             margin: 0 0 4px 0;
-            font: var(--mat-sys-title-medium);
-            color: var(--mat-sys-on-surface);
         }
 
         p {
             margin: 0;
-            font: var(--mat-sys-body-medium);
-            color: var(--mat-sys-on-surface-variant);
             line-height: 1.4;
         }
     }

@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-plans',
@@ -7,9 +8,14 @@ import { Component } from '@angular/core';
   styleUrl: './plans.component.scss',
 })
 export class PlansComponent {
-plannedMemories: any;
-onPlanWithFriends() {
-throw new Error('Method not implemented.');
-}
+
+  private router = inject(Router);
+
+
+  plannedMemories: any;
+
+  onPlanWithFriends() {
+    this.router.navigate(['/plans/start/crew']);
+  }
 
 }

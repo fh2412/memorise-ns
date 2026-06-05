@@ -25,6 +25,10 @@ export class FriendsService {
     return this.http.get<Friend[]>(`${this.apiUrl}/${userId}`);
   }
 
+  getUserFriendsWithShared(userId: string): Observable<Friend[]> {
+    return this.http.get<Friend[]>(`${this.apiUrl}/${userId}/friends-with-shared-count`);
+  }
+
   getFriendsStatus(userId1: string, userId2: string): Observable<FriendStatus[]> {
     return this.http.get<FriendStatus[]>(`${this.apiUrl}/status/${userId1}/${userId2}`);
   }

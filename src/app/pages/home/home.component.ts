@@ -97,7 +97,8 @@ export class HomeComponent implements OnInit {
             this.userdb.user_id,
             orderDirection,
             this.pageIndex,
-            this.pageSize
+            this.pageSize,
+            'past'
           )
         );
       } else {
@@ -106,7 +107,8 @@ export class HomeComponent implements OnInit {
             this.userdb.user_id,
             orderDirection,
             this.pageIndex,
-            this.pageSize
+            this.pageSize,
+            'past'
           )
         );
       }
@@ -168,7 +170,8 @@ export class HomeComponent implements OnInit {
             this.userdb.user_id,
             orderDirection,
             0,
-            10000 // Large number to get all memories
+            10000,
+            'past'
           )
         );
       } else {
@@ -177,7 +180,8 @@ export class HomeComponent implements OnInit {
             this.userdb.user_id,
             orderDirection,
             0,
-            10000
+            10000,
+            'past'
           )
         );
       }

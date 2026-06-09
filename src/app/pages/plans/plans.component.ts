@@ -5,10 +5,11 @@ import { Memory } from '@models/memoryInterface.model';
 import { MemoryService } from '@services/memory.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@services/userService';
+import { PlannedMemoryCardComponent } from "@components/planned-memory-card/planned-memory-card.component";
 
 @Component({
   selector: 'app-plans',
-  imports: [MatIcon],
+  imports: [MatIcon, PlannedMemoryCardComponent],
   templateUrl: './plans.component.html',
   styleUrl: './plans.component.scss',
 })

@@ -1,0 +1,34 @@
+<div class="planned-card">
+  <div class="card-image-wrapper">
+    @if (plan.title_pic) {
+      <img [src]="plan.title_pic" [alt]="plan.title" class="card-image" />
+    } @else {
+      <div class="image-placeholder">
+        <mat-icon>landscape</mat-icon>
+      </div>
+    }
+  </div>
+
+  <div class="card-content">
+    <div class="card-header">
+      <h4 class="card-title">{{ plan.title }}</h4>
+    </div>
+
+    <div class="card-meta">
+      <mat-icon class="meta-icon">calendar_today</mat-icon>
+      <span class="meta-text">
+        {{ plan.memory_date | date:'MMM d' }} 
+        @if (plan.memory_end_date) {
+          – {{ plan.memory_end_date | date:'MMM d, yyyy' }}
+        }
+      </span>
+    </div>
+
+    <div class="card-footer">
+      <span class="creator-badge">
+        <mat-icon>person</mat-icon>
+        {{ plan.username }}
+      </span>
+    </div>
+  </div>
+</div>

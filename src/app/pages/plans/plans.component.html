@@ -1,17 +1,23 @@
 <div class="plans-container">
-  
+
   <section class="left-panel">
     <div class="panel-header">
       <h1>Upcoming Adventures</h1>
     </div>
-    
+
     <div class="scrollable-list">
       @for (plan of plannedMemories; track plan.id) {
-        <!--<app-planned-memory-card [plan]="plan"></app-planned-memory-card>-->
+      <!--<app-planned-memory-card [plan]="plan"></app-planned-memory-card>-->
       } @empty {
-        <div class="empty-state">
-          <p>No plans yet. Time to gather the crew and map out something epic!</p>
-        </div>
+      <div class="empty-state-wrapper">
+        <mat-icon class="empty-state-icon">explore</mat-icon>
+
+        <h3 class="empty-state-title">No adventures on the horizon</h3>
+        <p class="empty-state-text">
+          Time to gather the crew and map out something epic! Select an option on the right to kick off your next
+          memory.
+        </p>
+      </div>
       }
     </div>
   </section>
@@ -22,7 +28,7 @@
       <p class="hub-subtitle">How do you want to kick off your next memory?</p>
 
       <div class="action-cards">
-        
+
         <button class="action-card active" (click)="onPlanWithFriends()">
           <div class="card-icon">👥</div>
           <div class="card-text">

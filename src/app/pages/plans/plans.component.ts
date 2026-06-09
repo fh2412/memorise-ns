@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { MatIcon } from "@angular/material/icon";
 
 @Component({
   selector: 'app-plans',
-  imports: [],
+  imports: [MatIcon],
   templateUrl: './plans.component.html',
   styleUrl: './plans.component.scss',
 })

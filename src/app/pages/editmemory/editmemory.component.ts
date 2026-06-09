@@ -2,7 +2,7 @@ import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { MemoryService } from '@services/memory.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FileUploadService } from '@services/file-upload.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ChooseLocationComponent } from '@components/_dialogs/choose-location/choose-location.component';
 import { LocationService } from '@services/location.service';
@@ -21,7 +21,7 @@ import { BackButtonComponent } from '../../components/back-button/back-button.co
 import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatDivider } from '@angular/material/divider';
-import { MatFormField, MatLabel, MatInput, MatSuffix } from '@angular/material/input';
+import { MatFormField, MatLabel, MatInput, MatSuffix, MatError } from '@angular/material/input';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
@@ -31,12 +31,13 @@ import { MatCard } from '@angular/material/card';
 import { FriendsAutocompletComponent } from '../../components/friends-autocomplet/friends-autocomplet.component';
 import { MatChipSet, MatChipRow, MatChipRemove } from '@angular/material/chips';
 import { DatePipe } from '@angular/common';
+import { pastDateValidator } from '@guards/validators';
 
 @Component({
     selector: 'app-editmemory',
     templateUrl: './editmemory.component.html',
     styleUrl: './editmemory.component.scss',
-    imports: [BackButtonComponent, MatButton, MatIcon, MatDivider, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatTooltip, MatFabButton, MatGridList, MatGridTile, CdkTextareaAutosize, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatSuffix, MatDateRangePicker, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCard, FriendsAutocompletComponent, MatIconButton, MatChipSet, MatChipRow, MatChipRemove, DatePipe]
+    imports: [BackButtonComponent, MatButton, MatIcon, MatDivider, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatTooltip, MatFabButton, MatGridList, MatGridTile, CdkTextareaAutosize, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatSuffix, MatDateRangePicker, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatCard, FriendsAutocompletComponent, MatIconButton, MatChipSet, MatChipRow, MatChipRemove, DatePipe, MatError]
 })
 export class EditmemoryComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
@@ -67,6 +68,9 @@ export class EditmemoryComponent implements OnInit {
 
   isLargeScreen = true;
 
+  readonly maxDate = new Date();
+
+
   @HostListener('window:resize')
   onResize(): void {
     this.isLargeScreen = window.innerWidth > 1500;
@@ -87,8 +91,8 @@ export class EditmemoryComponent implements OnInit {
     return this.formBuilder.group({
       description: [''],
       title: [''],
-      memory_date: [''],
-      memory_end_date: [''],
+      memory_date: [null, [Validators.required, pastDateValidator()]],
+      memory_end_date: [null, [Validators.required, pastDateValidator()]],
       lng: [''],
       lat: [''],
       l_country: [''],

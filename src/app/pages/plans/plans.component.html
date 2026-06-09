@@ -6,7 +6,8 @@
     </div>
 
     <div class="scrollable-list">
-      @for (plan of plannedMemories; track plan.id) {
+      @for (plan of plannedMemories; track plan.memory_id) {
+        <p>{{plan.title}}</p>
       <!--<app-planned-memory-card [plan]="plan"></app-planned-memory-card>-->
       } @empty {
       <div class="empty-state-wrapper">

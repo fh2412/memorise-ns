@@ -21,12 +21,13 @@ import { MatIcon } from '@angular/material/icon';
 import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autocomplete';
 import { MatOption } from '@angular/material/select';
 import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
+import { pastDateValidator } from '@guards/validators';
 
 @Component({
-    selector: 'app-adding-memory',
-    templateUrl: './adding-memory.component.html',
-    styleUrls: ['./adding-memory.component.scss'],
-    imports: [BackButtonComponent, MatCard, MatStepper, MatStep, ReactiveFormsModule, MatStepLabel, MatFormField, MatLabel, MatInput, MatError, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatSuffix, MatDateRangePicker, FriendsAutocompletComponent, MatButton, MatStepperNext, MatIcon, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatStepperPrevious, ImageUploadComponent, AsyncPipe]
+  selector: 'app-adding-memory',
+  templateUrl: './adding-memory.component.html',
+  styleUrls: ['./adding-memory.component.scss'],
+  imports: [BackButtonComponent, MatCard, MatStepper, MatStep, ReactiveFormsModule, MatStepLabel, MatFormField, MatLabel, MatInput, MatError, MatDateRangeInput, MatStartDate, MatEndDate, MatDatepickerToggle, MatSuffix, MatDateRangePicker, FriendsAutocompletComponent, MatButton, MatStepperNext, MatIcon, MatAutocompleteTrigger, MatAutocomplete, MatOption, MatStepperPrevious, ImageUploadComponent, AsyncPipe]
 })
 export class AddingMemoryComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
@@ -51,14 +52,16 @@ export class AddingMemoryComponent implements OnInit {
   filteredCountries!: Observable<Country[]>;
   countries: Country[] = [];
 
+  readonly maxDate = new Date();
+
   constructor() {
     this.memoryForm = this.formBuilder.group({
       creator_id: [this.userId],
       title: ['', Validators.required],
       description: [''],
       firestore_bucket_url: [''],
-      memory_date: [null, Validators.required],
-      memory_end_date: [null],
+      memory_date: [null, [Validators.required, pastDateValidator()]],
+      memory_end_date: [null, [Validators.required, pastDateValidator()]],
       title_pic: [''],
       location_id: [''],
       lng: [''],
@@ -165,21 +168,21 @@ export class AddingMemoryComponent implements OnInit {
   }
 
   updateCca2Code() {
-  if (this.memoryForm.valid) {
-    // Find the selected country and set the country_cca2
-    const selectedCountryName = this.memoryForm.get('l_country')?.value;
-    const selectedCountry = this.countries.find(
-      country => country.name.toLowerCase() === selectedCountryName?.toLowerCase()
-    );
-    
-    if (selectedCountry) {
-      this.memoryForm.patchValue({
-        l_countryCode: selectedCountry.cca2
-      });
+    if (this.memoryForm.valid) {
+      // Find the selected country and set the country_cca2
+      const selectedCountryName = this.memoryForm.get('l_country')?.value;
+      const selectedCountry = this.countries.find(
+        country => country.name.toLowerCase() === selectedCountryName?.toLowerCase()
+      );
+
+      if (selectedCountry) {
+        this.memoryForm.patchValue({
+          l_countryCode: selectedCountry.cca2
+        });
+      }
+      console.log("Sat Code to: ", this.memoryForm.value);
     }
-    console.log("Sat Code to: ", this.memoryForm.value);
   }
-}
 
   cancelCreation(): void {
     this.router.navigate(['/home']);

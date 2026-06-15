@@ -1,0 +1,218 @@
+@use '@angular/material' as mat;
+
+.plans-container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Left Panel: Scrollable List */
+.left-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--mat-sys-outline-variant);
+    background-color: var(--mat-sys-surface-container-low);
+
+    .panel-header {
+        padding: 24px;
+        background: var(--mat-sys-background);
+        border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+        h1 {
+            margin: 0;
+            width: 600px;
+        }
+    }
+
+    .scrollable-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+}
+
+/* Right Panel: Creation Hub */
+.right-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--mat-sys-surface);
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+
+    .hub-content {
+        max-width: 500px;
+        width: 100%;
+
+        h2 {
+            color: var(--mat-sys-on-surface);
+        }
+
+        .hub-subtitle {
+            color: var(--mat-sys-on-surface-variant);
+            margin-bottom: 32px;
+        }
+    }
+}
+
+/* Action Cards / Buttons */
+.action-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.action-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    border-radius: 16px;
+    /* Modern M3 card shape styling */
+    border: 1px solid var(--mat-sys-outline);
+    background: var(--mat-sys-surface-container-high);
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
+    color: var(--mat-sys-on-surface);
+
+    .card-icon {
+        font-size: 2rem;
+        line-height: 1;
+    }
+
+    .card-text {
+        h3 {
+            margin: 0 0 4px 0;
+        }
+
+        p {
+            margin: 0;
+            line-height: 1.4;
+        }
+    }
+
+    &.active {
+        border-color: var(--mat-sys-outline);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: var(--mat-sys-primary-container);
+            color: var(--mat-sys-on-primary-container);
+            border-color: var(--mat-sys-primary);
+
+            .card-text h3 {
+                color: var(--mat-sys-on-primary-container);
+            }
+
+            .card-text p {
+                color: var(--mat-sys-on-primary-container);
+                opacity: 0.85;
+            }
+
+            .status-tag.ready {
+                background: var(--mat-sys-primary);
+                color: var(--mat-sys-on-primary);
+            }
+        }
+    }
+
+    &.disabled {
+        background: var(--mat-sys-surface-container-low);
+        border-color: var(--mat-sys-outline-variant);
+        cursor: not-allowed;
+        opacity: 0.38;
+        /* Standard Material design specification disabled opacity */
+
+        .card-text h3,
+        .card-text p {
+            color: var(--mat-sys-on-surface);
+        }
+    }
+}
+
+/* Status Tags */
+.status-tag {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    font: var(--mat-sys-label-small);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 8px;
+    transition: background-color 0.2s, color 0.2s;
+
+    &.ready {
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+    }
+
+    &.future {
+        background: var(--mat-sys-surface-variant);
+        color: var(--mat-sys-on-surface-variant);
+    }
+}
+
+.scrollable-list {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 60px); 
+}
+
+.empty-state-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1;                 
+  padding: 3rem 1.5rem;
+  animation: fadeIn 0.4s ease-out; 
+
+  .empty-state-icon {
+    font-size: 56px;       
+    height: 56px;
+    width: 56px;
+    margin-bottom: 1.25rem;
+    // M3 token for medium-emphasis decorative elements
+    color: var(--mat-sys-on-surface-variant); 
+  }
+
+  .empty-state-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.01em;
+    // M3 token for high-emphasis headlines/titles
+    color: var(--mat-sys-on-surface); 
+  }
+
+  .empty-state-text {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 320px;      
+    margin: 0;
+    // M3 token for medium-emphasis body and supporting text
+    color: var(--mat-sys-on-surface-variant); 
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

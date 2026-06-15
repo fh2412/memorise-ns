@@ -21,15 +21,16 @@ export class MemoryService {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
-  getUserCreatedMemories(userId: string, ascending: boolean, page: number, pageSize: number): Observable<PaginatedMemoryResponse> {
+  getUserCreatedMemories(userId: string, ascending: boolean, page: number, pageSize: number, filter: 'past' | 'active' | 'future'): Observable<PaginatedMemoryResponse> {
     return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/createdMemories/${userId}`, {
-      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
+      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString(), filter: filter }
     });
   }
 
-  getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number): Observable<PaginatedMemoryResponse> {
+
+  getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number, filter: 'past' | 'active' | 'future'): Observable<PaginatedMemoryResponse> {
     return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, {
-      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString() }
+      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString(), filter: filter }
     });
   }
 

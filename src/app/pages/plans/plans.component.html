@@ -1,0 +1,63 @@
+<div class="plans-container">
+
+  <section class="left-panel">
+    <div class="panel-header">
+      <h1>Upcoming Adventures</h1>
+    </div>
+
+    <div class="scrollable-list">
+      @for (plan of plannedMemories; track plan.memory_id) {
+      <app-planned-memory-card [plan]="plan"></app-planned-memory-card>
+      } @empty {
+      <div class="empty-state-wrapper">
+        <mat-icon class="empty-state-icon">explore</mat-icon>
+
+        <h3 class="empty-state-title">No adventures on the horizon</h3>
+        <p class="empty-state-text">
+          Time to gather the crew and map out something epic! Select an option on the right to kick off your next
+          memory.
+        </p>
+      </div>
+      }
+    </div>
+  </section>
+
+  <section class="right-panel">
+    <div class="hub-content">
+      <h2>Start Planning</h2>
+      <p class="hub-subtitle">How do you want to kick off your next memory?</p>
+
+      <div class="action-cards">
+
+        <button class="action-card active" (click)="onPlanWithFriends()">
+          <div class="card-icon">👥</div>
+          <div class="card-text">
+            <h3>1. Lock in the Crew First</h3>
+            <p>Start by inviting friends. Ideal for group trips where the guest list is fixed from day one.</p>
+          </div>
+          <span class="status-tag ready">Start Here</span>
+        </button>
+
+        <button class="action-card disabled" disabled>
+          <div class="card-icon">🏔️</div>
+          <div class="card-text">
+            <h3>2. Choose the Action First</h3>
+            <p>You know exactly *what* you want to do, but haven't settled on the dates or who is tagged along yet.</p>
+          </div>
+          <span class="status-tag future">Coming Soon</span>
+        </button>
+
+        <button class="action-card disabled" disabled>
+          <div class="card-icon">📅</div>
+          <div class="card-text">
+            <h3>3. Pick the Dates First</h3>
+            <p>You have specific days locked in, but the destination and the final squad are still up in the air.</p>
+          </div>
+          <span class="status-tag future">Coming Soon</span>
+        </button>
+
+      </div>
+    </div>
+  </section>
+
+</div>

@@ -14,7 +14,7 @@ export class LocationService {
   private apiUrl = `${environment.apiUrl}/locations`;
 
   getLocationById(locationId: number): Observable<MemoriseLocation> {
-    return this.http.get<MemoriseLocation>(`${this.apiUrl}/${locationId}`);
+    return this.http.get<MemoriseLocation>(`${this.apiUrl}/details/${locationId}`);
   }
   
   createLocation(locationData: MemoriseLocation): Observable<CreateLocationResponse> {

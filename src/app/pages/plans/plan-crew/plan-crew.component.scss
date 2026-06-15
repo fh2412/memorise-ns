@@ -256,45 +256,19 @@
   }
 }
 
-.suggestions-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
+// Minimal overrides for the built-in Material chips
 .suggestion-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--mat-sys-surface-container-high);
-  border: 1px solid var(--mat-sys-outline);
-  color: var(--mat-sys-on-surface);
-  padding: 6px 12px;
-  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font: var(--mat-sys-label-large);
 
-  .mat-icon {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
-    color: var(--mat-sys-on-surface-variant);
-  }
-
-  small {
+  .shared-count {
     color: var(--mat-sys-primary);
     font-weight: bold;
+    margin-left: 4px;
   }
 
+  // Maintains your container color sync when hovering over Material chips
   &:hover {
-    background: var(--mat-sys-primary-container);
-    color: var(--mat-sys-on-primary-container);
-    border-color: var(--mat-sys-primary);
-
-    .mat-icon,
-    small {
-      color: var(--mat-sys-on-primary-container);
-    }
+    --mdc-chip-label-text-color: var(--mat-sys-on-primary-container);
+    --mdc-chip-with-avatar-avatar-color: var(--mat-sys-on-primary-container);
   }
 }

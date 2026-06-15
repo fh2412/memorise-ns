@@ -90,17 +90,18 @@
   </section>
 
   @if (!searchQuery() && frequentSuggestions().length > 0) {
-    <section class="suggestions-container">
-      <h4>Frequent Companions</h4>
-      <div class="suggestions-grid">
-        @for (friend of frequentSuggestions(); track friend.user_id) {
-          <button class="suggestion-chip" (click)="addFriendToCrew(friend)">
-            <mat-icon>history</mat-icon>
-            <span>{{ friend.name }}</span>
-            <small>({{ friend.sharedMemoriesCount }})</small>
-          </button>
-        }
-      </div>
-    </section>
-  }
+  <section class="suggestions-container">
+    <h4>Frequent Companions</h4>
+    
+    <mat-chip-set>
+      @for (friend of frequentSuggestions(); track friend.user_id) {
+        <mat-chip (click)="addFriendToCrew(friend)" class="suggestion-chip">
+          <mat-icon matChipAvatar>history</mat-icon>
+          <span>{{ friend.name }}</span>
+          <span class="shared-count">({{ friend.sharedMemoriesCount }})</span>
+        </mat-chip>
+      }
+    </mat-chip-set>
+  </section>
+}
 </div>

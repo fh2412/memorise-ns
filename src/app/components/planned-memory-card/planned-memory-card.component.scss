@@ -8,7 +8,7 @@
   border-radius: 16px; /* M3 Medium Component Radius */
   overflow: hidden;
   border: 1px solid var(--mat-sys-outline);
-  background: var(--mat-sys-surface-container-high);
+  background-color: var(--mat-sys-surface);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
 

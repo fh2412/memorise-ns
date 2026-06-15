@@ -31,6 +31,7 @@ export class StatsComponent implements OnInit {
     this.loading = true;
     try {
         this.displayStats = await firstValueFrom(this.memorystatsService.getDisplayStats(this.userid()));
+        console.log(this.displayStats);
     } finally {
         this.loading = false;
     }

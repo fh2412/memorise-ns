@@ -132,4 +132,8 @@ export class PlanCrewComponent implements OnInit {
   removeCrewMember(id: string): void {
     this.selectedCrew.update(crew => crew.filter(m => m.user_id !== id));
   }
+
+  startPlanningMemory() {
+    throw new Error('Method not implemented.');
+  }
 }

@@ -1,5 +1,5 @@
 <div class="crew-planner">
-  
+
   <header class="section-header">
     <h2>Gather Your Crew</h2>
     <p>Lock in who is coming along before tracking the layout and details.</p>
@@ -7,7 +7,7 @@
 
   <section class="dock-container">
     <h3>The Locked-In Squad ({{ selectedCrew().length }})</h3>
-    
+
     <div class="crew-dock">
       <div class="avatar-block native">
         <div class="avatar-circle">ME</div>
@@ -15,23 +15,23 @@
       </div>
 
       @for (member of selectedCrew(); track member.user_id) {
-        <div class="avatar-block" [ngClass]="{ 'placeholder': member.isPlaceholder, 'native': !member.isPlaceholder }">
-          <button class="remove-btn" (click)="removeCrewMember(member.user_id)" matTooltip="Remove member">
-            <mat-icon>cancel</mat-icon>
-          </button>
-          
-          <div class="avatar-circle">
-            @if (member.profilepic) {
-              <img [src]="member.profilepic" [alt]="member.name" />
-            } @else {
-              {{ member.name.substring(0, 2).toUpperCase() }}
-            }
-            @if (member.isPlaceholder) {
-              <span class="ghost-badge"><mat-icon>mail</mat-icon></span>
-            }
-          </div>
-          <span class="avatar-name">{{ member.name }}</span>
+      <div class="avatar-block" [ngClass]="{ 'placeholder': member.isPlaceholder, 'native': !member.isPlaceholder }">
+        <button class="remove-btn" (click)="removeCrewMember(member.user_id)" matTooltip="Remove member">
+          <mat-icon>cancel</mat-icon>
+        </button>
+
+        <div class="avatar-circle">
+          @if (member.profilepic) {
+          <img [src]="member.profilepic" [alt]="member.name" />
+          } @else {
+          {{ member.name.substring(0, 2).toUpperCase() }}
+          }
+          @if (member.isPlaceholder) {
+          <span class="ghost-badge"><mat-icon>mail</mat-icon></span>
+          }
         </div>
+        <span class="avatar-name">{{ member.name }}</span>
+      </div>
       }
     </div>
   </section>
@@ -40,72 +40,71 @@
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Search friends or type a name...</mat-label>
       <mat-icon matPrefix>group_add</mat-icon>
-      <input matInput type="text" 
-             [ngModel]="searchQuery()" 
-             (ngModelChange)="searchQuery.set($event)" 
-             placeholder="e.g. Maxi" autocomplete="off" />
+      <input matInput type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+        placeholder="e.g. Maxi" autocomplete="off" />
       @if (searchQuery()) {
-        <button matSuffix mat-icon-button aria-label="Clear" (click)="searchQuery.set('')">
-          <mat-icon>close</mat-icon>
-        </button>
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="searchQuery.set('')">
+        <mat-icon>close</mat-icon>
+      </button>
       }
     </mat-form-field>
 
     @if (searchQuery()) {
-      <div class="results-dropdown">
-        
-        @for (friend of filteredFriends(); track friend.user_id) {
-          <div class="result-row" (click)="addFriendToCrew(friend)" (keypress)="addFriendToCrew(friend)" aria-hidden="true">
-            <div class="row-avatar">
-              {{ friend.name.substring(0,2).toUpperCase() }}
-            </div>
-            <div class="row-info">
-              <span class="row-name">{{ friend.name }}</span>
-              <span class="row-meta">{{ friend.sharedMemoriesCount }} shared memories</span>
-            </div>
-            <mat-icon class="action-icon">add_circle</mat-icon>
-          </div>
-        }
+    <div class="results-dropdown">
 
-        @if (showPlaceholderOption()) {
-          <div class="result-row placeholder-action" (click)="addPlaceholderToCrew()" (keypress)="addPlaceholderToCrew()" aria-hidden="true">
-            <div class="row-avatar ghost-avatar">
-              <mat-icon>person_add</mat-icon>
-            </div>
-            <div class="row-info">
-              <span class="row-name">Create placeholder for "{{ searchQuery() }}"</span>
-              <span class="row-meta">Not on Memorise yet. You can link them via invite later.</span>
-            </div>
-            <mat-icon class="action-icon highlighted">bolt</mat-icon>
-          </div>
-        }
-
-        @if (filteredFriends().length === 0 && !showPlaceholderOption()) {
-          <div class="empty-search-row">
-            <p>Already added or no matching options found.</p>
-          </div>
-        }
+      @for (friend of filteredFriends(); track friend.user_id) {
+      <div class="result-row" (click)="addFriendToCrew(friend)" (keypress)="addFriendToCrew(friend)" aria-hidden="true">
+        <div class="row-avatar">
+          {{ friend.name.substring(0,2).toUpperCase() }}
+        </div>
+        <div class="row-info">
+          <span class="row-name">{{ friend.name }}</span>
+          <span class="row-meta">{{ friend.sharedMemoriesCount }} shared memories</span>
+        </div>
+        <mat-icon class="action-icon">add_circle</mat-icon>
       </div>
+      }
+
+      @if (showPlaceholderOption()) {
+      <div class="result-row placeholder-action" (click)="addPlaceholderToCrew()" (keypress)="addPlaceholderToCrew()"
+        aria-hidden="true">
+        <div class="row-avatar ghost-avatar">
+          <mat-icon>person_add</mat-icon>
+        </div>
+        <div class="row-info">
+          <span class="row-name">Create placeholder for "{{ searchQuery() }}"</span>
+          <span class="row-meta">Not on Memorise yet. You can link them via invite later.</span>
+        </div>
+        <mat-icon class="action-icon highlighted">bolt</mat-icon>
+      </div>
+      }
+
+      @if (filteredFriends().length === 0 && !showPlaceholderOption()) {
+      <div class="empty-search-row">
+        <p>Already added or no matching options found.</p>
+      </div>
+      }
+    </div>
     }
   </section>
 
   @if (!searchQuery() && frequentSuggestions().length > 0) {
   <section class="suggestions-container">
     <h4>Frequent Companions</h4>
-    
+
     <mat-chip-set>
       @for (friend of frequentSuggestions(); track friend.user_id) {
-        <mat-chip (click)="addFriendToCrew(friend)" class="suggestion-chip">
-          <mat-icon matChipAvatar>history</mat-icon>
-          <span>{{ friend.name }}</span>
-          <span class="shared-count">({{ friend.sharedMemoriesCount }})</span>
-        </mat-chip>
+      <mat-chip (click)="addFriendToCrew(friend)" class="suggestion-chip">
+        <mat-icon matChipAvatar>history</mat-icon>
+        <span>{{ friend.name }}</span>
+        <span class="shared-count">({{ friend.sharedMemoriesCount }})</span>
+      </mat-chip>
       }
     </mat-chip-set>
   </section>
-}
-<button matButton="filled" class="start-btn" (click)="startPlanningMemory()">
-          <mat-icon>arrow_forward</mat-icon>
-          Start Planning with your Crew!
-        </button>
+  }
+  <button matButton="filled" class="start-btn" (click)="startPlanningMemory()">
+    <mat-icon>arrow_forward</mat-icon>
+    Start Planning with your Crew!
+  </button>
 </div>

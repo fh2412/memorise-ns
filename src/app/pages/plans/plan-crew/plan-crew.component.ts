@@ -11,6 +11,7 @@ import { Friend } from '@models/userInterface.model';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
 import { FriendsService } from '@services/friends.service';
+import { MemoryService } from '@services/memory.service';
 
 export interface CrewMember {
   user_id: string;
@@ -41,6 +42,7 @@ export class PlanCrewComponent implements OnInit {
 
   private readonly userService = inject(UserService);
   private readonly friendsService = inject(FriendsService);
+  private readonly memoryService = inject(MemoryService);
 
   // Input search string via Signal
   searchQuery = signal<string>('');
@@ -133,7 +135,17 @@ export class PlanCrewComponent implements OnInit {
     this.selectedCrew.update(crew => crew.filter(m => m.user_id !== id));
   }
 
-  startPlanningMemory() {
-    throw new Error('Method not implemented.');
+  async startPlanningMemory() {
+    //Create new Memory
+    const memResponse = await firstValueFrom(this.memoryService.createMemory());
+    //Add Friends to Memory
+    if (this.friendsList.length > 0) {
+      const friendEmails: string[] = this.friendsList().map(friend => friend.email);
+      await firstValueFrom(this.memoryService.addFriendToMemory({
+        emails: friendEmails,
+        memoryId: memResponse.memory_id
+      }));
+    }
+    //Navigate to Planning Page
   }
 }

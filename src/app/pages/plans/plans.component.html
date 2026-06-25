@@ -6,8 +6,8 @@
     </div>
 
     <div class="scrollable-list">
-      @for (plan of plannedMemories; track plan.memory_id) {
-      <app-planned-memory-card [plan]="plan"></app-planned-memory-card>
+      @for (plan of plannedMemories(); track plan.memory_id) {
+      <app-planned-memory-card [plan]="plan" (titleUpdated)="handleTitleUpdate($event)"></app-planned-memory-card>
       } @empty {
       <div class="empty-state-wrapper">
         <mat-icon class="empty-state-icon">explore</mat-icon>

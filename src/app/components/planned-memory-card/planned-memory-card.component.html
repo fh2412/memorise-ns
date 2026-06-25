@@ -1,34 +1,72 @@
-<div class="planned-card">
+<div class="planned-card" [ngClass]="{ 'is-untitled': isUntitled() }">
+
   <div class="card-image-wrapper">
-    @if (plan.title_pic) {
-      <img [src]="plan.title_pic" [alt]="plan.title" class="card-image" />
+    @if (plan().title_pic) {
+    <img [src]="plan().title_pic" [alt]="displayTitle()" class="card-image" />
     } @else {
-      <div class="image-placeholder">
-        <mat-icon>landscape</mat-icon>
-      </div>
+    <div class="image-placeholder">
+      <mat-icon>landscape</mat-icon>
+    </div>
     }
   </div>
 
   <div class="card-content">
+    @if (!isEditing() && isUntitled()) {
+    <button class="inline-edit-trigger" (click)="$event.stopPropagation(); startEdit()" title="Set title">
+      <mat-icon>edit</mat-icon>
+    </button>
+    }
+
     <div class="card-header">
-      <h4 class="card-title">{{ plan.title }}</h4>
+      @if (isEditing()) {
+      <div class="inline-edit-form" (click)="$event.stopPropagation()">
+        <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()"
+          (blur)="saveEdit()" placeholder="Name your adventure..." class="title-input" />
+      </div>
+      } @else {
+      <h4 class="card-title" [title]="displayTitle()">{{ displayTitle() }}</h4>
+      }
     </div>
 
     <div class="card-meta">
       <mat-icon class="meta-icon">calendar_today</mat-icon>
       <span class="meta-text">
-        {{ plan.memory_date | date:'MMM d' }} 
-        @if (plan.memory_end_date) {
-          – {{ plan.memory_end_date | date:'MMM d, yyyy' }}
+        @if (plan().memory_date) {
+        {{ plan().memory_date | date:'MMM d' }}
+        @if (plan().memory_end_date) {
+        – {{ plan().memory_end_date | date:'MMM d, yyyy' }}
+        }
+        } @else {
+        Dates TBD
         }
       </span>
     </div>
 
     <div class="card-footer">
       <span class="creator-badge">
-        <mat-icon>person</mat-icon>
-        {{ plan.username }}
+        <mat-icon>face</mat-icon>
+        <span class="badge-text">{{ creatorName() }}</span>
       </span>
+
+      @if (plan().crew_members) {
+      <div class="avatar-stack">
+        @for (member of crewPreview(); track member.user_id) {
+        <div class="avatar-bubble" [title]="member.name">
+          @if (member.profilepic) {
+          <img [src]="member.profilepic" [alt]="member.name" />
+          } @else {
+          <span class="avatar-initial">{{ member.name.charAt(0).toUpperCase() }}</span>
+          }
+        </div>
+        }
+        @if (plan().crew_members!.length > 4) {
+        <div class="avatar-bubble count-bubble">
+          +{{ plan().crew_members!.length - 4 }}
+        </div>
+        }
+      </div>
+      }
     </div>
+
   </div>
 </div>

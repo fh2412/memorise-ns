@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatIcon } from "@angular/material/icon";
-import { Memory } from '@models/memoryInterface.model';
+import { PlannedMemory } from '@models/memoryInterface.model';
 import { MemoryService } from '@services/memory.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@services/userService';
@@ -20,7 +20,7 @@ export class PlansComponent implements OnInit {
   private memoryService = inject(MemoryService);
 
   isLoading = false;
-  plannedMemories: Memory[] = [];
+  plannedMemories = signal<PlannedMemory[]>([])
   loggedInUserId: string | null = null;
 
 
@@ -45,23 +45,34 @@ export class PlansComponent implements OnInit {
     if (this.loggedInUserId) {
       try {
         const result = await firstValueFrom(
-          this.memoryService.getUserCreatedAndAddedMemories(
+          this.memoryService.getUserPlannedMemories(
             this.loggedInUserId,
-            true,
-            0,
-            10,
-            'future'
           )
         );
 
-        this.plannedMemories = result.data || [];
+        this.plannedMemories.set(result);
+        console.log(this.plannedMemories);
       } catch (error) {
         console.error('Error loading planned memories:', error);
       } finally {
         this.isLoading = false;
-        console.log(this.plannedMemories);
       }
     }
+  }
+
+  handleTitleUpdate(event: { memoryId: string; title: string }) {
+    // 1. Optimistically update local state so the UI feels instant
+    this.plannedMemories.update(memories => 
+      memories.map(m => m.memory_id === event.memoryId ? { ...m, title: event.title } : m)
+    );
+
+    // 2. Fire and forget the backend API update call
+    this.memoryService.updateMemoryTitle(event.memoryId, event.title).subscribe({
+      error: (err) => {
+        // If the API fails, roll back state or show a toast notification
+        console.error('Failed to save title backend side:', err);
+      }
+    });
   }
 
   onPlanWithFriends() {

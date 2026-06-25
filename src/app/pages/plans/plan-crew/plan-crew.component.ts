@@ -144,7 +144,7 @@ export class PlanCrewComponent implements OnInit {
     //Create new Memory
     const tempMemory: MemoryFormData = {
       creator_id: this.loggedInUserId || '',
-      title: 'Planned Memory',
+      title: '',
       description: '',
       firestore_bucket_url: '',
       memory_date: null,

@@ -34,6 +34,7 @@ export interface Friend {
   user_id: string;
   gender: string;
   email: string;
+  isCreator?: boolean;
 }
 
 export interface MemoryDetailFriend {

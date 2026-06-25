@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { lastValueFrom, Observable } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -31,6 +31,11 @@ export class MemoryService {
   getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number, filter: 'past' | 'active' | 'future'): Observable<PaginatedMemoryResponse> {
     return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, {
       params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString(), filter: filter }
+    });
+  }
+
+  getUserPlannedMemories(loggedInUserId: string): Observable<PlannedMemory[]> {
+    return this.http.get<PlannedMemory[]>(`${this.apiUrl}/memories/planned/${loggedInUserId}`, {
     });
   }
 
@@ -94,6 +99,11 @@ export class MemoryService {
   updateTitlePic(memoryId: string | null, imageUrl: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateTitlePic/${memoryId}`;
     return this.http.put<UpdateStandardResponse>(url, { imageUrl });
+  }
+
+    updateMemoryTitle(memoryId: string | null, newTitle: string): Observable<UpdateStandardResponse> {
+    const url = `${this.apiUrl}/memories/updateMemoryTitle/${memoryId}`;
+    return this.http.put<UpdateStandardResponse>(url, { newTitle });
   }
 
   createMemory(memoryData: MemoryFormData): Observable<CreateMemoryResponse> {

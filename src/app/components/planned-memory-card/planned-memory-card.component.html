@@ -19,7 +19,7 @@
 
     <div class="card-header">
       @if (isEditing()) {
-      <div class="inline-edit-form" (click)="$event.stopPropagation()">
+      <div class="inline-edit-form" (click)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
         <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()"
           (blur)="saveEdit()" placeholder="Name your adventure..." class="title-input" />
       </div>
@@ -52,8 +52,8 @@
       <div class="avatar-stack">
         @for (member of crewPreview(); track member.user_id) {
         <div class="avatar-bubble" [title]="member.name">
-          @if (member.profilepic) {
-          <img [src]="member.profilepic" [alt]="member.name" />
+          @if (member.profilepic_thumb) {
+          <img [src]="member.profilepic_thumb" [alt]="member.name" />
           } @else {
           <span class="avatar-initial">{{ member.name.charAt(0).toUpperCase() }}</span>
           }

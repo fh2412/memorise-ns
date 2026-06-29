@@ -15,6 +15,7 @@ export interface MemoriseUser {
   instagram: string;
   location_id: number;
   profilepic: string;
+  profilepic_thumb: string;
   company_id: number;
 }
 
@@ -30,6 +31,7 @@ export interface Friend {
   dob: Date | null;
   name: string;
   profilepic: string | null;
+  profilepic_thumb: string | null;
   sharedMemoriesCount: number;
   user_id: string;
   gender: string;

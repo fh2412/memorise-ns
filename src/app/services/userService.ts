@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CreateUserResponse, Friend, MemoriseUser } from '../models/userInterface.model';
@@ -17,6 +17,9 @@ export class UserService {
   private userIdSource = new BehaviorSubject<string | null>(null);
   userId$ = this.userIdSource.asObservable();
 
+  private _profileThumbnail = signal<string>('assets/img/1.png');
+  public profileThumbnail = this._profileThumbnail.asReadonly();
+
   constructor() {
     const storedUserId = localStorage.getItem(this.storageKey);
     if (storedUserId) {
@@ -25,27 +28,22 @@ export class UserService {
     }
   }
 
-
   setLoggedInUserId(userId: string): void {
     this.loggedInUserId = userId;
     this.userIdSource.next(userId);
     localStorage.setItem(this.storageKey, JSON.stringify(userId));
     console.log("loggedinUser set to:", this.loggedInUserId);
   }
-  
+
   getLoggedInUserId(): string | null {
     const storedValue = localStorage.getItem(this.storageKey);
     return storedValue ? JSON.parse(storedValue) : null;
   }
-  
+
   private apiUrl = `${environment.apiUrl}/users`;
-  
+
   getUser(id: string) {
     return this.http.get<MemoriseUser>(`${this.apiUrl}/${id}`);
-  }
-
-  getUserByEmail(email: string) {
-    return this.http.get<MemoriseUser>(`${this.apiUrl}/email/${email}`);
   }
 
   updateUser(userId: string, userData: MemoriseUser): Observable<MemoriseUser> {
@@ -53,9 +51,9 @@ export class UserService {
     return this.http.put<MemoriseUser>(url, userData);
   }
 
-  updateUserProfilePic(userId: string, profilePicUrl: string): Observable<UpdateStandardResponse> {
+  updateUserProfilePic(userId: string, profilePicUrl: string, profilePicThumbUrl: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/profilepic/${userId}`;
-    const body = { profilepic: profilePicUrl };
+    const body = { profilepic: profilePicUrl, profilepic_thumb: profilePicThumbUrl };
     return this.http.put<UpdateStandardResponse>(url, body);
   }
 
@@ -68,6 +66,6 @@ export class UserService {
   }
 
   createUser(email: string): Observable<CreateUserResponse> {
-    return this.http.post<CreateUserResponse>(`${this.apiUrl}`, {email});
+    return this.http.post<CreateUserResponse>(`${this.apiUrl}`, { email });
   }
 }

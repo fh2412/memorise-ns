@@ -1,0 +1,20 @@
+<div class="avatar-block" [class.placeholder]="isPlaceholder()" [class.native]="isNative()">
+  @if (removable()) {
+    <button class="remove-btn" (click)="remove.emit()" matTooltip="Remove member">
+      <mat-icon>cancel</mat-icon>
+    </button>
+  }
+
+  <div class="avatar-circle">
+    @if (profilePic()) {
+      <img [src]="profilePic()" [alt]="name()" />
+    } @else {
+      {{ initials() || name().substring(0, 2).toUpperCase() }}
+    }
+    
+    @if (isPlaceholder()) {
+      <span class="ghost-badge"><mat-icon>mail</mat-icon></span>
+    }
+  </div>
+  <span class="avatar-name">{{ name() }}</span>
+</div>

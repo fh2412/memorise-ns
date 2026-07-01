@@ -5,33 +5,34 @@
     <p>Lock in who is coming along before tracking the layout and details.</p>
   </header>
 
+  <section class="title-workspace">
+    <mat-form-field appearance="outline" class="title-field">
+      <mat-label>Name this memory</mat-label>
+      <mat-icon matPrefix>edit_note</mat-icon>
+      <input matInput type="text" [ngModel]="memoryTitle()" (ngModelChange)="memoryTitle.set($event)"
+        placeholder="e.g. Vienna to Italy Rickshaw Trip" autocomplete="off" />
+      @if (memoryTitle()) {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="memoryTitle.set('')">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </mat-form-field>
+  </section>
+
   <section class="dock-container">
     <h3>The Locked-In Squad ({{ selectedCrew().length }})</h3>
 
     <div class="crew-dock">
-      <div class="avatar-block native">
-        <div class="avatar-circle">ME</div>
-        <span class="avatar-name">You</span>
-      </div>
+      <app-crew-avatar name="You" initials="ME" [isNative]="true" />
 
       @for (member of selectedCrew(); track member.user_id) {
-      <div class="avatar-block" [ngClass]="{ 'placeholder': member.isPlaceholder, 'native': !member.isPlaceholder }">
-        <button class="remove-btn" (click)="removeCrewMember(member.user_id)" matTooltip="Remove member">
-          <mat-icon>cancel</mat-icon>
-        </button>
-
-        <div class="avatar-circle">
-          @if (member.profilepic) {
-          <img [src]="member.profilepic" [alt]="member.name" />
-          } @else {
-          {{ member.name.substring(0, 2).toUpperCase() }}
-          }
-          @if (member.isPlaceholder) {
-          <span class="ghost-badge"><mat-icon>mail</mat-icon></span>
-          }
-        </div>
-        <span class="avatar-name">{{ member.name }}</span>
-      </div>
+        <app-crew-avatar
+          [name]="member.name"
+          [profilePic]="member.profilepic"
+          [isPlaceholder]="member.isPlaceholder"
+          [isNative]="!member.isPlaceholder"
+          [removable]="true"
+          (remove)="removeCrewMember(member.user_id)" />
       }
     </div>
   </section>
@@ -51,7 +52,6 @@
 
     @if (searchQuery()) {
     <div class="results-dropdown">
-
       @for (friend of filteredFriends(); track friend.user_id) {
       <div class="result-row" (click)="addFriendToCrew(friend)" (keypress)="addFriendToCrew(friend)" aria-hidden="true">
         <div class="row-avatar">
@@ -103,7 +103,9 @@
     </mat-chip-set>
   </section>
   }
-  <button matButton="filled" class="start-btn" (click)="startPlanningMemory()">
+  
+  <button mat-flat-button class="start-btn" 
+          (click)="startPlanningMemory()">
     <mat-icon>arrow_forward</mat-icon>
     Start Planning with your Crew!
   </button>

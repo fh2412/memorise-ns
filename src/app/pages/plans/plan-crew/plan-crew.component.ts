@@ -13,6 +13,7 @@ import { firstValueFrom } from 'rxjs';
 import { FriendsService } from '@services/friends.service';
 import { MemoryService } from '@services/memory.service';
 import { MemoryFormData } from '@models/memoryInterface.model';
+import { CrewAvatarComponent } from "@components/crew-avatar/crew-avatar.component";
 
 export interface CrewMember {
   user_id: string;
@@ -34,27 +35,25 @@ export interface CrewMember {
     MatIconModule,
     MatButtonModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    CrewAvatarComponent
   ],
   templateUrl: './plan-crew.component.html',
   styleUrl: './plan-crew.component.scss'
 })
 export class PlanCrewComponent implements OnInit {
-
   private readonly userService = inject(UserService);
   private readonly friendsService = inject(FriendsService);
   private readonly memoryService = inject(MemoryService);
   private location = inject(Location);
 
-
+  // New Signal for the dynamic Title
+  memoryTitle = signal<string>('');
+  
   // Input search string via Signal
   searchQuery = signal<string>('');
-
   friendsList = signal<Friend[]>([]);
-
   loggedInUserId: string | null = null;
-
-
 
   // Track the currently selected trip squad
   selectedCrew = signal<CrewMember[]>([]);
@@ -141,10 +140,9 @@ export class PlanCrewComponent implements OnInit {
   }
 
   async startPlanningMemory() {
-    //Create new Memory
     const tempMemory: MemoryFormData = {
       creator_id: this.loggedInUserId || '',
-      title: '',
+      title: this.memoryTitle().trim() ,
       description: '',
       firestore_bucket_url: '',
       memory_date: null,
@@ -159,19 +157,18 @@ export class PlanCrewComponent implements OnInit {
       l_postcode: '',
       quickActivityTitle: '',
       activity_id: 1
-    }
+    };
+    
     const memResponse = await firstValueFrom(this.memoryService.createMemory(tempMemory));
 
-
-    //Add Friends to Memory
+    // Add Friends to Memory
     const selectedCrewEmails: string[] = this.selectedCrew().map(friend => friend.email);
     await firstValueFrom(this.memoryService.addFriendToMemory({
       emails: selectedCrewEmails,
       memoryId: memResponse.memory_id
     }));
 
-
-    //Navigate to Planning Page
+    // Navigate to Planning Page
     this.location.back();
   }
 }

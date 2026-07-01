@@ -1,3 +1,5 @@
+import { Friend } from "./userInterface.model";
+
 // memoryInterface.model.ts
 export interface Memory {
   memory_id: number;
@@ -33,6 +35,15 @@ export interface MemoryFormData {
   l_postcode: string;
   quickActivityTitle: string;
   activity_id: number | null;
+}
+
+export interface PlannedMemory {
+  memory_id: string;
+  title?: string;
+  title_pic: string;
+  memory_date: Date | null;
+  memory_end_date: Date | null;
+  crew_members?: Friend[];
 }
 
 export interface PaginatedMemoryResponse {

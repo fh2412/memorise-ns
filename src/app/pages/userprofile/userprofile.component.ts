@@ -31,10 +31,10 @@ import { ProBadgeComponent } from "@components/badges/pro-badge/pro-badge.compon
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 
 @Component({
-    selector: 'app-userprofile',
-    templateUrl: './userprofile.component.html',
-    styleUrls: ['./userprofile.component.scss'],
-    imports: [BackButtonComponent, MatIcon, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatListItemIcon, MatListItemTitle, LogoutButtonComponent, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, UnlimitedBadgeComponent, ProBadgeComponent, LoadingSpinnerComponent]
+  selector: 'app-userprofile',
+  templateUrl: './userprofile.component.html',
+  styleUrls: ['./userprofile.component.scss'],
+  imports: [BackButtonComponent, MatIcon, MatCardTitle, MatCardSubtitle, MatButton, MatList, MatListItem, MatListItemIcon, MatListItemTitle, LogoutButtonComponent, MatCard, MatCardContent, MatTabGroup, MatTab, MatGridList, MatGridTile, PinCardComponent, VisitedCountryMapComponent, DatePipe, UnlimitedBadgeComponent, ProBadgeComponent, LoadingSpinnerComponent]
 })
 export class UserProfileComponent implements OnInit {
   private route = inject(ActivatedRoute);
@@ -137,9 +137,10 @@ export class UserProfileComponent implements OnInit {
       this.isUploading = true;
 
       this.fileUploadService.uploadProfilePicture(file, this.user.user_id).subscribe({
-        next: (url) => {
+        next: (urls) => {
           this.isUploading = false;
-          this.saveProfilePictureUrl(url);
+          // Pass both newly acquired URLs into the save method
+          this.saveProfilePictureUrl(urls.profileUrl, urls.thumbnailUrl);
         },
         error: (error) => {
           console.error('Upload failed', error);
@@ -148,16 +149,15 @@ export class UserProfileComponent implements OnInit {
       });
     }
   }
-
   /** Saves the new profile picture URL in the database. */
-  private saveProfilePictureUrl(url: string): void {
-    this.userService.updateUserProfilePic(this.user.user_id, url).subscribe(
-      () => {
-        this.user.profilepic = url;
+  private saveProfilePictureUrl(profileUrl: string, thumbnailUrl: string): void {
+    this.userService.updateUserProfilePic(this.user.user_id, profileUrl, thumbnailUrl).subscribe({
+      next: () => {
+        this.user.profilepic = profileUrl;
         this.showSnackBar('Profile picture updated successfully.');
       },
-      () => this.handleError('Error updating profile picture.')
-    );
+      error: () => this.handleError('Error updating profile picture.')
+    });
   }
 
   /** Opens the password change dialog. */

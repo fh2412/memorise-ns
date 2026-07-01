@@ -12,70 +12,71 @@ export class FileUploadService {
   private billingService = inject(BillingService);
 
 
-  uploadProfilePicture(file: File, userId: string): Observable<string> {
-    return new Observable((observer) => {
-      const filePath = `profile-pictures/${userId}/profile.jpg`;
-      const thumbnailPath = `profile-pictures/${userId}/thumbnail.jpg`;
+  uploadProfilePicture(file: File, userId: string): Observable<{ profileUrl: string, thumbnailUrl: string }> {
+  return new Observable((observer) => {
+    const filePath = `profile-pictures/${userId}/profile.jpg`;
+    const thumbnailPath = `profile-pictures/${userId}/thumbnail.jpg`;
 
-      const storageRef = ref(this.storage, filePath);
-      const thumbnailRef = ref(this.storage, thumbnailPath);
+    const storageRef = ref(this.storage, filePath);
+    const thumbnailRef = ref(this.storage, thumbnailPath);
 
-      // Create thumbnail
-      this.createThumbnail(file, 128).then((thumbnailFile) => {
-        const uploadTask = uploadBytesResumable(storageRef, file);
-        const thumbnailUploadTask = uploadBytesResumable(thumbnailRef, thumbnailFile);
+    // Create thumbnail
+    this.createThumbnail(file, 128).then((thumbnailFile) => {
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      const thumbnailUploadTask = uploadBytesResumable(thumbnailRef, thumbnailFile);
 
-        let mainUploadComplete = false;
-        let thumbnailUploadComplete = false;
-        let downloadURL = '';
+      let mainUploadComplete = false;
+      let thumbnailUploadComplete = false;
+      
+      // Keep track of both individual URLs
+      let profileUrl = '';
+      let thumbnailUrl = '';
 
-        const checkCompletion = () => {
-          if (mainUploadComplete && thumbnailUploadComplete) {
-            observer.next(downloadURL);
-            observer.complete();
-          }
-        };
+      const checkCompletion = () => {
+        if (mainUploadComplete && thumbnailUploadComplete) {
+          // Emit both URLs together once both steps finish
+          observer.next({ profileUrl, thumbnailUrl });
+          observer.complete();
+        }
+      };
 
-        // Main image upload
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            console.log('Main upload:', snapshot.state);
-          },
-          (error) => {
-            console.log("ERROR IN SERVICE (main): ", error);
-            observer.error(error);
-          },
-          async () => {
-            downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            mainUploadComplete = true;
-            checkCompletion();
-          }
-        );
+      // Main image upload
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => console.log('Main upload:', snapshot.state),
+        (error) => {
+          console.error("ERROR IN SERVICE (main): ", error);
+          observer.error(error);
+        },
+        async () => {
+          profileUrl = await getDownloadURL(uploadTask.snapshot.ref);
+          mainUploadComplete = true;
+          checkCompletion();
+        }
+      );
 
-        // Thumbnail upload
-        thumbnailUploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            console.log('Thumbnail upload:', snapshot.state);
-          },
-          (error) => {
-            console.log("ERROR IN SERVICE (thumbnail): ", error);
-            observer.error(error);
-          },
-          async () => {
-            console.log('Thumbnail upload completed');
-            thumbnailUploadComplete = true;
-            checkCompletion();
-          }
-        );
+      // Thumbnail upload
+      thumbnailUploadTask.on(
+        'state_changed',
+        (snapshot) => console.log('Thumbnail upload:', snapshot.state),
+        (error) => {
+          console.error("ERROR IN SERVICE (thumbnail): ", error);
+          observer.error(error);
+        },
+        async () => {
+          // FIX: Fetch the actual download URL for the thumbnail here!
+          thumbnailUrl = await getDownloadURL(thumbnailUploadTask.snapshot.ref);
+          thumbnailUploadComplete = true;
+          checkCompletion();
+        }
+      );
 
-      }).catch((error) => {
-        console.log("ERROR creating thumbnail: ", error);
-        observer.error(error);
-      });
+    }).catch((error) => {
+      console.error("ERROR creating thumbnail: ", error);
+      observer.error(error);
     });
-  }
+  });
+}
 
   private createThumbnail(file: File, minSize: number): Promise<File> {
     return new Promise((resolve, reject) => {

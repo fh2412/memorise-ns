@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +11,8 @@ import { Friend } from '@models/userInterface.model';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
 import { FriendsService } from '@services/friends.service';
+import { MemoryService } from '@services/memory.service';
+import { MemoryFormData } from '@models/memoryInterface.model';
 
 export interface CrewMember {
   user_id: string;
@@ -18,7 +20,7 @@ export interface CrewMember {
   profilepic: string | null;
   sharedMemoriesCount: number;
   isPlaceholder: boolean;
-  email?: string;
+  email: string;
 }
 
 @Component({
@@ -41,6 +43,9 @@ export class PlanCrewComponent implements OnInit {
 
   private readonly userService = inject(UserService);
   private readonly friendsService = inject(FriendsService);
+  private readonly memoryService = inject(MemoryService);
+  private location = inject(Location);
+
 
   // Input search string via Signal
   searchQuery = signal<string>('');
@@ -106,6 +111,7 @@ export class PlanCrewComponent implements OnInit {
       name: friend.name,
       profilepic: friend.profilepic,
       sharedMemoriesCount: friend.sharedMemoriesCount,
+      email: friend.email,
       isPlaceholder: false
     };
 
@@ -118,10 +124,11 @@ export class PlanCrewComponent implements OnInit {
     if (!name) return;
 
     const placeholder: CrewMember = {
-      user_id: `placeholder_${Date.now()}`, // Temporary local unique identity
+      user_id: `placeholder_${Date.now()}`,
       name: name,
       profilepic: null,
       sharedMemoriesCount: 0,
+      email: 'example@gmail.com',
       isPlaceholder: true
     };
 
@@ -131,5 +138,40 @@ export class PlanCrewComponent implements OnInit {
 
   removeCrewMember(id: string): void {
     this.selectedCrew.update(crew => crew.filter(m => m.user_id !== id));
+  }
+
+  async startPlanningMemory() {
+    //Create new Memory
+    const tempMemory: MemoryFormData = {
+      creator_id: this.loggedInUserId || '',
+      title: '',
+      description: '',
+      firestore_bucket_url: '',
+      memory_date: null,
+      memory_end_date: null,
+      title_pic: '',
+      location_id: 1,
+      lng: '',
+      lat: '',
+      l_country: '',
+      l_countryCode: '',
+      l_city: '',
+      l_postcode: '',
+      quickActivityTitle: '',
+      activity_id: 1
+    }
+    const memResponse = await firstValueFrom(this.memoryService.createMemory(tempMemory));
+
+
+    //Add Friends to Memory
+    const selectedCrewEmails: string[] = this.selectedCrew().map(friend => friend.email);
+    await firstValueFrom(this.memoryService.addFriendToMemory({
+      emails: selectedCrewEmails,
+      memoryId: memResponse.memory_id
+    }));
+
+
+    //Navigate to Planning Page
+    this.location.back();
   }
 }

@@ -1,0 +1,171 @@
+// Layout setup wrapping the split-screen framework
+.workspace-container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.w-full { width: 100%; }
+
+// Left Panel Styles (Material 3 Surface Container Low)
+.crew-sidebar {
+  width: 280px;
+  background-color: var(--mat-sys-surface-container-low, #f7f2fa);
+  border-right: 1px solid var(--mat-sys-outline-variant, #cac4d0);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    h2 { margin: 0; font-size: 1.2rem; font-weight: 500; }
+  }
+
+  .crew-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .crew-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      background: var(--mat-sys-surface-container-high, #ece6f0);
+      border-radius: 8px;
+      border-left: 5px solid transparent; // Set dynamically via template binding
+      transition: all 0.2s ease;
+
+      .avatar-wrapper {
+        position: relative;
+        
+        .avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 0.85rem;
+        }
+
+        .status-badge {
+          position: absolute;
+          bottom: -2px;
+          right: -2px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          border: 2px solid var(--mat-sys-surface-container-low, #f7f2fa);
+          
+          &.online { background-color: #4caf50; }
+          &.away { background-color: #ffc107; }
+          &.offline { background-color: #9e9e9e; }
+        }
+      }
+
+      .member-name {
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: var(--mat-sys-on-surface, #1d1b20);
+      }
+    }
+  }
+
+  .sidebar-footer {
+    padding-top: 16px;
+  }
+}
+
+// Right Panel Styles (Main Viewport framework)
+.board-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mat-sys-surface, #fef7ff);
+
+  .board-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--mat-sys-outline-variant, #cac4d0);
+
+    .trip-info {
+      h1 { margin: 0 0 4px 0; font-weight: 700; }
+      
+      .date-widget {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        color: var(--mat-sys-on-surface-variant, #49454f);
+        transition: background 0.2s;
+
+        &:hover { background: var(--mat-sys-surface-container-hover, #eae2f0); }
+        mat-icon { font-size: 18px; width: 18px; height: 18px; }
+        
+        .countdown-tag {
+          background-color: var(--mat-sys-tertiary-container, #ffd8e4);
+          color: var(--mat-sys-on-tertiary-container, #31111d);
+          padding: 2px 6px;
+          border-radius: 12px;
+          font-size: 0.75rem;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+
+  // Large viewport displaying placeholder state changes
+  .canvas-viewport {
+    flex: 1;
+    position: relative;
+    padding: 24px;
+
+    .placeholder-view {
+      width: 100%;
+      height: 100%;
+      border-radius: 16px; // M3 shape extra-large
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      text-align: center;
+      border: 2px dashed var(--mat-sys-outline, #79747e);
+      transition: all 0.3s cubic-bezier(0.05, 0.7, 0.1, 1);
+
+      .huge-icon {
+        font-size: 64px;
+        width: 64px;
+        height: 64px;
+        color: var(--mat-sys-primary, #6750A4);
+      }
+      
+      h3 { margin: 0; font-size: 1.5rem; }
+      p { max-width: 400px; margin: 0; color: var(--mat-sys-on-surface-variant, #49454f); }
+    }
+
+    // Interactive distinct mock background states
+    .corkboard-bg {
+      background-color: var(--mat-sys-surface-container-lowest, #ffffff);
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.03);
+    }
+
+    .structured-bg {
+      background-color: var(--mat-sys-surface-container-high, #ece6f0);
+    }
+  }
+}

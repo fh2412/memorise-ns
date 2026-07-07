@@ -1,8 +1,9 @@
-import { Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
 import { MatIcon } from "@angular/material/icon";
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlannedMemory } from '@models/memoryInterface.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-planned-memory-card',
@@ -12,6 +13,8 @@ import { PlannedMemory } from '@models/memoryInterface.model';
   styleUrl: './planned-memory-card.component.scss',
 })
 export class PlannedMemoryCardComponent {
+  private router = inject(Router);
+
   plan = input.required<PlannedMemory>();
   titleUpdated = output<{ memoryId: string; title: string }>();
 
@@ -20,17 +23,26 @@ export class PlannedMemoryCardComponent {
 
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
 
-constructor() {
+  constructor() {
     // 3. This effect automatically runs whenever the 'titleInput' signal changes
     effect(() => {
       const inputEl = this.titleInput();
       if (inputEl) {
         inputEl.nativeElement.focus();
-        
+
         // Bonus UX Pro-Tip: .select() highlights the existing text 
         // so the user can immediately overwrite it if they want to!
-        inputEl.nativeElement.select(); 
+        inputEl.nativeElement.select();
       }
+    });
+  }
+
+  navigateToWorkspace(): void {
+    // Prevent navigating if the user is currently typing a new name
+    //if (this.isEditing()) return;
+
+    this.router.navigate(['plans/trip-workspace'], {
+      queryParams: { id: this.plan().memory_id }
     });
   }
 
@@ -76,9 +88,9 @@ constructor() {
     console.log("New Title: ", this.editValue().trim());
     const updatedTitle = this.editValue().trim();
     if (updatedTitle !== this.plan().title) {
-      this.titleUpdated.emit({ 
-        memoryId: this.plan().memory_id, 
-        title: updatedTitle 
+      this.titleUpdated.emit({
+        memoryId: this.plan().memory_id,
+        title: updatedTitle
       });
     }
     this.isEditing.set(false);

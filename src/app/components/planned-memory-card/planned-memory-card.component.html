@@ -1,4 +1,4 @@
-<div class="planned-card" [ngClass]="{ 'is-untitled': isUntitled() }">
+<div class="planned-card" [ngClass]="{ 'is-untitled': isUntitled() }" (click)="navigateToWorkspace()" (keypress)="navigateToWorkspace()" aria-hidden="true">
 
   <div class="card-image-wrapper">
     @if (plan().title_pic) {

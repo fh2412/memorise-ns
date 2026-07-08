@@ -61,4 +61,8 @@ export class TripWorkspaceComponent {
   manageDates() {
     alert('Mock Action: Open interactive calendar sheet or change trip length.');
   }
+
+  toggleViewMode(): void {
+    this.currentView.update(view => view === 'corkboard' ? 'structured' : 'corkboard');
+  }
 }

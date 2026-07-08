@@ -1,15 +1,26 @@
 <div class="workspace-container">
   <main class="board-area">
     <header class="board-header">
-      <div class="trip-info">
-        <h1 class="mat-headline-medium">Summer Road Trip ☀️</h1>
-        <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" aria-hidden="true">
-          <mat-icon>calendar_today</mat-icon>
-          <span>August 12 - August 24, 2026</span>
-          <span class="countdown-tag">36 days left!</span>
-        </div>
-      </div>
-    </header>
+  <div class="trip-info">
+    <h1 class="mat-headline-medium">Summer Road Trip ☀️</h1>
+    <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" aria-hidden="true">
+      <mat-icon>calendar_today</mat-icon>
+      <span>August 12 - August 24, 2026</span>
+      <span class="countdown-tag">36 days left!</span>
+    </div>
+  </div>
+
+  <div class="view-switcher-wrapper">
+    <mat-icon [class.active-icon]="currentView() === 'corkboard'">push_pin</mat-icon>
+    <mat-slide-toggle
+      [checked]="currentView() === 'structured'"
+      (change)="currentView.set($event.checked ? 'structured' : 'corkboard')"
+      aria-label="Toggle board view mode"
+      color="primary">
+    </mat-slide-toggle>
+    <mat-icon [class.active-icon]="currentView() === 'structured'">view_column</mat-icon>
+  </div>
+</header>
 
     <div class="canvas-viewport">
       @if (currentView() === 'corkboard') {

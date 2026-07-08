@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggle } from "@angular/material/slide-toggle";
 
 interface CrewMember {
   name: string;
@@ -24,8 +25,9 @@ interface CrewMember {
     MatIconModule,
     MatButtonToggleModule,
     MatBadgeModule,
-    MatTooltipModule
-  ],
+    MatTooltipModule,
+    MatSlideToggle
+],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
 })

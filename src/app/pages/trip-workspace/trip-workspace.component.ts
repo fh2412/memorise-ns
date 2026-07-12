@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,13 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSlideToggle } from "@angular/material/slide-toggle";
+import { ActivatedRoute } from '@angular/router';
+import { UserService } from '@services/userService';
+import { firstValueFrom } from 'rxjs';
+import { MemoryService } from '@services/memory.service';
+import { PlannedMemory } from '@models/memoryInterface.model';
+import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
+import { BackButtonComponent } from "@components/back-button/back-button.component";
 
 interface CrewMember {
   name: string;
@@ -26,12 +33,19 @@ interface CrewMember {
     MatButtonToggleModule,
     MatBadgeModule,
     MatTooltipModule,
-    MatSlideToggle
+    MatSlideToggle,
+    LoadingSpinnerComponent,
+    BackButtonComponent
 ],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
 })
-export class TripWorkspaceComponent {
+export class TripWorkspaceComponent implements OnInit {
+  private route = inject(ActivatedRoute);
+  private userService = inject(UserService);
+  private memoryService = inject(MemoryService);
+
+
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
 
@@ -43,8 +57,62 @@ export class TripWorkspaceComponent {
     { name: 'Niki', status: 'offline', color: '#7D5260', initials: 'NI' }         // M3 Tertiary
   ]);
 
+  displayTitle = computed(() => {
+    const currentPlan = this.plannedMemory();
+    if (currentPlan != undefined) {
+      if (currentPlan.title && currentPlan.title.trim() !== '') {
+        return currentPlan.title;
+      }
+
+      const members = currentPlan.crew_members || [];
+      if (members.length > 0) {
+        const names = members.map(m => m.name);
+        if (names.length <= 2) return `Adventure with ${names.join(' & ')}`;
+        return `Adventure with ${names.slice(0, 2).join(', ')} & ${names.length - 2} more`;
+      }
+    }
+
+
+    return 'Untitled Adventure';
+  });
+
   // Available "free" colors a new user could pick from
   availableColors = ['#4F378B', '#006874', '#386A20', '#A63E2B', '#005FAF'];
+
+  loggedInUserId: string | null = null;
+  memoryId = '';
+  isLoading = signal<boolean>(true);
+  plannedMemory = signal<PlannedMemory | undefined>(undefined);
+
+
+  async ngOnInit(): Promise<void> {
+    this.memoryId = this.route.snapshot.paramMap.get('memoryId') || '';
+    this.loggedInUserId = this.userService.getLoggedInUserId();
+    try {
+      await this.loadMemoriesPage();
+    } catch (error) {
+      console.error('Initialization error:', error);
+    }
+  }
+
+  private async loadMemoriesPage(): Promise<void> {
+    this.isLoading.set(true);
+
+    if (this.loggedInUserId) {
+      try {
+        const result = await firstValueFrom(
+          this.memoryService.getMemoryToPlan(
+            this.memoryId,
+          )
+        );
+        this.plannedMemory.set(result);
+      } catch (error) {
+        console.error('Error loading planned memories:', error);
+      } finally {
+        this.isLoading.set(false);
+      }
+    }
+  }
 
   // Change view toggle handler
   onViewChange(view: 'corkboard' | 'structured') {

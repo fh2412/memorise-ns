@@ -1,3 +1,10 @@
 .cancel-button {
   margin: 10px;
 }
+
+.small-button {
+  mat-icon{
+    color: var(--mat-sys-primary);
+    padding-left: 5px;
+  }
+}

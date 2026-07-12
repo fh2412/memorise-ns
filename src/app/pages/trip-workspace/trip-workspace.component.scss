@@ -21,9 +21,10 @@
     align-items: center;
 
     .trip-info {
+      width: 83%;
       h1 {
         margin: 0 0 4px 0;
-        width: 1000px;
+        width: 90%;
       }
 
       .date-widget {
@@ -54,7 +55,7 @@
     gap: 12px;
     background: var(--mat-sys-surface-container-high);
     padding: 8px 16px;
-    border-radius: 100px; // Gives it a pill shape signature to M3
+    border-radius: 100px;
     border: 1px solid var(--mat-sys-outline-variant);
 
     mat-icon {

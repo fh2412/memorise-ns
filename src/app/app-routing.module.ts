@@ -96,7 +96,7 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
-    path: 'plans/trip-workspace',
+    path: 'plans/trip-workspace/:memoryId',
     loadComponent: () => import('./pages/trip-workspace/trip-workspace.component').then(m => m.TripWorkspaceComponent),
     canActivate: [authGuard]
   },

@@ -20,7 +20,7 @@ export class PlansComponent implements OnInit {
   private memoryService = inject(MemoryService);
 
   isLoading = false;
-  plannedMemories = signal<PlannedMemory[]>([])
+  plannedMemories = signal<PlannedMemory[]>([]);
   loggedInUserId: string | null = null;
 
 

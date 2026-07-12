@@ -39,6 +39,11 @@ export class MemoryService {
     });
   }
 
+  getMemoryToPlan(memoryId: string): Observable<PlannedMemory> {
+    return this.http.get<PlannedMemory>(`${this.apiUrl}/memories/planning/${memoryId}`, {
+    });
+  }
+
   getMemoriesSearchData(userId: string, includeShared: boolean): Observable<MemorySearchData[]> {
     return this.http.get<MemorySearchData[]>(
       `${this.apiUrl}/memories/searchData/${userId}`,

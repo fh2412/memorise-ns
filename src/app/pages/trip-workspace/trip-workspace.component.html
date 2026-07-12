@@ -1,40 +1,44 @@
+@if(isLoading()){
+<app-loading-spinner></app-loading-spinner>
+}
+
+@else {
 <div class="workspace-container">
   <main class="board-area">
     <header class="board-header">
-  <div class="trip-info">
-    <h1 class="mat-headline-medium">Summer Road Trip ☀️</h1>
-    <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" aria-hidden="true">
-      <mat-icon>calendar_today</mat-icon>
-      <span>August 12 - August 24, 2026</span>
-      <span class="countdown-tag">36 days left!</span>
-    </div>
-  </div>
+      <app-back-button [isIcon]="true"></app-back-button>
+      <div class="trip-info">
+        <h1 class="mat-headline-medium">{{ displayTitle() }}</h1>
+        <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" aria-hidden="true">
+          <mat-icon>calendar_today</mat-icon>
+          <span>August 12 - August 24, 2026</span>
+          <span class="countdown-tag">36 days left!</span>
+        </div>
+      </div>
 
-  <div class="view-switcher-wrapper">
-    <mat-icon [class.active-icon]="currentView() === 'corkboard'">push_pin</mat-icon>
-    <mat-slide-toggle
-      [checked]="currentView() === 'structured'"
-      (change)="currentView.set($event.checked ? 'structured' : 'corkboard')"
-      aria-label="Toggle board view mode"
-      color="primary">
-    </mat-slide-toggle>
-    <mat-icon [class.active-icon]="currentView() === 'structured'">view_column</mat-icon>
-  </div>
-</header>
+      <div class="view-switcher-wrapper">
+        <mat-icon [class.active-icon]="currentView() === 'corkboard'">push_pin</mat-icon>
+        <mat-slide-toggle [checked]="currentView() === 'structured'"
+          (change)="currentView.set($event.checked ? 'structured' : 'corkboard')" aria-label="Toggle board view mode"
+          color="primary">
+        </mat-slide-toggle>
+        <mat-icon [class.active-icon]="currentView() === 'structured'">view_column</mat-icon>
+      </div>
+    </header>
 
     <div class="canvas-viewport">
       @if (currentView() === 'corkboard') {
-        <div class="placeholder-view corkboard-bg">
-          <mat-icon class="huge-icon">push_pin</mat-icon>
-          <h3>[Placeholder] Free-form Corkboard Canvas</h3>
-          <p>Cards will be absolutely positioned here ($X/Y$ coordinates).</p>
-        </div>
+      <div class="placeholder-view corkboard-bg">
+        <mat-icon class="huge-icon">push_pin</mat-icon>
+        <h3>[Placeholder] Free-form Corkboard Canvas</h3>
+        <p>Cards will be absolutely positioned here ($X/Y$ coordinates).</p>
+      </div>
       } @else {
-        <div class="placeholder-view structured-bg">
-          <mat-icon class="huge-icon">view_column</mat-icon>
-          <h3>[Placeholder] Organized Grid Columns</h3>
-          <p>Cards will automatically snap here sorted cleanly into rows or columns.</p>
-        </div>
+      <div class="placeholder-view structured-bg">
+        <mat-icon class="huge-icon">view_column</mat-icon>
+        <h3>[Placeholder] Organized Grid Columns</h3>
+        <p>Cards will automatically snap here sorted cleanly into rows or columns.</p>
+      </div>
       }
     </div>
   </main>
@@ -49,25 +53,24 @@
 
     <div class="crew-list">
       @for (member of crew(); track member.name) {
-        <div class="crew-item" [style.borderRightColor]="member.color" [ngClass]="{'is-current-user': member.name.includes('(You)')}">
-          <div class="avatar-wrapper">
-            <div class="avatar" [style.backgroundColor]="member.color">
-              {{ member.initials }}
-            </div>
-            <span class="status-badge" [ngClass]="member.status"></span>
+      <div class="crew-item" [style.borderRightColor]="member.color"
+        [ngClass]="{'is-current-user': member.name.includes('(You)')}">
+        <div class="avatar-wrapper">
+          <div class="avatar" [style.backgroundColor]="member.color">
+            {{ member.initials }}
           </div>
-          <span class="member-name">{{ member.name }}</span>
-
-          @if (member.name.includes('(You)')) {
-            <button mat-icon-button class="inline-switch-btn"
-                    [matTooltip]="'Change your Color'"
-                    (click)="changeMyColor()">
-              <mat-icon>shuffle</mat-icon>
-            </button>
-          }
+          <span class="status-badge" [ngClass]="member.status"></span>
         </div>
+        <span class="member-name">{{ member.name }}</span>
+
+        @if (member.name.includes('(You)')) {
+        <button mat-icon-button class="inline-switch-btn" [matTooltip]="'Change your Color'" (click)="changeMyColor()">
+          <mat-icon>shuffle</mat-icon>
+        </button>
+        }
+      </div>
       }
     </div>
   </aside>
-
 </div>
+}

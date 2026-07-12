@@ -41,9 +41,7 @@ export class PlannedMemoryCardComponent {
     // Prevent navigating if the user is currently typing a new name
     //if (this.isEditing()) return;
 
-    this.router.navigate(['plans/trip-workspace'], {
-      queryParams: { id: this.plan().memory_id }
-    });
+    this.router.navigate(['plans/trip-workspace', this.plan().memory_id]);
   }
 
   isUntitled = computed(() => {

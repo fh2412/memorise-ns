@@ -1,5 +1,5 @@
-import { Component, signal, OnInit, inject, computed } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, computed, effect, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
+import { CommonModule, NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -14,6 +14,7 @@ import { MemoryService } from '@services/memory.service';
 import { PlannedMemory } from '@models/memoryInterface.model';
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 import { BackButtonComponent } from "@components/back-button/back-button.component";
+import { FormsModule } from '@angular/forms';
 
 interface CrewMember {
   name: string;
@@ -29,14 +30,16 @@ interface CrewMember {
     CommonModule,
     MatCardModule,
     MatButtonModule,
+    FormsModule,
     MatIconModule,
     MatButtonToggleModule,
     MatBadgeModule,
     MatTooltipModule,
     MatSlideToggle,
     LoadingSpinnerComponent,
-    BackButtonComponent
-],
+    BackButtonComponent,
+    NgClass
+  ],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
 })
@@ -57,6 +60,34 @@ export class TripWorkspaceComponent implements OnInit {
     { name: 'Niki', status: 'offline', color: '#7D5260', initials: 'NI' }         // M3 Tertiary
   ]);
 
+  // Available "free" colors a new user could pick from
+  availableColors = ['#4F378B', '#006874', '#386A20', '#A63E2B', '#005FAF'];
+
+  loggedInUserId: string | null = null;
+  memoryId = '';
+  isLoading = signal<boolean>(true);
+  plannedMemory = signal<PlannedMemory | undefined>(undefined);
+
+  isEditing = signal(false);
+  editValue = signal('');
+
+  titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
+
+  constructor() {
+    effect(() => {
+      const inputEl = this.titleInput();
+      if (inputEl) {
+        inputEl.nativeElement.focus();
+        inputEl.nativeElement.select();
+      }
+    });
+  }
+
+  isUntitled = computed(() => {
+    const title = this.plannedMemory()?.title || '';
+    return !title || title.trim() === '';
+  });
+
   displayTitle = computed(() => {
     const currentPlan = this.plannedMemory();
     if (currentPlan != undefined) {
@@ -72,18 +103,8 @@ export class TripWorkspaceComponent implements OnInit {
       }
     }
 
-
     return 'Untitled Adventure';
   });
-
-  // Available "free" colors a new user could pick from
-  availableColors = ['#4F378B', '#006874', '#386A20', '#A63E2B', '#005FAF'];
-
-  loggedInUserId: string | null = null;
-  memoryId = '';
-  isLoading = signal<boolean>(true);
-  plannedMemory = signal<PlannedMemory | undefined>(undefined);
-
 
   async ngOnInit(): Promise<void> {
     this.memoryId = this.route.snapshot.paramMap.get('memoryId') || '';
@@ -112,6 +133,25 @@ export class TripWorkspaceComponent implements OnInit {
         this.isLoading.set(false);
       }
     }
+  }
+
+  startEdit(): void {
+    // Fall back to empty string if it's currently using the system generated naming
+    this.editValue.set(this.plannedMemory()?.title || '');
+    this.isEditing.set(true);
+  }
+
+  // Save changes and emit to the parent orchestration container
+  async saveEdit(): Promise<void> {
+    const updatedTitle = this.editValue().trim();
+    if (updatedTitle !== this.plannedMemory()?.title) {
+      await firstValueFrom(this.memoryService.updateMemoryTitle(this.memoryId, this.editValue().trim()));
+    }
+    this.isEditing.set(false);
+  }
+
+  cancelEdit(): void {
+    this.isEditing.set(false);
   }
 
   // Change view toggle handler

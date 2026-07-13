@@ -8,7 +8,23 @@
     <header class="board-header">
       <app-back-button [isIcon]="true"></app-back-button>
       <div class="trip-info">
-        <h1 class="mat-headline-medium">{{ displayTitle() }}</h1>
+        <div class="title-row">
+          @if (isEditing()) {
+          <div class="inline-edit-form" (click)="$event.stopPropagation()" (keyup)="$event.stopPropagation()"
+            tabindex="0">
+            <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()"
+              (keyup.escape)="cancelEdit()" (blur)="saveEdit()" placeholder="Name your adventure..."
+              class="title-input" />
+          </div>
+          } @else {
+          <h1 class="mat-headline-medium">{{ displayTitle() }}</h1>
+          }
+          @if (!isEditing() && isUntitled()) {
+          <button mat-icon-button (click)="$event.stopPropagation(); startEdit()" matTooltip="Edit Title">
+            <mat-icon>edit</mat-icon>
+          </button>
+          }
+        </div>
         <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" aria-hidden="true">
           <mat-icon>calendar_today</mat-icon>
           <span>August 12 - August 24, 2026</span>

@@ -13,18 +13,32 @@
   overflow: hidden;
 
   .board-header {
+    &.is-untitled {
+    h1 {
+      font-style: italic;
+      color: var(--mat-sys-on-surface-variant);
+      padding-right: 28px;
+    }
+  }
     padding: 24px;
     background: var(--mat-sys-background);
     border-bottom: 1px solid var(--mat-sys-outline-variant);
-    display: flex; // Added to align content across a row
+    display: flex;
     justify-content: space-between;
     align-items: center;
 
     .trip-info {
       width: 83%;
+
+      .title-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
       h1 {
-        margin: 0 0 4px 0;
-        width: 90%;
+        margin: 0;
+        width: auto;
       }
 
       .date-widget {
@@ -191,5 +205,23 @@
         color: var(--mat-sys-primary);
       }
     }
+  }
+}
+
+.inline-edit-form {
+  width: 100%;
+  padding-right: 28px;
+
+  .title-input {
+    width: 100%;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: inherit;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid var(--mat-sys-primary);
+    color: var(--mat-sys-on-surface);
+    padding: 0 0 2px 0;
+    outline: none;
   }
 }

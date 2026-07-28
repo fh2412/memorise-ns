@@ -1,4 +1,4 @@
-import { Component, computed, effect, ElementRef, inject, OnInit, signal, viewChild } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,15 +6,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
 import { MemoryService } from '@services/memory.service';
 import { PlannedMemory } from '@models/memoryInterface.model';
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
-import { BackButtonComponent } from "@components/back-button/back-button.component";
 import { FormsModule } from '@angular/forms';
+import { TripWsHeaderComponent } from "./trip-ws-header/trip-ws-header.component";
 
 interface CrewMember {
   name: string;
@@ -35,10 +34,9 @@ interface CrewMember {
     MatButtonToggleModule,
     MatBadgeModule,
     MatTooltipModule,
-    MatSlideToggle,
     LoadingSpinnerComponent,
-    BackButtonComponent,
-    NgClass
+    NgClass,
+    TripWsHeaderComponent
   ],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
@@ -68,43 +66,6 @@ export class TripWorkspaceComponent implements OnInit {
   isLoading = signal<boolean>(true);
   plannedMemory = signal<PlannedMemory | undefined>(undefined);
 
-  isEditing = signal(false);
-  editValue = signal('');
-
-  titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
-
-  constructor() {
-    effect(() => {
-      const inputEl = this.titleInput();
-      if (inputEl) {
-        inputEl.nativeElement.focus();
-        inputEl.nativeElement.select();
-      }
-    });
-  }
-
-  isUntitled = computed(() => {
-    const title = this.plannedMemory()?.title || '';
-    return !title || title.trim() === '';
-  });
-
-  displayTitle = computed(() => {
-    const currentPlan = this.plannedMemory();
-    if (currentPlan != undefined) {
-      if (currentPlan.title && currentPlan.title.trim() !== '') {
-        return currentPlan.title;
-      }
-
-      const members = currentPlan.crew_members || [];
-      if (members.length > 0) {
-        const names = members.map(m => m.name);
-        if (names.length <= 2) return `Adventure with ${names.join(' & ')}`;
-        return `Adventure with ${names.slice(0, 2).join(', ')} & ${names.length - 2} more`;
-      }
-    }
-
-    return 'Untitled Adventure';
-  });
 
   async ngOnInit(): Promise<void> {
     this.memoryId = this.route.snapshot.paramMap.get('memoryId') || '';
@@ -135,28 +96,14 @@ export class TripWorkspaceComponent implements OnInit {
     }
   }
 
-  startEdit(): void {
-    // Fall back to empty string if it's currently using the system generated naming
-    this.editValue.set(this.plannedMemory()?.title || '');
-    this.isEditing.set(true);
-  }
+  handleTitleUpdate(event: { memoryId: string; title: string }) {
+    this.plannedMemory.update(plan => plan ? { ...plan, title: event.title } : plan);
 
-  // Save changes and emit to the parent orchestration container
-  async saveEdit(): Promise<void> {
-    const updatedTitle = this.editValue().trim();
-    if (updatedTitle !== this.plannedMemory()?.title) {
-      await firstValueFrom(this.memoryService.updateMemoryTitle(this.memoryId, this.editValue().trim()));
-    }
-    this.isEditing.set(false);
-  }
-
-  cancelEdit(): void {
-    this.isEditing.set(false);
-  }
-
-  // Change view toggle handler
-  onViewChange(view: 'corkboard' | 'structured') {
-    this.currentView.set(view);
+    this.memoryService.updateMemoryTitle(event.memoryId, event.title).subscribe({
+      error: (err) => {
+        console.error('Failed to save title backend side:', err);
+      }
+    });
   }
 
   // "Stupid" buttons dummy actions
@@ -166,13 +113,5 @@ export class TripWorkspaceComponent implements OnInit {
 
   changeMyColor() {
     alert('Mock Action: Cycle through unassigned M3 palette colors.');
-  }
-
-  manageDates() {
-    alert('Mock Action: Open interactive calendar sheet or change trip length.');
-  }
-
-  toggleViewMode(): void {
-    this.currentView.update(view => view === 'corkboard' ? 'structured' : 'corkboard');
   }
 }

@@ -1,0 +1,37 @@
+<header class="board-header" [class.is-untitled]="isUntitled()">
+  <app-back-button [isIcon]="true"></app-back-button>
+
+  <div class="trip-info">
+    <div class="title-row">
+      @if (isEditing()) {
+        <div class="inline-edit-form" (click)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
+          <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()"
+                 (keyup.escape)="cancelEdit()" (blur)="saveEdit()" placeholder="Name your adventure..."
+                 class="title-input" />
+        </div>
+      } @else {
+        <h1>{{ displayTitle() }}</h1>
+        @if (isUntitled()) {
+          <button mat-icon-button (click)="$event.stopPropagation(); startEdit()" matTooltip="Edit Title">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+      }
+    </div>
+
+    <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" role="button" tabindex="0">
+      <mat-icon>calendar_today</mat-icon>
+      <span>August 12 - August 24, 2026</span>
+      <span class="countdown-tag">36 days left!</span>
+    </div>
+  </div>
+
+  <div class="view-switcher-wrapper">
+    <mat-icon [class.active-icon]="currentView() === 'corkboard'">push_pin</mat-icon>
+    <mat-slide-toggle [checked]="currentView() === 'structured'"
+                      (change)="switchView($event.checked)" 
+                      aria-label="Toggle board view mode">
+    </mat-slide-toggle>
+    <mat-icon [class.active-icon]="currentView() === 'structured'">view_column</mat-icon>
+  </div>
+</header>

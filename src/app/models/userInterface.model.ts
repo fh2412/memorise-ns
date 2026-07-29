@@ -39,6 +39,21 @@ export interface Friend {
   isCreator?: boolean;
 }
 
+export interface CrewMember {
+  country: string | null;
+  dob: Date | null;
+  name: string;
+  profilepic: string | null;
+  profilepic_thumb: string | null;
+  sharedMemoriesCount: number;
+  user_id: string;
+  gender: string;
+  email: string;
+  color: string;
+  status: 'online' | 'away' | 'offline';
+  isCreator?: boolean;
+}
+
 export interface MemoryDetailFriend {
   country: string | null;
   dob: Date | null;

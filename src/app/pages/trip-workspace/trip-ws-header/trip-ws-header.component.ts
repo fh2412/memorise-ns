@@ -87,8 +87,4 @@ export class TripWsHeaderComponent {
       checked: checked
     });
   }
-
-  manageDates() {
-    alert('Mock Action: Open interactive calendar sheet or change trip length.');
-  }
 }

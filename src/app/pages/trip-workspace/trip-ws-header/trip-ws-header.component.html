@@ -18,12 +18,24 @@
         }
       }
     </div>
-
-    <div class="date-widget" (click)="manageDates()" (keypress)="manageDates()" role="button" tabindex="0">
+    @if (plan().memory_date && plan().memory_end_date) {
+    <div class="date-widget">
       <mat-icon>calendar_today</mat-icon>
-      <span>August 12 - August 24, 2026</span>
+      <span>{{plan().memory_date}} - {{plan().memory_end_date}}</span>
       <span class="countdown-tag">36 days left!</span>
     </div>
+    } @else if (plan().memory_date) {
+    <div class="date-widget">
+      <mat-icon>calendar_today</mat-icon>
+      <span>{{plan().memory_date}}</span>
+      <span class="countdown-tag">36 days left!</span>
+    </div>
+    } @else {
+      <div class="date-widget">
+      <mat-icon>calendar_today</mat-icon>
+      <span>Vote for your fitting time</span>
+    </div>
+    }
   </div>
 
   <div class="view-switcher-wrapper">

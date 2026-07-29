@@ -14,13 +14,7 @@ import { PlannedMemory } from '@models/memoryInterface.model';
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 import { FormsModule } from '@angular/forms';
 import { TripWsHeaderComponent } from "./trip-ws-header/trip-ws-header.component";
-
-interface CrewMember {
-  name: string;
-  status: 'online' | 'away' | 'offline';
-  color: string; // Hex code or M3 CSS class token
-  initials: string;
-}
+import { CrewMember } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -50,14 +44,6 @@ export class TripWorkspaceComponent implements OnInit {
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
 
-  // Dummy data for the crew members
-  crew = signal<CrewMember[]>([
-    { name: 'Florian (You)', status: 'online', color: '#6750A4', initials: 'FH' }, // M3 Primary
-    { name: 'Miriam', status: 'online', color: '#B3261E', initials: 'MI' },       // M3 Error/Red accent
-    { name: 'Jonas', status: 'away', color: '#625B71', initials: 'JO' },         // M3 Secondary
-    { name: 'Niki', status: 'offline', color: '#7D5260', initials: 'NI' }         // M3 Tertiary
-  ]);
-
   // Available "free" colors a new user could pick from
   availableColors = ['#4F378B', '#006874', '#386A20', '#A63E2B', '#005FAF'];
 
@@ -65,6 +51,7 @@ export class TripWorkspaceComponent implements OnInit {
   memoryId = '';
   isLoading = signal<boolean>(true);
   plannedMemory = signal<PlannedMemory | undefined>(undefined);
+  crew = signal<CrewMember[] | undefined>([]);
 
 
   async ngOnInit(): Promise<void> {
@@ -88,6 +75,8 @@ export class TripWorkspaceComponent implements OnInit {
           )
         );
         this.plannedMemory.set(result);
+        console.log(result);
+        this.crew.set(result.crew_members);
       } catch (error) {
         console.error('Error loading planned memories:', error);
       } finally {

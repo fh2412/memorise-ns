@@ -36,8 +36,8 @@
       <div class="crew-item" [style.borderRightColor]="member.color"
         [ngClass]="{'is-current-user': member.name.includes('(You)')}">
         <div class="avatar-wrapper">
-          <div class="avatar" [style.backgroundColor]="member.color">
-            {{ member.initials }}
+          <div class="avatar-circle" [style.backgroundImage]="member.profilepic_thumb">
+            <img [src]="member.profilepic_thumb" [alt]="member.name" />
           </div>
           <span class="status-badge" [ngClass]="member.status"></span>
         </div>

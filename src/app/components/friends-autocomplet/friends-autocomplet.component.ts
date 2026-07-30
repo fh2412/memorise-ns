@@ -2,7 +2,7 @@ import { Component, ElementRef, ViewChild, inject, OnInit, input, output } from 
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { FriendsService } from '@services/friends.service';
@@ -13,35 +13,36 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { Friend } from '@models/userInterface.model';
 
 @Component({
-    selector: 'app-friends-autocomplet',
-    templateUrl: './friends-autocomplet.component.html',
-    styleUrls: ['./friends-autocomplet.component.scss'],
-    imports: [
-      CommonModule,
-      MatAutocompleteModule,
-      MatIconModule,
-      MatFormFieldModule,
-      MatInputModule,
-      MatButtonModule,
-      ReactiveFormsModule,
-      MatProgressBarModule,
-      FormsModule,
-      MatChipsModule,
-    ]
+  selector: 'app-friends-autocomplet',
+  templateUrl: './friends-autocomplet.component.html',
+  styleUrls: ['./friends-autocomplet.component.scss'],
+  imports: [
+    CommonModule,
+    MatAutocompleteModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    ReactiveFormsModule,
+    MatProgressBarModule,
+    FormsModule,
+    MatChipsModule,
+  ]
 })
 export class FriendsAutocompletComponent implements OnInit {
   private friendsService = inject(FriendsService);
   private userService = inject(UserService);
 
-  allfriends: string[] = [];
-  friendCtrl = new FormControl('');
-  filteredfriends: Observable<string[]> | undefined;
-  friends: string[] = [];
+  allfriends: Friend[] = [];
+  friendCtrl = new FormControl<string | Friend | null>('');
+  filteredfriends: Observable<Friend[]> | undefined;
+  friends: Friend[] = [];
 
   readonly memoryId = input("0");
-  readonly selectedValuesChange = output<string[]>();
+  readonly selectedValuesChange = output<Friend[]>();
   @ViewChild('friendInput') friendInput!: ElementRef<HTMLInputElement>;
 
   announcer = inject(LiveAnnouncer);
@@ -54,62 +55,78 @@ export class FriendsAutocompletComponent implements OnInit {
   private async initializeFriendsList() {
     try {
       this.loggedInUserId = await this.userService.getLoggedInUserId();
+
       if (this.loggedInUserId) {
-        this.friendsService.getMemoriesMissingFriends(this.memoryId(), this.loggedInUserId).subscribe(
-          (friends) => {
-            this.allfriends = friends.map(item => `${item.name} (${item.email})`);
-            this.setFilteredFriends();
-          },
-          (error) => {
-            console.error('Error fetching user friends:', error);
-          }
+        this.allfriends = await firstValueFrom(
+          this.friendsService.getMemoriesMissingFriends(this.memoryId(), this.loggedInUserId)
         );
+
+        this.setFilteredFriends();
       }
     } catch (error) {
-      console.error('Error fetching user ID:', error);
+      console.error('Error initializing friends list:', error);
     }
   }
 
   private setFilteredFriends() {
     this.filteredfriends = this.friendCtrl.valueChanges.pipe(
-      startWith(null),
-      map((friend: string | null) => {
-        const filterValue = friend ? friend.toLowerCase() : '';
-        return this.allfriends.filter(f => f.toLowerCase().includes(filterValue) && !this.friends.includes(f));
+      startWith(''),
+      map(value => {
+        const filterValue = typeof value === 'string' ? value.toLowerCase() : value?.name?.toLowerCase() || '';
+
+        return this.allfriends.filter(f => {
+          const isNotSelected = !this.friends.some(selected => selected.user_id === f.user_id);
+          const matchesFilter = f.name.toLowerCase().includes(filterValue) || f.email.toLowerCase().includes(filterValue);
+          return isNotSelected && matchesFilter;
+        });
       })
     );
   }
 
   add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (value && !this.friends.includes(value)) {
-      this.friends.push(value);
-      this.selectedValuesChange.emit(this.friends);
-      this.announcer.announce(`Added ${value}`);
+    const value = (event.value || '').trim().toLowerCase();
+
+    if (value) {
+      // Find matching friend from available unselected options by email or name
+      const matchingFriend = this.allfriends.find(
+        f => (f.email.toLowerCase() === value || f.name.toLowerCase() === value) &&
+          !this.friends.some(selected => selected.user_id === f.user_id)
+      );
+
+      if (matchingFriend) {
+        this.friends.push(matchingFriend);
+        this.selectedValuesChange.emit(this.friends);
+        this.announcer.announce(`Added ${matchingFriend.name}`);
+      }
     }
+
     event.chipInput!.clear();
-    this.friendCtrl.setValue(null);
+    this.friendCtrl.setValue('');
   }
 
-  remove(friend: string): void {
-    const index = this.friends.indexOf(friend);
+  remove(friend: Friend): void {
+    const index = this.friends.findIndex(f => f.user_id === friend.user_id);
     if (index >= 0) {
       this.friends.splice(index, 1);
-      this.announcer.announce(`Removed ${friend}`);
+      this.announcer.announce(`Removed ${friend.name}`);
       this.selectedValuesChange.emit(this.friends);
+      // Re-trigger control value changes to update filtered options
+      this.friendCtrl.setValue(this.friendCtrl.value);
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    const friend = event.option.viewValue;
-    if (!this.friends.includes(friend)) {
-      this.friends.push(friend);
+    const selectedFriend = event.option.value as Friend;
+
+    if (selectedFriend && !this.friends.some(f => f.user_id === selectedFriend.user_id)) {
+      this.friends.push(selectedFriend);
       this.selectedValuesChange.emit(this.friends);
-      this.announcer.announce(`Added ${friend}`);
+      this.announcer.announce(`Added ${selectedFriend.name}`);
     }
+
     if (this.friendInput) {
       this.friendInput.nativeElement.value = '';
     }
-    this.friendCtrl.setValue(null);
+    this.friendCtrl.setValue('');
   }
 }

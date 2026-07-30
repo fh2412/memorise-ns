@@ -162,9 +162,9 @@ export class PlanCrewComponent implements OnInit {
     const memResponse = await firstValueFrom(this.memoryService.createMemory(tempMemory));
 
     // Add Friends to Memory
-    const selectedCrewEmails: string[] = this.selectedCrew().map(friend => friend.email);
+    const selectedCrewIds: string[] = this.selectedCrew().map(friend => friend.user_id);
     await firstValueFrom(this.memoryService.addFriendToMemory({
-      emails: selectedCrewEmails,
+      friendIds: selectedCrewIds,
       memoryId: memResponse.memory_id
     }));
 

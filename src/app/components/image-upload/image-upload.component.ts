@@ -11,6 +11,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { BillingService } from '@services/billing.service';
+import { Friend } from '@models/userInterface.model';
 
 export interface ImageFileWithDimensions {
   file: File;
@@ -41,7 +42,7 @@ export class ImageUploadComponent implements OnInit {
 
   readonly memoryId = input('');
   readonly memoryData = input<MemoryFormData | null>(null);
-  readonly friends_emails = input<string[]>([]);
+  readonly friends = input<Friend[]>([]);
   readonly picture_count = input(0);
   readonly googleStorageUrlInput = input("");
 
@@ -137,7 +138,7 @@ export class ImageUploadComponent implements OnInit {
       const dialogRef = this.dialog.open(UploadProgressDialogComponent, {
         width: '300px',
         disableClose: true, // Prevent closing the dialog by clicking outside
-        data: { userId: this.userId, memoryId: this.memoryId(), filesWithDimensions: this.imageFileWithDimensions(), memoryData: this.memoryData(), friends_emails: this.friends_emails(), picture_count: this.picture_count(), googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
+        data: { userId: this.userId, memoryId: this.memoryId(), filesWithDimensions: this.imageFileWithDimensions(), memoryData: this.memoryData(), friends: this.friends(), picture_count: this.picture_count(), googleStorageUrl: this.googleStorageUrl, starredIndex: this.starredIndex },
       });
 
       // Subscribe to the dialog's afterClosed event to handle actions after the dialog is closed

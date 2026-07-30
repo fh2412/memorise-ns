@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { firstValueFrom } from 'rxjs';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatProgressBar } from '@angular/material/progress-bar';
+import { Friend } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-upload-progress-dialog',
@@ -25,7 +26,7 @@ export class UploadProgressDialogComponent implements OnInit {
     memoryId: string;
     filesWithDimensions: ImageFileWithDimensions[];
     memoryData: MemoryFormData;
-    friends_emails: string[];
+    friends: Friend[];
     picture_count: number;
     googleStorageUrl: string;
     starredIndex: number;
@@ -139,9 +140,10 @@ export class UploadProgressDialogComponent implements OnInit {
     const memResponse = await firstValueFrom(this.memoryService.createMemory(memoryData));
 
     // Add Friends
-    if (this.data.friends_emails.length > 0) {
+    if (this.data.friends.length > 0) {
+      const selectedFriendIds: string[] = this.data.friends.map(friend => friend.user_id);
       await firstValueFrom(this.memoryService.addFriendToMemory({
-        emails: this.data.friends_emails,
+        friendIds: selectedFriendIds,
         memoryId: memResponse.memory_id
       }));
     }

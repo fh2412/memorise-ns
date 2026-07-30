@@ -56,7 +56,7 @@ export class EditmemoryComponent implements OnInit {
   memory!: Memory;
 
   friends: Friend[] = [];
-  friendsToAdd: string[] = [];
+  friendsToAdd: Friend[] = [];
   friendsToDelete: Friend[] = [];
 
   location!: MemoriseLocation;
@@ -188,7 +188,8 @@ export class EditmemoryComponent implements OnInit {
 
   async updateFriends(): Promise<void> {
     if (this.friendsToAdd.length > 0) {
-      await firstValueFrom(this.memoryService.addFriendToMemory({ emails: this.friendsToAdd, memoryId: this.memoryId }));
+      const selectedFriendIds: string[] = this.friendsToAdd.map(friend => friend.user_id);
+      await firstValueFrom(this.memoryService.addFriendToMemory({ friendIds: selectedFriendIds, memoryId: this.memoryId }));
       this.reloadPage();
     }
 
@@ -203,8 +204,8 @@ export class EditmemoryComponent implements OnInit {
     window.location.reload();
   }
 
-  onSelectedValuesChange(selectedValues: string[]) {
-    this.friendsToAdd = selectedValues.map(str => str.match(/\(([^)]+)\)/)?.[1] || null).filter(email => email !== null);
+  onSelectedValuesChange(selectedValues: Friend[]) {
+    this.friendsToAdd = selectedValues;
   }
 
   removeFriend(user: Friend) {

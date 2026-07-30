@@ -106,7 +106,7 @@ export class MemoryService {
     return this.http.put<UpdateStandardResponse>(url, { imageUrl });
   }
 
-    updateMemoryTitle(memoryId: string | null, newTitle: string): Observable<UpdateStandardResponse> {
+  updateMemoryTitle(memoryId: string | null, newTitle: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateMemoryTitle/${memoryId}`;
     return this.http.put<UpdateStandardResponse>(url, { newTitle });
   }
@@ -120,7 +120,7 @@ export class MemoryService {
     return this.http.delete<DeleteStandardResponse>(url);
   }
 
-  addFriendToMemory(friendData: { emails: string[], memoryId: string }): Observable<InsertStandardResult> {
+  addFriendToMemory(friendData: { friendIds: string[], memoryId: string }): Observable<InsertStandardResult> {
     return this.http.post<InsertStandardResult>(`${this.apiUrl}/memories/addFriendsToMemory`, friendData);
   }
 

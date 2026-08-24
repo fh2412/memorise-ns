@@ -51,7 +51,7 @@ export class HomeMapViewComponent implements OnInit {
       this.memories = await firstValueFrom(
         this.memoryService.getMemoriesMapData(this.userId(), includeShared)
       );
-      console.log(this.memories);
+      console.log("Map Memories: ", this.memories);
     } catch (error) {
       console.error('Error loading map markers:', error);
       this.memories = [];

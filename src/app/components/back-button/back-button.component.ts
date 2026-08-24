@@ -19,6 +19,7 @@ export class BackButtonComponent {
 
 
   readonly text = input("Back");
+  readonly isIcon = input(false);
 
   cancelCreation(): void {
     const state = history.state;

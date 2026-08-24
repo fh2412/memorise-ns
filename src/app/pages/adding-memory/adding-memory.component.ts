@@ -22,6 +22,7 @@ import { MatAutocompleteTrigger, MatAutocomplete } from '@angular/material/autoc
 import { MatOption } from '@angular/material/select';
 import { ImageUploadComponent } from '../../components/image-upload/image-upload.component';
 import { pastDateValidator } from '@guards/validators';
+import { Friend } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-adding-memory',
@@ -46,7 +47,7 @@ export class AddingMemoryComponent implements OnInit {
   isRangeSelected = false;
   memoryForm: FormGroup;
   userId = '';
-  emailArray: string[] = [];
+  friendsArray: Friend[] = [];
   hasActivity = false;
 
   filteredCountries!: Observable<Country[]>;
@@ -104,10 +105,8 @@ export class AddingMemoryComponent implements OnInit {
     );
   }
 
-  onSelectedValuesChange(selectedValues: string[]): void {
-    this.emailArray = selectedValues
-      .map(str => str.match(/\(([^)]+)\)/)?.[1] || '')
-      .filter(email => email);
+  onSelectedValuesChange(selectedValues: Friend[]): void {
+    this.friendsArray = selectedValues;
   }
 
   openMapDialog(): void {

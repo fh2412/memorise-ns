@@ -1,4 +1,4 @@
-import { Friend } from "./userInterface.model";
+import { CrewMember } from "./userInterface.model";
 
 // memoryInterface.model.ts
 export interface Memory {
@@ -43,7 +43,7 @@ export interface PlannedMemory {
   title_pic: string;
   memory_date: Date | null;
   memory_end_date: Date | null;
-  crew_members?: Friend[];
+  crew_members?: CrewMember[];
 }
 
 export interface PaginatedMemoryResponse {

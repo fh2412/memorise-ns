@@ -1,0 +1,111 @@
+.board-header {
+  padding: 16px 24px;
+  background: var(--mat-sys-surface);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  &.is-untitled {
+    .title-row h1 {
+      font-style: italic;
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+
+  .trip-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      h1 {
+        width: 80%;
+        margin: 0;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+    }
+
+    .date-widget {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      width: fit-content;
+      padding: 4px 8px;
+      margin-left: -8px; // Align nicely with header text
+      border-radius: 8px;
+      font-size: 0.875rem;
+      color: var(--mat-sys-on-surface-variant);
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: var(--mat-sys-surface-container-highest);
+      }
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+      }
+
+      .countdown-tag {
+        background-color: var(--mat-sys-tertiary-container);
+        color: var(--mat-sys-on-tertiary-container);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .inline-edit-form {
+    width: 100%;
+    max-width: 400px;
+
+    .title-input {
+      width: 100%;
+      font-size: 1.25rem;
+      font-weight: 600;
+      font-family: inherit;
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid var(--mat-sys-primary);
+      color: var(--mat-sys-on-surface);
+      padding: 2px 0;
+      outline: none;
+    }
+  }
+
+  .view-switcher-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--mat-sys-surface-container-low);
+    padding: 6px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--mat-sys-outline-variant);
+
+    mat-icon {
+      color: var(--mat-sys-on-surface-variant);
+      opacity: 0.4;
+      transition: opacity 0.2s ease, color 0.2s ease;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+
+      &.active-icon {
+        opacity: 1;
+        color: var(--mat-sys-primary);
+      }
+    }
+  }
+}

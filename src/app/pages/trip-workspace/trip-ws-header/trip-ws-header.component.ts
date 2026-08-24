@@ -1,26 +1,26 @@
-import { Component, computed, effect, ElementRef, inject, input, output, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, ElementRef, input, output, signal, viewChild } from '@angular/core';
+import { BackButtonComponent } from "@components/back-button/back-button.component";
 import { MatIcon } from "@angular/material/icon";
-import { DatePipe, NgClass } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { PlannedMemory } from '@models/memoryInterface.model';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
-  selector: 'app-planned-memory-card',
-  standalone: true,
-  imports: [MatIcon, DatePipe, NgClass, FormsModule],
-  templateUrl: './planned-memory-card.component.html',
-  styleUrl: './planned-memory-card.component.scss',
+  selector: 'app-trip-ws-header',
+  imports: [BackButtonComponent, MatIcon, MatSlideToggle, FormsModule, MatButtonModule],
+  templateUrl: './trip-ws-header.component.html',
+  styleUrl: './trip-ws-header.component.scss',
 })
-export class PlannedMemoryCardComponent {
-  private router = inject(Router);
+export class TripWsHeaderComponent {
 
   plan = input.required<PlannedMemory>();
+  currentView = input.required<'corkboard' | 'structured'>();
   titleUpdated = output<{ memoryId: string; title: string }>();
+  currentViewUpdated = output<{checked: boolean}>();
 
   isEditing = signal(false);
   editValue = signal('');
-
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
 
   constructor() {
@@ -37,12 +37,6 @@ export class PlannedMemoryCardComponent {
     });
   }
 
-  navigateToWorkspace(): void {
-    // Prevent navigating if the user is currently typing a new name
-    //if (this.isEditing()) return;
-
-    this.router.navigate(['plans/trip-workspace', this.plan().memory_id]);
-  }
 
   isUntitled = computed(() => {
     const title = this.plan().title;
@@ -65,15 +59,6 @@ export class PlannedMemoryCardComponent {
     return 'Untitled Adventure';
   });
 
-  creatorName = computed(() => {
-    const creator = this.plan().crew_members?.find(m => m.isCreator);
-    return creator ? creator.name : 'Organized Trip';
-  });
-
-  crewPreview = computed(() => {
-    return this.plan().crew_members?.slice(0, 4) || [];
-  });
-
   // Activate inline editing mode
   startEdit(): void {
     // Fall back to empty string if it's currently using the system generated naming
@@ -83,7 +68,6 @@ export class PlannedMemoryCardComponent {
 
   // Save changes and emit to the parent orchestration container
   saveEdit(): void {
-    console.log("New Title: ", this.editValue().trim());
     const updatedTitle = this.editValue().trim();
     if (updatedTitle !== this.plan().title) {
       this.titleUpdated.emit({
@@ -96,5 +80,11 @@ export class PlannedMemoryCardComponent {
 
   cancelEdit(): void {
     this.isEditing.set(false);
+  }
+
+  switchView(checked: boolean): void {
+    this.currentViewUpdated.emit({
+      checked: checked
+    });
   }
 }

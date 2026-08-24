@@ -1,0 +1,56 @@
+@if(isLoading()){
+<app-loading-spinner></app-loading-spinner>
+}
+
+@else {
+<div class="workspace-container">
+  <main class="board-area">
+    <app-trip-ws-header [plan]="plannedMemory()!" [currentView]="currentView()" (titleUpdated)="handleTitleUpdate($event)" (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"></app-trip-ws-header>
+    <div class="canvas-viewport">
+      @if (currentView() === 'corkboard') {
+      <div class="placeholder-view corkboard-bg">
+        <mat-icon class="huge-icon">push_pin</mat-icon>
+        <h3>[Placeholder] Free-form Corkboard Canvas</h3>
+        <p>Cards will be absolutely positioned here ($X/Y$ coordinates).</p>
+      </div>
+      } @else {
+      <div class="placeholder-view structured-bg">
+        <mat-icon class="huge-icon">view_column</mat-icon>
+        <h3>[Placeholder] Organized Grid Columns</h3>
+        <p>Cards will automatically snap here sorted cleanly into rows or columns.</p>
+      </div>
+      }
+    </div>
+  </main>
+
+  <aside class="crew-sidebar">
+    <div class="sidebar-header">
+      <h2>Trip Crew</h2>
+      <button mat-icon-button (click)="addCrewMember()" matTooltip="Invite crew member">
+        <mat-icon>person_add</mat-icon>
+      </button>
+    </div>
+
+    <div class="crew-list">
+      @for (member of crew(); track member.name) {
+      <div class="crew-item" [style.borderRightColor]="member.color"
+        [ngClass]="{'is-current-user': member.name.includes('(You)')}">
+        <div class="avatar-wrapper">
+          <div class="avatar-circle" [style.backgroundImage]="member.profilepic_thumb">
+            <img [src]="member.profilepic_thumb" [alt]="member.name" />
+          </div>
+          <span class="status-badge" [ngClass]="member.status"></span>
+        </div>
+        <span class="member-name">{{ member.name }}</span>
+
+        @if (member.name.includes('(You)')) {
+        <button mat-icon-button class="inline-switch-btn" [matTooltip]="'Change your Color'" (click)="changeMyColor()">
+          <mat-icon>shuffle</mat-icon>
+        </button>
+        }
+      </div>
+      }
+    </div>
+  </aside>
+</div>
+}

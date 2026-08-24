@@ -95,6 +95,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/plans/plan-crew/plan-crew.component').then(m => m.PlanCrewComponent),
     canActivate: [authGuard]
   },
+  {
+    path: 'plans/trip-workspace/:memoryId',
+    loadComponent: () => import('./pages/trip-workspace/trip-workspace.component').then(m => m.TripWorkspaceComponent),
+    canActivate: [authGuard]
+  },
   /*{
     path: 'activities',
     loadChildren: () => import('./pages/activities/activites.module').then(m => m.ActivitiesModule),

@@ -1,6 +1,13 @@
-<button mat-stroked-button class="cancel-button" (click)="cancelCreation()">
-    <mat-icon>
-      arrow_back_ios
-    </mat-icon>
-    {{text()}}
+@if (isIcon()) {
+<button mat-icon-button class="small-button" (click)="cancelCreation()">
+  <mat-icon>arrow_back_ios</mat-icon>
 </button>
+}
+@else {
+<button mat-stroked-button class="cancel-button" (click)="cancelCreation()">
+  <mat-icon>
+    arrow_back_ios
+  </mat-icon>
+  {{text()}}
+</button>
+}

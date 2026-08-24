@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
-import { CommonModule } from '@angular/common';
+
 
 interface PlanFeature {
   text: string;
@@ -28,14 +28,13 @@ interface Plan {
   selector: 'app-choose-plan-dialog',
   standalone: true,
   imports: [
-    CommonModule,
     MatDialogModule,
     MatButtonModule,
     MatIconModule,
     MatChipsModule,
     MatCardModule,
     MatListModule
-  ],
+],
   templateUrl: './choose-plan-dialog.component.html',
   styleUrls: ['./choose-plan-dialog.component.scss']
 })

@@ -44,9 +44,6 @@ export class TripWorkspaceComponent implements OnInit {
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
 
-  // Available "free" colors a new user could pick from
-  availableColors = ['#4F378B', '#006874', '#386A20', '#A63E2B', '#005FAF'];
-
   loggedInUserId: string | null = null;
   memoryId = '';
   isLoading = signal<boolean>(true);
@@ -75,7 +72,6 @@ export class TripWorkspaceComponent implements OnInit {
           )
         );
         this.plannedMemory.set(result);
-        console.log(result);
         this.crew.set(result.crew_members);
       } catch (error) {
         console.error('Error loading planned memories:', error);

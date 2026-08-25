@@ -33,8 +33,8 @@
 
     <div class="crew-list">
       @for (member of crew(); track member.name) {
-      <div class="crew-item" [style.borderRightColor]="member.color"
-        [ngClass]="{'is-current-user': member.name.includes('(You)')}">
+      <div class="crew-item" [style.borderRightColor]="member.status"
+        [ngClass]="{'is-current-user': member.user_id === loggedInUserId}">
         <div class="avatar-wrapper">
           <div class="avatar-circle" [style.backgroundImage]="member.profilepic_thumb">
             <img [src]="member.profilepic_thumb" [alt]="member.name" />
@@ -42,12 +42,6 @@
           <span class="status-badge" [ngClass]="member.status"></span>
         </div>
         <span class="member-name">{{ member.name }}</span>
-
-        @if (member.name.includes('(You)')) {
-        <button mat-icon-button class="inline-switch-btn" [matTooltip]="'Change your Color'" (click)="changeMyColor()">
-          <mat-icon>shuffle</mat-icon>
-        </button>
-        }
       </div>
       }
     </div>

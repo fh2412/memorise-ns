@@ -57,7 +57,7 @@ export class PhotoDownloadComponent implements OnInit {
 
   constructor() {
     this.dataSource = new MatTableDataSource<ImageWithUserData>([]);
-    const navigation = this.router.getCurrentNavigation();
+    const navigation = this.router.currentNavigation();
     if (navigation?.extras.state) {
       this.memorydb = navigation.extras.state['memory'];
     }

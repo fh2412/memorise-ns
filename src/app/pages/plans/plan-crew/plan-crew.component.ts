@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal, OnInit } from '@angular/core';
-import { CommonModule, Location } from '@angular/common';
+import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,7 +28,6 @@ export interface CrewMember {
   selector: 'app-plan-crew',
   standalone: true,
   imports: [
-    CommonModule,
     FormsModule,
     MatFormFieldModule,
     MatInputModule,
@@ -37,7 +36,7 @@ export interface CrewMember {
     MatChipsModule,
     MatTooltipModule,
     CrewAvatarComponent
-  ],
+],
   templateUrl: './plan-crew.component.html',
   styleUrl: './plan-crew.component.scss'
 })

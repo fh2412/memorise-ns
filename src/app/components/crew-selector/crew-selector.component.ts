@@ -39,16 +39,22 @@ export class CrewSelectorComponent implements OnInit {
   private readonly userService = inject(UserService);
   private readonly friendsService = inject(FriendsService);
 
-  // model() enables two-way data binding with the parent component [(crew)]="mySignal"
   crew = model<CrewMember[]>([]);
 
   searchQuery = signal<string>('');
   friendsList = signal<Friend[]>([]);
+  currentUserId = signal<string>('');
+
+  // Exclude the logged-in user from the removable squad dock (since "You" is static)
+  displayCrew = computed(() => {
+    const meId = this.currentUserId();
+    return this.crew().filter(member => member.user_id !== meId);
+  });
 
   frequentSuggestions = computed(() => {
     const crewIds = new Set(this.crew().map(c => c.user_id));
     return this.friendsList()
-      .filter(f => !crewIds.has(f.user_id))
+      .filter(f => !crewIds.has(f.user_id) && f.user_id !== this.currentUserId())
       .sort((a, b) => b.sharedMemoriesCount - a.sharedMemoriesCount)
       .slice(0, 3);
   });
@@ -59,7 +65,9 @@ export class CrewSelectorComponent implements OnInit {
 
     const crewIds = new Set(this.crew().map(c => c.user_id));
     return this.friendsList().filter(f =>
-      !crewIds.has(f.user_id) && f.name.toLowerCase().includes(query)
+      f.user_id !== this.currentUserId() &&
+      !crewIds.has(f.user_id) && 
+      f.name.toLowerCase().includes(query)
     );
   });
 
@@ -75,6 +83,8 @@ export class CrewSelectorComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const loggedInUserId = this.userService.getLoggedInUserId() || '';
+    this.currentUserId.set(loggedInUserId);
+
     if (loggedInUserId) {
       await this.fetchFriends(loggedInUserId);
     }
@@ -120,6 +130,8 @@ export class CrewSelectorComponent implements OnInit {
   }
 
   removeCrewMember(id: string): void {
+    // Safety check to avoid self-removal
+    if (id === this.currentUserId()) return;
     this.crew.update(c => c.filter(m => m.user_id !== id));
   }
 }

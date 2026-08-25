@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
-import { lastValueFrom, Observable } from 'rxjs';
+import { forkJoin, lastValueFrom, Observable, of } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
@@ -127,6 +127,33 @@ export class MemoryService {
   deleteFriendsFromMemory(userId: string, memoryId: string): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/memories/${memoryId}/${userId}`;
     return this.http.delete<DeleteStandardResponse>(url);
+  }
+
+  syncMemoryCrew(memoryId: string, oldIds: string[], newIds: string[]): Observable<unknown> {
+    const oldSet = new Set(oldIds);
+    const newSet = new Set(newIds);
+
+    // Added: present in newIds but missing in oldIds
+    const addedIds = newIds.filter(id => !oldSet.has(id));
+
+    // Removed: present in oldIds but missing in newIds
+    const removedIds = oldIds.filter(id => !newSet.has(id));
+
+    const requests: Observable<unknown>[] = [];
+
+    if (addedIds.length > 0) {
+      requests.push(this.addFriendToMemory({ friendIds: addedIds, memoryId }));
+    }
+
+    for (const userId of removedIds) {
+      requests.push(this.deleteFriendsFromMemory(userId, memoryId));
+    }
+
+    if (requests.length === 0) {
+      return of(null);
+    }
+
+    return forkJoin(requests);
   }
 
   async checkMemoriseUserPermission(memoryId: string, loggedInUserId: string): Promise<boolean> {

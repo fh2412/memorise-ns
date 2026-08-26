@@ -1,7 +1,8 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { CrewMember, CrewSelectorComponent } from "@components/crew-selector/crew-selector.component";
+import { CrewSelectorComponent } from "@components/crew-selector/crew-selector.component";
+import { CrewMember } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-add-crew-dialog',
@@ -14,15 +15,11 @@ import { CrewMember, CrewSelectorComponent } from "@components/crew-selector/cre
   template: `
     <h2 mat-dialog-title>Manage Trip Crew</h2>
     <mat-dialog-content class="custom-dialog-content">
-      <!-- 
-        We pass a local editable copy of the crew to the selector 
-        so we don't mutate the parent's state before the user hits "Save".
-      -->
       <app-crew-selector [(crew)]="editableCrew" />
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="dialogRef.close()">Cancel</button>
-      <button mat-flat-button color="primary" (click)="save()">Save Crew</button>
+      <button mat-flat-button (click)="save()">Save Crew</button>
     </mat-dialog-actions>
   `,
   styles: [`

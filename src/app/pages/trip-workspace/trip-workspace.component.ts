@@ -105,6 +105,7 @@ export class TripWorkspaceComponent implements OnInit {
       if (updatedCrew) {
         // Optimistically update local UI state
         this.crew.set(updatedCrew);
+        console.log("Updated Crew: ", updatedCrew);
 
         const oldIds = previousCrew.map(c => c.user_id);
         const newIds = updatedCrew.map(c => c.user_id);

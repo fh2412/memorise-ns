@@ -9,7 +9,8 @@ import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
 import { MemoryService } from '@services/memory.service';
 import { MemoryFormData } from '@models/memoryInterface.model';
-import { CrewMember, CrewSelectorComponent } from '@components/crew-selector/crew-selector.component';
+import { CrewSelectorComponent } from '@components/crew-selector/crew-selector.component';
+import { CrewMember } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-plan-crew',

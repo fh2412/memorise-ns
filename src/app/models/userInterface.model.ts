@@ -52,6 +52,7 @@ export interface CrewMember {
   color: string;
   status: 'online' | 'away' | 'offline';
   isCreator?: boolean;
+  isPlaceholder?: boolean;
 }
 
 export interface MemoryDetailFriend {

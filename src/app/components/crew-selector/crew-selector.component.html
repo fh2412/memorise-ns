@@ -4,7 +4,7 @@
   <div class="crew-dock">
     <app-crew-avatar name="You" initials="ME" [isNative]="true" />
     @for (member of displayCrew(); track member.user_id) {
-    <app-crew-avatar [name]="member.name" [profilePic]="member.profilepic" [isPlaceholder]="member.isPlaceholder"
+    <app-crew-avatar [name]="member.name" [profilePic]="member.profilepic" [isPlaceholder]="member.isPlaceholder || false"
       [isNative]="!member.isPlaceholder" [removable]="true" (remove)="removeCrewMember(member.user_id)" />
     }
   </div>

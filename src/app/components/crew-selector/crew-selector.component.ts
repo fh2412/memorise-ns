@@ -5,20 +5,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
-import { Friend } from '@models/userInterface.model';
+import { CrewMember, Friend } from '@models/userInterface.model';
 import { UserService } from '@services/userService';
 import { FriendsService } from '@services/friends.service';
 import { firstValueFrom } from 'rxjs';
 import { CrewAvatarComponent } from "@components/crew-avatar/crew-avatar.component";
-
-export interface CrewMember {
-  user_id: string;
-  name: string;
-  profilepic: string | null;
-  sharedMemoriesCount: number;
-  isPlaceholder: boolean;
-  email: string;
-}
 
 @Component({
   selector: 'app-crew-selector',
@@ -45,7 +36,6 @@ export class CrewSelectorComponent implements OnInit {
   friendsList = signal<Friend[]>([]);
   currentUserId = signal<string>('');
 
-  // Exclude the logged-in user from the removable squad dock (since "You" is static)
   displayCrew = computed(() => {
     const meId = this.currentUserId();
     return this.crew().filter(member => member.user_id !== meId);
@@ -93,6 +83,7 @@ export class CrewSelectorComponent implements OnInit {
   private async fetchFriends(userId: string): Promise<void> {
     try {
       this.friendsList.set(await firstValueFrom(this.friendsService.getUserFriendsWithShared(userId)));
+      console.log("friendlist: ", this.friendsList());
     } catch (error) {
       console.error(`error fetching friends:`, error);
     }
@@ -103,9 +94,15 @@ export class CrewSelectorComponent implements OnInit {
       user_id: friend.user_id,
       name: friend.name,
       profilepic: friend.profilepic,
+      profilepic_thumb: friend.profilepic_thumb,
       sharedMemoriesCount: friend.sharedMemoriesCount,
       email: friend.email,
-      isPlaceholder: false
+      isPlaceholder: false,
+      country: null,
+      dob: null,
+      gender: '',
+      color: '',
+      status: 'online'
     };
 
     this.crew.update(c => [...c, member]);
@@ -122,7 +119,13 @@ export class CrewSelectorComponent implements OnInit {
       profilepic: null,
       sharedMemoriesCount: 0,
       email: 'example@gmail.com',
-      isPlaceholder: true
+      isPlaceholder: true,
+      country: null,
+      dob: null,
+      profilepic_thumb: null,
+      gender: '',
+      color: '',
+      status: 'online'
     };
 
     this.crew.update(c => [...c, placeholder]);

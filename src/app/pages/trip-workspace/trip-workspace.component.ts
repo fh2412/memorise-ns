@@ -107,12 +107,9 @@ export class TripWorkspaceComponent implements OnInit {
         this.crew.set(updatedCrew);
         console.log("Updated Crew: ", updatedCrew);
 
-        const oldIds = previousCrew.map(c => c.user_id);
-        const newIds = updatedCrew.map(c => c.user_id);
-
         try {
           await firstValueFrom(
-            this.memoryService.syncMemoryCrew(this.memoryId, oldIds, newIds)
+            this.memoryService.syncMemoryCrew(this.memoryId, previousCrew, updatedCrew)
           );
         } catch (error) {
           console.error('Failed to sync crew updates:', error);

@@ -24,19 +24,14 @@ export class TripWsHeaderComponent {
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
 
   constructor() {
-    // 3. This effect automatically runs whenever the 'titleInput' signal changes
     effect(() => {
       const inputEl = this.titleInput();
       if (inputEl) {
         inputEl.nativeElement.focus();
-
-        // Bonus UX Pro-Tip: .select() highlights the existing text 
-        // so the user can immediately overwrite it if they want to!
         inputEl.nativeElement.select();
       }
     });
   }
-
 
   isUntitled = computed(() => {
     const title = this.plan().title;

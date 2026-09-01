@@ -23,28 +23,51 @@
     </div>
   </main>
 
-  <aside class="crew-sidebar">
-    <div class="sidebar-header">
-      <h2>Trip Crew</h2>
-      <button mat-icon-button (click)="addCrewMember()" matTooltip="Invite crew member">
-        <mat-icon>person_add</mat-icon>
-      </button>
-    </div>
+<aside class="crew-sidebar">
+  <div class="sidebar-header">
+    <h2>Trip Crew</h2>
+    <button mat-icon-button (click)="addCrewMember()" matTooltip="Manage crew members">
+      <mat-icon>person_add</mat-icon>
+    </button>
+  </div>
 
-    <div class="crew-list">
-      @for (member of crew(); track member.name) {
-      <div class="crew-item" [style.borderRightColor]="member.status"
-        [ngClass]="{'is-current-user': member.user_id === loggedInUserId}">
-        <div class="avatar-wrapper">
-          <div class="avatar-circle" [style.backgroundImage]="member.profilepic_thumb">
-            <img [src]="member.profilepic_thumb" [alt]="member.name" />
+  <div class="crew-list">
+    <!-- Changed track to user_id since placeholders might share names but have unique IDs -->
+    @for (member of crew(); track member.user_id) {
+    <div class="crew-item" 
+      [style.borderRightColor]="member.status"
+      [ngClass]="{
+        'is-current-user': member.user_id === loggedInUserId,
+        'is-placeholder-user': member.isPlaceholder
+      }">
+      
+      <div class="avatar-wrapper">
+        @if (member.isPlaceholder) {
+          <!-- Display Ghost Avatar for Placeholders -->
+          <div class="row-avatar ghost-avatar" matTooltip="Placeholder (Not registered)">
+            <mat-icon>person_outline</mat-icon>
+          </div>
+        } @else {
+          <!-- Display Real User Avatar -->
+          <div class="avatar-circle" [style.backgroundImage]="member.profilepic_thumb ? 'url(' + member.profilepic_thumb + ')' : null">
+            @if (member.profilepic_thumb) {
+              <img [src]="member.profilepic_thumb" [alt]="member.name" />
+            }
           </div>
           <span class="status-badge" [ngClass]="member.status"></span>
-        </div>
-        <span class="member-name">{{ member.name }}</span>
+        }
       </div>
-      }
+
+      <div class="row-info" style="justify-content: center;">
+        <span class="member-name">{{ member.name }}</span>
+        @if (member.isPlaceholder) {
+           <span class="row-meta" style="font-size: 11px;">Pending Invite</span>
+        }
+      </div>
+
     </div>
-  </aside>
+    }
+  </div>
+</aside>
 </div>
 }

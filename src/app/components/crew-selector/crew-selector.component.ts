@@ -101,7 +101,6 @@ export class CrewSelectorComponent implements OnInit {
       country: null,
       dob: null,
       gender: '',
-      color: '',
       status: 'online'
     };
 
@@ -124,7 +123,6 @@ export class CrewSelectorComponent implements OnInit {
       dob: null,
       profilepic_thumb: null,
       gender: '',
-      color: '',
       status: 'online'
     };
 

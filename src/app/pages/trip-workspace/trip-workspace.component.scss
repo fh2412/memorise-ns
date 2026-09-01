@@ -1,3 +1,5 @@
+@use '../../../styles/components/ghost-placeholders.scss';
+
 .workspace-container {
   display: flex;
   width: 100%;
@@ -85,6 +87,24 @@
 
       .avatar-wrapper {
         position: relative;
+        display: flex;
+        align-items: center;
+
+        .ghost-avatar {
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          mat-icon {
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+            color: var(--mat-sys-primary);
+          }
+        }
 
         .status-badge {
           position: absolute;

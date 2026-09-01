@@ -1,3 +1,5 @@
+@use '../../../styles/components/ghost-placeholders.scss';
+
 .dock-container {
   background: var(--mat-sys-surface-container-low);
   padding: 20px;
@@ -53,12 +55,6 @@
   &:hover {
     background: var(--mat-sys-surface-container-highest);
   }
-
-  &.placeholder-action {
-    border-top: 1px dashed var(--mat-sys-outline-variant);
-    margin-top: 4px;
-    padding-top: 12px;
-  }
 }
 
 .row-avatar {
@@ -71,12 +67,6 @@
   align-items: center;
   justify-content: center;
   font: var(--mat-sys-title-small);
-
-  &.ghost-avatar {
-    background: transparent;
-    border: 1px dashed var(--mat-sys-outline);
-    color: var(--mat-sys-primary);
-  }
 }
 
 .row-info {

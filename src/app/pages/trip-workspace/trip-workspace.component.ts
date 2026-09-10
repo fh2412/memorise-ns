@@ -17,6 +17,7 @@ import { FormsModule } from '@angular/forms';
 import { TripWsHeaderComponent } from "./trip-ws-header/trip-ws-header.component";
 import { CrewMember } from '@models/userInterface.model';
 import { AddCrewDialogComponent } from './trip-ws-header/add-crew-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -42,7 +43,8 @@ export class TripWorkspaceComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private memoryService = inject(MemoryService);
-  private dialog = inject(MatDialog); // <-- INJECT MATDIALOG
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
@@ -52,6 +54,7 @@ export class TripWorkspaceComponent implements OnInit {
   isLoading = signal<boolean>(true);
   plannedMemory = signal<PlannedMemory | undefined>(undefined);
   crew = signal<CrewMember[]>([]); // Initialize without undefined to prevent errors
+  shareToken?: string;
 
 
   async ngOnInit(): Promise<void> {
@@ -120,7 +123,39 @@ export class TripWorkspaceComponent implements OnInit {
     });
   }
 
-  changeMyColor() {
-    alert('Mock Action: Cycle through unassigned M3 palette colors.');
+  async shareInviteLink(event: MouseEvent): Promise<void> {
+    event.stopPropagation(); // Prevents row selection click events
+
+    // OPTION A: If shareToken is already known on the frontend
+    if (this.shareToken) {
+      const inviteUrl = `${window.location.origin}/memory/join/${this.shareToken}`;
+      await this.copyAndNotify(inviteUrl);
+      return;
+    }
+
+    // OPTION B: If you need to generate/fetch the link on demand from backend
+    this.memoryService.generateShareLink(Number(this.memoryId)).subscribe({
+      next: async (res) => {
+        await this.copyAndNotify(res.directLink);
+      },
+      error: (err) => {
+        console.error('Failed to generate invite link:', err);
+        this.snackBar.open('Failed to generate invite link', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  private async copyAndNotify(url: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(url);
+      this.snackBar.open('Invite link copied to clipboard!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom'
+      });
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
+      this.snackBar.open('Could not copy link automatically', 'Close', { duration: 3000 });
+    }
   }
 }

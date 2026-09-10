@@ -129,10 +129,24 @@
         }
       }
 
-      .member-name {
+      .row-info {
         flex: 1;
+        display: flex;
+        align-items: center;
+        min-width: 0; // Allows name truncation without breaking flex layout
+      }
+
+      .member-name {
         font-size: 0.95rem;
         font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; // Truncates extremely long names smoothly
+      }
+
+      .share-btn {
+        margin-left: auto; // Ensures button stays pinned to the far right
+        color: var(--mat-sys-primary);
       }
     }
   }

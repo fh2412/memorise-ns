@@ -1,43 +1,101 @@
-<div class="join-dialog">
-  <mat-dialog-content>
-    @if (loading) {
-      <app-loading-spinner [message]="'Loading memory details...'"></app-loading-spinner>
-    }
-
-    @if (!loading && error) {
-    <div class="error-container">
-      <p class="error-message">{{ error }}</p>
-    </div>
-    }
-
-    @if (!loading && memory && !error) {
-
-    <h3>You are invited to join the Memory: </h3>
-    <div class="dialog-content">
-      <div class="dialog-image">
-        <img src="/assets/img/flare_invite.png" alt="Flare the Dragon handing you an invite letter" width="256"
-          height="256">
-      </div>
-      <div class="dialog-text">
-        <h3><span>{{ memory.title }}</span>!</h3>
-        <p>{{ formatDate(memory.memory_date, memory.memory_end_date) }}</p>
-        <p>Created by: {{ memory.username }}</p>
-      </div>
-    </div>
-    }
-  </mat-dialog-content>
-
-  <mat-dialog-actions align="end">
-    <button mat-button (click)="onCancel()" [disabled]="joining">
-      Cancel
-    </button>
-    @if (!loading && memory && !error) {
-    <button mat-flat-button (click)="onJoin()" [disabled]="joining || loading || !!error">
-      @if (joining) {
-      <app-loading-spinner [diameter]="20"></app-loading-spinner>
-      }
-      {{ joining ? 'Joining...' : 'Join Memory' }}
-    </button>
-    }
-  </mat-dialog-actions>
+<div class="dialog-header">
+  <div class="header-badge">
+    <mat-icon>connect_without_contact</mat-icon>
+  </div>
+  <div class="header-text">
+    <h2 mat-dialog-title>Join "{{ data.tripTitle }}"</h2>
+    <p class="header-subtitle">Choose how you would like to join this trip</p>
+  </div>
+  <button mat-icon-button class="close-btn" (click)="cancel()" aria-label="Close dialog">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>
+
+<mat-dialog-content class="dialog-body">
+  <!-- Info Hint Banner -->
+  <div class="info-banner">
+    <mat-icon class="info-icon">info_outline</mat-icon>
+    <span>
+      If the trip organizer already created a slot for you, claim your name below to keep existing trip activity.
+    </span>
+  </div>
+
+  <div class="selection-group" role="radiogroup" aria-label="Join options">
+    
+    <!-- PLACEHOLDERS SECTION -->
+    @if (data.placeholders.length > 0) {
+      <div class="group-label">Claim existing profile</div>
+      
+      <div class="placeholder-scroll-list">
+        @for (p of data.placeholders; track p.id) {
+          <div class="option-card"
+               matRipple
+               [class.selected]="selectedId() === p.id"
+               (click)="selectOption(p.id)"
+               (keydown.space)="$event.preventDefault(); selectOption(p.id)"
+               (keydown.enter)="selectOption(p.id)"
+               role="radio"
+               [attr.aria-checked]="selectedId() === p.id"
+               tabindex="0">
+            
+            <div class="avatar placeholder-avatar">
+              <span>{{ getInitial(p.name) }}</span>
+            </div>
+
+            <div class="option-info">
+              <span class="option-title">{{ p.name }}</span>
+              <span class="option-desc">Unclaimed placeholder</span>
+            </div>
+
+            <div class="radio-indicator">
+              <mat-icon class="check">check_circle</mat-icon>
+              <div class="circle"></div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="divider-with-text">
+        <span>OR</span>
+      </div>
+    }
+
+    <!-- JOIN AS NEW MEMBER -->
+     @if (data.placeholders.length > 0) {
+    <div class="group-label">Join as new member</div>
+    }
+    <div class="option-card new-member-card"
+         matRipple
+         [class.selected]="selectedId() === null"
+         (click)="selectOption(null)"
+         (keydown.space)="$event.preventDefault(); selectOption(null)"
+         (keydown.enter)="selectOption(null)"
+         role="radio"
+         [attr.aria-checked]="selectedId() === null"
+         tabindex="0">
+
+      <div class="avatar new-avatar">
+        <mat-icon>person_add</mat-icon>
+      </div>
+
+      <div class="option-info">
+        <span class="option-title">Join as a new member</span>
+        <span class="option-desc">Create a brand new profile for this trip</span>
+      </div>
+
+      <div class="radio-indicator">
+        <mat-icon class="check">check_circle</mat-icon>
+        <div class="circle"></div>
+      </div>
+    </div>
+
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button class="cancel-button" (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" class="confirm-button" (click)="confirm()">
+    <mat-icon>login</mat-icon>
+    Confirm & Join
+  </button>
+</mat-dialog-actions>

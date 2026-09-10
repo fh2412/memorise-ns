@@ -223,18 +223,16 @@ export class MemoryService {
     );
   }
 
-  // Validate a share token
   validateShareToken(token: string): Observable<ValidateTokenResponse> {
     return this.http.get<ValidateTokenResponse>(
       `${this.apiUrl}/memories/share/validate/${token}`
     );
   }
 
-  // Join a memory via share token
-  joinMemoryViaToken(token: string, userId: string): Observable<MemoryJoinResponse> {
+  joinMemoryViaToken(token: string, placeholderId: string | null = null): Observable<MemoryJoinResponse> {
     return this.http.post<MemoryJoinResponse>(
       `${this.apiUrl}/memories/share/join`,
-      { token, userId }
+      { token, placeholderId }
     );
   }
 

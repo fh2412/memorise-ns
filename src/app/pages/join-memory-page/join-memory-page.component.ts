@@ -1,59 +1,72 @@
-// join-memory-page.component.ts
-// Create this file in: src/app/components/join-memory-page/join-memory-page.component.ts
-import { Component, OnInit, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-
-import { JoinMemoryDialogComponent } from '@components/_dialogs/join-memory-dialog/join-memory-dialog.component';
+import { Component, OnInit, inject } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+import { ActivatedRoute, Router } from "@angular/router";
+import { JoinMemoryDialogComponent } from "@components/_dialogs/join-memory-dialog/join-memory-dialog.component";
+import { MemoryService } from "@services/memory.service";
 
 @Component({
-  selector: 'app-join-memory-page',
   standalone: true,
-  imports: [MatDialogModule],
-  template: `
-    <div class="join-memory-page">
-      <p>Loading memory invite...</p>
-    </div>
-  `,
-  styles: [`
-    .join-memory-page {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      font-size: 16px;
-      color: #666;
-    }
-  `]
+  selector: 'app-join-memory-page',
+  template: `<div class="loading-spinner"><mat-spinner></mat-spinner></div>`,
+  imports: [MatProgressSpinnerModule]
 })
 export class JoinMemoryPageComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private dialog = inject(MatDialog);
   private router = inject(Router);
+  private memoryService = inject(MemoryService);
+  private dialog = inject(MatDialog);
 
-
-  ngOnInit() {
+  ngOnInit(): void {
     const token = this.route.snapshot.paramMap.get('token');
-    
-    if (token) {
-      // Small delay to ensure the page has loaded
-      setTimeout(() => {
-        this.openJoinDialog(token);
-      }, 300);
+    if (!token) {
+      this.router.navigate(['/']);
+      return;
     }
+
+    this.memoryService.validateShareToken(token).subscribe({
+      next: (res) => {
+        if (!res.valid) {
+          this.router.navigate(['/']);
+          return;
+        }
+
+        console.log("Result: ", res);
+
+        const targetRoute = res.isPast ? `/memories/${res.memoryId}` : `/planning/${res.memoryId}`;
+
+        // CASE 1: User is already a member
+        if (res.alreadyMember) {
+          // TODO: SHOW YOUR SNACKBAR COMPONENT HERE
+          // e.g., this.snackBar.openFromComponent(MyCustomSnackbarComponent, { data: 'You are already in this crew!' });
+          this.router.navigateByUrl(targetRoute);
+          return;
+        }
+
+        // CASE 2: User is logged in & not a member -> Open Dialog
+        this.openJoinDialog(token, res.title, res.placeholders, targetRoute);
+      },
+      error: () => this.router.navigate(['/'])
+    });
   }
 
-  openJoinDialog(token: string) {
+  private openJoinDialog(token: string, tripTitle: string, placeholders: any[], targetRoute: string): void {
     const dialogRef = this.dialog.open(JoinMemoryDialogComponent, {
-      width: '900px',
-      disableClose: false,
-      data: { token }
+      width: '480px',
+      disableClose: true,
+      data: { tripTitle, placeholders }
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      // Dialog handles navigation, so we don't need to do anything here
-      if (!result) {
-        this.router.navigate(['/home']);
+    dialogRef.afterClosed().subscribe((selectedPlaceholderId: string | null | undefined) => {
+      if (selectedPlaceholderId !== undefined) {
+        // User confirmed join (either picked a placeholder ID or null for fresh user)
+        this.memoryService.joinMemoryViaToken(token, selectedPlaceholderId).subscribe({
+          next: () => this.router.navigateByUrl(targetRoute),
+          error: (err) => console.error('Failed to join memory:', err)
+        });
+      } else {
+        // User cancelled dialog
+        this.router.navigate(['/']);
       }
     });
   }

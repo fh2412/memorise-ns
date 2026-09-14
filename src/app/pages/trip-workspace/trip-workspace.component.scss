@@ -1,3 +1,5 @@
+@use '../../../styles/components/ghost-placeholders.scss';
+
 .workspace-container {
   display: flex;
   width: 100%;
@@ -85,6 +87,24 @@
 
       .avatar-wrapper {
         position: relative;
+        display: flex;
+        align-items: center;
+
+        .ghost-avatar {
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          mat-icon {
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+            color: var(--mat-sys-primary);
+          }
+        }
 
         .status-badge {
           position: absolute;
@@ -109,13 +129,23 @@
         }
       }
 
-      .member-name {
+      .row-info {
         flex: 1;
-        font-size: 0.95rem;
-        font-weight: 500;
+        display: flex;
+        align-items: center;
+        min-width: 0; // Allows name truncation without breaking flex layout
       }
 
-      .inline-switch-btn {
+      .member-name {
+        font-size: 0.95rem;
+        font-weight: 500;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; // Truncates extremely long names smoothly
+      }
+
+      .share-btn {
+        margin-left: auto; // Ensures button stays pinned to the far right
         color: var(--mat-sys-primary);
       }
     }

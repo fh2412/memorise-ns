@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
-import { lastValueFrom, Observable } from 'rxjs';
+import { forkJoin, lastValueFrom, Observable, of } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
-import { Friend, MemoryDetailFriend } from '../models/userInterface.model';
-import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
+import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
+import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 
@@ -129,6 +129,69 @@ export class MemoryService {
     return this.http.delete<DeleteStandardResponse>(url);
   }
 
+  addPlaceholdersToMemory(memoryId: string, placeholders: Partial<CrewMember>[]): Observable<InsertStandardResult> {
+    const payload: AddPlaceholdersPayload = {
+      memoryId,
+      placeholders: placeholders.map(p => ({
+        name: p.name || 'Unnamed Crew Member',
+      }))
+    };
+
+    return this.http.post<InsertStandardResult>(`${this.apiUrl}/memories/addPlaceholdersToMemory`, payload);
+  }
+
+  deletePlaceholderFromMemory(memoryId: string, placeholderId: string): Observable<InsertStandardResult> {
+    return this.http.delete<InsertStandardResult>(
+      `${this.apiUrl}/memories/deletePlaceholderFromMemory`,
+      {
+        body: { placeholderId, memoryId }
+      }
+    );
+  }
+
+  syncMemoryCrew(
+    memoryId: string,
+    oldCrew: CrewMember[],
+    newCrew: CrewMember[]
+  ): Observable<unknown> {
+    const oldUsers = new Map(oldCrew.filter(c => !c.isPlaceholder).map(c => [c.user_id, c]));
+    const newUsers = new Map(newCrew.filter(c => !c.isPlaceholder).map(c => [c.user_id, c]));
+
+    const oldPlaceholders = new Map(oldCrew.filter(c => c.isPlaceholder).map(c => [c.user_id, c]));
+    const newPlaceholders = new Map(newCrew.filter(c => c.isPlaceholder).map(c => [c.user_id, c]));
+
+    // Diffs for Real Users
+    const addedUserIds = Array.from(newUsers.keys()).filter(id => !oldUsers.has(id));
+    const removedUserIds = Array.from(oldUsers.keys()).filter(id => !newUsers.has(id));
+
+    // Diffs for Placeholders
+    const addedPlaceholders = Array.from(newPlaceholders.entries())
+      .filter(([id]) => !oldPlaceholders.has(id))
+      .map(([_, member]) => member);
+
+    const removedPlaceholderIds = Array.from(oldPlaceholders.keys()).filter(id => !newPlaceholders.has(id));
+
+    const requests: Observable<unknown>[] = [];
+
+    // Real User Sync
+    if (addedUserIds.length > 0) {
+      requests.push(this.addFriendToMemory({ friendIds: addedUserIds, memoryId }));
+    }
+    for (const userId of removedUserIds) {
+      requests.push(this.deleteFriendsFromMemory(userId, memoryId));
+    }
+
+    // Placeholder Sync
+    if (addedPlaceholders.length > 0) {
+      requests.push(this.addPlaceholdersToMemory(memoryId, addedPlaceholders));
+    }
+    for (const placeholderId of removedPlaceholderIds) {
+      requests.push(this.deletePlaceholderFromMemory(memoryId, placeholderId));
+    }
+
+    return requests.length === 0 ? of(null) : forkJoin(requests);
+  }
+
   async checkMemoriseUserPermission(memoryId: string, loggedInUserId: string): Promise<boolean> {
     try {
       const creator: Memory = await lastValueFrom(
@@ -160,18 +223,16 @@ export class MemoryService {
     );
   }
 
-  // Validate a share token
   validateShareToken(token: string): Observable<ValidateTokenResponse> {
     return this.http.get<ValidateTokenResponse>(
       `${this.apiUrl}/memories/share/validate/${token}`
     );
   }
 
-  // Join a memory via share token
-  joinMemoryViaToken(token: string, userId: string): Observable<MemoryJoinResponse> {
+  joinMemoryViaToken(token: string, placeholderId: string | null = null): Observable<MemoryJoinResponse> {
     return this.http.post<MemoryJoinResponse>(
       `${this.apiUrl}/memories/share/join`,
-      { token, userId }
+      { token, placeholderId }
     );
   }
 

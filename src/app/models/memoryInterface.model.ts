@@ -82,13 +82,17 @@ export interface ShareLinkResponse {
 export interface MemoryJoinResponse {
   message: string;
   alreadyMember: boolean;
-  memory: Memory;
+  memoryId: string;
+  targetRoute: string;
 }
 
 export interface ValidateTokenResponse {
   valid: boolean;
-  memory?: Memory;
-  alreadyMember?: boolean;
+  memoryId: string;
+  title: string;
+  alreadyMember: boolean;
+  isPast: boolean;
+  placeholders: { id: string; name: string; email?: string }[];
 }
 
 export interface MemoryDisplayStats {

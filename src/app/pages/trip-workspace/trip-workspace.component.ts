@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // <-- ADD THIS
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
@@ -15,6 +16,8 @@ import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spi
 import { FormsModule } from '@angular/forms';
 import { TripWsHeaderComponent } from "./trip-ws-header/trip-ws-header.component";
 import { CrewMember } from '@models/userInterface.model';
+import { AddCrewDialogComponent } from './trip-ws-header/add-crew-dialog.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -28,6 +31,7 @@ import { CrewMember } from '@models/userInterface.model';
     MatButtonToggleModule,
     MatBadgeModule,
     MatTooltipModule,
+    MatDialogModule, // <-- ADD THIS
     LoadingSpinnerComponent,
     NgClass,
     TripWsHeaderComponent
@@ -39,19 +43,18 @@ export class TripWorkspaceComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private userService = inject(UserService);
   private memoryService = inject(MemoryService);
-
+  private dialog = inject(MatDialog);
+  private snackBar = inject(MatSnackBar);
 
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
-
-  // Available "free" colors a new user could pick from
-  availableColors = ['#4F378B', '#006874', '#386A20', '#A63E2B', '#005FAF'];
 
   loggedInUserId: string | null = null;
   memoryId = '';
   isLoading = signal<boolean>(true);
   plannedMemory = signal<PlannedMemory | undefined>(undefined);
-  crew = signal<CrewMember[] | undefined>([]);
+  crew = signal<CrewMember[]>([]); // Initialize without undefined to prevent errors
+  shareToken?: string;
 
 
   async ngOnInit(): Promise<void> {
@@ -70,13 +73,10 @@ export class TripWorkspaceComponent implements OnInit {
     if (this.loggedInUserId) {
       try {
         const result = await firstValueFrom(
-          this.memoryService.getMemoryToPlan(
-            this.memoryId,
-          )
+          this.memoryService.getMemoryToPlan(this.memoryId)
         );
         this.plannedMemory.set(result);
-        console.log(result);
-        this.crew.set(result.crew_members);
+        this.crew.set(result.crew_members || []);
       } catch (error) {
         console.error('Error loading planned memories:', error);
       } finally {
@@ -95,12 +95,67 @@ export class TripWorkspaceComponent implements OnInit {
     });
   }
 
-  // "Stupid" buttons dummy actions
   addCrewMember() {
-    alert('Mock Action: Open add friend dialogue / Create Placeholder Crew Member.');
+    const previousCrew = this.crew();
+
+    const dialogRef = this.dialog.open(AddCrewDialogComponent, {
+      width: '600px',
+      maxWidth: '90vw',
+      data: { currentCrew: previousCrew }
+    });
+
+    dialogRef.afterClosed().subscribe(async (updatedCrew: CrewMember[]) => {
+      if (updatedCrew) {
+        // Optimistically update local UI state
+        this.crew.set(updatedCrew);
+        console.log("Updated Crew: ", updatedCrew);
+
+        try {
+          await firstValueFrom(
+            this.memoryService.syncMemoryCrew(this.memoryId, previousCrew, updatedCrew)
+          );
+        } catch (error) {
+          console.error('Failed to sync crew updates:', error);
+          // Rollback state if desired
+          this.crew.set(previousCrew);
+        }
+      }
+    });
   }
 
-  changeMyColor() {
-    alert('Mock Action: Cycle through unassigned M3 palette colors.');
+  async shareInviteLink(event: MouseEvent): Promise<void> {
+    event.stopPropagation(); // Prevents row selection click events
+
+    // OPTION A: If shareToken is already known on the frontend
+    if (this.shareToken) {
+      const inviteUrl = `${window.location.origin}/memory/join/${this.shareToken}`;
+      await this.copyAndNotify(inviteUrl);
+      return;
+    }
+
+    // OPTION B: If you need to generate/fetch the link on demand from backend
+    this.memoryService.generateShareLink(Number(this.memoryId)).subscribe({
+      next: async (res) => {
+        await this.copyAndNotify(res.directLink);
+      },
+      error: (err) => {
+        console.error('Failed to generate invite link:', err);
+        this.snackBar.open('Failed to generate invite link', 'Close', { duration: 3000 });
+      }
+    });
+  }
+
+  private async copyAndNotify(url: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(url);
+      this.snackBar.open('Invite link copied to clipboard!', 'Close', {
+        duration: 3000,
+        horizontalPosition: 'center',
+        verticalPosition: 'bottom'
+      });
+    } catch (err) {
+      console.error('Failed to copy to clipboard:', err);
+      this.snackBar.open('Could not copy link automatically', 'Close', { duration: 3000 });
+    }
   }
 }

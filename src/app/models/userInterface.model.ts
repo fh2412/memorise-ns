@@ -49,9 +49,9 @@ export interface CrewMember {
   user_id: string;
   gender: string;
   email: string;
-  color: string;
   status: 'online' | 'away' | 'offline';
   isCreator?: boolean;
+  isPlaceholder?: boolean;
 }
 
 export interface MemoryDetailFriend {

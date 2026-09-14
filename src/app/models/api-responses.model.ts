@@ -15,3 +15,14 @@ export interface InsertStandardResult {
 export interface DeleteStandardResponse {
     message: string;
 }
+
+export interface CreatePlaceholderDto {
+  name: string;
+  email?: string | null;
+  color?: string;
+}
+
+export interface AddPlaceholdersPayload {
+  placeholders: CreatePlaceholderDto[];
+  memoryId: string;
+}

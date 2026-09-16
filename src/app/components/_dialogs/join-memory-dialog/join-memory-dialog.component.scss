@@ -6,52 +6,32 @@
   width: 100%;
 }
 
-/* --- Header Section --- */
+/* --- Cleaned & Simplified Header --- */
 .dialog-header {
-  position: relative;
   display: flex;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 16px;
   padding: 24px 24px 16px 24px;
-
-  .header-badge {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: var(--mat-sys-primary-container);
-    color: var(--mat-sys-on-primary-container);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-
-    mat-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-    }
-  }
-
   .header-text {
     flex: 1;
-
     h2 {
-      margin: 0;
+      padding: 0;
+      margin: -16px -8px 0 0;
       font-size: 1.35rem;
       font-weight: 600;
-      line-height: 1.3;
       color: var(--mat-sys-on-surface);
     }
 
     .header-subtitle {
-      margin: 4px 0 0 0;
+      margin: 8px 0 0 4px;
       font-size: 0.875rem;
       color: var(--mat-sys-on-surface-variant);
     }
   }
 
   .close-btn {
-    margin: -8px -8px 0 0;
+    margin: -6px -8px 0 0;
     color: var(--mat-sys-outline);
   }
 }
@@ -114,7 +94,6 @@
   overflow-y: auto;
   padding-right: 4px;
 
-  /* Subtle Custom Scrollbar */
   &::-webkit-scrollbar {
     width: 5px;
   }
@@ -124,7 +103,7 @@
   }
 }
 
-/* Option Cards (The Core Interactive Elements) */
+/* Option Cards */
 .option-card {
   position: relative;
   display: flex;
@@ -175,7 +154,6 @@
     }
   }
 
-  /* Avatars */
   .avatar {
     width: 40px;
     height: 40px;
@@ -204,7 +182,6 @@
     }
   }
 
-  /* Text inside card */
   .option-info {
     flex: 1;
     display: flex;
@@ -224,7 +201,6 @@
     }
   }
 
-  /* Custom Radio Indicator */
   .radio-indicator {
     display: flex;
     align-items: center;
@@ -296,7 +272,6 @@
   }
 }
 
-/* Keyframes */
 @keyframes popIn {
   0% {
     transform: scale(0.6);

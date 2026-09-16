@@ -8,7 +8,8 @@ import { MemoryService } from "@services/memory.service";
 @Component({
   standalone: true,
   selector: 'app-join-memory-page',
-  template: `<div class="loading-spinner"><mat-spinner></mat-spinner></div>`,
+  templateUrl: './join-memory-page.component.html',
+  styleUrl: './join-memory-page.component.scss',
   imports: [MatProgressSpinnerModule]
 })
 export class JoinMemoryPageComponent implements OnInit {
@@ -33,7 +34,7 @@ export class JoinMemoryPageComponent implements OnInit {
 
         console.log("Result: ", res);
 
-        const targetRoute = res.isPast ? `/memories/${res.memoryId}` : `/planning/${res.memoryId}`;
+        const targetRoute = res.isPast ? `/memory/${res.memoryId}` : `/plans/trip-workspace/${res.memoryId}`;
 
         // CASE 1: User is already a member
         if (res.alreadyMember) {

@@ -1,10 +1,11 @@
-<mat-form-field appearance="outline">
-  <mat-label>Select View</mat-label>
-  <mat-select [(value)]="selectedValue" aria-label="Select View" (selectionChange)="onChange(selectedValue)">
-    @for (option of options; track option) {
-      <mat-option [value]="option.value">
-        {{ option.label }}
-      </mat-option>
-    }
-  </mat-select>
-</mat-form-field>
+<div class="view-switcher-wrapper">
+  <mat-icon [class.active-icon]="selectedValue() === 'standard'">border_all</mat-icon>
+  
+  <mat-slide-toggle 
+    [checked]="selectedValue() === 'map'"
+    (change)="toggleView($event.checked)" 
+    aria-label="Toggle view between list and map">
+  </mat-slide-toggle>
+  
+  <mat-icon [class.active-icon]="selectedValue() === 'map'">map</mat-icon>
+</div>

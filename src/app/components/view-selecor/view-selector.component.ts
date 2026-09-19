@@ -1,25 +1,25 @@
-import { Component, output } from '@angular/core';
-import { MatFormField, MatLabel } from '@angular/material/input';
-import { MatSelect, MatOption } from '@angular/material/select';
+import { Component, model, output } from '@angular/core';
+import { MatIcon } from '@angular/material/icon';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+
+export type ViewMode = 'standard' | 'map';
 
 @Component({
-    selector: 'app-view-selector',
-    templateUrl: './view-selector.component.html',
-    imports: [MatFormField, MatLabel, MatSelect, MatOption]
+  selector: 'app-view-selector',
+  templateUrl: './view-selector.component.html',
+  styleUrl: './view-selector.component.scss',
+  imports: [MatIcon, MatSlideToggle]
 })
 export class ViewSelectorComponent {
-  selectedValue: 'standard' | 'map' = 'standard';
+  // Signal-based state for state tracking
+  selectedValue = model<ViewMode>('standard');
 
-  options = [
-    { value: 'standard', label: 'Standard' },
-    { value: 'map', label: 'Map' },
-    // { value: 'calendar', label: 'Calendar' }
-  ];
+  // Kept for backward compatibility with your original output
+  readonly selectionChanged = output<ViewMode>();
 
-  readonly selectionChanged = output<string>();
-
-  onChange(value: 'standard' | 'map') {
-    this.selectedValue = value;
-    this.selectionChanged.emit(value);
+  toggleView(isMap: boolean) {
+    const nextView: ViewMode = isMap ? 'map' : 'standard';
+    this.selectedValue.set(nextView);
+    this.selectionChanged.emit(nextView);
   }
 }

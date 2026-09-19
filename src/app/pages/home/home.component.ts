@@ -101,6 +101,7 @@ export class HomeComponent implements OnInit {
             'past'
           )
         );
+        console.log("All Memorise: ", result);
       } else {
         result = await firstValueFrom(
           this.memoryService.getUserCreatedMemories(

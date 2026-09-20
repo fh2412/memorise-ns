@@ -57,13 +57,10 @@ export class HomeComponent implements OnInit {
 
   constructor() {
     this.filterForm = this._formBuilder.group({ showFilter: false });
-    this.openForm = this._formBuilder.group({ search: '', showFriendsMemories: false });
+    this.openForm = this._formBuilder.group({ search: '' });
   }
 
   async ngOnInit(): Promise<void> {
-    const savedState = localStorage.getItem('showFriendsMemories');
-    this.showFriendsMemoriesBool = savedState === 'true';
-    this.openForm.get('showFriendsMemories')?.setValue(this.showFriendsMemoriesBool);
     try {
       await this.initializeUserData();
       await this.loadMemoriesPage();
@@ -89,30 +86,15 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     try {
       const orderDirection = this.sortOrder === 'asc';
-      let result;
-
-      if (this.showFriendsMemoriesBool) {
-        result = await firstValueFrom(
-          this.memoryService.getUserCreatedAndAddedMemories(
-            this.userdb.user_id,
-            orderDirection,
-            this.pageIndex,
-            this.pageSize,
-            'past'
-          )
-        );
-        console.log("All Memorise: ", result);
-      } else {
-        result = await firstValueFrom(
-          this.memoryService.getUserCreatedMemories(
-            this.userdb.user_id,
-            orderDirection,
-            this.pageIndex,
-            this.pageSize,
-            'past'
-          )
-        );
-      }
+      const result = await firstValueFrom(
+        this.memoryService.getUserCreatedAndAddedMemories(
+          this.userdb.user_id,
+          orderDirection,
+          this.pageIndex,
+          this.pageSize,
+          'past'
+        )
+      );
 
       this.pagedData = result.data || [];
       this.totalItems = result.total || 0;
@@ -162,30 +144,16 @@ export class HomeComponent implements OnInit {
     this.isLoading = true;
     try {
       const orderDirection = this.sortOrder === 'asc';
-      let result;
+      const result = await firstValueFrom(
+        this.memoryService.getUserCreatedAndAddedMemories(
+          this.userdb.user_id,
+          orderDirection,
+          0,
+          10000,
+          'past'
+        )
+      );
 
-      // Fetch all memories (with a large page size)
-      if (this.showFriendsMemoriesBool) {
-        result = await firstValueFrom(
-          this.memoryService.getUserCreatedAndAddedMemories(
-            this.userdb.user_id,
-            orderDirection,
-            0,
-            10000,
-            'past'
-          )
-        );
-      } else {
-        result = await firstValueFrom(
-          this.memoryService.getUserCreatedMemories(
-            this.userdb.user_id,
-            orderDirection,
-            0,
-            10000,
-            'past'
-          )
-        );
-      }
 
       this.searchCache = result.data || [];
     } catch (error) {
@@ -208,18 +176,6 @@ export class HomeComponent implements OnInit {
     this.displayMemories = this.pagedData;
   }
 
-  async toggleShowFriendsMemories(checked: boolean): Promise<void> {
-    localStorage.setItem('showFriendsMemories', checked.toString());
-    this.showFriendsMemoriesBool = checked;
-
-    // Reset pagination and search
-    this.pageIndex = 0;
-    this.isSearchActive = false;
-    this.searchCache = [];
-    this.openForm.get('search')?.setValue('');
-
-    await this.loadMemoriesPage();
-  }
 
   async toggleSortOrder(): Promise<void> {
     this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';

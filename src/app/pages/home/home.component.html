@@ -34,10 +34,6 @@
                 <mat-label>Search</mat-label>
                 <input matInput formControlName="search" (input)="filterItems()" aria-label="Search memories">
             </mat-form-field>
-            <mat-checkbox formControlName="showFriendsMemories" (change)="toggleShowFriendsMemories($event.checked)"
-                aria-label="Show friends' memories">
-                Show Friends Memories
-            </mat-checkbox>
         </section>
         }
         @if (pagedData && pagedData.length > 0) {

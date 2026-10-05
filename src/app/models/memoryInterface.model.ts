@@ -47,7 +47,7 @@ export interface PlannedMemory {
 }
 
 export interface PaginatedMemoryResponse {
-  data: Memory[];
+  data: PlannedMemory[];
   page: number;
   pageSize: number;
   total: number;

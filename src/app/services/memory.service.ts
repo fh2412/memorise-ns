@@ -209,7 +209,7 @@ export class MemoryService {
     }
   }
 
-  generateShareLink(memoryId: number): Observable<ShareLinkResponse> {
+  generateShareLink(memoryId: string): Observable<ShareLinkResponse> {
     return this.http.post<ShareLinkResponse>(
       `${this.apiUrl}/memories/${memoryId}/share`,
       {}

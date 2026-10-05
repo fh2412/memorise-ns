@@ -3,7 +3,7 @@ import { UserService } from '@services/userService';
 import { Router } from '@angular/router';
 import { MemoryService } from '@services/memory.service';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Memory } from '@models/memoryInterface.model';
+import { PlannedMemory } from '@models/memoryInterface.model';
 import { MemoriseUser } from '@models/userInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
@@ -35,21 +35,21 @@ export class HomeComponent implements OnInit {
   filterForm: FormGroup;
   openForm: FormGroup;
   userdb!: MemoriseUser;
-  displayMemories: Memory[] = [];
+  displayMemories: PlannedMemory[] = [];
   showFriendsMemoriesBool = true;
 
   sortOrder: 'asc' | 'desc' = 'desc';
   pageSize = 9;
   pageIndex = 0;
   totalItems = 0;
-  pagedData: Memory[] = [];
+  pagedData: PlannedMemory[] = [];
 
   selectedValue = 'standard';
   noMemory = true;
   isLoading = false;
 
   // Cache for search results
-  private searchCache: Memory[] = [];
+  private searchCache: PlannedMemory[] = [];
   private isSearchActive = false;
 
   canCreateNewMemory = this.billingService.canCreateNewMemory;
@@ -167,7 +167,7 @@ export class HomeComponent implements OnInit {
   private filterFromCache(): void {
     const searchTerm = this.openForm.get('search')?.value?.toLowerCase() || '';
     const filtered = this.searchCache.filter(item =>
-      item.title.toLowerCase().includes(searchTerm)
+      item.title?.toLowerCase().includes(searchTerm)
     );
 
     this.totalItems = filtered.length;
@@ -199,7 +199,7 @@ export class HomeComponent implements OnInit {
     this.router.navigate(['/newmemory'], { state: { activityId: 1 } });
   }
 
-  openDetailedMemory(memoryId: number): void {
+  openDetailedMemory(memoryId: string): void {
     this.router.navigate(['memory/', memoryId]);
   }
 }

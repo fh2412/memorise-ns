@@ -134,7 +134,7 @@ export class TripWorkspaceComponent implements OnInit {
     }
 
     // OPTION B: If you need to generate/fetch the link on demand from backend
-    this.memoryService.generateShareLink(Number(this.memoryId)).subscribe({
+    this.memoryService.generateShareLink(this.memoryId).subscribe({
       next: async (res) => {
         await this.copyAndNotify(res.directLink);
       },

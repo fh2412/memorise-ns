@@ -1,20 +1,56 @@
-<mat-card class="card" appearance="outlined">
-  <div class="image-container">
-    <img class="background-image" [src]="cardData().title_pic" [alt]="cardData().title || 'Memory image'" />
-  </div>
-  @if (showUserName()) {
-  <app-person-hint [username]="cardData().username"></app-person-hint>
+<mat-card class="card" appearance="raised">
+  <img class="background-image" [src]="cardData().title_pic" [alt]="cardData().title || 'Memory image'" />
+
+  @if (cardData().crew_members?.length) {
+    <div class="crew">
+      <app-friends-profile-pics [friends]="crewAsFriends()"></app-friends-profile-pics>
+    </div>
   }
-  <div class="text-container">
-    <h3>{{ cardData().title }}</h3>
-    <p>{{ formatDate(cardData().memory_date, cardData().memory_end_date) }}</p>
+
+  <div class="footer">
+    <div class="text-container">
+      <h3 class="title">{{ cardData().title }}</h3>
+      <p class="date">{{ formatDate(cardData().memory_date, cardData().memory_end_date) }}</p>
+    </div>
+
     <div class="action-div">
-      <button mat-icon-button aria-label="Quick Add Photo" (click)="addPhotosMemory($event)">
-        <mat-icon>add_a_photo</mat-icon>
+      <button
+        mat-icon-button
+        class="glass-button"
+        aria-label="Add photos"
+        (click)="addPhotosMemory($event)"
+      >
+        <mat-icon>image</mat-icon>
       </button>
-      <button mat-icon-button aria-label="Share Memory" (click)="shareMemory($event)">
-        <mat-icon>share</mat-icon>
+
+      <button
+        mat-icon-button
+        class="glass-button"
+        aria-label="More actions"
+        [matMenuTriggerFor]="actionMenu"
+        (click)="$event.stopPropagation()"
+      >
+        <mat-icon>more_horiz</mat-icon>
       </button>
     </div>
   </div>
 </mat-card>
+
+<mat-menu #actionMenu="matMenu" xPosition="before" yPosition="above">
+  <button mat-menu-item (click)="shareMemory($event)">
+    <mat-icon>share</mat-icon>
+    <span>Share</span>
+  </button>
+  <button mat-menu-item (click)="pinMemory($event)">
+    <mat-icon>push_pin</mat-icon>
+    <span>Pin as favourite</span>
+  </button>
+  <button mat-menu-item (click)="editMemory($event)">
+    <mat-icon>edit</mat-icon>
+    <span>Edit</span>
+  </button>
+  <button mat-menu-item class="danger" (click)="deleteMemory($event)">
+    <mat-icon>delete</mat-icon>
+    <span>Delete</span>
+  </button>
+</mat-menu>

@@ -4,6 +4,10 @@
   display: block;
 }
 
+.mat-mdc-card{
+  box-shadow: none;
+}
+
 .card {
   @include mixins.full-size();
   position: relative;
@@ -23,11 +27,6 @@
 
   &:hover .background-image {
     transform: scale(1.04);
-  }
-
-  &:focus-within {
-    outline: 2px solid var(--mat-sys-primary);
-    outline-offset: -2px;
   }
 
   .crew {

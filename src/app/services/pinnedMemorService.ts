@@ -1,9 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable, of, switchMap } from 'rxjs';
 import { Memory } from '../models/memoryInterface.model';
-import { DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
+import { DeleteStandardResponse, InsertStandardResult } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
+
+export type PinResult = 'pinned' | 'limit-reached';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +15,16 @@ export class PinnedMemoryService {
 
   private apiUrl = `${environment.apiUrl}/pinned`;
 
+  /** Maximum number of memories a user can pin on his profile */
+  readonly maxPins = 4;
+
+
   getPinnedMemories(userId: string): Observable<Memory[]> {
     const url = `${this.apiUrl}/${userId}/favourite-memories`;
     return this.http.get<Memory[]>(url);
   }
 
-  getPinnedMemoriesWithPlacholders(pin_memories: Memory[]){
+  getPinnedMemoriesWithPlacholders(pin_memories: Memory[]) {
     const displayedMemories = [...pin_memories];
     const emptyMemory: Memory = {
       memory_id: 0,
@@ -43,22 +49,27 @@ export class PinnedMemoryService {
     return displayedMemories;
   }
 
-  updatePinnedMemory(userId: string, memoryIdToUpdate: number, updatedMemoryId: number): Observable<UpdateStandardResponse> {
-    const url = `${this.apiUrl}/${userId}/favourite-memories/${memoryIdToUpdate}`;
-    const body = { memoryId: updatedMemoryId };
-    return this.http.put<UpdateStandardResponse>(url, body);
+  pinMemoryIfPossible(userId: string, memoryId: number): Observable<PinResult> {
+    return this.getPinnedMemories(userId).pipe(
+      switchMap(pins =>
+        pins.length >= this.maxPins
+          ? of<PinResult>('limit-reached')
+          : this.createPinnedMemory(userId, memoryId).pipe(map((): PinResult => 'pinned'))
+      )
+    );
   }
+
 
   createPinnedMemory(userId: string, memoryId: number): Observable<InsertStandardResult> {
     const url = `${this.apiUrl}/${userId}/favourite-memories`;
     const body = { memoryId }; // Assuming 'memoryId' is the property name
-  
+
     return this.http.post<InsertStandardResult>(url, body);
   }
-  
+
   deletePinnedMemory(userId: string, memoryIdToDelete: number): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/${userId}/favourite-memories/${memoryIdToDelete}`;
-  
+
     return this.http.delete<DeleteStandardResponse>(url);
   }
 
@@ -71,5 +82,4 @@ export class PinnedMemoryService {
     const url = `${this.apiUrl}/favourite-memory/${memoryId}`;
     return this.http.delete<Memory[]>(url);
   }
-  
 }

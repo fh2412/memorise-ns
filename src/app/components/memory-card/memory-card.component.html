@@ -1,10 +1,17 @@
 <mat-card class="card" appearance="raised">
   <img class="background-image" [src]="cardData().title_pic" [alt]="cardData().title || 'Memory image'" />
 
-  @if (cardData().crew_members?.length) {
-    <div class="crew">
-      <app-friends-profile-pics [friends]="crewAsFriends()"></app-friends-profile-pics>
+  @if (isPinned()) {
+    <div class="pin-badge" role="img" aria-label="Pinned to your profile">
+      <mat-icon>push_pin</mat-icon>
     </div>
+  }
+
+
+  @if (cardData().crew_members?.length) {
+  <div class="crew">
+    <app-friends-profile-pics [friends]="crewAsFriends()"></app-friends-profile-pics>
+  </div>
   }
 
   <div class="footer">
@@ -14,22 +21,12 @@
     </div>
 
     <div class="action-div">
-      <button
-        mat-icon-button
-        class="glass-button"
-        aria-label="Add photos"
-        (click)="addPhotosMemory($event)"
-      >
+      <button mat-icon-button class="glass-button" aria-label="Add photos" (click)="addPhotosMemory($event)">
         <mat-icon>image</mat-icon>
       </button>
 
-      <button
-        mat-icon-button
-        class="glass-button"
-        aria-label="More actions"
-        [matMenuTriggerFor]="actionMenu"
-        (click)="$event.stopPropagation()"
-      >
+      <button mat-icon-button class="glass-button" aria-label="More actions" [matMenuTriggerFor]="actionMenu"
+        (click)="$event.stopPropagation()">
         <mat-icon>more_horiz</mat-icon>
       </button>
     </div>
@@ -37,20 +34,16 @@
 </mat-card>
 
 <mat-menu #actionMenu="matMenu" xPosition="before" yPosition="above">
-  <button mat-menu-item (click)="shareMemory($event)">
-    <mat-icon>share</mat-icon>
-    <span>Share</span>
+  <button mat-menu-item (click)="inviteToMemory($event)">
+    <mat-icon>person_add</mat-icon>
+    <span>Invite friends</span>
   </button>
-  <button mat-menu-item (click)="pinMemory($event)">
-    <mat-icon>push_pin</mat-icon>
-    <span>Pin as favourite</span>
+  <button mat-menu-item [disabled]="isPinning()" (click)="togglePin($event)">
+    <mat-icon>{{ isPinned() ? 'keep_off' : 'push_pin' }}</mat-icon>
+    <span>{{ isPinned() ? 'Unpin' : 'Pin as favourite' }}</span>
   </button>
-  <button mat-menu-item (click)="editMemory($event)">
-    <mat-icon>edit</mat-icon>
-    <span>Edit</span>
-  </button>
-  <button mat-menu-item class="danger" (click)="deleteMemory($event)">
-    <mat-icon>delete</mat-icon>
-    <span>Delete</span>
+  <button mat-menu-item (click)="openGallery($event)">
+    <mat-icon>photo_library</mat-icon>
+    <span>Gallery</span>
   </button>
 </mat-menu>

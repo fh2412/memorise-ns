@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlannedMemory } from '@models/memoryInterface.model';
 import { crewMemberToFriend } from '@models/userInterface.model';
@@ -11,6 +11,9 @@ import { FriendsProfilePicsComponent } from '../friends-profile-pics/friends-pro
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
+import { PinnedMemoryService } from '@services/pinnedMemorService';
+import { finalize } from 'rxjs';
+import { UserService } from '@services/userService';
 
 @Component({
   selector: 'app-memory-card',
@@ -24,6 +27,8 @@ export class MemoryCardComponent {
   private snackBar = inject(MatSnackBar);
   private memoryService = inject(MemoryService);
   private clipboard = inject(Clipboard);
+  private pinnedMemoryService = inject(PinnedMemoryService);
+  private userService = inject(UserService);
 
   readonly cardData = input.required<PlannedMemory>();
 
@@ -32,6 +37,10 @@ export class MemoryCardComponent {
   );
 
   titleUrl: string | undefined;
+  readonly isPinning = signal(false);
+  private readonly pinOverride = signal<boolean | null>(null);
+  readonly isPinned = computed(() => this.pinOverride() ?? this.cardData().isPinned ?? false);
+
   isGeneratingLink = false;
 
   addPhotosMemory(event: Event) {
@@ -72,17 +81,65 @@ export class MemoryCardComponent {
     });
   }
 
-  pinMemory(event?: Event) {
+  togglePin(event?: Event) {
     event?.stopPropagation();
-    // TODO: pin / unpin memory as favourite
+    const userId = this.userService.getLoggedInUserId();
+
+    if (this.isPinning() || userId === null) {
+      return;
+    }
+
+    const memoryId = Number(this.cardData().memory_id);
+    this.isPinning.set(true);
+
+    if (this.isPinned()) {
+      this.pinnedMemoryService
+        .deletePinnedMemory(userId, memoryId)
+        .pipe(finalize(() => this.isPinning.set(false)))
+        .subscribe({
+          next: () => {
+            this.pinOverride.set(false);
+            this.snackBar.open('Memory unpinned', undefined, { duration: 2000 });
+          },
+          error: (err) => this.onPinError(err),
+        });
+      return;
+    }
+
+    this.pinnedMemoryService
+      .pinMemoryIfPossible(userId, memoryId)
+      .pipe(finalize(() => this.isPinning.set(false)))
+      .subscribe({
+        next: (result) => {
+          if (result === 'limit-reached') {
+            this.snackBar.open(
+              `You can pin up to ${this.pinnedMemoryService.maxPins} memories. Unpin one first.`,
+              'OK',
+              { duration: 4000 }
+            );
+            return;
+          }
+          this.pinOverride.set(true);
+          this.snackBar.open('Memory pinned to your profile', undefined, { duration: 2000 });
+        },
+        error: (err) => this.onPinError(err),
+      });
   }
 
-  editMemory(event?: Event) {
-    event?.stopPropagation();
-    // TODO: navigate to edit memory
+  private onPinError(err: unknown) {
+    console.error('Error updating pinned memory:', err);
+    this.snackBar.open('Could not update your pinned memories. Please try again.', 'Close', {
+      duration: 4000,
+    });
   }
 
-  deleteMemory(event?: Event) {
+
+  openGallery(event?: Event) {
+    event?.stopPropagation();
+    this.router.navigate(['/memory', this.cardData().memory_id, 'gallery']);
+  }
+
+  inviteToMemory(event?: Event) {
     event?.stopPropagation();
     // TODO: confirm and delete memory
   }

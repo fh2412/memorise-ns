@@ -44,6 +44,7 @@ export interface PlannedMemory {
   memory_date: Date | null;
   memory_end_date: Date | null;
   crew_members?: CrewMember[];
+  isPinned?: boolean;
 }
 
 export interface PaginatedMemoryResponse {

@@ -4,10 +4,6 @@
   display: block;
 }
 
-.mat-mdc-card{
-  box-shadow: none;
-}
-
 .card {
   @include mixins.full-size();
   position: relative;
@@ -29,21 +25,52 @@
     transform: scale(1.04);
   }
 
+  &:focus-within {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
+
+  .pin-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    pointer-events: none;
+    color: var(--mat-sys-primary);
+    background: color-mix(in srgb, var(--mat-sys-surface) 55%, transparent);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid color-mix(in srgb, var(--mat-sys-on-surface) 10%, transparent);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.35),
+      0 4px 12px color-mix(in srgb, var(--mat-sys-shadow) 25%, transparent);
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      transform: rotate(35deg);
+    }
+  }
+
+
   .crew {
     position: absolute;
     top: 16px;
     left: 16px;
     z-index: 1;
 
-    // app-friends-profile-pics ships with its own outer margin-left: 24px.
-    // Reset it so the avatars line up with the card's padding.
     ::ng-deep .friends-profile-container {
       margin-left: 0;
     }
   }
 
-  // The fade follows the active theme: dark fade + light text in the dark
-  // theme, light fade + dark text in the light theme.
   .footer {
     position: absolute;
     inset: auto 0 0 0;
@@ -54,12 +81,10 @@
     padding: 56px 20px 20px;
     box-sizing: border-box;
     color: var(--mat-sys-on-surface);
-    background: linear-gradient(
-      to top,
-      color-mix(in srgb, var(--mat-sys-surface) 92%, transparent) 0%,
-      color-mix(in srgb, var(--mat-sys-surface) 72%, transparent) 45%,
-      transparent 100%
-    );
+    background: linear-gradient(to top,
+        color-mix(in srgb, var(--mat-sys-surface) 92%, transparent) 0%,
+        color-mix(in srgb, var(--mat-sys-surface) 72%, transparent) 45%,
+        transparent 100%);
   }
 
   .text-container {
@@ -115,9 +140,9 @@
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid color-mix(in srgb, var(--mat-sys-on-surface) 10%, transparent);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.35),      // top edge highlight
-    inset 0 -1px 2px rgba(255, 255, 255, 0.12),     // bottom edge bounce light
-    inset 0 0 12px rgba(255, 255, 255, 0.06),       // inner glow
+    inset 0 1px 1px rgba(255, 255, 255, 0.35), // top edge highlight
+    inset 0 -1px 2px rgba(255, 255, 255, 0.12), // bottom edge bounce light
+    inset 0 0 12px rgba(255, 255, 255, 0.06), // inner glow
     0 6px 18px color-mix(in srgb, var(--mat-sys-shadow) 28%, transparent);
   transition:
     transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
@@ -132,17 +157,15 @@
     z-index: -1;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(
-      135deg,
-      rgba(255, 255, 255, 0.75) 0%,
-      rgba(255, 255, 255, 0) 40%,
-      rgba(255, 255, 255, 0) 60%,
-      rgba(255, 255, 255, 0.4) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.75) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0.4) 100%);
     -webkit-mask:
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
-    mask-composite:initial;  
+    mask-composite: inherit;
     -webkit-mask-composite: xor;
     mask:
       linear-gradient(#000 0 0) content-box exclude,
@@ -172,10 +195,4 @@
       transform: none;
     }
   }
-}
-
-// Menu items live in the CDK overlay but still inherit the app's M3 theme.
-.danger {
-  --mat-menu-item-label-text-color: var(--mat-sys-error);
-  --mat-menu-item-icon-color: var(--mat-sys-error);
 }

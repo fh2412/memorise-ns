@@ -62,9 +62,7 @@ export class MemoryCardComponent {
         const success = this.clipboard.copy(response.directLink);
 
         if (success) {
-          this.snackBar.open('The invite link was copied to your clipboard!', 'Great!', {
-            duration: 3000,
-          });
+          this.snackBar.open('The invite link was copied to your clipboard!', 'Great!', { duration: 3000 });
         } else {
           this.showLinkDialog(response.shareLink);
         }
@@ -73,9 +71,7 @@ export class MemoryCardComponent {
       },
       error: (err) => {
         console.error('Error generating share link:', err);
-        this.snackBar.open('Failed to generate share link. Please try again.', 'Close', {
-          duration: 4000,
-        });
+        this.snackBar.open('Failed to generate share link. Please try again.', 'Close', { duration: 4000 });
         this.isGeneratingLink = false;
       },
     });
@@ -99,7 +95,7 @@ export class MemoryCardComponent {
         .subscribe({
           next: () => {
             this.pinOverride.set(false);
-            this.snackBar.open('Memory unpinned', undefined, { duration: 2000 });
+            this.snackBar.open('The Memory`s Pin was removed', 'Close', { duration: 2000 });
           },
           error: (err) => this.onPinError(err),
         });
@@ -120,7 +116,7 @@ export class MemoryCardComponent {
             return;
           }
           this.pinOverride.set(true);
-          this.snackBar.open('Memory pinned to your profile', undefined, { duration: 2000 });
+          this.snackBar.open('Memory pinned to your profile', 'Close', { duration: 2000 });
         },
         error: (err) => this.onPinError(err),
       });

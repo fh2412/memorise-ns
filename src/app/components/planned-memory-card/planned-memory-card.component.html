@@ -13,16 +13,19 @@
 
   <div class="card-content">
     @if (!isEditing() && isUntitled()) {
-    <button class="inline-edit-trigger" (click)="$event.stopPropagation(); startEdit()" title="Set title">
+    <button class="inline-edit-trigger" (click)="$event.stopPropagation(); startEdit()"
+      (keypress)="$event.stopPropagation()" title="Set title">
       <mat-icon>edit</mat-icon>
     </button>
     }
 
     <div class="card-header">
       @if (isEditing()) {
-      <div class="inline-edit-form" (click)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
-        <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()"
-          (blur)="saveEdit()" placeholder="Name your adventure..." class="title-input" />
+      <div class="inline-edit-form" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
+        (keypress)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
+        <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()"
+          (keyup.escape)="cancelEdit()" (blur)="saveEdit()" placeholder="Name your adventure..."
+          class="title-input" />
       </div>
       } @else {
       <h4 class="card-title" [title]="displayTitle()">{{ displayTitle() }}</h4>

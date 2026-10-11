@@ -39,7 +39,7 @@
     <span>Invite friends</span>
   </button>
   <button mat-menu-item [disabled]="isPinning()" (click)="togglePin($event)">
-    <mat-icon>{{ isPinned() ? 'keep_off' : 'push_pin' }}</mat-icon>
+    <mat-icon>{{ isPinned() ? 'remove_pin' : 'push_pin' }}</mat-icon>
     <span>{{ isPinned() ? 'Unpin' : 'Pin as favourite' }}</span>
   </button>
   <button mat-menu-item (click)="openGallery($event)">

@@ -18,12 +18,15 @@ import { MatFormField, MatLabel, MatInput } from '@angular/material/input';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
+import { MatNativeDateModule } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  imports: [StatsComponent, ViewSelectorComponent, ReactiveFormsModule, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatButton, MatFormField, MatLabel, MatInput, HomeMapViewComponent, MatGridList, MatGridTile, MemoryCardComponent, MatPaginator]
+  imports: [StatsComponent, ViewSelectorComponent, ReactiveFormsModule, MatNativeDateModule, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatButton, MatFormField, MatLabel, MatInput, HomeMapViewComponent, MatGridList, MatGridTile, MemoryCardComponent, MatPaginator],
+  providers: [DatePipe],
 })
 export class HomeComponent implements OnInit {
   private userService = inject(UserService);

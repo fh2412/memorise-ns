@@ -47,6 +47,16 @@ export interface PlannedMemory {
   isPinned?: boolean;
 }
 
+export interface MemoryPageQuery {
+  ascending: boolean;
+  page: number;
+  pageSize: number;
+  filter: 'past' | 'active' | 'future';
+  search?: string;
+  pinnedOnly?: boolean;
+}
+
+
 export interface PaginatedMemoryResponse {
   data: PlannedMemory[];
   page: number;

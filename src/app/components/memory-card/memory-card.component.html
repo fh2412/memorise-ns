@@ -1,10 +1,6 @@
 <mat-card class="card" appearance="raised">
   <img class="background-image" [src]="cardData().title_pic" alt="" loading="lazy" decoding="async" />
 
-  <!-- Real link covering the whole card: keyboard focus, middle-click, "open in new tab". -->
-  <a class="card-link" [routerLink]="['/memory', cardData().memory_id]"
-    [attr.aria-label]="'Open memory ' + (cardData().title || 'without title')"></a>
-
   @if (isPinned()) {
     <div class="pin-badge" role="img" aria-label="Pinned to your profile">
       <mat-icon>push_pin</mat-icon>
@@ -16,6 +12,9 @@
     <app-friends-profile-pics [friends]="crewAsFriends()"></app-friends-profile-pics>
   </div>
   }
+
+  <a class="card-link" [routerLink]="['/memory', cardData().memory_id]"
+    [attr.aria-label]="'Open memory ' + (cardData().title || 'without title')"></a>
 
   <div class="footer">
     <div class="text-container">

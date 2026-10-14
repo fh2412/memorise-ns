@@ -1,208 +1,200 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { UserService } from '@services/userService';
-import { Router } from '@angular/router';
-import { MemoryService } from '@services/memory.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { PlannedMemory } from '@models/memoryInterface.model';
-import { MemoriseUser } from '@models/userInterface.model';
-import { firstValueFrom } from 'rxjs';
-import { PageEvent, MatPaginator } from '@angular/material/paginator';
-import { BillingService } from '@services/billing.service';
-import { StatsComponent } from '../../components/stats/stats.component';
-import { ViewSelectorComponent } from '../../components/view-selecor/view-selector.component';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIcon } from '@angular/material/icon';
-import { MatFormField, MatLabel, MatInput } from '@angular/material/input';
-import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
-import { MatNativeDateModule } from '@angular/material/core';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, linkedSignal, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { MatButton, MatFabButton, MatIconButton } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Router } from '@angular/router';
+import { PlannedMemory } from '@models/memoryInterface.model';
+import { BillingService } from '@services/billing.service';
+import { MemoryService } from '@services/memory.service';
+import { UserService } from '@services/userService';
+import { catchError, debounce, distinctUntilChanged, map, of, switchMap, tap, timer } from 'rxjs';
+import { MemoryCardComponent } from '../../components/memory-card/memory-card.component';
+import { StorageLimitDialogComponent } from '../../components/_dialogs/storage-limit-dialog/storage-limit-dialog.component';
+import { ViewMode, ViewSelectorComponent } from '../../components/view-selecor/view-selector.component';
+import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
+
+/** 12 is divisible by 2, 3 and 4, so the last grid row is never ragged. */
+const PAGE_SIZE = 12;
+const SEARCH_DEBOUNCE_MS = 300;
+/** TODO: replace with your real pricing / upgrade route. */
+const UPGRADE_ROUTE = '/upgrade';
+
+/** Derived from the service so we don't depend on where the interface lives. */
+type PageQuery = Parameters<MemoryService['getMemoriesPage']>[1];
+type LoadStatus = 'loading' | 'ready' | 'error';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss'],
-  imports: [StatsComponent, ViewSelectorComponent, ReactiveFormsModule, MatNativeDateModule, MatCheckbox, MatIconButton, MatTooltip, MatIcon, MatButton, MatFormField, MatLabel, MatInput, HomeMapViewComponent, MatGridList, MatGridTile, MemoryCardComponent, MatPaginator],
+  styleUrl: './home.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [DatePipe],
+  imports: [
+    HomeMapViewComponent,
+    MemoryCardComponent,
+    ViewSelectorComponent,
+    MatButton,
+    MatFabButton,
+    MatIconButton,
+    MatIcon,
+    MatPaginator,
+  ],
 })
-export class HomeComponent implements OnInit {
-  private userService = inject(UserService);
-  private billingService = inject(BillingService);
-  private router = inject(Router);
-  private memoryService = inject(MemoryService);
-  private _formBuilder = inject(FormBuilder);
+export class HomeComponent {
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly userService = inject(UserService);
+  private readonly memoryService = inject(MemoryService);
+  private readonly billingService = inject(BillingService);
 
-  filterForm: FormGroup;
-  openForm: FormGroup;
-  userdb!: MemoriseUser;
-  displayMemories: PlannedMemory[] = [];
-  showFriendsMemoriesBool = true;
+  // If this is ever empty the request fails and the error state offers a retry.
+  protected readonly userId = String(this.userService.getLoggedInUserId() ?? '');
 
-  sortOrder: 'asc' | 'desc' = 'desc';
-  pageSize = 9;
-  pageIndex = 0;
-  totalItems = 0;
-  pagedData: PlannedMemory[] = [];
+  protected readonly pageSize = PAGE_SIZE;
+  protected readonly skeletons = Array.from({ length: PAGE_SIZE });
 
-  selectedValue = 'standard';
-  noMemory = true;
-  isLoading = false;
+  // ── UI state ────────────────────────────────────────────────────────────
+  protected readonly viewMode = signal<ViewMode>('standard');
+  protected readonly sortAscending = signal(false);
+  /** What the user has typed right now (updates on every keystroke). */
+  protected readonly searchText = signal('');
 
-  // Cache for search results
-  private searchCache: PlannedMemory[] = [];
-  private isSearchActive = false;
+  protected readonly isCompact = toSignal(
+    inject(BreakpointObserver)
+      .observe(Breakpoints.XSmall)
+      .pipe(map((state) => state.matches)),
+    { initialValue: false },
+  );
 
-  canCreateNewMemory = this.billingService.canCreateNewMemory;
-  storageUsedGB = this.billingService.storageUsedGB;
+  // ── Query state ─────────────────────────────────────────────────────────
+  /** The trimmed search term that is actually sent to the API. */
+  protected readonly searchTerm = toSignal(
+    toObservable(this.searchText).pipe(
+      map((text) => text.trim()),
+      // Typing waits briefly; clearing the field applies immediately.
+      debounce((text) => timer(text ? SEARCH_DEBOUNCE_MS : 0)),
+      distinctUntilChanged(),
+    ),
+    { initialValue: '' },
+  );
 
-  constructor() {
-    this.filterForm = this._formBuilder.group({ showFilter: false });
-    this.openForm = this._formBuilder.group({ search: '' });
-  }
+  /** Jumps back to the first page whenever the search or sort order changes. */
+  protected readonly pageIndex = linkedSignal({
+    source: () => ({ search: this.searchTerm(), ascending: this.sortAscending() }),
+    computation: () => 0,
+  });
 
-  async ngOnInit(): Promise<void> {
-    try {
-      await this.initializeUserData();
-      await this.loadMemoriesPage();
-    } catch (error) {
-      console.error('Initialization error:', error);
-    }
-  }
+  private readonly reloadCount = signal(0);
 
-  public async initializeUserData(): Promise<void> {
-    const loggedInUserId = this.userService.getLoggedInUserId();
-    if (loggedInUserId) {
-      this.userdb = await firstValueFrom(this.userService.getUser(loggedInUserId));
-    }
-  }
+  private readonly request = computed(() => {
+    const query: PageQuery = {
+      ascending: this.sortAscending(),
+      page: this.pageIndex(),
+      pageSize: PAGE_SIZE,
+      filter: 'past',
+      search: this.searchTerm() || undefined,
+    };
+    return { query, attempt: this.reloadCount() };
+  });
 
-  private async loadMemoriesPage(): Promise<void> {
-    if (this.isSearchActive) {
-      // If search is active, filter from cached results
-      this.filterFromCache();
-      return;
-    }
+  // ── Result state ────────────────────────────────────────────────────────
+  protected readonly items = signal<PlannedMemory[]>([]);
+  protected readonly total = signal(0);
+  protected readonly status = signal<LoadStatus>('loading');
 
-    this.isLoading = true;
-    try {
-      const orderDirection = this.sortOrder === 'asc';
-      const result = await firstValueFrom(
-        this.memoryService.getUserCreatedAndAddedMemories(
-          this.userdb.user_id,
-          orderDirection,
-          this.pageIndex,
-          this.pageSize,
-          'past'
-        )
-      );
+  // ── Derived state ───────────────────────────────────────────────────────
+  protected readonly hasSearch = computed(() => this.searchTerm() !== '');
+  protected readonly showSkeleton = computed(() => this.status() === 'loading' && this.items().length === 0);
+  protected readonly isEmpty = computed(() => this.status() === 'ready' && this.items().length === 0);
+  /** The user has no memories at all (as opposed to "search found nothing"). */
+  protected readonly isFirstRun = computed(() => this.isEmpty() && !this.hasSearch());
+  protected readonly sortLabel = computed(() => (this.sortAscending() ? 'Oldest first' : 'Newest first'));
 
-      this.pagedData = result.data || [];
-      this.totalItems = result.total || 0;
-      this.noMemory = this.totalItems === 0;
-      this.displayMemories = this.pagedData;
-    } catch (error) {
-      console.error('Error loading memories:', error);
-      this.pagedData = [];
-      this.totalItems = 0;
-      this.noMemory = true;
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  changeView(newView: string): void {
-    this.selectedValue = newView;
-  }
-
-  async onPageChange(event: PageEvent): Promise<void> {
-    this.pageIndex = event.pageIndex;
-    await this.loadMemoriesPage();
-  }
-
-  async filterItems(): Promise<void> {
-    const searchTerm = this.openForm.get('search')?.value?.toLowerCase() || '';
-
-    if (!searchTerm) {
-      // Clear search - go back to normal pagination
-      this.isSearchActive = false;
-      this.searchCache = [];
-      this.pageIndex = 0;
-      await this.loadMemoriesPage();
-      return;
-    }
-
-    // Activate search mode - fetch ALL memories and cache them
-    if (!this.isSearchActive || this.searchCache.length === 0) {
-      await this.loadAllMemoriesForSearch();
-    }
-
-    this.isSearchActive = true;
-    this.filterFromCache();
-  }
-
-  private async loadAllMemoriesForSearch(): Promise<void> {
-    this.isLoading = true;
-    try {
-      const orderDirection = this.sortOrder === 'asc';
-      const result = await firstValueFrom(
-        this.memoryService.getUserCreatedAndAddedMemories(
-          this.userdb.user_id,
-          orderDirection,
-          0,
-          10000,
-          'past'
-        )
-      );
-
-
-      this.searchCache = result.data || [];
-    } catch (error) {
-      console.error('Error loading all memories for search:', error);
-      this.searchCache = [];
-    } finally {
-      this.isLoading = false;
-    }
-  }
-
-  private filterFromCache(): void {
-    const searchTerm = this.openForm.get('search')?.value?.toLowerCase() || '';
-    const filtered = this.searchCache.filter(item =>
-      item.title?.toLowerCase().includes(searchTerm)
-    );
-
-    this.totalItems = filtered.length;
-    const startIndex = this.pageIndex * this.pageSize;
-    this.pagedData = filtered.slice(startIndex, startIndex + this.pageSize);
-    this.displayMemories = this.pagedData;
-  }
-
-
-  async toggleSortOrder(): Promise<void> {
-    this.sortOrder = this.sortOrder === 'desc' ? 'asc' : 'desc';
-
-    // Reset pagination and search
-    this.pageIndex = 0;
-    this.isSearchActive = false;
-    this.searchCache = [];
-
-    await this.loadMemoriesPage();
-  }
-
-  getDisabledTooltip(): string {
-    if (this.canCreateNewMemory()) {
+  protected readonly subtitle = computed(() => {
+    const count = this.total();
+    if (count === 0) {
       return '';
     }
-    return `Storage limit reached. Free users are limited to 5 GB. Current usage: ${this.storageUsedGB().toFixed(2)} GB. Please upgrade to Premium or Corporate for unlimited storage.`;
+    if (this.hasSearch()) {
+      return count === 1 ? '1 result' : `${count} results`;
+    }
+    return count === 1 ? '1 memory' : `${count} memories`;
+  });
+
+  constructor() {
+    // switchMap cancels the in-flight request when a newer one starts, so
+    // fast typing can never show out-of-order results.
+    toObservable(this.request)
+      .pipe(
+        tap(() => this.status.set('loading')),
+        switchMap(({ query }) =>
+          this.memoryService.getMemoriesPage(this.userId, query).pipe(
+            map((response) => ({ response })),
+            catchError((error) => {
+              console.error('Error loading memories:', error);
+              return of({ response: null });
+            }),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe(({ response }) => {
+        if (!response) {
+          this.items.set([]);
+          this.total.set(0);
+          this.status.set('error');
+          return;
+        }
+        this.items.set(response.data ?? []);
+        this.total.set(response.total ?? 0);
+        this.status.set('ready');
+      });
   }
 
-  addMemory(): void {
+  // ── Handlers ────────────────────────────────────────────────────────────
+  protected changeView(newView: ViewMode): void {
+    this.viewMode.set(newView);
+  }
+
+  protected onSearchInput(event: Event): void {
+    this.searchText.set((event.target as HTMLInputElement).value);
+  }
+
+  protected clearSearch(): void {
+    this.searchText.set('');
+  }
+
+  protected setSort(ascending: boolean): void {
+    this.sortAscending.set(ascending);
+  }
+
+  protected onPageChange(event: PageEvent): void {
+    this.pageIndex.set(event.pageIndex);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  protected reload(): void {
+    this.reloadCount.update((count) => count + 1);
+  }
+
+  protected addMemory(): void {
+    if (!this.billingService.canCreateNewMemory()) {
+      this.dialog
+        .open(StorageLimitDialogComponent, {
+          data: { usedGb: this.billingService.storageUsedGB() },
+        })
+        .afterClosed()
+        .subscribe((choice) => {
+          if (choice === 'upgrade') {
+            this.router.navigate([UPGRADE_ROUTE]);
+          }
+        });
+      return;
+    }
     this.router.navigate(['/newmemory'], { state: { activityId: 1 } });
-  }
-
-  openDetailedMemory(memoryId: string): void {
-    this.router.navigate(['memory/', memoryId]);
   }
 }

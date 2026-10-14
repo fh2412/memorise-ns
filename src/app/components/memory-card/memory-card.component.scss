@@ -6,6 +6,10 @@
 
 .card {
   @include mixins.full-size();
+  // Defaults keep the old behaviour (fill the parent). A parent grid can set
+  // --memory-card-height: auto and --memory-card-aspect-ratio to size the card itself.
+  height: var(--memory-card-height, 100%);
+  aspect-ratio: var(--memory-card-aspect-ratio, auto);
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -15,7 +19,11 @@
   border-radius: 24px;
 
   .background-image {
-    @include mixins.full-size();
+    // Absolute, so the photo can never stretch the card past its aspect ratio.
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     display: block;
     object-fit: cover;
     transition: transform 0.5s ease;
@@ -23,6 +31,18 @@
 
   &:hover .background-image {
     transform: scale(1.04);
+  }
+
+  // Sits above the photo and below everything else (later siblings paint on top).
+  .card-link {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+
+    &:focus-visible {
+      outline: 3px solid var(--mat-sys-primary);
+      outline-offset: -3px;
+    }
   }
 
   .pin-badge {
@@ -54,12 +74,12 @@
     }
   }
 
-
   .crew {
     position: absolute;
     top: 16px;
     left: 16px;
     z-index: 1;
+    pointer-events: none; // taps on the avatars open the memory like everywhere else
 
     ::ng-deep .friends-profile-container {
       margin-left: 0;
@@ -76,6 +96,7 @@
     padding: 56px 20px 20px;
     box-sizing: border-box;
     color: var(--mat-sys-on-surface);
+    pointer-events: none; // let taps fall through to .card-link ...
     background: linear-gradient(to top,
         color-mix(in srgb, var(--mat-sys-surface) 92%, transparent) 0%,
         color-mix(in srgb, var(--mat-sys-surface) 72%, transparent) 45%,
@@ -89,7 +110,7 @@
     .title {
       margin: 0;
       font-family: var(--mat-sys-headline-small-font, inherit);
-      font-size: clamp(1.1rem, 6cqi, 1.75rem);
+      font-size: clamp(1rem, 6cqi, 2.0rem);
       font-weight: 600;
       line-height: 1.15;
       display: -webkit-box;
@@ -101,7 +122,7 @@
 
     .date {
       margin: 6px 0 0;
-      font-size: clamp(0.8rem, 4cqi, 1.1rem);
+      font-size: clamp(0.75rem, 4cqi, 1.1rem);
       color: var(--mat-sys-on-surface-variant);
     }
   }
@@ -110,13 +131,39 @@
     display: flex;
     flex-shrink: 0;
     gap: 10px;
+    pointer-events: auto; // ... except on the buttons
+  }
+
+  // Narrow cards (2-column phone grid): tighter spacing, only the "more" button.
+  // "Add photos" is still reachable through the menu.
+  @container (max-width: 230px) {
+    .footer {
+      padding: 40px 12px 12px;
+      gap: 8px;
+    }
+
+    .pin-badge {
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+    }
+
+    .crew {
+      top: 12px;
+      left: 12px;
+    }
+
+    .add-photos-button {
+      display: none;
+    }
   }
 }
 
 // "Liquid glass" button: translucent tint, strong blur + saturation,
 // a lit rim (brighter at top-left and bottom-right) and a soft drop shadow.
 .glass-button {
-  --glass-size: clamp(40px, 12cqi, 56px);
+  --glass-size: clamp(36px, 12cqi, 56px);
 
   --mat-icon-button-icon-color: var(--mat-sys-on-surface);
   --mat-icon-button-state-layer-color: var(--mat-sys-on-surface);

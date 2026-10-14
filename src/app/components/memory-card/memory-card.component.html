@@ -1,12 +1,15 @@
 <mat-card class="card" appearance="raised">
-  <img class="background-image" [src]="cardData().title_pic" [alt]="cardData().title || 'Memory image'" />
+  <img class="background-image" [src]="cardData().title_pic" alt="" loading="lazy" decoding="async" />
+
+  <!-- Real link covering the whole card: keyboard focus, middle-click, "open in new tab". -->
+  <a class="card-link" [routerLink]="['/memory', cardData().memory_id]"
+    [attr.aria-label]="'Open memory ' + (cardData().title || 'without title')"></a>
 
   @if (isPinned()) {
     <div class="pin-badge" role="img" aria-label="Pinned to your profile">
       <mat-icon>push_pin</mat-icon>
     </div>
   }
-
 
   @if (cardData().crew_members?.length) {
   <div class="crew">
@@ -21,7 +24,8 @@
     </div>
 
     <div class="action-div">
-      <button mat-icon-button class="glass-button" aria-label="Add photos" (click)="addPhotosMemory($event)">
+      <button mat-icon-button class="glass-button add-photos-button" aria-label="Add photos"
+        (click)="addPhotosMemory($event)">
         <mat-icon>image</mat-icon>
       </button>
 
@@ -34,6 +38,11 @@
 </mat-card>
 
 <mat-menu #actionMenu="matMenu" xPosition="before" yPosition="above">
+  <!-- Duplicates the quick button on purpose: that one is hidden on narrow (phone) cards. -->
+  <button mat-menu-item (click)="addPhotosMemory($event)">
+    <mat-icon>image</mat-icon>
+    <span>Add photos</span>
+  </button>
   <button mat-menu-item (click)="inviteToMemory($event)">
     <mat-icon>person_add</mat-icon>
     <span>Invite friends</span>

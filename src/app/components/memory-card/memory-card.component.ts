@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { PlannedMemory } from '@models/memoryInterface.model';
 import { crewMemberToFriend } from '@models/userInterface.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -19,7 +19,7 @@ import { UserService } from '@services/userService';
   selector: 'app-memory-card',
   templateUrl: './memory-card.component.html',
   styleUrl: './memory-card.component.scss',
-  imports: [MatCard, FriendsProfilePicsComponent, MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger],
+  imports: [MatCard, FriendsProfilePicsComponent, MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, RouterLink],
 })
 export class MemoryCardComponent {
   private router = inject(Router);

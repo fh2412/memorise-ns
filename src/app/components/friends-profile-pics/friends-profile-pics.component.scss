@@ -13,60 +13,29 @@
   flex-shrink: 0;
 }
 
-.profile-pic {
+.stack-item {
   position: absolute;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  border: 3px solid var(--mat-sys-background);
-  overflow: hidden;
-  background-color: var(--mat-sys-surface);
-  cursor: pointer;
-  box-sizing: border-box;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  top: 0;
 }
 
-.profile-pic:hover {
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-}
-
-.profile-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.default-avatar {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, var(--mat-sys-primary) 0%, var(--mat-sys-inverse-primary) 100%);
-  color: var(--mat-sys-on-primary);
-  position: relative;
-}
-
-.avatar-icon {
-  position: absolute;
-  font-size: 24px;
-  opacity: 0.3;
-}
-
-.initials {
-  font-weight: 500;
-  font-size: 16px;
-  z-index: 1;
-}
-
-// "+N" circle after the last avatar (shares size/border/hover with .profile-pic)
+// "+N" circle: has to look like an avatar, so it mirrors its base styles
 .remaining-chip {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 3px solid var(--mat-sys-background);
   background-color: var(--mat-sys-secondary-container);
   color: var(--mat-sys-on-secondary-container);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
 }
 
 .remaining-count {
@@ -74,8 +43,4 @@
   font-size: 16px;
   line-height: 1;
   user-select: none;
-}
-
-.mat-elevation-z2 {
-  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
 }

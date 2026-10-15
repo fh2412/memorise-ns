@@ -6,15 +6,14 @@ import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
 import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
 import { BackButtonComponent } from '../../../components/back-button/back-button.component';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { PersonHintComponent } from '../../../components/person-hint/person-hint.component';
 import { NgOptimizedImage } from '@angular/common';
 import { ImageWithMetadata } from '../memory-detail.component';
 import { ActivatedRoute } from '@angular/router';
-import { MemoryService } from '@services/memory.service';
 import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
 import { MatIcon } from "@angular/material/icon";
 import { MatButton } from '@angular/material/button';
 import { DiashowComponent } from '@components/diashow/diashow.component';
+import { ProfileAvatarComponent } from '@components/profile-avatar/profile-avatar.component';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -36,12 +35,11 @@ interface UserProfile {
   selector: 'app-image-gallery',
   templateUrl: './image-gallery.component.html',
   styleUrls: ['./image-gallery.component.scss'],
-  imports: [BackButtonComponent, MatGridList, MatGridTile, PersonHintComponent, NgOptimizedImage, LoadingSpinnerComponent, MatIcon, MatButton]
+  imports: [BackButtonComponent, MatGridList, MatGridTile, NgOptimizedImage, LoadingSpinnerComponent, MatIcon, MatButton, ProfileAvatarComponent]
 })
 
 export class ImageGalleryComponent implements OnInit {
   private imageDataService = inject(ImageGalleryService);
-  private memoryService = inject(MemoryService);
   private dialog = inject(MatDialog);
   private route = inject(ActivatedRoute);
 

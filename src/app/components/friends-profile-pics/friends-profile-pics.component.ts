@@ -1,12 +1,11 @@
 import { Component, input } from '@angular/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatIconModule } from '@angular/material/icon';
+import { ProfileAvatarComponent } from '@components/profile-avatar/profile-avatar.component';
 import { MemoryDetailFriend } from '@models/userInterface.model';
 
 @Component({
   selector: 'app-friends-profile-pics',
-  imports: [MatTooltipModule, MatBadgeModule, MatIconModule],
+  imports: [MatTooltipModule, ProfileAvatarComponent],
   templateUrl: './friends-profile-pics.component.html',
   styleUrl: './friends-profile-pics.component.scss'
 })
@@ -17,7 +16,7 @@ export class FriendsProfilePicsComponent {
 
   /** Horizontal offset between two avatars in px */
   readonly overlap = 20;
-  private readonly avatarSize = 48;
+  readonly avatarSize = 48;
 
   get displayedFriends(): MemoryDetailFriend[] {
     return this.friends().slice(0, this.maxVisible());
@@ -35,17 +34,6 @@ export class FriendsProfilePicsComponent {
   get wrapperWidth(): number {
     const circles = this.displayedFriends.length + (this.remainingCount > 0 ? 1 : 0);
     return circles === 0 ? 0 : (circles - 1) * this.overlap + this.avatarSize;
-  }
-
-  getInitials(name: string): string {
-    if (!name) return '?';
-
-    const names = name.trim().split(' ');
-    if (names.length === 1) {
-      return names[0].charAt(0).toUpperCase();
-    }
-
-    return (names[0].charAt(0) + names[names.length - 1].charAt(0)).toUpperCase();
   }
 
   getTooltipText(friend: MemoryDetailFriend): string {
@@ -71,11 +59,5 @@ export class FriendsProfilePicsComponent {
     }
 
     return names.join(', ');
-  }
-
-  onImageError(event: Event): void {
-    // Hide broken image and show default avatar
-    const img = event.target as HTMLImageElement;
-    img.style.display = 'none';
   }
 }

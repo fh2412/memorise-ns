@@ -35,5 +35,9 @@ img {
 }
 
 .person-hint {
+  position: absolute;
+  top: 8px;
+  left: 8px;
   z-index: 999;
+  pointer-events: none;
 }

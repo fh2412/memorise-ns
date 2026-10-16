@@ -69,3 +69,17 @@ export interface FriendStatus {
   user_id2: string;
   status: string;
 }
+
+export function crewMemberToFriend(member: CrewMember): MemoryDetailFriend {
+  return {
+    user_id: member.user_id,
+    name: member.name,
+    country: member.country,
+    dob: member.dob,
+    // the avatars are small, so prefer the thumbnail and fall back to the full picture
+    profilepic: member.profilepic_thumb ?? member.profilepic,
+    sharedMemoriesCount: member.sharedMemoriesCount,
+    // CrewMember carries no friendship info, so this is the neutral default
+    friendship_status: 'none',
+  };
+}

@@ -1,55 +1,237 @@
 @use 'components/mixins' as mixins;
 
+:host {
+  display: block;
+}
+
 .card {
   @include mixins.full-size();
+  // Defaults keep the old behaviour (fill the parent). A parent grid can set
+  // --memory-card-height: auto and --memory-card-aspect-ratio to size the card itself.
+  height: var(--memory-card-height, 100%);
+  aspect-ratio: var(--memory-card-aspect-ratio, auto);
+  position: relative;
+  overflow: hidden;
   cursor: pointer;
-  
-  &:hover {
-    border: 2px solid var(--mat-sys-primary);
+  container-type: inline-size;
+  --mat-card-elevated-container-shape: 24px;
+  --mat-card-elevated-container-color: var(--mat-sys-surface-container);
+  border-radius: 24px;
 
-    .action-div {
-      transform: translateY(0);
+  .background-image {
+    // Absolute, so the photo can never stretch the card past its aspect ratio.
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  &:hover .background-image {
+    transform: scale(1.04);
+  }
+
+  // Sits above the photo and below everything else (later siblings paint on top).
+  .card-link {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+
+    &:focus-visible {
+      outline: 3px solid var(--mat-sys-primary);
+      outline-offset: -3px;
     }
   }
 
-  .image-container {
-    @include mixins.full-size();
-    position: relative;
-    overflow: hidden;
+  .pin-badge {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    pointer-events: none;
+    color: var(--mat-sys-primary);
+    background: color-mix(in srgb, var(--mat-sys-surface) 55%, transparent);
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    border: 1px solid color-mix(in srgb, var(--mat-sys-on-surface) 10%, transparent);
+    box-shadow:
+      inset 0 1px 1px rgba(255, 255, 255, 0.35),
+      0 4px 12px color-mix(in srgb, var(--mat-sys-shadow) 25%, transparent);
 
-    .background-image {
-      @include mixins.full-size();
-      object-fit: cover;
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      transform: rotate(35deg);
     }
+  }
+
+  .crew {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+
+    ::ng-deep .friends-profile-container {
+      margin-left: 0;
+    }
+  }
+
+  .footer {
+    position: absolute;
+    inset: auto 0 0 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 56px 20px 20px;
+    box-sizing: border-box;
+    color: var(--mat-sys-on-surface);
+    pointer-events: none; // let taps fall through to .card-link ...
+    background: linear-gradient(to top,
+        color-mix(in srgb, var(--mat-sys-surface) 92%, transparent) 0%,
+        color-mix(in srgb, var(--mat-sys-surface) 72%, transparent) 45%,
+        transparent 100%);
   }
 
   .text-container {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 16px;
-    box-sizing: border-box;
-    background: var(--mat-sys-surface);
-    opacity: 0.7;
-    backdrop-filter: blur(4px);
-    h3 {
-      font-size: 1.5rem;
+    min-width: 0; // lets the title truncate next to the buttons
+    padding-bottom: 4px;
+
+    .title {
       margin: 0;
+      font-family: var(--mat-sys-headline-small-font, inherit);
+      font-size: clamp(1rem, 6cqi, 2.0rem);
+      font-weight: 600;
+      line-height: 1.15;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
-    p {
-      margin: 8px 0 0;
-      font-size: 1rem;
+    .date {
+      margin: 6px 0 0;
+      font-size: clamp(0.75rem, 4cqi, 1.1rem);
+      color: var(--mat-sys-on-surface-variant);
     }
   }
 
   .action-div {
+    display: flex;
+    flex-shrink: 0;
+    gap: 10px;
+    pointer-events: auto; // ... except on the buttons
+  }
+
+  // Narrow cards (2-column phone grid): tighter spacing, only the "more" button.
+  // "Add photos" is still reachable through the menu.
+  @container (max-width: 230px) {
+    .footer {
+      padding: 40px 12px 12px;
+      gap: 8px;
+    }
+
+    .pin-badge {
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+    }
+
+    .crew {
+      top: 12px;
+      left: 12px;
+    }
+
+    .add-photos-button {
+      display: none;
+    }
+  }
+}
+
+// "Liquid glass" button: translucent tint, strong blur + saturation,
+// a lit rim (brighter at top-left and bottom-right) and a soft drop shadow.
+.glass-button {
+  --glass-size: clamp(36px, 12cqi, 56px);
+
+  --mat-icon-button-icon-color: var(--mat-sys-on-surface);
+  --mat-icon-button-state-layer-color: var(--mat-sys-on-surface);
+  --mat-icon-button-state-layer-size: var(--glass-size);
+
+  position: relative;
+  isolation: isolate;
+  width: var(--glass-size);
+  height: var(--glass-size);
+  padding: 0;
+  border-radius: 50%;
+
+  // tint adapts to the theme: dark glass on light, light glass on dark
+  background: color-mix(in srgb, var(--mat-sys-on-surface) 12%, transparent);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid color-mix(in srgb, var(--mat-sys-on-surface) 10%, transparent);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.35), // top edge highlight
+    inset 0 -1px 2px rgba(255, 255, 255, 0.12), // bottom edge bounce light
+    inset 0 0 12px rgba(255, 255, 255, 0.06), // inner glow
+    0 6px 18px color-mix(in srgb, var(--mat-sys-shadow) 28%, transparent);
+  transition:
+    transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  // specular rim: bright diagonal gradient drawn only on the 1px edge
+  &::before {
+    content: '';
     position: absolute;
-    bottom: 13px;
-    right: 10px;
-    color: var(--mat-sys-on-surface);
-    transform: translateY(110%);
-    transition: transform 0.3s ease;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.75) 0%,
+        rgba(255, 255, 255, 0) 40%,
+        rgba(255, 255, 255, 0) 60%,
+        rgba(255, 255, 255, 0.4) 100%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: inherit;
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    pointer-events: none;
+  }
+
+  &:hover {
+    background: color-mix(in srgb, var(--mat-sys-on-surface) 18%, transparent);
+    transform: scale(1.06);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: background-color 0.2s ease;
+
+    &:hover,
+    &:active {
+      transform: none;
+    }
   }
 }

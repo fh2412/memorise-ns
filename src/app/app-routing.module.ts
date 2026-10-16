@@ -13,7 +13,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.module').then(m => m.HomeModule),
+    loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
     canActivate: [authGuard]
   },
   {

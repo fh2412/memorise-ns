@@ -1,12 +1,12 @@
 <section class="bd-home-section bd-theme-memorise">
   <div class="btn-header">
-  <app-back-button [text]="'Back'"></app-back-button>
-  <button mat-flat-button (click)="startDiashow()" class="diashow-btn">
-    <mat-icon>
-      photo_library
-    </mat-icon>
-    Start Diashow
-  </button>
+    <app-back-button [text]="'Back'"></app-back-button>
+    <button mat-flat-button (click)="startDiashow()" class="diashow-btn">
+      <mat-icon>
+        photo_library
+      </mat-icon>
+      Start Diashow
+    </button>
   </div>
   @if (isLoading()) {
   <app-loading-spinner [message]="'Loading Images'" />
@@ -20,7 +20,7 @@
       <mat-grid-list cols="1" rowHeight="4:3" gutterSize="8px">
         <mat-grid-tile>
           @if (l.landscapes[0]) {
-          <app-person-hint [url]="userProfiles[l.landscapes[0].userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[l.landscapes[0].userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
             (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
             tabindex="0" aria-label="View landscape image">
@@ -38,7 +38,7 @@
         @for (portrait of l.portraits; track $index) {
         <mat-grid-tile>
           @if (portrait) {
-          <app-person-hint [url]="userProfiles[portrait.userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[portrait.userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(portrait)"
             (keydown.enter)="openImageDialog(portrait)" (keydown.space)="openImageDialog(portrait)" tabindex="0"
             aria-label="View portrait image">
@@ -56,7 +56,7 @@
       <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile rowspan="12" colspan="9">
           @if (l.portraits[0]) {
-          <app-person-hint [url]="userProfiles[l.portraits[0].userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[l.portraits[0].userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
             (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
             tabindex="0" aria-label="View portrait image">
@@ -69,7 +69,7 @@
         @for (landscape of l.landscapes; track $index) {
         <mat-grid-tile rowspan="6" colspan="8">
           @if (landscape) {
-          <app-person-hint [url]="userProfiles[landscape.userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[landscape.userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(landscape)"
             (keydown.enter)="openImageDialog(landscape)" (keydown.space)="openImageDialog(landscape)" tabindex="0"
             aria-label="View landscape image">
@@ -87,7 +87,7 @@
       <mat-grid-list cols="17" rowHeight="1:1" gutterSize="8px">
         <mat-grid-tile rowspan="6" colspan="8">
           @if (l.landscapes[0]) {
-          <app-person-hint [url]="userProfiles[l.landscapes[0].userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[l.landscapes[0].userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[0])"
             (keydown.enter)="openImageDialog(l.landscapes[0])" (keydown.space)="openImageDialog(l.landscapes[0])"
             tabindex="0" aria-label="View landscape image">
@@ -99,7 +99,7 @@
         </mat-grid-tile>
         <mat-grid-tile rowspan="12" colspan="9">
           @if (l.portraits[0]) {
-          <app-person-hint [url]="userProfiles[l.portraits[0].userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[l.portraits[0].userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(l.portraits[0])"
             (keydown.enter)="openImageDialog(l.portraits[0])" (keydown.space)="openImageDialog(l.portraits[0])"
             tabindex="0" aria-label="View portrait image">
@@ -111,7 +111,7 @@
         </mat-grid-tile>
         <mat-grid-tile rowspan="6" colspan="8">
           @if (l.landscapes[1]) {
-          <app-person-hint [url]="userProfiles[l.landscapes[1].userId]" class="person-hint"></app-person-hint>
+          <app-profile-avatar class="person-hint" [src]="userProfiles[l.landscapes[1].userId]" [size]="48" [interactive]="false" />
           <button class="image-button" type="button" (click)="openImageDialog(l.landscapes[1])"
             (keydown.enter)="openImageDialog(l.landscapes[1])" (keydown.space)="openImageDialog(l.landscapes[1])"
             tabindex="0" aria-label="View landscape image">

@@ -1,0 +1,59 @@
+:host {
+  --avatar-size: 48px;
+
+  display: inline-block;
+  width: var(--avatar-size);
+  height: var(--avatar-size);
+  border-radius: 50%;
+  border: 3px solid var(--mat-sys-background);
+  overflow: hidden;
+  box-sizing: border-box;
+  background-color: var(--mat-sys-surface);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+:host(.elevated) {
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, .2), 0 2px 2px 0 rgba(0, 0, 0, .14), 0 1px 5px 0 rgba(0, 0, 0, .12);
+}
+
+:host(.interactive) {
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+}
+
+.profile-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.default-avatar {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(135deg, var(--mat-sys-primary) 0%, var(--mat-sys-inverse-primary) 100%);
+  color: var(--mat-sys-on-primary);
+}
+
+.avatar-icon {
+  position: absolute;
+  // scale with the avatar size
+  width: calc(var(--avatar-size) * 0.5);
+  height: calc(var(--avatar-size) * 0.5);
+  font-size: calc(var(--avatar-size) * 0.5);
+  opacity: 0.3;
+}
+
+.initials {
+  z-index: 1;
+  font-weight: 500;
+  font-size: calc(var(--avatar-size) * 0.33);
+}

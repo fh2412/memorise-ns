@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PersonHintComponent } from './person-hint.component';
+import { ProfileAvatarComponent } from './profile-avatar.component';
 
-describe('PersonHintComponent', () => {
-  let component: PersonHintComponent;
-  let fixture: ComponentFixture<PersonHintComponent>;
+describe('ProfileAvatarComponent', () => {
+  let component: ProfileAvatarComponent;
+  let fixture: ComponentFixture<ProfileAvatarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PersonHintComponent]
+      imports: [ProfileAvatarComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PersonHintComponent);
+    fixture = TestBed.createComponent(ProfileAvatarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

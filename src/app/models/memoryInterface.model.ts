@@ -44,10 +44,21 @@ export interface PlannedMemory {
   memory_date: Date | null;
   memory_end_date: Date | null;
   crew_members?: CrewMember[];
+  isPinned?: boolean;
 }
 
+export interface MemoryPageQuery {
+  ascending: boolean;
+  page: number;
+  pageSize: number;
+  filter: 'past' | 'active' | 'future';
+  search?: string;
+  pinnedOnly?: boolean;
+}
+
+
 export interface PaginatedMemoryResponse {
-  data: Memory[];
+  data: PlannedMemory[];
   page: number;
   pageSize: number;
   total: number;

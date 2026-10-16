@@ -1,35 +1,263 @@
-@use 'components/mixins' as mixins;
-@use 'components/page.scss';
+@use '@angular/material' as mat;
 
-.header-group {
+:host {
+  display: block;
+}
+
+.page {
+  box-sizing: border-box;
+  max-width: 1400px;
+  margin-inline: auto;
+  // Bottom space keeps the last row (and the paginator) clear of the FAB.
+  padding: 0 16px 112px;
+
+  @media (min-width: 600px) {
+    padding-inline: 24px;
+  }
+
+  @media (min-width: 1200px) {
+    padding-inline: 32px;
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────
+.page-header {
   display: flex;
   align-items: center;
-  gap: 30px;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 0 8px;
 }
 
-.fullcard {
-  @include mixins.full-size;
+.page-heading {
+  min-width: 0;
 }
 
-.image {
-  width: 100%;
-  border-radius: 20px;
+app-view-selector {
+  flex-shrink: 0;
 }
 
-.image-div {
-  width: 45%;
-  border-radius: 20px;
+.page-title {
+  margin: 0;
+  @media (max-width: 600px) {
+    font-size: 25px;
+  }
 }
 
-p {
-  font-size: 20px;
-  font-weight: bold;
+.page-subtitle {
+  margin: 4px 8px 0;
+  min-height: 1.5rem;
+  font-style: italic;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// ── Sticky toolbar ────────────────────────────────────────────────────────
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.search-field {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 4px 0 16px;
+  box-sizing: border-box;
+  border-radius: 24px;
+  cursor: text;
+  color: var(--mat-sys-on-surface-variant);
+  background: var(--mat-sys-surface-container-high);
+  transition: box-shadow 0.15s ease;
+
+  &:focus-within {
+    color: var(--mat-sys-on-surface);
+    box-shadow: 0 0 0 2px var(--mat-sys-primary);
+  }
+}
+
+.search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font: var(--mat-sys-body-large); // 16px, which also stops iOS zoom-on-focus
+  color: var(--mat-sys-on-surface);
+
+  &::placeholder {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+.toolbar-button {
+  --mat-button-text-container-height: 48px;
+  --mat-button-text-container-shape: 24px;
+  --mat-button-text-label-text-color: var(--mat-sys-on-surface);
+  flex-shrink: 0;
+  padding-inline: 16px;
+  background: var(--mat-sys-surface-container-high);
+
+  // Smooth rotation for the icon when sorting changes
+  .sort-icon {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.ascending {
+    .sort-icon {
+      transform: rotate(180deg);
+    }
+  }
+
+  // Smooth transition for text change
+  .button-label {
+    display: inline-block;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  @media (max-width: 599px) {
+    min-width: 48px;
+    width: 48px;
+    padding: 0;
+
+    mat-icon {
+      margin: 0;
+    }
+
+    .button-label {
+      display: none;
+    }
+  }
+}
+
+// ── Grid: 2 columns on phones, 3 on tablets, 4 on desktop ─────────────────
+.memory-grid {
+  // Read by app-memory-card (see its scss).
+  --memory-card-height: auto;
+  --memory-card-aspect-ratio: 4 / 5;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  transition: opacity 0.2s ease;
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px;
+  }
+
+  &.is-refreshing {
+    opacity: 0.55;
+    pointer-events: none;
+  }
+}
+
+.skeleton {
+  aspect-ratio: 4 / 5;
+  border-radius: 24px;
+  background: linear-gradient(100deg,
+      var(--mat-sys-surface-container) 30%,
+      var(--mat-sys-surface-container-high) 50%,
+      var(--mat-sys-surface-container) 70%);
+  background-size: 300% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+.paginator {
+  margin-top: 24px;
+  background: transparent;
+}
+
+// ── Empty / error states ──────────────────────────────────────────────────
+.state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 48px 0;
   text-align: center;
-  padding-top: 20px;
-  padding-bottom: 50%;
+
+  h2 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    color: var(--mat-sys-on-surface);
+  }
+
+  p {
+    margin: 0;
+    font: var(--mat-sys-body-large);
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  button {
+    margin-top: 12px;
+  }
 }
 
-span {
+.state-image {
+  width: min(100%, 360px);
+  margin-bottom: 12px;
+  border-radius: 28px;
+}
+
+.state-icon {
+  width: 56px;
+  height: 56px;
+  font-size: 56px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.accent {
   color: var(--mat-sys-secondary);
+  font-weight: 600;
 }
 
+// ── FAB ───────────────────────────────────────────────────────────────────
+.fab {
+  position: fixed;
+  z-index: 10;
+  right: max(16px, env(safe-area-inset-right, 0px));
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+
+  @media (min-width: 600px) {
+    right: 24px;
+    bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  }
+}

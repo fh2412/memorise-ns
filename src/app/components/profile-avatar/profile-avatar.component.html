@@ -1,0 +1,13 @@
+@if (showImage()) {
+  <img
+    [src]="src()"
+    [alt]="name() + ' profile picture'"
+    class="profile-image"
+    (error)="onImageError()"
+  />
+} @else {
+  <div class="default-avatar">
+    <mat-icon class="avatar-icon">person</mat-icon>
+    <span class="initials">{{ initials() }}</span>
+  </div>
+}

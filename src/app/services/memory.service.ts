@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { forkJoin, lastValueFrom, Observable, of } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -21,11 +21,22 @@ export class MemoryService {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
-  getUserCreatedMemories(userId: string, ascending: boolean, page: number, pageSize: number, filter: 'past' | 'active' | 'future'): Observable<PaginatedMemoryResponse> {
-    return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/createdMemories/${userId}`, {
-      params: { ascending: ascending.toString(), page: page.toString(), pageSize: pageSize.toString(), filter: filter }
-    });
+  getMemoriesPage(userId: string, query: MemoryPageQuery): Observable<PaginatedMemoryResponse> {
+  let params = new HttpParams()
+    .set('ascending', query.ascending.toString())
+    .set('page', query.page.toString())
+    .set('pageSize', query.pageSize.toString())
+    .set('filter', query.filter);
+ 
+  if (query.search) {
+    params = params.set('search', query.search);
   }
+  if (query.pinnedOnly) {
+    params = params.set('pinnedOnly', 'true');
+  }
+ 
+  return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, { params });
+}
 
 
   getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number, filter: 'past' | 'active' | 'future'): Observable<PaginatedMemoryResponse> {
@@ -216,7 +227,7 @@ export class MemoryService {
     }
   }
 
-  generateShareLink(memoryId: number): Observable<ShareLinkResponse> {
+  generateShareLink(memoryId: string): Observable<ShareLinkResponse> {
     return this.http.post<ShareLinkResponse>(
       `${this.apiUrl}/memories/${memoryId}/share`,
       {}

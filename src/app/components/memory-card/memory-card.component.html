@@ -1,20 +1,57 @@
-<mat-card class="card" appearance="outlined">
-  <div class="image-container">
-    <img class="background-image" [src]="cardData().title_pic" [alt]="cardData().title || 'Memory image'" />
-  </div>
-  @if (showUserName()) {
-  <app-person-hint [username]="cardData().username"></app-person-hint>
+<mat-card class="card" appearance="raised">
+  <img class="background-image" [src]="cardData().title_pic" alt="" loading="lazy" decoding="async" />
+
+  @if (isPinned()) {
+    <div class="pin-badge" role="img" aria-label="Pinned to your profile">
+      <mat-icon>push_pin</mat-icon>
+    </div>
   }
-  <div class="text-container">
-    <h3>{{ cardData().title }}</h3>
-    <p>{{ formatDate(cardData().memory_date, cardData().memory_end_date) }}</p>
+
+  @if (cardData().crew_members?.length) {
+  <div class="crew">
+    <app-friends-profile-pics [friends]="crewAsFriends()"></app-friends-profile-pics>
+  </div>
+  }
+
+  <a class="card-link" [routerLink]="['/memory', cardData().memory_id]"
+    [attr.aria-label]="'Open memory ' + (cardData().title || 'without title')"></a>
+
+  <div class="footer">
+    <div class="text-container">
+      <h3 class="title">{{ cardData().title }}</h3>
+      <p class="date">{{ formatDate(cardData().memory_date, cardData().memory_end_date) }}</p>
+    </div>
+
     <div class="action-div">
-      <button mat-icon-button aria-label="Quick Add Photo" (click)="addPhotosMemory($event)">
-        <mat-icon>add_a_photo</mat-icon>
+      <button mat-icon-button class="glass-button add-photos-button" aria-label="Add photos"
+        (click)="addPhotosMemory($event)">
+        <mat-icon>image</mat-icon>
       </button>
-      <button mat-icon-button aria-label="Share Memory" (click)="shareMemory($event)">
-        <mat-icon>share</mat-icon>
+
+      <button mat-icon-button class="glass-button" aria-label="More actions" [matMenuTriggerFor]="actionMenu"
+        (click)="$event.stopPropagation()">
+        <mat-icon>more_horiz</mat-icon>
       </button>
     </div>
   </div>
 </mat-card>
+
+<mat-menu #actionMenu="matMenu" xPosition="before" yPosition="above">
+  <!-- Duplicates the quick button on purpose: that one is hidden on narrow (phone) cards. -->
+  <button mat-menu-item (click)="addPhotosMemory($event)">
+    <mat-icon>image</mat-icon>
+    <span>Add photos</span>
+  </button>
+  <button mat-menu-item (click)="inviteToMemory($event)">
+    <mat-icon>person_add</mat-icon>
+    <span>Invite friends</span>
+  </button>
+  <button mat-menu-item [disabled]="isPinning()" (click)="togglePin($event)">
+    <mat-icon>{{ isPinned() ? 'remove_pin' : 'push_pin' }}</mat-icon>
+    <span>{{ isPinned() ? 'Unpin' : 'Pin as favourite' }}</span>
+  </button>
+  <button mat-menu-item (click)="openGallery($event)">
+    <mat-icon>photo_library</mat-icon>
+    <span>Gallery</span>
+  </button>
+</mat-menu>

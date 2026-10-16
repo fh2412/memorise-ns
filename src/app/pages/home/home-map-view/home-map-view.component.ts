@@ -1,7 +1,7 @@
 import { Component, ViewChild, OnInit, inject, input } from '@angular/core';
 import { MapInfoWindow, MapMarker, GoogleMap } from '@angular/google-maps';
 import { Router } from '@angular/router';
-import { Memory, MemoryMapData } from '@models/memoryInterface.model';
+import { MemoryMapData, PlannedMemory } from '@models/memoryInterface.model';
 import { firstValueFrom } from 'rxjs';
 import { MemoryService } from '@services/memory.service';
 import { MemoryCardComponent } from '../../../components/memory-card/memory-card.component';
@@ -15,10 +15,10 @@ export interface CustomMarker {
 }
 
 @Component({
-    selector: 'app-home-map-view',
-    templateUrl: './home-map-view.component.html',
-    styleUrl: './home-map-view.component.scss',
-    imports: [GoogleMap, MapMarker, MapInfoWindow, MemoryCardComponent]
+  selector: 'app-home-map-view',
+  templateUrl: './home-map-view.component.html',
+  styleUrl: './home-map-view.component.scss',
+  imports: [GoogleMap, MapMarker, MapInfoWindow, MemoryCardComponent]
 })
 export class HomeMapViewComponent implements OnInit {
   private router = inject(Router);
@@ -26,6 +26,7 @@ export class HomeMapViewComponent implements OnInit {
 
 
   readonly userId = input('');
+  readonly memoryDetails = input.required<PlannedMemory[]>();
   memories: MemoryMapData[] = [];
   markers: CustomMarker[] = [];
 
@@ -39,7 +40,7 @@ export class HomeMapViewComponent implements OnInit {
     disableDoubleClickZoom: true,
     maxZoom: 15,
   };
-  currentMemory: Memory | null = null;
+  currentMemory: PlannedMemory | undefined;
 
   async ngOnInit(): Promise<void> {
     await this.loadMapMarkers(true);
@@ -80,14 +81,21 @@ export class HomeMapViewComponent implements OnInit {
     }
   }
 
-  async openInfoWindow(marker: MapMarker, pos: CustomMarker): Promise<void> {
-    this.currentMemory = await firstValueFrom(
-        this.memoryService.getMemory(pos.memory_id)
+  openInfoWindow(marker: MapMarker, pos: CustomMarker): void {
+    const memory = this.memoryDetails().find(
+      m => String(m.memory_id) === String(pos.memory_id)
     );
+
+    if (!memory) {
+      console.warn(`No memory found for marker with memory_id ${pos.memory_id}`);
+      return;
+    }
+
+    this.currentMemory = memory;
     this.infoWindow.open(marker);
   }
 
-  onButtonClick(memory: Memory) {
+  onButtonClick(memory: PlannedMemory) {
     this.router.navigate(['/memory', memory.memory_id]);
   }
 }

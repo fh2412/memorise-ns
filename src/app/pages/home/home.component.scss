@@ -8,7 +8,7 @@
   box-sizing: border-box;
   max-width: 1400px;
   margin-inline: auto;
-  // Bottom space keeps the last row (and the paginator) clear of the FAB.
+  // keeps the last row clear of the FAB
   padding: 0 16px 112px;
 
   @media (min-width: 600px) {
@@ -198,11 +198,6 @@ app-view-selector {
   }
 }
 
-.paginator {
-  margin-top: 24px;
-  background: transparent;
-}
-
 // ── Empty / error states ──────────────────────────────────────────────────
 .state {
   display: flex;
@@ -260,4 +255,32 @@ app-view-selector {
     right: 24px;
     bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   }
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.list-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 32px 0 0;
+  text-align: center;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+
+  p {
+    margin: 0;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

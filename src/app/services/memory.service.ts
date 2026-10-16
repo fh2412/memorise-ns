@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
-import { forkJoin, lastValueFrom, Observable, of } from 'rxjs';
+import { forkJoin, lastValueFrom, Observable, of, tap } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
@@ -17,26 +17,29 @@ export class MemoryService {
   private apiUrl = `${environment.apiUrl}`; // Replace with your API endpoint
   private storage = inject(Storage);
 
+  private readonly _listVersion = signal(0);
+  readonly listVersion = this._listVersion.asReadonly();
+
   getMemory(memory_id: number): Observable<Memory> {
     return this.http.get<Memory>(`${this.apiUrl}/memories/${memory_id}`);
   }
 
   getMemoriesPage(userId: string, query: MemoryPageQuery): Observable<PaginatedMemoryResponse> {
-  let params = new HttpParams()
-    .set('ascending', query.ascending.toString())
-    .set('page', query.page.toString())
-    .set('pageSize', query.pageSize.toString())
-    .set('filter', query.filter);
- 
-  if (query.search) {
-    params = params.set('search', query.search);
+    let params = new HttpParams()
+      .set('ascending', query.ascending.toString())
+      .set('page', query.page.toString())
+      .set('pageSize', query.pageSize.toString())
+      .set('filter', query.filter);
+
+    if (query.search) {
+      params = params.set('search', query.search);
+    }
+    if (query.pinnedOnly) {
+      params = params.set('pinnedOnly', 'true');
+    }
+
+    return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, { params });
   }
-  if (query.pinnedOnly) {
-    params = params.set('pinnedOnly', 'true');
-  }
- 
-  return this.http.get<PaginatedMemoryResponse>(`${this.apiUrl}/memories/all/${userId}`, { params });
-}
 
 
   getUserCreatedAndAddedMemories(userId: string, ascending: boolean, page: number, pageSize: number, filter: 'past' | 'active' | 'future'): Observable<PaginatedMemoryResponse> {
@@ -97,7 +100,7 @@ export class MemoryService {
   }
 
   updateMemory(memory_id: string, memoryData: FormGroup): Observable<UpdateStandardResponse> {
-    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData);
+    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData).pipe(this.invalidateOnSuccess());
   }
 
   incrementPictureCount(memoryId: string, increment: number): Observable<{ message: string; newCount: number }> {
@@ -114,21 +117,21 @@ export class MemoryService {
 
   updateTitlePic(memoryId: string | null, imageUrl: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateTitlePic/${memoryId}`;
-    return this.http.put<UpdateStandardResponse>(url, { imageUrl });
+    return this.http.put<UpdateStandardResponse>(url, { imageUrl }).pipe(this.invalidateOnSuccess());
   }
 
   updateMemoryTitle(memoryId: string | null, newTitle: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateMemoryTitle/${memoryId}`;
-    return this.http.put<UpdateStandardResponse>(url, { newTitle });
+    return this.http.put<UpdateStandardResponse>(url, { newTitle }).pipe(this.invalidateOnSuccess());
   }
 
   createMemory(memoryData: MemoryFormData): Observable<CreateMemoryResponse> {
-    return this.http.post<CreateMemoryResponse>(`${this.apiUrl}/memories/createMemory`, memoryData);
+    return this.http.post<CreateMemoryResponse>(`${this.apiUrl}/memories/createMemory`, memoryData).pipe(this.invalidateOnSuccess());
   }
 
   deleteMemoryAndFriends(memoryId: string): Observable<DeleteStandardResponse> {
     const url = `${this.apiUrl}/memories/${memoryId}`;
-    return this.http.delete<DeleteStandardResponse>(url);
+    return this.http.delete<DeleteStandardResponse>(url).pipe(this.invalidateOnSuccess());
   }
 
   addFriendToMemory(friendData: { friendIds: string[], memoryId: string }): Observable<InsertStandardResult> {
@@ -252,5 +255,13 @@ export class MemoryService {
     return this.http.get<{ isMember: boolean }>(
       `${this.apiUrl}/memories/${memoryId}/member/${userId}`
     );
+  }
+
+  invalidateMemoryList(): void {
+    this._listVersion.update((v) => v + 1);
+  }
+
+  private invalidateOnSuccess<T>() {
+    return tap<T>({ next: () => this.invalidateMemoryList() });
   }
 }

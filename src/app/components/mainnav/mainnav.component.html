@@ -5,15 +5,15 @@
       <img [src]="themeService.isDarkMode() ? '/assets/img/logo_big_dark.png' : '/assets/img/logo.png'" alt="Logo">
     </mat-toolbar>
     <mat-nav-list class="mat-nav-list">
-      <a mat-list-item href="/home">
+      <a mat-list-item routerLink="/home">
         <mat-icon>home</mat-icon>
         <span class="text">MEMORISE</span>
       </a>
-      <a mat-list-item href="/friends">
+      <a mat-list-item routerLink="/friends">
         <mat-icon>people</mat-icon>
         <span class="text">FRIENDS</span>
       </a>
-      <a mat-list-item href="/plans">
+      <a mat-list-item routerLink="/plans">
         <mat-icon>event_available</mat-icon>
         <span class="text">PLANS</span>
       </a>

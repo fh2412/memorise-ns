@@ -32,7 +32,7 @@
     </div>
     }
 
-    <main class="content" [attr.aria-busy]="status() === 'loading'">
+    <main class="content" [attr.aria-busy]="isBusy()">
         @if (showSkeleton()) {
         <ul class="memory-grid" aria-hidden="true">
             @for (_ of skeletons; track $index) {
@@ -64,8 +64,6 @@
             <button mat-stroked-button (click)="clearSearch()">Clear search</button>
         </section>
         } @else if (viewMode() === 'map') {
-        <!-- Same inputs as before: the current page of memories -->
-
         <app-home-map-view [userId]="userId" [memoryDetails]="items()"></app-home-map-view>
         } @else {
         <ul class="memory-grid" [class.is-refreshing]="status() === 'loading'">
@@ -74,12 +72,27 @@
                 <app-memory-card [cardData]="item"></app-memory-card>
             </li>
             }
+            @if (status() === 'loadingMore') {
+            @for (_ of pendingSkeletons(); track $index) {
+            <li class="skeleton" aria-hidden="true"></li>
+            }
+            }
         </ul>
-        @if (total() > pageSize) {
-        <mat-paginator class="paginator" [length]="total()" [pageSize]="pageSize" [pageIndex]="pageIndex()"
-            [hidePageSize]="true" (page)="onPageChange($event)"></mat-paginator>
+
+        @if (status() === 'errorMore') {
+        <div class="list-end">
+            <p>More memories couldn't be loaded.</p>
+            <button mat-stroked-button (click)="retryMore()">Try again</button>
+        </div>
+        } @else if (hasMore()) {
+        <div class="sentinel" aria-hidden="true" appInViewport [viewportRoot]="scrollRoot"
+            [disabled]="status() !== 'ready'" (inViewport)="loadMore()"></div>
+        } @else if (items().length > skeletons.length) {
+        <p class="list-end">You've reached your first memory.</p>
         }
         }
+
+        <p class="visually-hidden" aria-live="polite">{{ liveMessage() }}</p>
     </main>
 </div>
 

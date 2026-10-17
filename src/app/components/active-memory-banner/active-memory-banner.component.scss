@@ -1,0 +1,198 @@
+:host {
+  display: block;
+}
+
+.banner {
+  --banner-fg: var(--mat-sys-on-surface);
+
+  position: relative;
+  isolation: isolate; // keeps the cover and scrim (z-index -1) inside the card
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 220px;
+  overflow: hidden;
+  border-radius: 28px;
+  color: var(--banner-fg);
+  background: var(--mat-sys-surface-container);
+
+  @media (min-width: 600px) {
+    min-height: 260px;
+  }
+
+  @media (min-width: 1200px) {
+    min-height: 300px;
+  }
+
+  // Same recipe as the memory cards: a surface-coloured scrim keeps text
+  // readable on any photo, in light and dark mode.
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to top,
+        color-mix(in srgb, var(--mat-sys-surface) 94%, transparent) 0%,
+        color-mix(in srgb, var(--mat-sys-surface) 72%, transparent) 45%,
+        transparent 90%);
+  }
+
+  // No cover photo: fall back to the secondary container colours.
+  &.no-photo {
+    --banner-fg: var(--mat-sys-on-secondary-container);
+    background: var(--mat-sys-secondary-container);
+
+    &::after {
+      display: none;
+    }
+
+    .status-chip {
+      color: var(--mat-sys-on-secondary);
+      background: var(--mat-sys-secondary);
+    }
+
+    .live-dot {
+      background: var(--mat-sys-on-secondary);
+      animation: none;
+    }
+  }
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.banner-link {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+
+  &:focus-visible {
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: -3px;
+  }
+}
+
+.status-chip {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px 6px 12px;
+  border-radius: 999px;
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-on-secondary-container);
+  background: var(--mat-sys-secondary-container);
+  pointer-events: none;
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--mat-sys-secondary);
+  animation: pulse 2s ease-out infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--mat-sys-secondary) 55%, transparent);
+  }
+
+  70%,
+  100% {
+    box-shadow: 0 0 0 8px transparent;
+  }
+}
+
+.dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  --mat-icon-button-icon-color: var(--mat-sys-on-surface);
+  background: color-mix(in srgb, var(--mat-sys-surface) 55%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 50%;
+}
+
+.content {
+  position: relative;
+  padding: 64px 20px 24px;
+  pointer-events: none; // taps fall through to .banner-link, except on the button
+
+  @media (min-width: 600px) {
+    padding: 64px 28px 28px;
+  }
+}
+
+.title {
+  margin: 0;
+  font: var(--mat-sys-headline-small);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  @media (min-width: 600px) {
+    font: var(--mat-sys-headline-medium);
+  }
+}
+
+.date {
+  margin: 4px 0 0;
+  font: var(--mat-sys-body-large);
+  color: color-mix(in srgb, var(--banner-fg) 75%, transparent);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.crew {
+  min-width: 0;
+
+  ::ng-deep .friends-profile-container {
+    margin-left: 0;
+  }
+}
+
+.add-photos {
+  --mat-button-filled-container-color: var(--mat-sys-secondary);
+  --mat-button-filled-label-text-color: var(--mat-sys-on-secondary);
+  margin-left: auto;
+  flex-shrink: 0;
+  pointer-events: auto;
+}
+
+.progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: color-mix(in srgb, var(--banner-fg) 15%, transparent);
+  pointer-events: none;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: 0 4px 4px 0;
+    background: var(--mat-sys-secondary);
+  }
+}

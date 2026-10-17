@@ -39,6 +39,7 @@ app-view-selector {
 
 .page-title {
   margin: 0;
+
   @media (max-width: 600px) {
     font-size: 25px;
   }
@@ -50,6 +51,48 @@ app-view-selector {
   font-style: italic;
   color: var(--mat-sys-on-surface-variant);
 }
+
+// ── Active memory banner slot ─────────────────────────────────────────────
+// A grid-rows 1fr <-> 0fr trick animates the height without knowing it, so the
+// banner slides open when it loads instead of popping in and shoving the page.
+.active-slot {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 0.3s ease,
+    opacity 0.3s ease;
+  animation: slot-reveal 0.45s ease-out;
+
+  &.is-collapsed {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    animation: none;
+  }
+}
+
+.active-slot-inner {
+  min-height: 0; // required for the 0fr row to actually collapse
+  overflow: hidden;
+}
+
+.active-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0 4px;
+}
+
+@keyframes slot-reveal {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+
 
 // ── Sticky toolbar ────────────────────────────────────────────────────────
 .toolbar {

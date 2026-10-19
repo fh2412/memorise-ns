@@ -1,0 +1,134 @@
+:host {
+  position: fixed;
+  z-index: 900; // below Material overlays (1000)
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  max-width: calc(100vw - 32px);
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+
+  // Phones (and later Capacitor): full width at the bottom
+  @media (max-width: 599px) {
+    left: 12px;
+    right: 12px;
+    max-width: none;
+    align-items: stretch;
+  }
+}
+
+.pill {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 12px 8px 16px;
+  border-radius: 999px;
+  background: var(--mat-sys-inverse-surface);
+  color: var(--mat-sys-inverse-on-surface);
+  font: var(--mat-sys-label-large);
+  box-shadow: var(--mat-sys-level3);
+  cursor: pointer;
+
+  --mat-progress-spinner-active-indicator-color: var(--mat-sys-inverse-primary);
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-inverse-primary);
+    outline-offset: 2px;
+  }
+
+  &.has-errors mat-icon:first-child {
+    color: var(--mat-sys-error-container);
+  }
+
+  .chevron {
+    margin-left: auto;
+  }
+}
+
+.panel {
+  width: min(380px, 100%);
+  max-height: min(420px, 60vh);
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  box-shadow: var(--mat-sys-level3);
+  overflow: hidden;
+
+  @media (max-width: 599px) {
+    width: 100%;
+  }
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 4px 16px;
+  font: var(--mat-sys-title-small);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.job-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+}
+
+.job {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 4px 6px 16px;
+}
+
+.status-icon {
+  flex-shrink: 0;
+  color: var(--mat-sys-on-surface-variant);
+
+  .job[data-status='done'] & { color: var(--mat-sys-primary); }
+  .job[data-status='failed'] & { color: var(--mat-sys-error); }
+}
+
+.job-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.job-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: var(--mat-sys-body-medium);
+}
+
+.job-meta,
+.job-error {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.job-error {
+  color: var(--mat-sys-error);
+}
+
+.panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 8px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}

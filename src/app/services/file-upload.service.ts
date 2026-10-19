@@ -1,8 +1,27 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, finalize, forkJoin, from, of, switchMap } from 'rxjs';
-import { deleteObject, getMetadata, Storage, ref, updateMetadata, uploadBytesResumable, listAll, getDownloadURL, StorageReference } from '@angular/fire/storage';
+import { Observable, defer } from 'rxjs';
+import {
+  deleteObject, getMetadata, Storage, ref, updateMetadata, uploadBytesResumable,
+  listAll, getDownloadURL, StorageReference, FullMetadata,
+} from '@angular/fire/storage';
 import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
 import { BillingService, DeletionData } from './billing.service';
+import { StoredObject } from '@models/photo-upload.model';
+
+export interface StorageUploadEvent {
+  bytesTransferred: number;
+  totalBytes: number;
+  /** Set on the final emission. */
+  result?: StoredObject;
+}
+
+export interface UploadBlobOptions {
+  contentType?: string;
+  customMetadata?: Record<string, string>;
+}
+
+/** Object names are UUIDs and never overwritten with different content → cache aggressively. */
+const IMMUTABLE_CACHE_CONTROL = 'private, max-age=31536000, immutable';
 
 @Injectable({
   providedIn: 'root'
@@ -11,139 +30,221 @@ export class FileUploadService {
   private storage = inject(Storage);
   private billingService = inject(BillingService);
 
+  // ── Generic upload (used by UploadQueueService) ────────────────────────────
+
+  /**
+   * Resumable upload with progress. Unsubscribing cancels the running upload.
+   */
+  uploadBlob(path: string, data: Blob, options: UploadBlobOptions = {}): Observable<StorageUploadEvent> {
+    return new Observable<StorageUploadEvent>(observer => {
+      const storageRef = ref(this.storage, path);
+      const task = uploadBytesResumable(storageRef, data, {
+        contentType: options.contentType || data.type || undefined,
+        customMetadata: options.customMetadata,
+        cacheControl: IMMUTABLE_CACHE_CONTROL,
+      });
+
+      let finished = false;
+      const unsubscribe = task.on(
+        'state_changed',
+        snapshot => observer.next({ bytesTransferred: snapshot.bytesTransferred, totalBytes: snapshot.totalBytes }),
+        error => {
+          finished = true;
+          observer.error(error);
+        },
+        async () => {
+          finished = true;
+          try {
+            const url = await getDownloadURL(task.snapshot.ref);
+            const size = task.snapshot.totalBytes;
+            observer.next({ bytesTransferred: size, totalBytes: size, result: { path, url, sizeBytes: size } });
+            observer.complete();
+          } catch (error) {
+            observer.error(error);
+          }
+        },
+      );
+
+      return () => {
+        unsubscribe();
+        if (!finished) task.cancel();
+      };
+    });
+  }
+
+  /**
+   * Removes objects that were uploaded but never registered in the backend
+   * (canceled uploads). No billing update – they were never counted.
+   */
+  async deleteUnregisteredObjects(paths: string[]): Promise<void> {
+    await Promise.allSettled(paths.map(path => deleteObject(ref(this.storage, path))));
+  }
+
+  // ── Deletion ───────────────────────────────────────────────────────────────
+
+  /** Deletes all objects of a memory incl. sub folders (thumbs/). */
+  deleteMemorysFolder(memoryId: string): Observable<void> {
+    return defer(async () => {
+      const refs = await this.listAllRecursive(ref(this.storage, `memories/${memoryId}`));
+      await this.deleteObjectsWithBilling(refs);
+    });
+  }
+
+  /** Deletes images by download URL – and their thumbnails if they exist. */
+  deleteImages(imageUrls: string[]): Observable<void> {
+    return defer(async () => {
+      if (!imageUrls?.length) return;
+      const refs = imageUrls
+        .map(url => ref(this.storage, url))
+        .flatMap(r => {
+          const thumb = this.thumbnailRefFor(r);
+          return thumb ? [r, thumb] : [r];
+        });
+      await this.deleteObjectsWithBilling(refs);
+    });
+  }
+
+  /**
+   * FIX: metadata is read BEFORE deleting (previously ran in parallel → race),
+   * and missing objects (e.g. legacy photos without thumbnail) are skipped instead of failing everything.
+   */
+  private async deleteObjectsWithBilling(refs: StorageReference[]): Promise<void> {
+    const metadata = await Promise.allSettled(refs.map(r => getMetadata(r)));
+    const existing = metadata.flatMap((result, i) =>
+      result.status === 'fulfilled' ? [{ ref: refs[i], meta: result.value }] : [],
+    );
+    if (existing.length === 0) return;
+
+    await Promise.all(existing.map(e => deleteObject(e.ref)));
+
+    const deletionData: DeletionData[] = existing
+      .filter(e => e.meta.customMetadata?.['userId'])
+      .map(e => this.toDeletionData(e.meta));
+
+    try {
+      await this.billingService.updateStorageOnDeletion(deletionData);
+    } catch (error) {
+      // Files are gone either way – log, don't fail the deletion.
+      console.error('Billing update after deletion failed:', error);
+    }
+  }
+
+  private toDeletionData(meta: FullMetadata): DeletionData {
+    return { size: meta.size, userId: meta.customMetadata!['userId'], path: meta.fullPath };
+  }
+
+  private async listAllRecursive(folder: StorageReference): Promise<StorageReference[]> {
+    const result = await listAll(folder);
+    const nested = await Promise.all(result.prefixes.map(prefix => this.listAllRecursive(prefix)));
+    return [...result.items, ...nested.flat()];
+  }
+
+  /** memories/{id}/{photoId}.{ext} → memories/{id}/thumbs/{photoId}.jpg */
+  private thumbnailRefFor(original: StorageReference): StorageReference | null {
+    const parent = original.parent;
+    if (!parent || parent.name === 'thumbs') return null;
+    const baseName = original.name.replace(/\.[^.]+$/, '');
+    return ref(this.storage, `${parent.fullPath}/thumbs/${baseName}.jpg`);
+  }
+
+  // ── Profile picture (unchanged) ────────────────────────────────────────────
 
   uploadProfilePicture(file: File, userId: string): Observable<{ profileUrl: string, thumbnailUrl: string }> {
-  return new Observable((observer) => {
-    const filePath = `profile-pictures/${userId}/profile.jpg`;
-    const thumbnailPath = `profile-pictures/${userId}/thumbnail.jpg`;
+    return new Observable((observer) => {
+      const filePath = `profile-pictures/${userId}/profile.jpg`;
+      const thumbnailPath = `profile-pictures/${userId}/thumbnail.jpg`;
 
-    const storageRef = ref(this.storage, filePath);
-    const thumbnailRef = ref(this.storage, thumbnailPath);
+      const storageRef = ref(this.storage, filePath);
+      const thumbnailRef = ref(this.storage, thumbnailPath);
 
-    // Create thumbnail
-    this.createThumbnail(file, 128).then((thumbnailFile) => {
-      const uploadTask = uploadBytesResumable(storageRef, file);
-      const thumbnailUploadTask = uploadBytesResumable(thumbnailRef, thumbnailFile);
+      this.createThumbnail(file, 128).then((thumbnailFile) => {
+        const uploadTask = uploadBytesResumable(storageRef, file);
+        const thumbnailUploadTask = uploadBytesResumable(thumbnailRef, thumbnailFile);
 
-      let mainUploadComplete = false;
-      let thumbnailUploadComplete = false;
-      
-      // Keep track of both individual URLs
-      let profileUrl = '';
-      let thumbnailUrl = '';
+        let mainUploadComplete = false;
+        let thumbnailUploadComplete = false;
+        let profileUrl = '';
+        let thumbnailUrl = '';
 
-      const checkCompletion = () => {
-        if (mainUploadComplete && thumbnailUploadComplete) {
-          // Emit both URLs together once both steps finish
-          observer.next({ profileUrl, thumbnailUrl });
-          observer.complete();
-        }
-      };
+        const checkCompletion = () => {
+          if (mainUploadComplete && thumbnailUploadComplete) {
+            observer.next({ profileUrl, thumbnailUrl });
+            observer.complete();
+          }
+        };
 
-      // Main image upload
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => console.log('Main upload:', snapshot.state),
-        (error) => {
-          console.error("ERROR IN SERVICE (main): ", error);
-          observer.error(error);
-        },
-        async () => {
-          profileUrl = await getDownloadURL(uploadTask.snapshot.ref);
-          mainUploadComplete = true;
-          checkCompletion();
-        }
-      );
+        uploadTask.on(
+          'state_changed',
+          () => { /* progress not needed */ },
+          (error) => observer.error(error),
+          async () => {
+            profileUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            mainUploadComplete = true;
+            checkCompletion();
+          }
+        );
 
-      // Thumbnail upload
-      thumbnailUploadTask.on(
-        'state_changed',
-        (snapshot) => console.log('Thumbnail upload:', snapshot.state),
-        (error) => {
-          console.error("ERROR IN SERVICE (thumbnail): ", error);
-          observer.error(error);
-        },
-        async () => {
-          // FIX: Fetch the actual download URL for the thumbnail here!
-          thumbnailUrl = await getDownloadURL(thumbnailUploadTask.snapshot.ref);
-          thumbnailUploadComplete = true;
-          checkCompletion();
-        }
-      );
-
-    }).catch((error) => {
-      console.error("ERROR creating thumbnail: ", error);
-      observer.error(error);
+        thumbnailUploadTask.on(
+          'state_changed',
+          () => { /* progress not needed */ },
+          (error) => observer.error(error),
+          async () => {
+            thumbnailUrl = await getDownloadURL(thumbnailUploadTask.snapshot.ref);
+            thumbnailUploadComplete = true;
+            checkCompletion();
+          }
+        );
+      }).catch((error) => observer.error(error));
     });
-  });
-}
+  }
 
   private createThumbnail(file: File, minSize: number): Promise<File> {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
+      const url = URL.createObjectURL(file);
 
       img.onload = () => {
-        const originalWidth = img.width;
-        const originalHeight = img.height;
-
-        // Calculate new dimensions maintaining aspect ratio
-        // At least one dimension should be minSize (64px)
-        let newWidth: number;
-        let newHeight: number;
-
-        if (originalWidth < originalHeight) {
-          // Portrait: make width = minSize, scale height proportionally
-          newWidth = minSize;
-          newHeight = Math.round((originalHeight * minSize) / originalWidth);
-        } else {
-          // Landscape or square: make height = minSize, scale width proportionally
-          newHeight = minSize;
-          newWidth = Math.round((originalWidth * minSize) / originalHeight);
-        }
+        URL.revokeObjectURL(url);
+        const { width, height } = img;
+        const [newWidth, newHeight] = width < height
+          ? [minSize, Math.round((height * minSize) / width)]
+          : [Math.round((width * minSize) / height), minSize];
 
         canvas.width = newWidth;
         canvas.height = newHeight;
-
-        // Draw image scaled to new dimensions
         ctx?.drawImage(img, 0, 0, newWidth, newHeight);
 
         canvas.toBlob((blob) => {
-          if (blob) {
-            const thumbnailFile = new File([blob], 'thumbnail.jpg', {
-              type: 'image/jpeg',
-              lastModified: Date.now()
-            });
-            resolve(thumbnailFile);
-          } else {
-            reject(new Error('Failed to create thumbnail blob'));
-          }
+          if (blob) resolve(new File([blob], 'thumbnail.jpg', { type: 'image/jpeg', lastModified: Date.now() }));
+          else reject(new Error('Failed to create thumbnail blob'));
         }, 'image/jpeg', 0.8);
       };
 
       img.onerror = () => {
+        URL.revokeObjectURL(url);
         reject(new Error('Failed to load image'));
       };
 
-      img.src = URL.createObjectURL(file);
+      img.src = url;
     });
   }
 
+  // ── Legacy ─────────────────────────────────────────────────────────────────
+
+  /**
+   * @deprecated Only used by the old UploadProgressDialogComponent.
+   * Delete together with the old create page in Phase 5.
+   */
   uploadMemoryPicture(
     memoryId: string,
     file: ImageFileWithDimensions,
     userId: string,
     isStarred: boolean
   ): Observable<{ progress?: number, downloadURL?: string }> {
-    // Use timestamp + random string for unique filename
-    const uniqueId = `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const path = `memories/${memoryId}/${uniqueId}.jpg`;
-    const storageRef = ref(this.storage, path);
-
-    console.log("Uploading images to: ", path);
-
-
+    const uniqueId = `${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
+    const storageRef = ref(this.storage, `memories/${memoryId}/${uniqueId}.jpg`);
     const metadata = {
       customMetadata: {
         width: file.width.toString(),
@@ -153,124 +254,32 @@ export class FileUploadService {
         uploadedAt: new Date().toISOString()
       }
     };
-
     const uploadTask = uploadBytesResumable(storageRef, file.file, metadata);
 
     return new Observable((observer) => {
       uploadTask.on(
         'state_changed',
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          observer.next({ progress });
-        },
+        (snapshot) => observer.next({ progress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 }),
         (error) => observer.error(error),
         async () => {
-          // Get download URL after upload completes
-          const downloadURL = await getDownloadURL(storageRef);
-          observer.next({ downloadURL });
+          observer.next({ downloadURL: await getDownloadURL(storageRef) });
           observer.complete();
         }
       );
     });
   }
 
-  deleteMemorysFolder(memoryId: string): Observable<void> {
-    const path = `memories/${memoryId}`;
-    const storageRef = ref(this.storage, path);
-
-
-    return from(listAll(storageRef)).pipe(
-      switchMap((result) => {
-        const itemRefs = result.items;
-        if (result.items.length === 0) {
-          return of(void 0); // If folder is empty, resolve immediately
-        }
-        const billingUpdate$ = this._processAndNotifyBilling(itemRefs);
-
-
-        // Create an array of delete operations as observables
-        const deletionObservables = itemRefs.map((itemRef) => from(deleteObject(itemRef)));
-        billingUpdate$.subscribe();
-        return forkJoin(deletionObservables).pipe(switchMap(() => of(void 0)));
-      }),
-      finalize(() => console.log(`Folder ${path} deleted successfully.`))
-    );
-  }
-
-  deleteImages(imageUrls: string[]): Observable<void> {
-    if (!imageUrls || imageUrls.length === 0) {
-      console.log("No images provided for deletion.");
-      return of(void 0);
-    }
-
-    // 1. Convert URLs to StorageReference objects
-    const imageRefs: StorageReference[] = imageUrls.map(url => ref(this.storage, url));
-
-    // 2. Trigger the private method to collect metadata and notify the backend
-    //    We use .subscribe() to execute the notification without blocking the main deletion process.
-    this._processAndNotifyBilling(imageRefs).subscribe({
-      next: () => console.log('Billing notification for single image deletion triggered.'),
-      error: (err) => console.error('Error in billing notification for single images:', err)
-    });
-
-    // 3. Prepare the deletion observables
-    const deletionObservables = imageRefs.map((imageRef) => from(deleteObject(imageRef)));
-
-    // 4. Execute all deletions concurrently and return the final observable
-    return forkJoin(deletionObservables).pipe(
-      switchMap(() => of(void 0)), // Ensure the final result is void
-      finalize(() => console.log(`Deleted ${imageUrls.length} images successfully.`))
-    );
-  }
-
-  private _processAndNotifyBilling(itemRefs: StorageReference[]): Observable<any> {
-    // Create an array of observables to fetch metadata for each file
-    const metadataObservables: Observable<any>[] = itemRefs.map((itemRef) =>
-      from(getMetadata(itemRef))
-    );
-
-    // Fetch all metadata concurrently
-    return forkJoin(metadataObservables).pipe(
-      switchMap((metadataArray: any[]) => {
-        if (metadataArray.length === 0) {
-          //implement error handling
-        }
-
-        // Create the array with just the needed data
-        const deletionData: DeletionData[] = metadataArray.map(meta => ({
-          size: meta.size,
-          userId: meta.customMetadata ? meta.customMetadata['userId'] : undefined,
-          path: meta.fullPath
-        }));
-
-        console.log(`Attempting to notify billing service for ${deletionData.length} items.`);
-
-        return from(this.billingService.updateStorageOnDeletion(deletionData)).pipe(
-          finalize(() => console.log('Billing service update notification completed.')),
-        );
-      })
-    );
-  }
-
-  starImage(index: number, starredIndex: number | null, oldStarredImageUrl: string, newStarredImageUrl: string,) {
-    // Unstar the previously starred image if there is one
+  starImage(index: number, starredIndex: number | null, oldStarredImageUrl: string, newStarredImageUrl: string) {
     if (starredIndex !== null && starredIndex !== index) {
       const prevImageRef = ref(this.storage, oldStarredImageUrl);
       getMetadata(prevImageRef).then((metadata) => {
-        const updatedMetadata = { customMetadata: { ...metadata.customMetadata, isStarred: 'false' } };
-        updateMetadata(prevImageRef, updatedMetadata);
-        console.log("Unstarred!: ", prevImageRef, updatedMetadata);
+        updateMetadata(prevImageRef, { customMetadata: { ...metadata.customMetadata, isStarred: 'false' } });
       });
     }
 
-    // Star the new image
-    const newImageRef = ref(this.storage, newStarredImageUrl);  // Use the full path of the new image
+    const newImageRef = ref(this.storage, newStarredImageUrl);
     getMetadata(newImageRef).then((metadata) => {
-      const updatedMetadata = { customMetadata: { ...metadata.customMetadata, isStarred: 'true' } };
-      updateMetadata(newImageRef, updatedMetadata).then(() => {
-        console.log("Starred!: ", newImageRef, updatedMetadata);
-      });
+      updateMetadata(newImageRef, { customMetadata: { ...metadata.customMetadata, isStarred: 'true' } });
     });
   }
 }
-

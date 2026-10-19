@@ -7,13 +7,6 @@
   </div>
 </div>
 
-@if (loaded) {
-  <div class="photo-container">
-    <app-image-upload
-      [memoryId]="memoryId.toString()"
-      [picture_count]="pictureCount"
-      [googleStorageUrlInput]="firebasePath"
-      >
-    </app-image-upload>
-  </div>
-}
+<div class="photo-container">
+  <app-memory-add-photos [memoryId]="memoryId.toString()" />
+</div>

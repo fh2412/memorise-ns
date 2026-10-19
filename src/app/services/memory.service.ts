@@ -7,6 +7,7 @@ import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest, RegisterPhotoResponse, CompleteUploadSessionRequest, CompleteUploadSessionResponse } from '@models/photo-upload.model';
 
 @Injectable({
   providedIn: 'root'
@@ -97,6 +98,30 @@ export class MemoryService {
   getMemorysFriendsWithShared(memory_id: number, user_id: string) {
     // Implement the logic to fetch user data from your backend API
     return this.http.get<MemoryDetailFriend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
+  }
+
+  /** Reserves storage for an upload. 409 { code: 'STORAGE_FULL' } if not enough space. */
+  createUploadSession(memoryId: string, body: CreateUploadSessionRequest): Observable<UploadSessionResponse> {
+    return this.http.post<UploadSessionResponse>(`${this.apiUrl}/memories/${memoryId}/upload-sessions`, body);
+  }
+
+  /** Registers one uploaded photo. Idempotent per clientId. */
+  registerPhoto(memoryId: string, body: RegisterPhotoRequest): Observable<RegisterPhotoResponse> {
+    return this.http.post<RegisterPhotoResponse>(`${this.apiUrl}/memories/${memoryId}/photos`, body);
+  }
+
+  /** Closes the session and releases unused reserved storage. */
+  completeUploadSession(
+    memoryId: string,
+    uploadSessionId: string,
+    body: CompleteUploadSessionRequest,
+  ): Observable<CompleteUploadSessionResponse> {
+    return this.http
+      .post<CompleteUploadSessionResponse>(
+        `${this.apiUrl}/memories/${memoryId}/upload-sessions/${uploadSessionId}/complete`,
+        body,
+      )
+      .pipe(this.invalidateOnSuccess());
   }
 
   updateMemory(memory_id: string, memoryData: FormGroup): Observable<UpdateStandardResponse> {

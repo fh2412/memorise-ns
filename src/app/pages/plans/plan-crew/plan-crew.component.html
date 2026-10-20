@@ -21,7 +21,7 @@
   <!-- Notice the two-way binding with [(crew)] -->
   <app-crew-selector [(crew)]="selectedCrew" />
 
-  <button mat-flat-button [disabled]="!canSubmit()" (click)="startPlanningMemory()">
+  <button mat-flat-button (click)="startPlanningMemory()">
     @if (saving()) { <mat-progress-spinner mode="indeterminate" diameter="18" /> } Start planning
   </button>
   @if (error()) { <p class="error" role="alert">{{ error() }}</p> }

@@ -10,15 +10,29 @@ import { MatIcon } from '@angular/material/icon';
 import { FeedbackButtonComponent } from '../feedback-button/feedback-button.component';
 import { ThemeSwitcherComponent } from '../theme-switcher/theme-switcher.component';
 import { SubscriptionStatusComponent } from '../subscription-status/subscription-status.component';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AsyncPipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-main-nav',
   templateUrl: './mainnav.component.html',
   styleUrls: ['./mainnav.component.scss'],
-  imports: [MatSidenavContainer, MatSidenav, MatToolbar, MatNavList, MatListItem, MatIcon, FeedbackButtonComponent, ThemeSwitcherComponent, SubscriptionStatusComponent, MatSidenavContent, RouterOutlet, AsyncPipe]
+  imports: [
+    MatSidenavContainer,
+    MatSidenav,
+    MatToolbar,
+    MatNavList,
+    MatListItem,
+    MatIcon,
+    FeedbackButtonComponent,
+    ThemeSwitcherComponent,
+    SubscriptionStatusComponent,
+    MatSidenavContent,
+    RouterOutlet,
+    RouterLink,
+    AsyncPipe,
+  ],
 })
 export class MainNavComponent {
   private breakpointObserver = inject(BreakpointObserver);

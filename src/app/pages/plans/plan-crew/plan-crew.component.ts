@@ -37,13 +37,15 @@ export class PlanCrewComponent {
   readonly saving = signal(false);
   readonly error = signal<string | null>(null);
 
-  readonly canSubmit = computed(() => this.memoryTitle().trim().length > 0 && !this.saving());
+  readonly emptyTitle = computed(() => this.memoryTitle().trim().length > 0 && !this.saving());
 
   /** One id per form → a retry after a lost response returns the same memory instead of a duplicate. */
   private readonly requestId = crypto.randomUUID();
 
   async startPlanningMemory(): Promise<void> {
-    if (!this.canSubmit()) return;
+    if (!this.emptyTitle()){
+      this.memoryTitle.set('');
+    };
 
     this.saving.set(true);
     this.error.set(null);

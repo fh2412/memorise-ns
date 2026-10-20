@@ -19,11 +19,10 @@
   </section>
 
   <!-- Notice the two-way binding with [(crew)] -->
-  <app-crew-selector [(crew)]="selectedCrew"> </app-crew-selector>
-  
-  <button mat-flat-button class="start-btn" 
-          (click)="startPlanningMemory()">
-    <mat-icon>arrow_forward</mat-icon>
-    Start Planning with your Crew!
+  <app-crew-selector [(crew)]="selectedCrew" />
+
+  <button mat-flat-button [disabled]="!canSubmit()" (click)="startPlanningMemory()">
+    @if (saving()) { <mat-progress-spinner mode="indeterminate" diameter="18" /> } Start planning
   </button>
+  @if (error()) { <p class="error" role="alert">{{ error() }}</p> }
 </div>

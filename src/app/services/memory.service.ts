@@ -8,6 +8,7 @@ import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, U
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest, RegisterPhotoResponse, CompleteUploadSessionRequest, CompleteUploadSessionResponse } from '@models/photo-upload.model';
+import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.model';
 
 @Injectable({
   providedIn: 'root'
@@ -152,6 +153,12 @@ export class MemoryService {
 
   createMemory(memoryData: MemoryFormData): Observable<CreateMemoryResponse> {
     return this.http.post<CreateMemoryResponse>(`${this.apiUrl}/memories/createMemory`, memoryData).pipe(this.invalidateOnSuccess());
+  }
+
+  create(request: CreateMemoryRequest): Observable<CreateMemoryResult> {
+    return this.http
+      .post<CreateMemoryResult>(`${this.apiUrl}/memories`, request)
+      .pipe(this.invalidateOnSuccess());
   }
 
   deleteMemoryAndFriends(memoryId: string): Observable<DeleteStandardResponse> {

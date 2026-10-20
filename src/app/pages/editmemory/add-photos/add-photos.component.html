@@ -1,12 +1,8 @@
-<div class="header">
-  <div class="headline">
-    <h1>ADD PHOTOS</h1>
-  </div>
-  <div class="actions">
-    <app-back-button class="back-button"></app-back-button>
-  </div>
-</div>
+<header class="header">
+  <app-back-button />
+  <h1>Add photos to your memory</h1>
+</header>
 
-<div class="photo-container">
-  <app-memory-add-photos [memoryId]="memoryId.toString()" />
-</div>
+@if (memoryId(); as id) {
+  <app-memory-add-photos [memoryId]="id" />
+}

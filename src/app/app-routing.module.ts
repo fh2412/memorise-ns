@@ -44,7 +44,7 @@ export const routes: Routes = [
   },
   {
     path: 'editmemory/:id/addphotos',
-    loadChildren: () => import('./pages/editmemory/add-photos/add-photos.module').then(m => m.AddPhotosModule),
+    loadComponent: () => import('./pages/editmemory/add-photos/add-photos.component').then(m => m.AddPhotosComponent),
     canActivate: [authGuard]
   },
   {

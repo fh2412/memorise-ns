@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { BillingService } from '@services/billing.service';
+import { PhotoMetadataService } from '@services/photo-metadata.service';
 import { PickedPhoto } from '@models/photo-upload.model';
 import { UnsupportedImageError, fileKey, isPotentialImage, processImage } from '../../utils/image-processing';
 import { createLimiter } from '../../utils/concurrency';
@@ -30,6 +31,7 @@ const MAX_REJECTED_SHOWN = 5;
 })
 export class PhotoPickerComponent {
   private readonly billing = inject(BillingService);
+  private readonly metadata = inject(PhotoMetadataService);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   /** Two-way bound photo list. Photos are addressed by `id`, never by index. */
@@ -116,6 +118,7 @@ export class PhotoPickerComponent {
           thumbnail: null,
           width: 0,
           height: 0,
+          meta: null,
         });
       }
     }
@@ -134,12 +137,16 @@ export class PhotoPickerComponent {
     if (this.destroyed || !photo) return; // removed while waiting
 
     try {
-      const { width, height, thumbnail } = await processImage(photo.file);
+      // EXIF is read from the untouched original, in parallel to the thumbnail rendering.
+      const [{ width, height, thumbnail }, meta] = await Promise.all([
+        processImage(photo.file),
+        this.metadata.read(photo.file),
+      ]);
       if (this.destroyed || !this.find(id)) return; // removed while processing
 
       const previewUrl = URL.createObjectURL(thumbnail);
       this.ownedUrls.add(previewUrl);
-      this.patch(id, { status: 'ready', width, height, thumbnail, previewUrl });
+      this.patch(id, { status: 'ready', width, height, thumbnail, previewUrl, meta });
     } catch (error) {
       if (this.destroyed || !this.find(id)) return;
       this.patch(id, {

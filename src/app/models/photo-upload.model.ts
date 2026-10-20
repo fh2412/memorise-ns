@@ -3,6 +3,7 @@
 // Every photo is addressed by its `id` (client-generated UUID) – never by index.
 // The same id is used as Storage file name and as `clientId` in the backend.
 // ─────────────────────────────────────────────────────────────────────────────
+import { PhotoMeta } from '@models/photo-metadata.model';
 
 export type PickedPhotoStatus = 'processing' | 'ready' | 'error';
 
@@ -19,6 +20,8 @@ export interface PickedPhoto {
   /** Orientation-corrected dimensions of the original. */
   width: number;
   height: number;
+  /** EXIF data (capture time, GPS). null if none found or not a JPEG. */
+  meta: PhotoMeta | null;
   error?: string;
 }
 
@@ -57,6 +60,9 @@ export interface UploadJob {
   width: number;
   height: number;
   isCover: boolean;
+  takenAt: string | null;
+  lat: number | null;
+  lng: number | null;
   status: UploadJobStatus;
   bytesTransferred: number;
   /** original + thumbnail */
@@ -68,7 +74,7 @@ export interface UploadJob {
   thumb?: StoredObject;
 }
 
-// ── Backend DTOs (new routes, implemented in the backend step) ───────────────
+// ── Backend DTOs ─────────────────────────────────────────────────────────────
 
 /** POST /memories/:memoryId/upload-sessions */
 export interface CreateUploadSessionRequest {
@@ -97,7 +103,7 @@ export interface RegisterPhotoRequest {
   mimeType: string;
   originalFileName: string;
   isCover: boolean;
-  // Filled in Phase 4 (EXIF)
+  /** Local wall-clock time "YYYY-MM-DDTHH:mm:ss" (no time zone). */
   takenAt?: string | null;
   lat?: number | null;
   lng?: number | null;

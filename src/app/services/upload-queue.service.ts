@@ -111,6 +111,9 @@ export class UploadQueueService {
         width: photo.width,
         height: photo.height,
         isCover: photo.id === request.coverPhotoId,
+        takenAt: photo.meta?.takenAt ?? null,
+        lat: photo.meta?.lat ?? null,
+        lng: photo.meta?.lng ?? null,
         status: 'queued',
         bytesTransferred: 0,
         totalBytes: photo.file.size + photo.thumbnail.size,
@@ -292,6 +295,9 @@ export class UploadQueueService {
         mimeType: mimeType(job.file),
         originalFileName: job.fileName,
         isCover: job.isCover,
+        takenAt: job.takenAt,
+        lat: job.lat,
+        lng: job.lng,
       }),
     );
   }

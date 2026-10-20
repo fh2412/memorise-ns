@@ -25,6 +25,7 @@
 
 .pill {
   all: unset;
+  pointer-events: auto;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;

@@ -10,6 +10,7 @@ import { UploadQueueService } from '@services/upload-queue.service';
 import { BillingService } from '@services/billing.service';
 import { UserService } from '@services/userService';
 import { PickedPhoto, isReadyPhoto } from '@models/photo-upload.model';
+import { Router } from '@angular/router';
 
 /**
  * Adds photos to an EXISTING memory
@@ -26,6 +27,7 @@ export class MemoryAddPhotosComponent {
   private readonly uploadQueue = inject(UploadQueueService);
   private readonly billing = inject(BillingService);
   private readonly userService = inject(UserService);
+  private readonly router = inject(Router);
 
   readonly memoryId = input.required<string>();
   /** Emits the number of queued photos – e.g. to close a dialog/panel. */
@@ -75,6 +77,8 @@ export class MemoryAddPhotosComponent {
 
       this.photos.set([]);
       this.uploadStarted.emit(queued);
+
+      await this.router.navigate(['/memory', this.memoryId()]);
     } catch (err) {
       this.error.set(
         err instanceof HttpErrorResponse && err.status === 409

@@ -4,6 +4,10 @@ import { PhotoInsights } from '@models/photo-metadata.model';
 import { CrewMember } from '@models/userInterface.model';
 import { toCrewPayload, toIsoDate } from '../../utils/memory-create.mapper';
 
+// WICHTIG: Importiere die Funktionen hier aus deinem utils-File 
+// (Pfade ggf. an deine Ordnerstruktur anpassen, z.B. '../utils/...'):
+import { sameDay } from 'app/utils/memory-dates';
+
 export type LocationSource = 'map' | 'photos' | 'activity';
 
 export interface SelectedLocation {
@@ -76,7 +80,7 @@ export interface FormSnapshot {
 export interface ApplicableSuggestions {
   title: string | null;
   dateRange: { start: Date; end: Date } | null;
-  location: SelectedLocation | null;
+  location:SelectedLocation | null;
 }
 
 /**
@@ -135,18 +139,6 @@ export function hasSuggestions(s: ApplicableSuggestions): boolean {
 export function placeLabel(loc: Pick<SelectedLocation, 'city' | 'country' | 'lat' | 'lng'>): string {
   if (loc.city && loc.country) return `${loc.city}, ${loc.country}`;
   return loc.city || loc.country || `${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}`;
-}
-
-const DATE_FORMAT = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-
-export function formatDateRange(start: Date, end: Date | null): string {
-  if (!end || sameDay(start, end)) return DATE_FORMAT.format(start);
-  return DATE_FORMAT.formatRange(start, end);
-}
-
-export function sameDay(a: Date | null, b: Date | null): boolean {
-  if (!a || !b) return a === b;
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
 }
 
 function clampToToday(date: Date, today: Date): Date {

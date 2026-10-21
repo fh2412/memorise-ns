@@ -35,10 +35,10 @@ import { describeCreateMemoryError } from '../../utils/memory-create.mapper';
 import { formatBytes } from '../../utils/format-bytes';
 import {
   FormSnapshot, SelectedLocation, applicableSuggestions, buildCreateRequest,
-  formatDateRange, hasSuggestions, placeLabel,
+  hasSuggestions, placeLabel,
 } from './create-memory.helpers';
+import { formatDateRange } from 'app/utils/memory-dates';
 
-/** ADJUST: route of the memory detail page. */
 const memoryDetailRoute = (memoryId: number) => ['/memory', memoryId];
 
 /** "No activity" row – same value the old flow and plan-crew use. */

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Storage } from '@angular/fire/storage';
-import { forkJoin, lastValueFrom, Observable, of, tap } from 'rxjs';
+import { forkJoin, lastValueFrom, map, Observable, of, tap } from 'rxjs';
 import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
@@ -9,6 +9,7 @@ import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest, RegisterPhotoResponse, CompleteUploadSessionRequest, CompleteUploadSessionResponse } from '@models/photo-upload.model';
 import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.model';
+import { MemoryPhoto } from '@models/memory-photo.model';
 
 @Injectable({
   providedIn: 'root'
@@ -86,6 +87,12 @@ export class MemoryService {
   getMemorysFriendsWithShared(memory_id: number, user_id: string) {
     // Implement the logic to fetch user data from your backend API
     return this.http.get<MemoryDetailFriend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends-with-shared-count`);
+  }
+
+  getPhotos(memoryId: number | string): Observable<MemoryPhoto[]> {
+    return this.http
+      .get<{ photos: MemoryPhoto[] }>(`${this.apiUrl}/memories/${memoryId}/photos`)
+      .pipe(map(response => response.photos ?? []));
   }
 
   /** Reserves storage for an upload. 409 { code: 'STORAGE_FULL' } if not enough space. */
@@ -212,30 +219,6 @@ export class MemoryService {
     }
 
     return requests.length === 0 ? of(null) : forkJoin(requests);
-  }
-
-  async checkMemoriseUserPermission(memoryId: string, loggedInUserId: string): Promise<boolean> {
-    try {
-      const creator: Memory = await lastValueFrom(
-        this.getMemory(Number(memoryId))
-      );
-      const creatorId = creator.user_id;
-
-      const friends: Friend[] = await lastValueFrom(
-        this.getMemorysFriends(memoryId, creatorId)
-      );
-
-      if (Array.isArray(friends)) {
-        const friendIds = friends.map(friend => friend.user_id);
-        return friendIds.includes(loggedInUserId) || creatorId === loggedInUserId;
-      }
-      else {
-        return creatorId === loggedInUserId;
-      }
-    } catch (error) {
-      console.error('Failed to fetch memory friends:', error);
-      return false;
-    }
   }
 
   generateShareLink(memoryId: string): Observable<ShareLinkResponse> {

@@ -73,10 +73,8 @@
 
 .bio-content {
   height: 160px;
-  /* Adjust height as needed */
   overflow-y: auto;
   display: flex;
-  /* Make the content itself a flex container */
   align-items: center;
   margin-left: 2rem;
 }
@@ -127,7 +125,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     color: transparent; // Hide the text by default
-    font-size: 20px; // Adjust the font size as needed
+    font-size: 20px;
     opacity: 0; // Initially hide the icon
     transition: color 0.3s ease, opacity 0.3s ease; // Add transitions for smooth effect
 

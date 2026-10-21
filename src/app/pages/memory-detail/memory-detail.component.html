@@ -1,189 +1,228 @@
-@if (memorydb) {
-  <section class="bd-home-section bd-theme-memorise">
-    <app-back-button [text]="'Back'" class="back-button"></app-back-button>
-    <div>
-      <mat-toolbar>
-        <h1>{{memorydb.title}}</h1>
-        <span class="example-spacer"></span>
-        @if (hasPrivileges) {
-          <button mat-stroked-button (click)="openDownloadPage()">
-            <mat-icon>download</mat-icon>
-            <span class="button-text">Download</span>
-          </button>
-          <button mat-stroked-button [routerLink]="['/editmemory', memoryId]" style="margin-left: 5px;">
-            <mat-icon>edit</mat-icon>
-            <span class="button-text">Edit</span>
-          </button>
-        }
-      </mat-toolbar>
-      @if (displayImages) {
-        <mat-card appearance="outlined">
-          <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-            @for (image of displayImages; track $index) {
-              <mat-grid-tile [colspan]="$index === 0 ? 2 : 1" [rowspan]="$index === 0 ? 2 : 1">
-                @if (isLoadingImages) {
-                  <div class="spinner-wrapper">
-                    <mat-progress-spinner diameter="40" mode="indeterminate"></mat-progress-spinner>
-                  </div>
-                }
-                @else {
-                <img class="image-size" [src]="image.url" [alt]="'Memory picture ' + $index">
-              }
-            </mat-grid-tile>
-          }
-          <div style="position: absolute; bottom: 24px; right: 24px;">
-            <button mat-stroked-button (click)="openGallery()" class="show-all-btn">
-              <mat-icon>apps</mat-icon>
-              Show all pictures ({{imagesWithMetadata.length}})
-            </button>
-          </div>
-        </mat-grid-list>
-      </mat-card>
+<div class="page bd-theme-memorise">
+  @switch (state()) {
+    @case ('loading') {
+      <div class="page-loading" role="status" aria-label="Loading memory">
+        <mat-progress-spinner mode="indeterminate" diameter="40" />
+      </div>
     }
-    <br><br>
-    <div style="overflow: hidden;">
-      <!--@if (activity && activity.id !== 1) {
-      <br>
-        <mat-card class="activity-card" matRipple appearance="outlined" [style.cursor]="'pointer'"
-          (click)="openActivityPage()">
-          <mat-card-content class="card-content">
-            <div class="icon-section">
-              <mat-icon class="notification-icon">
-                info
-              </mat-icon>
+
+    @case ('ready') {
+      @if (memory(); as memory) {
+        <!-- Header -->
+        <header class="page-header">
+          <app-back-button [text]="'Back'" />
+          <h1 class="title">{{ memory.title }}</h1>
+          @if (hasPrivileges()) {
+            <div class="header-actions">
+              <button mat-stroked-button type="button" aria-label="Download memory" (click)="openDownloadPage()">
+                <mat-icon>download</mat-icon>
+                <span class="label">Download</span>
+              </button>
+              <a mat-stroked-button [routerLink]="['/editmemory', memoryId()]" aria-label="Edit memory">
+                <mat-icon>edit</mat-icon>
+                <span class="label">Edit</span>
+              </a>
             </div>
-            <div class="text-section">
-              <h3 class="card-title">Activity: {{activity.title}}</h3>
-              <p class="card-subtitle">
-                This Memory was created with an activity. Click to view it!
+          }
+        </header>
+
+        <!-- Background uploads for this memory -->
+        @if (upload(); as up) {
+          @if (up.busy || up.failed > 0) {
+            <div class="upload-banner" role="status" [class.has-errors]="!up.busy && up.failed > 0">
+              <div class="upload-text">
+                @if (up.busy) {
+                  <mat-icon>cloud_upload</mat-icon>
+                  <span>Uploading photos · {{ up.done }} of {{ up.total }}</span>
+                } @else {
+                  <mat-icon>error</mat-icon>
+                  <span>{{ up.failed }} {{ up.failed === 1 ? 'photo' : 'photos' }} could not be uploaded – check the upload panel.</span>
+                }
+              </div>
+              @if (up.busy) {
+                <mat-progress-bar mode="determinate" [value]="up.percent" />
+              }
+            </div>
+          }
+        }
+
+        <!-- Photos: fixed 5-tile layout, gray tiles for missing photos -->
+        <section class="photo-grid" aria-label="Photos" [class.is-loading]="photosState() === 'loading'">
+          @for (photo of previewTiles(); track $index) {
+            <div class="tile" [class.hero]="$first">
+              @if (photo) {
+                <img [src]="photo.thumbUrl" [alt]="'Photo ' + ($index + 1) + ' of ' + memory.title"
+                  [attr.width]="photo.width" [attr.height]="photo.height"
+                  [attr.loading]="$first ? 'eager' : 'lazy'" decoding="async"
+                  (error)="markBroken(photo.photoId)" />
+              }
+            </div>
+          }
+
+          @if (photos().length > 0) {
+            <button mat-flat-button type="button" class="show-all" (click)="openGallery()">
+              <mat-icon>apps</mat-icon>
+              <span class="label">Show all photos</span>
+              ({{ photos().length }})
+            </button>
+          }
+        </section>
+
+        @if (photosState() === 'error') {
+          <p class="inline-error" role="alert">
+            <mat-icon>error</mat-icon>
+            <span>Photos could not be loaded.</span>
+            <button mat-button type="button" (click)="retryPhotos()">Retry</button>
+          </p>
+        }
+
+        <div class="content">
+          <!-- Main column -->
+          <div class="main">
+            <section class="card summary" aria-label="Summary">
+              <p class="meta">
+                @if (dates(); as d) {
+                  <span class="meta-item"><mat-icon>event</mat-icon>{{ d.label }}</span>
+                }
+                <span class="meta-item"><mat-icon>group</mat-icon>{{ peopleLabel() }}</span>
+                @if (location(); as loc) {
+                  @if (loc.city || loc.country) {
+                    <span class="meta-item">
+                      <mat-icon>place</mat-icon>{{ loc.city }}{{ loc.city && loc.country ? ', ' : '' }}{{ loc.country }}
+                    </span>
+                  }
+                }
               </p>
-            </div>
-          </mat-card-content>
-        </mat-card>
-        }-->
-        <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-          <mat-grid-tile colspan="3">
-            <div class="full-width">
-              <span>
-                {{ selectedDate | date }},
-                {{ memorydbFriends && memorydbFriends.length ? (memorydbFriends.length + 1) + ' people' : 'solo memory' }}
-              </span>
-              @if (memoryCreator) {
-                <div class="profile-row">
-                  <img src="{{this.memoryCreator.profilepic}}" alt="Profile Picture" class="profile-image">
-                  <div class="text">
-                    <b>{{ memoryCreator.name || 'name' }}</b><br>
-                    <span>{{ memoryCreator.dob | date }}, {{ memoryCreator.gender || 'gender' }}</span>
+
+              @if (creator(); as creator) {
+                <div class="people">
+                  <div class="creator">
+                    <img class="avatar avatar-lg" [src]="creator.profilepic || defaultAvatar" alt="" />
+                    <div class="creator-text">
+                      <strong>{{ creator.name }}</strong>
+                      <span>Created this memory</span>
+                    </div>
                   </div>
-                  @if (memorydbFriends) {
-                    <mat-divider vertical style="height: 4rem; margin-left: 3rem;"></mat-divider>
-                    <app-friends-profile-pics [friends]="memorydbFriends"></app-friends-profile-pics>
+                  @if (crew().length > 0) {
+                    <app-friends-profile-pics [friends]="crew()" />
                   }
                 </div>
               }
-              <mat-card appearance="outlined" class="desc big-screen">
-                @if (memorydb.text.length > 0) {
-                  <mat-card-content>
-                    <div class="truncated-description" #descriptionText>{{ memorydb.text }}</div>
-                    @if (showMoreButton) {
-                      <button mat-stroked-button (click)="openFullDescDialog()">
-                        Show more
-                        <mat-icon>chevron_right</mat-icon>
-                      </button>
-                    }
-                  </mat-card-content>
+            </section>
+
+            <section class="card" aria-labelledby="description-heading">
+              <h2 id="description-heading">Description</h2>
+              @if (description()) {
+                <p #descriptionText class="description-text">{{ memory.text }}</p>
+                @if (descriptionOverflows()) {
+                  <button mat-button type="button" (click)="openFullDescDialog()">
+                    Show more
+                    <mat-icon iconPositionEnd>chevron_right</mat-icon>
+                  </button>
                 }
-                @if (memorydb.text.length === 0) {
-                  <mat-card-content class="memory-card" appearance="outlined">
-                    There is no Discription added to your Memory yet!
-                    Provide more Information to remember your Adventure forever!
-                  </mat-card-content>
-                }
-              </mat-card>
-            </div>
-          </mat-grid-tile>
-          <mat-grid-tile>
-            <mat-calendar [selected]="dateRange" [startAt]="selectedDate"></mat-calendar>
-          </mat-grid-tile>
-        </mat-grid-list>
-        <mat-card appearance="outlined" class="desc small-screen">
-          @if (memorydb.text.length>0) {
-            <mat-card-content>
-              <div class="truncated-description" #descriptionTextSmall>{{ memorydb.text }}</div>
-              @if (showMoreButton) {
-                <button mat-stroked-button (click)="openFullDescDialog()">
-                  Show more
-                  <mat-icon>chevron_right</mat-icon>
-                </button>
-              }
-            </mat-card-content>
-          }
-          @if (memorydb.text.length === 0) {
-            <mat-card-content class="memory-card" appearance="outlined">There is no
-              Discription added
-              to your Memory yet!
-            Provide more Information to remember your Adventure forever!</mat-card-content>
-          }
-        </mat-card>
-        <br><br>
-        @if (memorydbFriends !== null) {
-          <mat-card appearance="outlined" style="overflow: hidden;">
-            <table mat-table [dataSource]="memorydbFriends">
-              <!-- Profile Picture Column -->
-              <ng-container matColumnDef="profilePicture">
-                <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
-                <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
-                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
-              </ng-container>
-              <!-- Name Column -->
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Name </th>
-                <td mat-cell *matCellDef="let user"> {{user.name}} </td>
-              </ng-container>
-              <!-- Birthday Column -->
-              <ng-container matColumnDef="birthday">
-                <th mat-header-cell *matHeaderCellDef> Birthday </th>
-                <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
-              </ng-container>
-              <!-- Country Column -->
-              <ng-container matColumnDef="country">
-                <th mat-header-cell *matHeaderCellDef> Country </th>
-                <td mat-cell *matCellDef="let user">{{user.country || 'Not Provided'}}</td>
-              </ng-container>
-              <!-- Shared Memories Column -->
-              <ng-container matColumnDef="sharedMemories">
-                <th mat-header-cell *matHeaderCellDef> Shared Memories </th>
-                <td mat-cell *matCellDef="let user">
-                  @if (user.friendship_status === "accepted" || user.user_id === loggedInUserId) {
-                    {{ user.sharedMemoriesCount }}
-                  } @else {
-                    <button mat-stroked-button (click)="addFriend(user)" [disabled]="user.friendship_status !== 'none'"><mat-icon>person_add</mat-icon>{{ user.friendship_status === 'none' ? 'Add' : 'Requested' }}</button>
+              } @else {
+                <p class="empty-state">
+                  No description yet.
+                  @if (hasPrivileges()) {
+                    Add a few lines to remember this adventure forever.
                   }
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-          </mat-card>
-        }
-        @if (!memorydbFriends?.length) {
-          <mat-card class="memory-card" appearance="outlined">
-            <mat-card-content>You have not yet added Friends to your Memory! Go ahead and do so right now: Memoriseing is
-            more fun together!</mat-card-content>
-          </mat-card>
-        }
-        <br>
-          @if (location !== null) {
-            <div class="desc" style="height: 300px; border-radius: 0%;">
-              <app-map-snippet [lng]="location.longitude" [lat]="location.latitude"></app-map-snippet>
-            </div>
+                </p>
+              }
+            </section>
+
+            <section class="card" aria-labelledby="crew-heading">
+              <h2 id="crew-heading">Crew</h2>
+              @if (crew().length > 0) {
+                <ul class="crew-list">
+                  @for (friend of crew(); track friend.user_id) {
+                    <li class="crew-row">
+                      <img class="avatar" [src]="friend.profilepic || defaultAvatar" alt="" />
+                      <div class="crew-info">
+                        <span class="crew-name">{{ friend.name }}</span>
+                        <span class="crew-meta">
+                          @if (friend.dob) { {{ friend.dob | date }} }
+                          @if (friend.dob && friend.country) { · }
+                          {{ friend.country }}
+                        </span>
+                      </div>
+                      <div class="crew-action">
+                        @if (isKnown(friend)) {
+                          <span class="shared" [attr.aria-label]="friend.sharedMemoriesCount + ' shared memories'">
+                            <mat-icon>photo_library</mat-icon>{{ friend.sharedMemoriesCount }}
+                          </span>
+                        } @else {
+                          <button mat-stroked-button type="button" [disabled]="friend.friendship_status !== 'none'"
+                            (click)="addFriend(friend)">
+                            <mat-icon>person_add</mat-icon>
+                            {{ friend.friendship_status === 'none' ? 'Add' : 'Requested' }}
+                          </button>
+                        }
+                      </div>
+                    </li>
+                  }
+                </ul>
+              } @else {
+                <p class="empty-state">
+                  Nobody else is part of this memory yet.
+                  @if (hasPrivileges()) { Memorising is more fun together! }
+                </p>
+              }
+            </section>
+          </div>
+
+          <!-- Side column (below the main column on small screens) -->
+          <aside class="side">
+            @if (dates(); as d) {
+              <section class="card calendar-card" aria-label="Calendar">
+                <mat-calendar [selected]="d.range" [startAt]="d.start" />
+              </section>
+            }
+
+            <section class="card" aria-labelledby="location-heading">
+              <h2 id="location-heading">Location</h2>
+              @if (location(); as loc) {
+                <div class="map">
+                  <app-map-snippet [lat]="loc.latitude" [lng]="loc.longitude" />
+                </div>
+              } @else {
+                <p class="empty-state">No location added.</p>
+              }
+            </section>
+          </aside>
+        </div>
+      }
+    }
+
+    @default {
+      <div class="page-message" role="alert">
+        <mat-icon class="page-message-icon">
+          @switch (state()) {
+            @case ('not-found') { search_off }
+            @case ('forbidden') { lock }
+            @default { cloud_off }
           }
-          @if (location === null) {
-            <mat-card class="memory-card" appearance="outlined">
-              <mat-card-content>No location data available!</mat-card-content>
-            </mat-card>
+        </mat-icon>
+        <h1>
+          @switch (state()) {
+            @case ('not-found') { Memory not found }
+            @case ('forbidden') { No access to this memory }
+            @default { Something went wrong }
+          }
+        </h1>
+        <p>
+          @switch (state()) {
+            @case ('not-found') { It may have been deleted, or the link is wrong. }
+            @case ('forbidden') { Ask a member of this memory to invite you. }
+            @default { The memory could not be loaded. Please check your connection. }
+          }
+        </p>
+        <div class="page-message-actions">
+          <a mat-button routerLink="/home">Go home</a>
+          @if (state() === 'error') {
+            <button mat-flat-button type="button" (click)="retry()">Try again</button>
           }
         </div>
       </div>
-    </section>
+    }
   }
+</div>

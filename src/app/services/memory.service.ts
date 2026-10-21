@@ -1,8 +1,8 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
+import { Storage } from '@angular/fire/storage';
 import { forkJoin, lastValueFrom, Observable, of, tap } from 'rxjs';
-import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
@@ -78,19 +78,6 @@ export class MemoryService {
     );
   }
 
-  async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {
-    const path = `memories/${memoryId}/picture_${starredIndex + 1}.jpg`;
-    const storageRef = ref(this.storage, path);
-
-    try {
-      const downloadURL = await getDownloadURL(storageRef);
-      return downloadURL; // The download URL of the file
-    } catch (error) {
-      console.error('Error getting download URL:', error);
-      throw error; // You may handle this error accordingly
-    }
-  }
-
   getMemorysFriends(memory_id: string, user_id: string) {
     // Implement the logic to fetch user data from your backend API
     return this.http.get<Friend[]>(`${this.apiUrl}/memories/${memory_id}/${user_id}/friends`);
@@ -129,13 +116,6 @@ export class MemoryService {
     return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData).pipe(this.invalidateOnSuccess());
   }
 
-  incrementPictureCount(memoryId: string, increment: number): Observable<{ message: string; newCount: number }> {
-    return this.http.post<{ message: string; newCount: number }>(
-      `${this.apiUrl}/memories/picturecount/${memoryId}/increment`,
-      { increment }
-    );
-  }
-
   updateMemoryLocation(memoryId: number, locationId: number): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateMemoryLocation/${memoryId}`;
     return this.http.put<UpdateStandardResponse>(url, { locationId });
@@ -149,10 +129,6 @@ export class MemoryService {
   updateMemoryTitle(memoryId: string | null, newTitle: string): Observable<UpdateStandardResponse> {
     const url = `${this.apiUrl}/memories/updateMemoryTitle/${memoryId}`;
     return this.http.put<UpdateStandardResponse>(url, { newTitle }).pipe(this.invalidateOnSuccess());
-  }
-
-  createMemory(memoryData: MemoryFormData): Observable<CreateMemoryResponse> {
-    return this.http.post<CreateMemoryResponse>(`${this.apiUrl}/memories/createMemory`, memoryData).pipe(this.invalidateOnSuccess());
   }
 
   create(request: CreateMemoryRequest): Observable<CreateMemoryResult> {

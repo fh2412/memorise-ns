@@ -20,7 +20,7 @@
 }
 
 .search-workspace {
-    margin-top: 24px;
+  margin-top: 24px;
   position: relative;
   width: 100%;
 }
@@ -30,10 +30,13 @@
 }
 
 .results-dropdown {
+  list-style: none;
+  margin: 0;
   position: absolute;
   top: calc(100% - 4px);
   left: 0;
   width: 100%;
+  box-sizing: border-box;
   background: var(--mat-sys-surface-container-high);
   border-radius: 0 0 12px 12px;
   border: 1px solid var(--mat-sys-outline-variant);
@@ -44,20 +47,33 @@
   padding: 8px 0;
 }
 
+// Real <button> → keyboard + screen reader support
 .result-row {
+  all: unset;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
+  width: 100%;
+  min-height: 56px; // touch target
   padding: 10px 16px;
   gap: 12px;
   cursor: pointer;
+  text-align: left;
   transition: background-color 0.2s ease;
 
-  &:hover {
+  &:hover,
+  &:focus-visible {
     background: var(--mat-sys-surface-container-highest);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
   }
 }
 
 .row-avatar {
+  flex-shrink: 0;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -73,12 +89,16 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+  min-width: 0;
 }
 
 .row-name {
   font: var(--mat-sys-body-large);
   font-weight: 500;
   color: var(--mat-sys-on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .row-meta {
@@ -87,6 +107,7 @@
 }
 
 .action-icon {
+  flex-shrink: 0;
   color: var(--mat-sys-on-surface-variant);
 
   &.highlighted {

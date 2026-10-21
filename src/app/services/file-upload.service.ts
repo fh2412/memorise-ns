@@ -4,7 +4,6 @@ import {
   deleteObject, getMetadata, Storage, ref, updateMetadata, uploadBytesResumable,
   listAll, getDownloadURL, StorageReference, FullMetadata,
 } from '@angular/fire/storage';
-import { ImageFileWithDimensions } from '../components/image-upload/image-upload.component';
 import { BillingService, DeletionData } from './billing.service';
 import { StoredObject } from '@models/photo-upload.model';
 
@@ -232,43 +231,6 @@ export class FileUploadService {
   }
 
   // ── Legacy ─────────────────────────────────────────────────────────────────
-
-  /**
-   * @deprecated Only used by the old UploadProgressDialogComponent.
-   * Delete together with the old create page in Phase 5.
-   */
-  uploadMemoryPicture(
-    memoryId: string,
-    file: ImageFileWithDimensions,
-    userId: string,
-    isStarred: boolean
-  ): Observable<{ progress?: number, downloadURL?: string }> {
-    const uniqueId = `${Date.now()}_${Math.random().toString(36).slice(2, 11)}`;
-    const storageRef = ref(this.storage, `memories/${memoryId}/${uniqueId}.jpg`);
-    const metadata = {
-      customMetadata: {
-        width: file.width.toString(),
-        height: file.height.toString(),
-        isStarred: isStarred.toString(),
-        userId: userId,
-        uploadedAt: new Date().toISOString()
-      }
-    };
-    const uploadTask = uploadBytesResumable(storageRef, file.file, metadata);
-
-    return new Observable((observer) => {
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => observer.next({ progress: (snapshot.bytesTransferred / snapshot.totalBytes) * 100 }),
-        (error) => observer.error(error),
-        async () => {
-          observer.next({ downloadURL: await getDownloadURL(storageRef) });
-          observer.complete();
-        }
-      );
-    });
-  }
-
   starImage(index: number, starredIndex: number | null, oldStarredImageUrl: string, newStarredImageUrl: string) {
     if (starredIndex !== null && starredIndex !== index) {
       const prevImageRef = ref(this.storage, oldStarredImageUrl);

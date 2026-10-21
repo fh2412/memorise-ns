@@ -54,7 +54,7 @@ export const routes: Routes = [
   },
   {
     path: 'newmemory',
-    loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
+    loadComponent: () => import('./pages/create-memory/create-memory.component').then(m => m.CreateMemoryComponent),
     canActivate: [authGuard]
   },
   /*{

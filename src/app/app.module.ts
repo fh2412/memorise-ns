@@ -25,7 +25,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ChangePasswordDialogComponent } from './components/_dialogs/change-password-dialog/change-password-dialog.component';
-import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -82,7 +81,6 @@ import { UploadIndicatorComponent } from '@components/upload-indicator/upload-in
     SubscriptionStatusComponent,
     MainNavComponent,
     ChangePasswordDialogComponent,
-    UploadProgressDialogComponent,
     PinnedDialogComponent,
     CompanyDialogComponent,
     UploadIndicatorComponent

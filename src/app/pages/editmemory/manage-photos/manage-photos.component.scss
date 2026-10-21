@@ -32,11 +32,11 @@
     bottom: 0; /* Positions the container at the bottom */
     left: 0; /* Positions the container on the left side */
     width: 100%; /* Stretches the container across the entire width */
-    height: 100px; /* Adjust the height as needed */
+    height: 100px; 
     display: flex;
     flex-wrap: nowrap; /* Ensures images stay on one line */
     overflow-x: auto; /* Enables horizontal scrollbar if needed */
-    padding: 5px; /* Adjust padding as needed */
+    padding: 5px; 
     border-radius: 5px; /* Optional border radius */
     margin-top: 20px;
   }
@@ -46,7 +46,7 @@
   }
 
   .images-to-delete-container img {
-    margin: 0 5px; /* Adjust margin between images */
+    margin: 0 5px;
     width: 100px;
     height: 100px;
     object-fit: cover;

@@ -1,0 +1,81 @@
+@if (visible()) {
+  @if (expanded()) {
+    <section class="panel" id="upload-panel" aria-label="Uploads">
+      <header class="panel-header">
+        <span>Uploads</span>
+        <button mat-icon-button type="button" aria-label="Collapse uploads" (click)="toggle()">
+          <mat-icon>expand_more</mat-icon>
+        </button>
+      </header>
+
+      <ul class="job-list">
+        @for (job of queue.jobs(); track job.id) {
+          <li class="job" [attr.data-status]="job.status">
+            <mat-icon class="status-icon">{{ statusIcon(job.status) }}</mat-icon>
+
+            <div class="job-main">
+              <span class="job-name" [title]="job.fileName">{{ job.fileName }}</span>
+              @switch (job.status) {
+                @case ('uploading') {
+                  <mat-progress-bar mode="determinate" [value]="jobPercent(job)" />
+                }
+                @case ('registering') {
+                  <mat-progress-bar mode="indeterminate" />
+                }
+                @case ('failed') {
+                  <span class="job-error">{{ job.error }}</span>
+                }
+                @case ('queued') {
+                  <span class="job-meta">Waiting…</span>
+                }
+                @case ('canceled') {
+                  <span class="job-meta">Canceled</span>
+                }
+              }
+            </div>
+
+            @if (job.status === 'failed') {
+              <button mat-icon-button type="button" [attr.aria-label]="'Retry ' + job.fileName" title="Retry"
+                (click)="queue.retry(job.id)">
+                <mat-icon>refresh</mat-icon>
+              </button>
+              <button mat-icon-button type="button" [attr.aria-label]="'Dismiss ' + job.fileName" title="Dismiss"
+                (click)="queue.cancel(job.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            } @else if (canCancel(job)) {
+              <button mat-icon-button type="button" [attr.aria-label]="'Cancel ' + job.fileName" title="Cancel"
+                (click)="queue.cancel(job.id)">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </li>
+        }
+      </ul>
+
+      @if (queue.failedCount() > 0) {
+        <footer class="panel-footer">
+          <button mat-button type="button" (click)="queue.retryAllFailed()">
+            <mat-icon>refresh</mat-icon>
+            Retry all failed
+          </button>
+        </footer>
+      }
+    </section>
+  }
+
+  <button type="button" class="pill"
+    [class.has-errors]="!queue.isBusy() && queue.failedCount() > 0"
+    [attr.aria-expanded]="expanded()" aria-controls="upload-panel"
+    (click)="toggle()">
+    @if (queue.isBusy()) {
+      <mat-progress-spinner mode="determinate" diameter="22" [value]="percent()" />
+    } @else if (queue.failedCount() > 0) {
+      <mat-icon>error</mat-icon>
+    } @else {
+      <mat-icon>check_circle</mat-icon>
+    }
+    <span aria-live="polite">{{ label() }}</span>
+    <mat-icon class="chevron">{{ expanded() ? 'expand_more' : 'expand_less' }}</mat-icon>
+  </button>
+}

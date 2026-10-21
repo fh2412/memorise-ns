@@ -1,0 +1,312 @@
+:host {
+  display: block;
+  position: relative;
+  border-radius: 16px;
+  outline: 2px dashed transparent;
+  outline-offset: 6px;
+  transition: outline-color 0.15s ease;
+}
+
+:host(.dragging) {
+  outline-color: var(--mat-sys-primary);
+}
+
+// ── Empty state ──────────────────────────────────────────────────────────────
+
+.dropzone {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: clamp(180px, 30vh, 280px);
+  padding: 24px;
+  border: 2px dashed var(--mat-sys-outline-variant);
+  border-radius: 16px;
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+
+  &:hover,
+  &:focus-visible,
+  :host(.dragging) & {
+    border-color: var(--mat-sys-primary);
+    background: var(--mat-sys-surface-container);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.dropzone-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  color: var(--mat-sys-primary);
+}
+
+.dropzone-title {
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-on-surface);
+}
+
+.dropzone-hint {
+  font: var(--mat-sys-body-medium);
+}
+
+// ── Toolbar / notices ────────────────────────────────────────────────────────
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 12px;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+
+  strong {
+    color: var(--mat-sys-on-surface);
+  }
+}
+
+.processing {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notice,
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font: var(--mat-sys-body-medium);
+
+  mat-icon {
+    flex-shrink: 0;
+  }
+}
+
+.notice-error {
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
+}
+
+.notice-warning {
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  border: 1px solid var(--mat-sys-outline-variant);
+
+  > span {
+    flex: 1;
+  }
+}
+
+.rejected {
+  align-items: flex-start;
+  margin-top: 12px;
+
+  > div {
+    flex: 1;
+  }
+
+  ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.hint {
+  padding: 0;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+
+  mat-icon {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    color: var(--mat-sys-primary);
+  }
+}
+
+// ── Grid ─────────────────────────────────────────────────────────────────────
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); // 3 columns on a 360px phone
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}
+
+.tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--mat-sys-surface-container-highest);
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.is-cover {
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: -3px;
+  }
+
+  &.has-error {
+    background: var(--mat-sys-error-container);
+  }
+}
+
+.tile-skeleton {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+.tile-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+  text-align: center;
+  color: var(--mat-sys-on-error-container);
+  font: var(--mat-sys-label-small);
+
+  .file-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.8;
+  }
+}
+
+.tile-action {
+  position: absolute;
+  top: 4px;
+  color: #fff;
+  background: color-mix(in srgb, var(--mat-sys-scrim) 45%, transparent);
+  backdrop-filter: blur(4px);
+}
+
+.cover-btn {
+  left: 4px;
+
+  &[aria-pressed='true'] {
+    color: #ffd54f;
+  }
+}
+
+.remove-btn {
+  right: 4px;
+}
+
+// Desktop: show actions on hover/focus. Touch: always visible.
+@media (hover: hover) and (pointer: fine) {
+  .tile:not(.has-error) .tile-action {
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .tile:hover .tile-action,
+  .tile:focus-within .tile-action,
+  .tile .cover-btn[aria-pressed='true'] {
+    opacity: 1;
+  }
+}
+
+.cover-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font: var(--mat-sys-label-small);
+  pointer-events: none;
+}
+
+.add-tile {
+  background: transparent;
+
+  button {
+    all: unset;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border: 2px dashed var(--mat-sys-outline-variant);
+    border-radius: 12px;
+    color: var(--mat-sys-on-surface-variant);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+
+    &:hover,
+    &:focus-visible {
+      border-color: var(--mat-sys-primary);
+      background: var(--mat-sys-surface-container);
+      color: var(--mat-sys-primary);
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+  }
+}
+
+@keyframes pulse {
+  from { opacity: 1; }
+  to { opacity: 0.55; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-skeleton {
+    animation: none;
+  }
+}

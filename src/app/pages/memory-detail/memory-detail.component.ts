@@ -1,274 +1,324 @@
-import { Component, ElementRef, OnInit, ViewChild, inject } from '@angular/core';
-import { MemoryService } from '@services/memory.service';
+import {
+  ChangeDetectionStrategy, Component, ElementRef, PLATFORM_ID,
+  computed, effect, inject, signal, untracked, viewChild,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { UserService } from '@services/userService';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
-import { getStorage, ref, listAll, getDownloadURL, getMetadata } from "@angular/fire/storage";
-import { DateRange, MatCalendar } from '@angular/material/datepicker';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { DateRange, MatDatepickerModule } from '@angular/material/datepicker';
+import { DatePipe } from '@angular/common';
+import { Observable, firstValueFrom } from 'rxjs';
+
+import { MemoryService } from '@services/memory.service';
+import { UserService } from '@services/userService';
 import { LocationService } from '@services/location.service';
-import { FullDescriptionDialogComponent } from '@components/_dialogs/full-description-dialog/full-description-dialog.component';
 import { ImageGalleryService } from '@services/image-gallery.service';
+import { FriendsService } from '@services/friends.service';
+import { UploadQueueService } from '@services/upload-queue.service';
+import { FullDescriptionDialogComponent } from '@components/_dialogs/full-description-dialog/full-description-dialog.component';
+import { BackButtonComponent } from '@components/back-button/back-button.component';
+import { FriendsProfilePicsComponent } from '@components/friends-profile-pics/friends-profile-pics.component';
+import { MapSnippetComponent } from '@components/map-snippet/map-snippet.component';
 import { Memory } from '@models/memoryInterface.model';
 import { MemoriseUser, MemoryDetailFriend } from '@models/userInterface.model';
 import { MemoriseLocation } from '@models/location.model';
-import { ActivityService } from '@services/activity.service';
-import { firstValueFrom } from 'rxjs';
-import { FriendsService } from '@services/friends.service';
-import { ActivityDetails } from '@models/activityInterface.model';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { BackButtonComponent } from '../../components/back-button/back-button.component';
-import { MatToolbar } from '@angular/material/toolbar';
-import { MatButton } from '@angular/material/button';
-import { MatIcon } from '@angular/material/icon';
-import { MatCard, MatCardContent } from '@angular/material/card';
-import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatDivider } from '@angular/material/divider';
-import { FriendsProfilePicsComponent } from '../../components/friends-profile-pics/friends-profile-pics.component';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { MapSnippetComponent } from '../../components/map-snippet/map-snippet.component';
-import { DatePipe } from '@angular/common';
+import { MemoryPhoto } from '@models/memory-photo.model';
+import { NO_LOCATION_ID } from '@models/memory-constants';
+import {
+  PageState, memoryDates, pageStateForError, peopleLabel, previewTiles,
+  toImageWithMetadata, uploadProgressFor,
+} from './memory-detail.helpers';
 
+/** Kept for existing imports (gallery, download page, ImageGalleryService). */
+export type { ImageWithMetadata } from '@models/memory-photo.model';
 
-export interface ImageWithMetadata {
-  url: string;
-  width: number;
-  height: number;
-  created: string;
-  size: number;
-  userId: string;
-}
-
+const DEFAULT_AVATAR = '/assets/img/1.png';
 
 @Component({
   selector: 'app-memory-detail',
   templateUrl: './memory-detail.component.html',
-  styleUrl: 'memory-detail.component.scss',
-  imports: [BackButtonComponent, MatToolbar, MatButton, MatIcon, RouterLink, MatCard, MatGridList, MatGridTile, MatProgressSpinner, MatDivider, FriendsProfilePicsComponent, MatCardContent, MatCalendar, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MapSnippetComponent, DatePipe]
+  styleUrl: './memory-detail.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterLink,
+    DatePipe,
+    MatButtonModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
+    MatDatepickerModule,
+    BackButtonComponent,
+    FriendsProfilePicsComponent,
+    MapSnippetComponent,
+  ],
 })
-export class MemoryDetailComponent implements OnInit {
-  private memoryService = inject(MemoryService);
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private userService = inject(UserService);
-  dialog = inject(MatDialog);
-  private locationService = inject(LocationService);
-  private imageDataService = inject(ImageGalleryService);
-  private friendsService = inject(FriendsService);
-  private activityService = inject(ActivityService);
-  private snackBar = inject(MatSnackBar);
+export class MemoryDetailComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly memoryService = inject(MemoryService);
+  private readonly userService = inject(UserService);
+  private readonly locationService = inject(LocationService);
+  private readonly imageDataService = inject(ImageGalleryService);
+  private readonly friendsService = inject(FriendsService);
+  private readonly uploadQueue = inject(UploadQueueService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  memorydb!: Memory;
-  memoryId = 0;
-  memoryCreator!: MemoriseUser;
-  loggedInUserId: string | null = null;
-  memorydbFriends: MemoryDetailFriend[] | null = [];
-  selectedDate = new Date(2024, 1, 1);
-  endDate = new Date(2024, 1, 1);
-  dateRange!: DateRange<Date>;
-  location: MemoriseLocation | null = null;
-  activity: ActivityDetails | null = null;
+  protected readonly defaultAvatar = DEFAULT_AVATAR;
+  protected readonly loggedInUserId = this.userService.getLoggedInUserId();
 
-  displayedColumns: string[] = ['profilePicture', 'name', 'birthday', 'country', 'sharedMemories'];
+  // ── Route ────────────────────────────────────────────────────────────────
 
-  showMoreButton = false;
-  @ViewChild('descriptionText') descriptionText!: ElementRef;
-  @ViewChild('descriptionTextSmall') descriptionTextSmall!: ElementRef;
+  private readonly params = toSignal(this.route.paramMap, { requireSync: true });
+  /** Reacts to /memory/1 → /memory/2 without recreating the component. */
+  protected readonly memoryId = computed(() => Number(this.params()!.get('id')));
 
+  // ── State ────────────────────────────────────────────────────────────────
 
-  imagesWithMetadata: ImageWithMetadata[] = [];
-  isLoadingImages = true;
-  hasPrivileges = false;
+  protected readonly state = signal<PageState>('loading');
+  protected readonly memory = signal<Memory | null>(null);
+  protected readonly creator = signal<MemoriseUser | null>(null);
+  protected readonly crew = signal<MemoryDetailFriend[]>([]);
+  protected readonly location = signal<MemoriseLocation | null>(null);
+  private readonly isMember = signal(false);
 
-  async ngOnInit(): Promise<void> {
-    this.loggedInUserId = this.userService.getLoggedInUserId();
-    this.memoryId = this.route.snapshot.params['id'];
-    await this.getUsersPermissions();
-    await this.getMemoryInfo();
-    this.checkTruncation()
-  }
+  protected readonly photos = signal<MemoryPhoto[]>([]);
+  protected readonly photosState = signal<'loading' | 'ready' | 'error'>('loading');
+  /** Photos whose image failed to load (e.g. deleted in Storage) → shown as gray tile. */
+  protected readonly brokenPhotoIds = signal<ReadonlySet<string>>(new Set());
 
+  // ── Derived ──────────────────────────────────────────────────────────────
 
-  private async getUsersPermissions(): Promise<void> {
-    if (this.loggedInUserId) {
-      this.hasPrivileges = await this.memoryService.checkMemoriseUserPermission(this.memoryId.toString(), this.loggedInUserId);
-    }
-  }
+  protected readonly hasPrivileges = computed(() => {
+    const memory = this.memory();
+    const me = this.loggedInUserId;
+    return !!me && !!memory && (String(memory.user_id) === me || this.isMember());
+  });
 
-  private async getMemoryInfo(): Promise<void> {
-    if (!this.loggedInUserId) return;
+  protected readonly dates = computed(() => {
+    const memory = this.memory();
+    const dates = memory ? memoryDates(memory.memory_date, memory.memory_end_date) : null;
+    return dates ? { ...dates, range: new DateRange<Date>(dates.start, dates.end) } : null;
+  });
 
-    try {
-      const memoryData = await firstValueFrom(this.memoryService.getMemory(this.memoryId));
-      this.memorydb = memoryData;
+  protected readonly peopleLabel = computed(() => peopleLabel(this.crew().length));
+  protected readonly description = computed(() => this.memory()?.text?.trim() ?? '');
 
-      await this.initializeMemoryDetails();
-      const activityData = await firstValueFrom(this.activityService.getActivityDetails(this.memorydb.activity_id));
-      this.activity = activityData;
+  protected readonly previewTiles = computed(() =>
+    previewTiles(this.photos().filter(p => !this.brokenPhotoIds().has(p.photoId))),
+  );
 
-      const friendsData = await firstValueFrom(this.memoryService.getMemorysFriendsWithShared(this.memoryId, this.loggedInUserId));
-      this.memorydbFriends = friendsData.length ? friendsData : null;
+  protected readonly upload = computed(() =>
+    uploadProgressFor(this.uploadQueue.jobs(), String(this.memoryId())),
+  );
 
-      const memoryCreator = await firstValueFrom(this.userService.getUser(this.memorydb.user_id.toString()));
-      this.memoryCreator = memoryCreator;
+  // ── Description "Show more" ──────────────────────────────────────────────
 
-    } catch (error) {
-      console.error('Error fetching memory data:', error);
-    }
-  }
+  private readonly descriptionEl = viewChild<ElementRef<HTMLElement>>('descriptionText');
+  protected readonly descriptionOverflows = signal(false);
 
-  private initializeMemoryDetails(): void {
-    this.selectedDate = new Date(this.memorydb.memory_date);
-    this.endDate = new Date(this.memorydb.memory_end_date);
-    this.dateRange = new DateRange(this.selectedDate, this.endDate);
-    this.getImages(this.memorydb.memory_id);
-    this.fetchLocationData(this.memorydb.location_id);
-  }
+  // ── Loading ──────────────────────────────────────────────────────────────
 
-  private fetchLocationData(locationId: number): void {
-    this.locationService.getLocationById(locationId).subscribe(
-      (locationData) => {
-        this.location = locationData.location_id === 1 ? null : locationData;
-      },
-      (error: Error) => console.error('Error fetching location data:', error)
-    );
-  }
+  /** Incremented per memory → responses of a previous memory are ignored. */
+  private generation = 0;
+  private lastHandledUploadSession = this.uploadQueue.lastFinalized()?.uploadSessionId ?? null;
 
-  checkTruncation() {
-    const elements = [
-      this.descriptionText?.nativeElement,
-      this.descriptionTextSmall?.nativeElement
-    ];
-
-    const activeElement = elements.find(el => el && el.offsetHeight > 0);
-
-    if (activeElement) {
-      this.showMoreButton = activeElement.scrollHeight > activeElement.offsetHeight + 1;
-    } else {
-      this.showMoreButton = false;
-    }
-  }
-
-  get displayImages(): ImageWithMetadata[] {
-    const imagesToShow = [...this.imagesWithMetadata];
-    while (imagesToShow.length < 5) {
-      imagesToShow.push({
-        url: 'assets/img/placeholder_image.png',
-        width: 0,
-        height: 0,
-        created: 'placeholder',
-        size: 0,
-        userId: '',
-      });
-    }
-    return imagesToShow.slice(0, 5); // Ensure it's always 5 items
-  }
-
-
-  private getImages(imageId: number): void {
-    const storage = getStorage();
-    const listRef = ref(storage, `memories/${imageId}`);
-    this.isLoadingImages = true;
-    this.imagesWithMetadata = [];
-
-    listAll(listRef).then((res) => {
-      const fetchPromises = res.items.map((itemRef) => {
-        const fullRef = ref(storage, itemRef.fullPath);
-        return getDownloadURL(fullRef).then((url) =>
-          getMetadata(fullRef).then((metadata) => ({
-            url,
-            width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
-            height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
-            created: metadata.timeCreated,
-            size: metadata.size,
-            userId: metadata.customMetadata?.['userId'] || '',
-          }))
-        );
-      });
-
-      Promise.all(fetchPromises).then((images) => {
-        this.imagesWithMetadata = images;
-        this.isLoadingImages = false;
-      });
-    }).catch((error) => {
-      console.error('Error listing items:', error);
-      this.isLoadingImages = false;
+  constructor() {
+    effect(() => {
+      const id = this.memoryId();
+      untracked(() => void this.load(id));
     });
+
+    // Reload photos once a background upload for this memory finished.
+    effect(() => {
+      const finalized = this.uploadQueue.lastFinalized();
+      if (!finalized || finalized.uploadSessionId === this.lastHandledUploadSession) return;
+      untracked(() => {
+        if (finalized.memoryId !== String(this.memoryId())) return;
+        this.lastHandledUploadSession = finalized.uploadSessionId;
+        void this.loadPhotos(this.memoryId(), this.generation);
+      });
+    });
+
+    // Line-clamp overflow check; re-runs on resize and when the text changes.
+    if (this.isBrowser) {
+      effect(onCleanup => {
+        this.description();
+        const el = this.descriptionEl()?.nativeElement;
+        if (!el) {
+          this.descriptionOverflows.set(false);
+          return;
+        }
+        const check = () => this.descriptionOverflows.set(el.scrollHeight > el.clientHeight + 1);
+        const observer = new ResizeObserver(check);
+        observer.observe(el);
+        check();
+        onCleanup(() => observer.disconnect());
+      });
+    }
   }
 
-  async addFriend(friendToRequest: MemoryDetailFriend): Promise<void> {
-    let message = 'Error sending Friend Request!';
-    const newStatus = 'requested';
+  private async load(id: number): Promise<void> {
+    const gen = ++this.generation;
+    this.reset();
 
-    if (!this.loggedInUserId || !this.memorydbFriends) {
-      this.showSnackbar(message);
+    if (!Number.isInteger(id) || id <= 0) {
+      this.state.set('not-found');
       return;
     }
 
+    let memory: Memory;
     try {
-      await firstValueFrom(
-        this.friendsService.sendFriendRequest(this.loggedInUserId, friendToRequest.user_id)
+      memory = await firstValueFrom(this.memoryService.getMemory(id));
+    } catch (error) {
+      if (gen === this.generation) this.state.set(pageStateForError(error));
+      return;
+    }
+    if (gen !== this.generation) return;
+    if (!memory) {
+      this.state.set('not-found');
+      return;
+    }
+
+    this.memory.set(memory);
+    this.state.set('ready');
+
+    const me = this.loggedInUserId;
+    const creatorId = String(memory.user_id);
+
+    // Everything else in parallel – the page is already visible.
+    void this.loadPhotos(id, gen);
+    await Promise.allSettled([
+      this.apply(gen, this.userService.getUser(creatorId), user => this.creator.set(user), 'creator'),
+      me
+        ? this.apply(gen, this.memoryService.getMemorysFriendsWithShared(id, me), crew => this.crew.set(crew ?? []), 'crew')
+        : null,
+      memory.location_id && memory.location_id !== NO_LOCATION_ID
+        ? this.apply(gen, this.locationService.getLocationById(memory.location_id),
+            loc => this.location.set(loc?.location_id === NO_LOCATION_ID ? null : loc), 'location')
+        : null,
+      me && me !== creatorId
+        ? this.apply(gen, this.memoryService.isUserMemoryMember(id, me), r => this.isMember.set(!!r?.isMember), 'membership')
+        : null,
+    ]);
+  }
+
+  private async loadPhotos(id: number, gen: number): Promise<void> {
+    if (this.photos().length === 0) this.photosState.set('loading');
+    try {
+      const photos = await firstValueFrom(this.memoryService.getPhotos(id));
+      if (gen !== this.generation) return;
+      this.photos.set(photos);
+      this.brokenPhotoIds.set(new Set());
+      this.photosState.set('ready');
+    } catch (error) {
+      if (gen !== this.generation) return;
+      console.error('Loading photos failed:', error);
+      this.photosState.set('error');
+    }
+  }
+
+  private async apply<T>(gen: number, source: Observable<T>, set: (value: T) => void, label: string): Promise<void> {
+    try {
+      const value = await firstValueFrom(source);
+      if (gen === this.generation) set(value);
+    } catch (error) {
+      console.error(`Loading ${label} failed:`, error);
+    }
+  }
+
+  private reset(): void {
+    this.state.set('loading');
+    this.memory.set(null);
+    this.creator.set(null);
+    this.crew.set([]);
+    this.location.set(null);
+    this.isMember.set(false);
+    this.photos.set([]);
+    this.photosState.set('loading');
+    this.brokenPhotoIds.set(new Set());
+  }
+
+  // ── Actions ──────────────────────────────────────────────────────────────
+
+  protected retry(): void {
+    void this.load(this.memoryId());
+  }
+
+  protected retryPhotos(): void {
+    void this.loadPhotos(this.memoryId(), this.generation);
+  }
+
+  protected markBroken(photoId: string): void {
+    this.brokenPhotoIds.update(ids => new Set(ids).add(photoId));
+  }
+
+  protected openGallery(): void {
+    this.imageDataService.updateImageData(this.photos().map(toImageWithMetadata));
+    void this.router.navigate(['memory', this.memoryId(), 'gallery']);
+  }
+
+  protected openDownloadPage(): void {
+    const memory = this.memory();
+    if (!memory) return;
+
+    this.imageDataService.updateImageData(this.photos().map(toImageWithMetadata));
+
+    const creator = this.creator();
+    const crew = this.crew();
+    if (creator) {
+      this.friendsService.updateFriendsData([
+        ...crew,
+        {
+          country: creator.country,
+          dob: null,
+          name: creator.name,
+          profilepic: creator.profilepic,
+          sharedMemoriesCount: 0,
+          user_id: creator.user_id,
+          friendship_status: 'none',
+        },
+      ]);
+    }
+
+    void this.router.navigate(['memory', this.memoryId(), 'download'], { state: { memory } });
+  }
+
+  protected openFullDescDialog(): void {
+    this.dialog.open(FullDescriptionDialogComponent, {
+      data: { description: this.memory()?.text ?? '' },
+      maxWidth: 'min(720px, 100vw)',
+    });
+  }
+
+  protected async addFriend(friend: MemoryDetailFriend): Promise<void> {
+    const me = this.loggedInUserId;
+    if (!me) return;
+
+    try {
+      await firstValueFrom(this.friendsService.sendFriendRequest(me, friend.user_id));
+      this.crew.update(crew =>
+        crew.map(c => (c.user_id === friend.user_id ? { ...c, friendship_status: 'requested' } : c)),
       );
-      this.memorydbFriends = this.memorydbFriends.map(currentFriend => {
-        if (currentFriend.user_id === friendToRequest.user_id) {
-          return {
-            ...currentFriend,
-            friendship_status: newStatus
-          };
-        }
-        return currentFriend;
-      });
-
-      message = 'Friend Request was sent!';
-
+      this.showSnackbar('Friend request sent!');
     } catch (error) {
       console.error('Failed to send friend request:', error);
+      this.showSnackbar('Friend request could not be sent.');
     }
-
-    this.showSnackbar(message);
   }
 
-  // Optional helper method for cleaner snackbar logic
+  protected isKnown(friend: MemoryDetailFriend): boolean {
+    return friend.friendship_status === 'accepted' || friend.user_id === this.loggedInUserId;
+  }
+
   private showSnackbar(message: string): void {
-    this.snackBar.open(message, 'Close', {
-      duration: 3000,
-      horizontalPosition: 'center',
-      verticalPosition: 'bottom'
-    });
-  }
-
-  openGallery() {
-    this.imageDataService.updateImageData(this.imagesWithMetadata);
-    this.router.navigate(['memory', this.memoryId, 'gallery']);
-  }
-
-  openActivityPage() {
-    this.router.navigate(['activity/details', this.activity?.id]);
-  }
-
-  openDownloadPage(): void {
-    this.imageDataService.updateImageData(this.imagesWithMetadata);
-    if (this.memorydbFriends) {
-      const memoriesUser: MemoryDetailFriend[] = [
-        ...this.memorydbFriends,
-        {
-          country: this.memoryCreator.country,
-          dob: null,
-          name: this.memoryCreator.name,
-          profilepic: this.memoryCreator.profilepic,
-          sharedMemoriesCount: 0,
-          user_id: this.memoryCreator.user_id,
-          friendship_status: "none"
-        }
-      ];
-      this.friendsService.updateFriendsData(memoriesUser);
-    }
-    this.router.navigate(['memory', this.memoryId, 'download'], {
-      state: { memory: this.memorydb }
-    });
-  }
-
-  openFullDescDialog(): void {
-    this.dialog.open(FullDescriptionDialogComponent, { data: { description: this.memorydb.text } });
+    this.snackBar.open(message, 'Close', { duration: 3000 });
   }
 }

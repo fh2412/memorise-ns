@@ -17,47 +17,46 @@
     <input matInput type="text" [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
       placeholder="e.g. Maxi" autocomplete="off" />
     @if (searchQuery()) {
-    <button matSuffix mat-icon-button aria-label="Clear" (click)="searchQuery.set('')">
+    <button matSuffix mat-icon-button type="button" aria-label="Clear search" (click)="searchQuery.set('')">
       <mat-icon>close</mat-icon>
     </button>
     }
   </mat-form-field>
 
   @if (searchQuery()) {
-  <div class="results-dropdown">
+  <ul class="results-dropdown" aria-label="Search results">
     @for (friend of filteredFriends(); track friend.user_id) {
-    <div class="result-row" (click)="addFriendToCrew(friend)" (keypress)="addFriendToCrew(friend)" aria-hidden="true">
-      <div class="row-avatar">
-        {{ friend.name.substring(0,2).toUpperCase() }}
-      </div>
-      <div class="row-info">
-        <span class="row-name">{{ friend.name }}</span>
-        <span class="row-meta">{{ friend.sharedMemoriesCount }} shared memories</span>
-      </div>
-      <mat-icon class="action-icon">add_circle</mat-icon>
-    </div>
+    <li>
+      <button type="button" class="result-row" (click)="addFriendToCrew(friend)">
+        <span class="row-avatar" aria-hidden="true">{{ friend.name.substring(0,2).toUpperCase() }}</span>
+        <span class="row-info">
+          <span class="row-name">{{ friend.name }}</span>
+          <span class="row-meta">{{ friend.sharedMemoriesCount }} shared memories</span>
+        </span>
+        <mat-icon class="action-icon" aria-hidden="true">add_circle</mat-icon>
+      </button>
+    </li>
     }
 
     @if (showPlaceholderOption()) {
-    <div class="result-row placeholder-action" (click)="addPlaceholderToCrew()" (keypress)="addPlaceholderToCrew()"
-      aria-hidden="true">
-      <div class="row-avatar ghost-avatar">
-        <mat-icon>person_add</mat-icon>
-      </div>
-      <div class="row-info">
-        <span class="row-name">Create placeholder for "{{ searchQuery() }}"</span>
-        <span class="row-meta">Not on Memorise yet. You can link them via invite later.</span>
-      </div>
-      <mat-icon class="action-icon highlighted">bolt</mat-icon>
-    </div>
+    <li>
+      <button type="button" class="result-row placeholder-action" (click)="addPlaceholderToCrew()">
+        <span class="row-avatar ghost-avatar" aria-hidden="true"><mat-icon>person_add</mat-icon></span>
+        <span class="row-info">
+          <span class="row-name">Create placeholder for "{{ searchQuery() }}"</span>
+          <span class="row-meta">Not on Memorise yet. You can link them via invite later.</span>
+        </span>
+        <mat-icon class="action-icon highlighted" aria-hidden="true">bolt</mat-icon>
+      </button>
+    </li>
     }
 
     @if (filteredFriends().length === 0 && !showPlaceholderOption()) {
-    <div class="empty-search-row">
+    <li class="empty-search-row">
       <p>Already added or no matching options found.</p>
-    </div>
+    </li>
     }
-  </div>
+  </ul>
   }
 </section>
 

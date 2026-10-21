@@ -8,7 +8,7 @@
   box-sizing: border-box;
   max-width: 1400px;
   margin-inline: auto;
-  // Bottom space keeps the last row (and the paginator) clear of the FAB.
+  // keeps the last row clear of the FAB
   padding: 0 16px 112px;
 
   @media (min-width: 600px) {
@@ -39,6 +39,7 @@ app-view-selector {
 
 .page-title {
   margin: 0;
+
   @media (max-width: 600px) {
     font-size: 25px;
   }
@@ -50,6 +51,48 @@ app-view-selector {
   font-style: italic;
   color: var(--mat-sys-on-surface-variant);
 }
+
+// ── Active memory banner slot ─────────────────────────────────────────────
+// A grid-rows 1fr <-> 0fr trick animates the height without knowing it, so the
+// banner slides open when it loads instead of popping in and shoving the page.
+.active-slot {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition:
+    grid-template-rows 0.3s ease,
+    opacity 0.3s ease;
+  animation: slot-reveal 0.45s ease-out;
+
+  &.is-collapsed {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+    animation: none;
+  }
+}
+
+.active-slot-inner {
+  min-height: 0; // required for the 0fr row to actually collapse
+  overflow: hidden;
+}
+
+.active-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0 4px;
+}
+
+@keyframes slot-reveal {
+  from {
+    grid-template-rows: 0fr;
+    opacity: 0;
+  }
+}
+
 
 // ── Sticky toolbar ────────────────────────────────────────────────────────
 .toolbar {
@@ -198,11 +241,6 @@ app-view-selector {
   }
 }
 
-.paginator {
-  margin-top: 24px;
-  background: transparent;
-}
-
 // ── Empty / error states ──────────────────────────────────────────────────
 .state {
   display: flex;
@@ -260,4 +298,32 @@ app-view-selector {
     right: 24px;
     bottom: calc(24px + env(safe-area-inset-bottom, 0px));
   }
+}
+
+.sentinel {
+  height: 1px;
+}
+
+.list-end {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 32px 0 0;
+  text-align: center;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+
+  p {
+    margin: 0;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }

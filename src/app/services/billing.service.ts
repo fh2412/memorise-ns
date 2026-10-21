@@ -10,93 +10,75 @@ export interface DeletionData {
   path: string;
 }
 
+const GiB = 1024 ** 3;
+
 @Injectable({
   providedIn: 'root'
 })
 export class BillingService {
   private http = inject(HttpClient);
+  private apiUrl = `${environment.apiUrl}/billing`;
 
   private userStorageData = signal<UserStorageData | null>(null);
 
-  // Computed signal for storage in GB
-  readonly storageUsedGB = computed(() => {
-    const data = this.userStorageData();
-    if (!data) return 0;
-    return data.storageUsedBytes / (1024 * 1024 * 1024);
-  });
+  readonly accountType = computed(() => this.userStorageData()?.accountType ?? AccountType.FREE);
 
-  readonly storageMaxGB = computed(() => {
-    const data = this.userStorageData();
-    if (!data) return 0;
-    return data.stroageMaxBytes;
-  });
+  readonly storageUsedBytes = computed(() => this.userStorageData()?.storageUsedBytes ?? 0);
 
-  // Computed signal for Accounttype
-  readonly accountType = computed(() => {
-    const data = this.userStorageData();
-    if (!data) return AccountType.FREE;
-    return data.accountType;
-  });
-
-  // Computed signal to check if user can create new memory
-  readonly canCreateNewMemory = computed(() => {
-    const data = this.userStorageData();
-    if (!data) return false;
-
-    if (data.accountType === AccountType.UNLIMITED) {
-      return true;
+  /** Plan limit in bytes. Infinity for UNLIMITED. */
+  readonly storageLimitBytes = computed(() => {
+    // TODO: once the backend sends a reliable limit (model field `stroageMaxBytes` has a typo), use that instead.
+    switch (this.accountType()) {
+      case AccountType.UNLIMITED: return Infinity;
+      case AccountType.PRO: return 50 * GiB;
+      case AccountType.FREE: return 5 * GiB;
+      default: return 0;
     }
-
-    if (data.accountType === AccountType.PRO) {
-      return this.storageUsedGB() < 50;
-    }
-
-    if (data.accountType === AccountType.FREE) {
-      const storageGB = this.storageUsedGB();
-      return storageGB < 5;
-    }
-
-    return false;
   });
 
-  // Computed signal for storage limit message
+  /**
+   * Bytes the user can still upload.
+   * Infinity while storage data isn't loaded – the backend enforces the real limit anyway.
+   */
+  readonly remainingBytes = computed(() => {
+    if (!this.userStorageData()) return Infinity;
+    return Math.max(0, this.storageLimitBytes() - this.storageUsedBytes());
+  });
+
+  readonly storageUsedGB = computed(() => this.storageUsedBytes() / GiB);
+
+  /** FIX: previously returned raw bytes. Now GB, Infinity for UNLIMITED. */
+  readonly storageMaxGB = computed(() => this.storageLimitBytes() / GiB);
+
+  readonly canCreateNewMemory = computed(() => !!this.userStorageData() && this.remainingBytes() > 0);
+
   readonly storageStatusMessage = computed(() => {
-    const data = this.userStorageData();
-    if (!data) return '';
-
-    const storageGB = this.storageUsedGB();
-
-    if (data.accountType === AccountType.FREE) {
-      return `Storage: ${storageGB.toFixed(2)} GB / 5 GB`;
-    }
-
-    return `Storage: ${storageGB.toFixed(2)} GB (Unlimited)`;
+    if (!this.userStorageData()) return '';
+    const used = this.storageUsedGB().toFixed(2);
+    const max = this.storageMaxGB();
+    return Number.isFinite(max)
+      ? `Storage: ${used} GB / ${max} GB`
+      : `Storage: ${used} GB (Unlimited)`;
   });
 
-
-  private apiUrl = `${environment.apiUrl}/billing`;
-
-  updateFreeUserStorageUsed(user_id: string, data_size: number): Observable<any> {
+  /** Legacy client-side accounting. The new upload flow lets the backend count storage. */
+  updateFreeUserStorageUsed(user_id: string, data_size: number): Observable<unknown> {
     this.updateStorageUsed(data_size);
     return this.http.put(`${this.apiUrl}/freetier/${user_id}`, { data_size });
   }
 
   async updateStorageOnDeletion(dataArray: DeletionData[]): Promise<void> {
-    if (dataArray.length === 0) {
-      return;
-    }
+    if (dataArray.length === 0) return;
 
-    const updatePromises: Promise<any>[] = dataArray.map(del => {
-      const updateObservable = this.updateFreeUserStorageUsed(del.userId, -del.size);
-      this.updateStorageUsed(-del.size);
-      return firstValueFrom(updateObservable);
-    });
+    // FIX: updateFreeUserStorageUsed already adjusts the local value – no second local update.
+    const updates = dataArray.map(del =>
+      firstValueFrom(this.updateFreeUserStorageUsed(del.userId, -del.size)),
+    );
 
     try {
-      await Promise.all(updatePromises);
-      console.log("All storage updates completed successfully.");
+      await Promise.all(updates);
     } catch (error) {
-      console.error("One or more storage updates failed:", error);
+      console.error('One or more storage updates failed:', error);
       throw error;
     }
   }
@@ -105,13 +87,18 @@ export class BillingService {
     this.userStorageData.set(data);
   }
 
-  updateStorageUsed(storageUsedBytes: number): void {
-    const currentData = this.userStorageData();
-    if (currentData) {
-      this.userStorageData.set({
-        ...currentData,
-        storageUsedBytes
-      });
-    }
+  /** Sets the absolute value (e.g. from a backend response). */
+  setStorageUsedBytes(storageUsedBytes: number): void {
+    this.userStorageData.update(current => current ? { ...current, storageUsedBytes } : current);
+  }
+
+  /**
+   * Adjusts the used storage by a DELTA (positive = added, negative = freed).
+   * FIX: previously overwrote the total with the delta.
+   */
+  updateStorageUsed(deltaBytes: number): void {
+    this.userStorageData.update(current =>
+      current ? { ...current, storageUsedBytes: Math.max(0, current.storageUsedBytes + deltaBytes) } : current,
+    );
   }
 }

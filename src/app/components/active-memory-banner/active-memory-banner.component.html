@@ -1,0 +1,49 @@
+@if (!isDismissed()) {
+<section class="banner" [class.no-photo]="!memory().title_pic"
+  [attr.aria-label]="'Happening now: ' + (memory().title || 'memory')">
+  @if (memory().title_pic) {
+  <img class="cover" [src]="memory().title_pic" alt="" decoding="async" />
+  }
+
+  <!-- Real link over the whole card: keyboard focus, middle-click, open in new tab. -->
+  <a class="banner-link" [routerLink]="['/memory', memory().memory_id]"
+    [attr.aria-label]="'Open memory ' + (memory().title || 'without title')"></a>
+
+  <div class="status-chip">
+    <span class="live-dot" aria-hidden="true"></span>
+    <span>Happening now</span>
+    @if (progress(); as p) {
+    <span aria-hidden="true">·</span>
+    <span>{{ p.total > 1 ? 'Day ' + p.day + ' of ' + p.total : 'Today' }}</span>
+    }
+  </div>
+
+  <button mat-icon-button type="button" class="dismiss" aria-label="Hide until tomorrow" title="Not today"
+    (click)="dismiss()">
+    <mat-icon>close</mat-icon>
+  </button>
+
+  <div class="content">
+    <h2 class="title">{{ memory().title }}</h2>
+    @if (dateLabel()) {
+    <p class="date">{{ dateLabel() }}</p>
+    }
+
+    <div class="actions">
+      @if (memory().crew_members?.length) {
+      <app-friends-profile-pics class="crew" [friends]="crewAsFriends()"></app-friends-profile-pics>
+      }
+      <a mat-flat-button class="add-photos" [routerLink]="['/editmemory', memory().memory_id, 'addphotos']">
+        <mat-icon>add_a_photo</mat-icon>
+        Add photos
+      </a>
+    </div>
+  </div>
+
+  @if (progress(); as p) {
+  <div class="progress" aria-hidden="true">
+    <span [style.width.%]="p.fraction * 100"></span>
+  </div>
+  }
+</section>
+}

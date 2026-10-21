@@ -1,0 +1,158 @@
+<div class="page">
+  <header class="page-header">
+    <app-back-button />
+    <h1>New memory</h1>
+  </header>
+
+  <!-- 1. Photos -->
+  <section class="section" aria-labelledby="photos-heading">
+    <h2 id="photos-heading">Photos</h2>
+    <app-photo-picker [(photos)]="photos" [(coverId)]="coverId" [disabled]="saving()" />
+
+    @if (analyzing()) {
+      <p class="analyzing" role="status">
+        <mat-progress-spinner mode="indeterminate" diameter="16" />
+        Looking at your photos…
+      </p>
+    }
+  </section>
+
+  <!-- 2. Suggestions from photo metadata -->
+  @if (suggestions(); as s) {
+    <aside class="insights" role="status" aria-label="Suggestions from your photos">
+      <mat-icon class="insights-icon">auto_awesome</mat-icon>
+      <div class="insights-body">
+        <p class="insights-title">Detected from your photos</p>
+        <ul>
+          @if (s.title) {
+            <li><mat-icon>edit</mat-icon><span>{{ s.title }}</span></li>
+          }
+          @if (s.dateRange) {
+            <li><mat-icon>event</mat-icon><span>{{ formatDateRange(s.dateRange.start, s.dateRange.end) }}</span></li>
+          }
+          @if (s.location) {
+            <li><mat-icon>place</mat-icon><span>{{ placeLabel(s.location) }}</span></li>
+          }
+        </ul>
+      </div>
+      <div class="insights-actions">
+        <button mat-button type="button" (click)="ignoreSuggestions()">Ignore</button>
+        <button mat-flat-button type="button" (click)="applySuggestions()">Apply</button>
+      </div>
+    </aside>
+  }
+
+  <!-- 3. Details -->
+  <section class="section" aria-labelledby="details-heading">
+    <h2 id="details-heading">Details</h2>
+
+    <form [formGroup]="form" class="details-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" maxlength="255" autocomplete="off" />
+        @if (form.controls.title.hasError('required')) {
+          <mat-error>Give your memory a title</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>When</mat-label>
+        <mat-date-range-input formGroupName="dates" [rangePicker]="rangePicker" [max]="today">
+          <input matStartDate formControlName="start" placeholder="Start" />
+          <input matEndDate formControlName="end" placeholder="End (optional)" />
+        </mat-date-range-input>
+        <mat-datepicker-toggle matIconSuffix [for]="rangePicker" />
+        <mat-date-range-picker #rangePicker />
+        <mat-hint>Leave the end empty for a single day</mat-hint>
+
+        @if (form.controls.dates.controls.start.hasError('required')) {
+          <mat-error>Choose at least a start date</mat-error>
+        } @else if (form.controls.dates.controls.start.hasError('notInPast') || form.controls.dates.controls.end.hasError('notInPast')) {
+          <mat-error>Memories can't be in the future</mat-error>
+        } @else if (form.controls.dates.controls.start.hasError('matStartDateInvalid') || form.controls.dates.controls.end.hasError('matEndDateInvalid')) {
+          <mat-error>Please enter a valid date</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description (optional)</mat-label>
+        <textarea matInput formControlName="description" rows="3"></textarea>
+      </mat-form-field>
+    </form>
+  </section>
+
+  <!-- 4. Location -->
+  <section class="section" aria-labelledby="location-heading">
+    <h2 id="location-heading">Location</h2>
+
+    @if (selectedLocation(); as loc) {
+      <div class="location-card">
+        <mat-icon class="location-icon">place</mat-icon>
+        <div class="location-text">
+          <span class="location-name">{{ placeLabel(loc) }}</span>
+          <span class="location-meta">
+            @switch (loc.source) {
+              @case ('photos') { From your photos }
+              @case ('map') { Picked on the map }
+              @case ('activity') { From the activity }
+            }
+          </span>
+        </div>
+        @if (loc.source !== 'activity') {
+          <div class="location-actions">
+            <button mat-button type="button" [disabled]="saving()" (click)="chooseOnMap()">Change</button>
+            <button mat-icon-button type="button" aria-label="Remove location" [disabled]="saving()" (click)="clearLocation()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+    } @else {
+      <button mat-stroked-button type="button" [disabled]="saving()" (click)="chooseOnMap()">
+        <mat-icon>map</mat-icon>
+        Choose on map
+      </button>
+      <p class="hint">Optional – shows your memory on the map.</p>
+    }
+  </section>
+
+  <!-- 5. Crew -->
+  <section class="section" aria-label="Crew">
+    <app-crew-selector [(crew)]="crew" />
+  </section>
+
+  @if (error()) {
+    <p class="error" role="alert">
+      <mat-icon>error</mat-icon>
+      {{ error() }}
+    </p>
+  }
+
+  <!-- 6. Sticky action bar -->
+  <footer class="action-bar">
+    <div class="summary" aria-live="polite">
+      @if (readyPhotos().length > 0) {
+        <span>
+          <strong>{{ readyPhotos().length }}</strong> {{ readyPhotos().length === 1 ? 'photo' : 'photos' }} · {{ formatBytes(uploadBytes()) }}
+        </span>
+      } @else {
+        <span>No photos yet</span>
+      }
+      @if (exceedsStorage()) {
+        <span class="summary-error">Only {{ formatBytes(remainingBytes()) }} left</span>
+      } @else if (processing()) {
+        <span>Preparing photos…</span>
+      }
+    </div>
+
+    <div class="actions">
+      <button mat-button type="button" [disabled]="saving()" (click)="cancel()">Cancel</button>
+      <button mat-flat-button type="button" class="create-btn" [disabled]="!canCreate()" (click)="create()">
+        @if (saving()) {
+          <mat-progress-spinner mode="indeterminate" diameter="18" />
+        }
+        Create memory
+      </button>
+    </div>
+  </footer>
+</div>

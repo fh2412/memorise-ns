@@ -44,7 +44,7 @@ export const routes: Routes = [
   },
   {
     path: 'editmemory/:id/addphotos',
-    loadChildren: () => import('./pages/editmemory/add-photos/add-photos.module').then(m => m.AddPhotosModule),
+    loadComponent: () => import('./pages/editmemory/add-photos/add-photos.component').then(m => m.AddPhotosComponent),
     canActivate: [authGuard]
   },
   {
@@ -54,7 +54,7 @@ export const routes: Routes = [
   },
   {
     path: 'newmemory',
-    loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
+    loadComponent: () => import('./pages/create-memory/create-memory.component').then(m => m.CreateMemoryComponent),
     canActivate: [authGuard]
   },
   /*{

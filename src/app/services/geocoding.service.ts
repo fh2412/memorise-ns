@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, PLATFORM_ID, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { GeocoderResponse, ParsedLocation } from '../models/geocoder-response.model';
 import { Observable } from 'rxjs';
@@ -9,35 +10,48 @@ import { environment } from '../../environments/environment';
 })
 export class GeocodingService {
   private http = inject(HttpClient);
+  private isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-
-  geocodeLatLng(location: google.maps.LatLngLiteral): Promise<GeocoderResponse> {
-    const geocoder = new google.maps.Geocoder();
-
-    return new Promise((resolve) => {
-      geocoder.geocode({ 'location': location }, (results, status) => {
-        if(results){
-            const response = new GeocoderResponse(status, results);
-            resolve(response);
-        }
-      });
-    });
+  /**
+   * Coordinates → address.
+   * FIX: previously the promise never resolved when Google returned no results
+   * (e.g. click into the ocean) → the map dialog hung. Now it always resolves;
+   * non-OK results come back with their status and an empty result list.
+   */
+  async geocodeLatLng(location: google.maps.LatLngLiteral): Promise<GeocoderResponse> {
+    const geocoder = await this.createGeocoder();
+    try {
+      const response = await geocoder.geocode({ location });
+      return new GeocoderResponse('OK', response.results);
+    } catch (error) {
+      // MapsRequestError carries the status in `code` (e.g. ZERO_RESULTS)
+      const status = (error as { code?: string } | null)?.code ?? 'ERROR';
+      return new GeocoderResponse(status, []);
+    }
   }
 
-  geocodeAddress(country: string, city: string, postalCode: string): Promise<GeocoderResponse> {
-    const geocoder = new google.maps.Geocoder();
-    const address = `${postalCode}, ${city}, ${country}`;  // Combine the address parts
-  
-    return new Promise((resolve, reject) => {
-      geocoder.geocode({ 'address': address }, (results, status) => {
-        if (status === google.maps.GeocoderStatus.OK && results) {
-          const response = new GeocoderResponse(status, results);
-          resolve(response);
-        } else {
-          reject(new Error(`Geocoding failed: ${status}`));
-        }
-      });
-    });
+  /** Coordinates → { city, country, countryCode } or null. Never throws. */
+  async reverseGeocode(location: google.maps.LatLngLiteral): Promise<ParsedLocation | null> {
+    try {
+      const response = await this.geocodeLatLng(location);
+      if (response.status !== 'OK') return null;
+      const parsed = this.parseGeocodingResponse(response);
+      return parsed.country || parsed.city ? parsed : null;
+    } catch {
+      return null; // Maps not loaded / SSR
+    }
+  }
+
+  async geocodeAddress(country: string, city: string, postalCode: string): Promise<GeocoderResponse> {
+    const geocoder = await this.createGeocoder();
+    const address = `${postalCode}, ${city}, ${country}`;
+    try {
+      const response = await geocoder.geocode({ address });
+      return new GeocoderResponse('OK', response.results);
+    } catch (error) {
+      const status = (error as { code?: string } | null)?.code ?? 'ERROR';
+      throw new Error(`Geocoding failed: ${status}`);
+    }
   }
 
   getLocation(term: string): Observable<GeocoderResponse> {
@@ -46,48 +60,39 @@ export class GeocodingService {
   }
 
   parseGeocodingResponse(response: GeocoderResponse): ParsedLocation {
-    const result: ParsedLocation = {
-      country: '',
-      countryCode: '',
-      city: ''
-    };
+    const result: ParsedLocation = { country: '', countryCode: '', city: '' };
 
-    // Prüfe ob die Antwort erfolgreich war und Ergebnisse enthält
-    if (response.status !== 'OK' || !response.results || response.results.length === 0) {
-      return result;
-    }
+    if (response.status !== 'OK' || !response.results?.length) return result;
 
-    // Nimm das erste Ergebnis
-    const firstResult = response.results[0];
-    
-    if (!firstResult.address_components) {
-      return result;
-    }
+    const components = response.results[0].address_components;
+    if (!components) return result;
 
-    // Durchsuche alle address_components
-    firstResult.address_components.forEach(component => {
-      if (!component.types || component.types.length === 0) {
-        return;
-      }
-
-      // Land extrahieren
-      if (component.types.includes('country')) {
+    for (const component of components) {
+      const types = component.types ?? [];
+      if (types.includes('country')) {
         result.country = component.long_name;
         result.countryCode = component.short_name;
       }
-
-      // Stadt extrahieren - verschiedene Typen berücksichtigen
-      if (component.types.includes('locality')) {
+      if (types.includes('locality')) {
         result.city = component.long_name;
-      } else if (!result.city && component.types.includes('administrative_area_level_2')) {
-        // Fallback auf administrative_area_level_2 wenn keine locality gefunden
+      } else if (!result.city && types.includes('administrative_area_level_2')) {
         result.city = component.long_name;
-      } else if (!result.city && component.types.includes('postal_town')) {
-        // Weiterer Fallback für UK und andere Länder
+      } else if (!result.city && types.includes('postal_town')) {
         result.city = component.long_name;
       }
-    });
+    }
 
     return result;
+  }
+
+  /** Works with the classic script tag AND with the async loader (importLibrary). */
+  private async createGeocoder(): Promise<google.maps.Geocoder> {
+    if (!this.isBrowser || typeof google === 'undefined' || !google.maps) {
+      throw new Error('Google Maps is not loaded');
+    }
+    if (!google.maps.Geocoder && typeof google.maps.importLibrary === 'function') {
+      await google.maps.importLibrary('geocoding');
+    }
+    return new google.maps.Geocoder();
   }
 }

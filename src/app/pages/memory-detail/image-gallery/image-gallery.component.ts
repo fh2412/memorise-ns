@@ -1,19 +1,20 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { ImageGalleryService } from '@services/image-gallery.service';
 import { ImageDialogComponent } from '@components/_dialogs/image-dialog/image-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
-import { catchError, forkJoin, from, map, Observable, of } from 'rxjs';
-import { getDownloadURL, getMetadata, getStorage, listAll, ref } from '@angular/fire/storage';
-import { BackButtonComponent } from '../../../components/back-button/back-button.component';
+import { catchError, firstValueFrom, forkJoin, from, map, Observable, of } from 'rxjs';
+import { getDownloadURL, getStorage, ref } from '@angular/fire/storage';
+import { BackButtonComponent } from '@components/back-button/back-button.component';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { NgOptimizedImage } from '@angular/common';
-import { ImageWithMetadata } from '../memory-detail.component';
 import { ActivatedRoute } from '@angular/router';
-import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
-import { MatIcon } from "@angular/material/icon";
+import { LoadingSpinnerComponent } from '@components/loading-spinner/loading-spinner.component';
+import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { DiashowComponent } from '@components/diashow/diashow.component';
 import { ProfileAvatarComponent } from '@components/profile-avatar/profile-avatar.component';
+import { MemoryService } from '@services/memory.service';
+import { ImageWithMetadata } from '@models/memory-photo.model';
+import { toImageWithMetadata } from '../memory-detail.helpers';
 
 interface Layout {
   type: 1 | 2 | 3 | 4;
@@ -37,109 +38,67 @@ interface UserProfile {
   styleUrls: ['./image-gallery.component.scss'],
   imports: [BackButtonComponent, MatGridList, MatGridTile, NgOptimizedImage, LoadingSpinnerComponent, MatIcon, MatButton, ProfileAvatarComponent]
 })
-
 export class ImageGalleryComponent implements OnInit {
-  private imageDataService = inject(ImageGalleryService);
   private dialog = inject(MatDialog);
   private route = inject(ActivatedRoute);
+  private memoryService = inject(MemoryService);
 
   portraitPictures: GalleryImage[] = [];
   landscapePictures: GalleryImage[] = [];
   layout = signal<Layout[]>([]);
   allPictures: GalleryImage[] = [];
-  userIds: string[] = [];
   userProfiles: Record<string, string> = {};
-  imagesWithMetadata = signal<ImageWithMetadata[]>([])
+  imagesWithMetadata = signal<ImageWithMetadata[]>([]);
   memoryId: string | null = null;
 
   isLoading = signal<boolean>(true);
 
-  ngOnInit() {
-    this.imageDataService.currentImageData.subscribe(async (images) => {
+  /**
+   * CHANGED: always loads the photos of the memory in the URL from the database.
+   * Previously it reused ImageGalleryService data, which could belong to a different
+   * memory (or be outdated after photos were deleted in manage-photos).
+   */
+  async ngOnInit(): Promise<void> {
+    this.memoryId = this.route.snapshot.paramMap.get('id');
+    if (!this.memoryId) {
+      this.isLoading.set(false);
+      return;
+    }
 
-      if (this.imagesWithMetadata().length > 0) {
-        this.isLoading.set(false);
-        return;
-      }
-
-      if (images.length === 0) {
-        this.memoryId = this.route.snapshot.paramMap.get('id');
-        if (this.memoryId) {
-          await this.getImages(this.memoryId);
-        }
-      }
-      else {
-        this.imagesWithMetadata.set(images)
-        await this.getUsers(this.imagesWithMetadata());
-        this.splitImagesByOrientation(this.imagesWithMetadata());
-        this.layout.set(this.generateLayoutDistribution());
-        this.isLoading.set(false);
-      }
-    });
+    try {
+      const photos = await firstValueFrom(this.memoryService.getPhotos(this.memoryId));
+      const images = photos.map(toImageWithMetadata);
+      this.imagesWithMetadata.set(images);
+      await this.getUsers(images);
+      this.splitImagesByOrientation(images);
+      this.layout.set(this.generateLayoutDistribution());
+    } catch (error) {
+      console.error('Loading gallery photos failed:', error);
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 
-  private getImages(imageId: string): void {
-    const storage = getStorage();
-    const listRef = ref(storage, `memories/${imageId}`);
-    listAll(listRef).then((res) => {
-      const fetchPromises = res.items.map((itemRef) => {
-
-        const fullRef = ref(storage, itemRef.fullPath);
-        return getDownloadURL(fullRef).then((url) =>
-          getMetadata(fullRef).then((metadata) => ({
-            url,
-            width: parseInt(metadata.customMetadata?.['width'] || '0', 10),
-            height: parseInt(metadata.customMetadata?.['height'] || '0', 10),
-            created: metadata.timeCreated,
-            size: metadata.size,
-            userId: metadata.customMetadata?.['userId'] || '',
-          }))
-        );
-      });
-
-      Promise.all(fetchPromises).then((images) => {
-        this.imagesWithMetadata.set(images);
-        this.getUsers(this.imagesWithMetadata());
-        this.splitImagesByOrientation(this.imagesWithMetadata());
-        this.layout.set(this.generateLayoutDistribution());
-        this.isLoading.set(false);
-        console.log(this.imagesWithMetadata());
-
-      });
-    }).catch((error) => {
-      console.error('Error listing items:', error);
-    });
-  }
-
-  private async getUsers(images: { url: string; width: number; height: number; userId: string }[]): Promise<void> {
-    images.forEach((image) => {
-      this.userIds.push(image.userId);
-    });
-    const uniqueUserIds = Array.from(new Set(this.userIds)).filter(id => id !== 'unknown');
+  private async getUsers(images: ImageWithMetadata[]): Promise<void> {
+    const uniqueUserIds = [...new Set(images.map(image => image.userId))].filter(id => id && id !== 'unknown');
+    if (uniqueUserIds.length === 0) return;
 
     const profilePicObservables: Observable<UserProfile>[] = uniqueUserIds.map(userId => {
       const storage = getStorage();
       const profilePicRef = ref(storage, `profile-pictures/${userId}/thumbnail.jpg`);
       return from(getDownloadURL(profilePicRef)).pipe(
         map(url => ({ userId, profilePicUrl: url })),
-        catchError(error => {
-          console.warn(`Profile picture not found for user ${userId}:`, error);
-          return of({ userId, profilePicUrl: 'assets/img/1.png' });
-        })
+        catchError(() => of({ userId, profilePicUrl: 'assets/img/1.png' })),
       );
     });
 
-    // Combine all profile picture fetches
-    const profiles = await forkJoin(profilePicObservables).toPromise();
-    if (profiles) {
-      profiles.forEach(profile => {
-        if (profile) {
-          this.userProfiles[profile.userId] = profile.profilePicUrl;
-        }
-      });
+    const profiles = await firstValueFrom(forkJoin(profilePicObservables), { defaultValue: [] });
+    for (const profile of profiles) {
+      this.userProfiles[profile.userId] = profile.profilePicUrl;
     }
   }
 
+  // ── Layout logic below is unchanged ──────────────────────────────────────
 
   private splitImagesByOrientation(images: { url: string; width: number; height: number; userId: string }[]): void {
     images.forEach((image) => {
@@ -148,7 +107,7 @@ export class ImageGalleryComponent implements OnInit {
   }
 
   private generateLayoutDistribution(): Layout[] {
-    const layouts: Layout[] | null = [];
+    const layouts: Layout[] = [];
     const landscapeStack = [...this.landscapePictures];
     const portraitStack = [...this.portraitPictures];
     let alternateLayout = true;
@@ -189,12 +148,12 @@ export class ImageGalleryComponent implements OnInit {
           portraitStack.length === 1 ?
             [portraitStack.shift()!, null] :
             [null, null],
-        landscapes: [] // Always provide landscapes array, even if empty
+        landscapes: []
       };
     } else {
       return {
         type: 1,
-        portraits: [], // Always provide portraits array, even if empty
+        portraits: [],
         landscapes: landscapeStack.length > 0 ? [landscapeStack.shift()!] : [null]
       };
     }
@@ -207,23 +166,11 @@ export class ImageGalleryComponent implements OnInit {
     const landscape = landscapeStack.length > 0 ? landscapeStack.shift()! : null;
 
     if (portraitCount === 1 && landscapeCount === 1) {
-      return {
-        type: 3,
-        portraits: [portrait],
-        landscapes: [landscape, null],
-      };
+      return { type: 3, portraits: [portrait], landscapes: [landscape, null] };
     } else if (portraitCount === 1) {
-      return {
-        type: 2,
-        portraits: [portrait, null],
-        landscapes: [], // Always provide landscapes array
-      };
+      return { type: 2, portraits: [portrait, null], landscapes: [] };
     } else {
-      return {
-        type: 1,
-        portraits: [], // Always provide portraits array
-        landscapes: [landscape],
-      };
+      return { type: 1, portraits: [], landscapes: [landscape] };
     }
   }
 
@@ -242,12 +189,11 @@ export class ImageGalleryComponent implements OnInit {
         case 2:
           return layout.portraits.filter(img => img !== null);
         case 3:
-        case 4:
-          {
-            const portraits = layout.portraits.filter(img => img !== null);
-            const landscapes = layout.landscapes.filter(img => img !== null);
-            return [...portraits, ...landscapes];
-          }
+        case 4: {
+          const portraits = layout.portraits.filter(img => img !== null);
+          const landscapes = layout.landscapes.filter(img => img !== null);
+          return [...portraits, ...landscapes];
+        }
         default:
           return [];
       }
@@ -261,10 +207,7 @@ export class ImageGalleryComponent implements OnInit {
     const initialIndex = this.allPictures.indexOf(selectedImageUrl);
 
     this.dialog.open(ImageDialogComponent, {
-      data: {
-        images: this.allPictures,
-        initialIndex,
-      }
+      data: { images: this.allPictures, initialIndex },
     });
   }
 
@@ -274,9 +217,7 @@ export class ImageGalleryComponent implements OnInit {
 
   startDiashow(selectedImageUrl?: GalleryImage): void {
     this.allPictures = this.createImageArrayFromLayouts(this.layout());
-    const initialIndex = selectedImageUrl
-      ? this.allPictures.indexOf(selectedImageUrl)
-      : 0;
+    const initialIndex = selectedImageUrl ? this.allPictures.indexOf(selectedImageUrl) : 0;
 
     this.dialog.open(DiashowComponent, {
       data: {

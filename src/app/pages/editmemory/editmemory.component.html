@@ -1,165 +1,177 @@
-<div class="header">
-  <div>
-    <h1>EDIT MEMORY</h1>
-  </div>
-  <div>
-    <app-back-button [text]="'Cancel'"></app-back-button>
-    <button mat-flat-button (click)="saveChanges()"><mat-icon>save</mat-icon>UPDATE</button>
-    <button mat-flat-button (click)="confirmDeletion('DELETE')"
-      style="background-color: var(--mat-sys-error);"><mat-icon>delete</mat-icon>DELETE</button>
-  </div>
-</div>
+<div class="page bd-theme-memorise">
+  @switch (state()) {
+    @case ('loading') {
+      <div class="page-loading" role="status" aria-label="Loading memory">
+        <mat-progress-spinner mode="indeterminate" diameter="40" />
+      </div>
+    }
 
-<mat-divider></mat-divider>
+    @case ('ready') {
+      <header class="page-header">
+        <app-back-button [text]="'Back'" />
+        <h1>Edit memory</h1>
+      </header>
 
-@if (memory) {
-<section class="bd-home-section bd-theme-memorise">
-  <div class="container">
-    <div class="title-row">
-      <div class="title">
-        <form [formGroup]="memoryForm" class="full-width">
-          <mat-form-field appearance="outline" class="full-width">
+      <!-- Photos -->
+      <section class="section" aria-labelledby="photos-heading">
+        <div class="section-header">
+          <h2 id="photos-heading">Photos</h2>
+          <a mat-stroked-button [routerLink]="['/editmemory/managephotos', memoryId()]">
+            <mat-icon>photo_library</mat-icon>
+            Manage photos
+          </a>
+        </div>
+        <app-memory-add-photos [memoryId]="memoryIdText()" />
+      </section>
+
+      <!-- Details -->
+      <section class="section" aria-labelledby="details-heading">
+        <h2 id="details-heading">Details</h2>
+        <form [formGroup]="form" class="details-form" (ngSubmit)="save()">
+          <mat-form-field appearance="outline">
             <mat-label>Title</mat-label>
-            <input matInput formControlName="title">
+            <input matInput formControlName="title" maxlength="255" autocomplete="off" />
+            @if (form.controls.title.hasError('required')) {
+              <mat-error>Give your memory a title</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>When</mat-label>
+            <mat-date-range-input formGroupName="dates" [rangePicker]="rangePicker" [max]="today">
+              <input matStartDate formControlName="start" placeholder="Start" />
+              <input matEndDate formControlName="end" placeholder="End (optional)" />
+            </mat-date-range-input>
+            <mat-datepicker-toggle matIconSuffix [for]="rangePicker" />
+            <mat-date-range-picker #rangePicker />
+            <mat-hint>Leave the end empty for a single day</mat-hint>
+
+            @if (form.controls.dates.controls.start.hasError('required')) {
+              <mat-error>Choose at least a start date</mat-error>
+            } @else if (form.controls.dates.controls.start.hasError('notInPast') || form.controls.dates.controls.end.hasError('notInPast')) {
+              <mat-error>Memories can't be in the future</mat-error>
+            } @else if (form.controls.dates.controls.start.hasError('matStartDateInvalid') || form.controls.dates.controls.end.hasError('matEndDateInvalid')) {
+              <mat-error>Please enter a valid date</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description" cdkTextareaAutosize
+              cdkAutosizeMinRows="3" cdkAutosizeMaxRows="16"></textarea>
           </mat-form-field>
         </form>
-      </div>
-      @if (isLargeScreen) {
-      <div class="buttons">
-        <button mat-stroked-button color="primary" (click)="navigateToManagePhotos()">
-          <mat-icon>apps</mat-icon>
-          Manage Pictures
-        </button>
-        <button mat-flat-button (click)="navigateToAddPhotos()">
-          <mat-icon>add_photo_alternate</mat-icon>
-          Add Photos
-        </button>
-      </div>
-      }
-      @if (!isLargeScreen) {
-      <div class="icon-buttons">
-        <button mat-fab color="primary" (click)="navigateToManagePhotos()">
-          <mat-icon>apps</mat-icon>
-        </button>
-        <button mat-fab color="primary" (click)="navigateToAddPhotos()">
-          <mat-icon>add_photo_alternate</mat-icon>
-        </button>
-      </div>
-      }
-    </div>
-    <br><br>
-    <div>
-      <mat-grid-list cols="4" rowHeight="1:1" gutterSize="8px">
-        <mat-grid-tile colspan="3">
-          <form [formGroup]="memoryForm" class="full-width">
-            <mat-form-field appearance="outline" class="full-width desc-margin">
-              <mat-label>Description</mat-label>
-              <textarea matInput cdkTextareaAutosize cdkAutosizeMaxRows="18" formControlName="description"></textarea>
-            </mat-form-field>
-          </form>
-        </mat-grid-tile>
-        <mat-grid-tile>
-          <div class="date-activity-box">
-            <mat-form-field appearance="outline">
-              <mat-date-range-input [formGroup]="memoryForm" [rangePicker]="rangePicker" [max]="maxDate">
-                <input matStartDate formControlName="memory_date" placeholder="Start Date" required>
-                <input matEndDate formControlName="memory_end_date" placeholder="End Date">
-              </mat-date-range-input>
+      </section>
 
-              <mat-datepicker-toggle matSuffix [for]="rangePicker"></mat-datepicker-toggle>
-              <mat-date-range-picker #rangePicker></mat-date-range-picker>
-
-              @if (memoryForm.get('memory_date')?.hasError('notInPast')) {
-              <mat-error>The start date must be in the past!</mat-error>
+      <!-- Location -->
+      <section class="section" aria-labelledby="location-heading">
+        <h2 id="location-heading">Location</h2>
+        @if (location(); as loc) {
+          <div class="location-card">
+            <mat-icon class="location-icon">place</mat-icon>
+            <div class="location-text">
+              <span class="location-name">{{ placeLabel(loc) }}</span>
+              @if (locationChanged()) {
+                <span class="location-meta">Changed – not saved yet</span>
               }
-              @else if (memoryForm.get('memory_end_date')?.hasError('notInPast')) {
-              <mat-error>The end date must be in the past!</mat-error>
-              }
-            </mat-form-field>
-            <!--<button mat-flat-button (click)="openActivityBottomSheet()">
-                <mat-icon>edit</mat-icon> Edit Activity
-              </button>-->
+            </div>
+            <div class="location-actions">
+              <button mat-button type="button" [disabled]="saving()" (click)="chooseOnMap()">Change</button>
+              <button mat-icon-button type="button" aria-label="Remove location" [disabled]="saving()" (click)="clearLocation()">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
           </div>
-        </mat-grid-tile>
-      </mat-grid-list>
-      <br><br>
-      @if (friends) {
-      <div>
-        @if (friends.length>0) {
-        <table mat-table [dataSource]="friends">
-          <ng-container matColumnDef="profilePicture">
-            <th mat-header-cell *matHeaderCellDef> Profile Picture </th>
-            <td mat-cell *matCellDef="let user"> <img [src]="user.profilepic || '/assets/img/1.png'"
-                alt="Profile Picture" width="30" height="30" class="profile-image"></td>
-          </ng-container>
-          <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef> Name </th>
-            <td mat-cell *matCellDef="let user"> {{user.name}} </td>
-          </ng-container>
-          <ng-container matColumnDef="birthday">
-            <th mat-header-cell *matHeaderCellDef> Birthday </th>
-            <td mat-cell *matCellDef="let user"> {{user.dob | date}} </td>
-          </ng-container>
-          <ng-container matColumnDef="country">
-            <th mat-header-cell *matHeaderCellDef> Country </th>
-            <td mat-cell *matCellDef="let user"> <img [src]="user.countryFlag" alt="{{user.country || 'Not Provided'}}"
-                width="30" height="20"></td>
-          </ng-container>
-          <ng-container matColumnDef="sharedMemories">
-            <th mat-header-cell *matHeaderCellDef> Actions </th>
-            <td mat-cell *matCellDef="let user">
-              <button mat-stroked-button color="warn" (click)="removeFriend(user)">
-                <mat-icon>person_remove</mat-icon>
-                Remove
-              </button>
-            </td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-        }
-        @if (friends.length===0) {
-        <mat-card appearance="outlined" class="memory-card-empty">
-          <p>No current friends left in the memory</p>
-        </mat-card>
-        }
-      </div>
-      }
-      <br>
-      <div class="friend-wrapper">
-        <app-friends-autocomplet (selectedValuesChange)="onSelectedValuesChange($event)"
-          [memoryId]="memoryId"></app-friends-autocomplet>
-        <mat-card appearance="outlined" class="memory-card-empty">
-          @if (friendsToDelete.length===0) {
-          <span>Friends you want to remove will appear here
-            <button matIconButton
-              matTooltip="You can rejoin deleted Friends to the memory by clicking the cross next to them">
-              <mat-icon>question_mark</mat-icon>
-            </button>
-          </span>
+        } @else {
+          <button mat-stroked-button type="button" [disabled]="saving()" (click)="chooseOnMap()">
+            <mat-icon>map</mat-icon>
+            Choose on map
+          </button>
+          @if (locationChanged()) {
+            <p class="hint">Location removed – not saved yet.</p>
           }
-          <mat-chip-set #chipGrid aria-label="Enter friends">
-            @for (friend of friendsToDelete; track friend) {
-            <mat-chip-row (removed)="reverseDelete(friend)">
-              {{friend.name}}
-              <button matChipRemove [attr.aria-label]="'remove ' + friend.name">
-                <mat-icon>cancel</mat-icon>
-              </button>
-            </mat-chip-row>
+        }
+      </section>
+
+      <!-- Crew -->
+      <section class="section" aria-label="Crew">
+        @switch (crewState()) {
+          @case ('ready') {
+            <app-crew-selector [(crew)]="crew" />
+          }
+          @case ('loading') {
+            <div class="crew-loading" role="status">
+              <mat-progress-spinner mode="indeterminate" diameter="24" />
+              Loading crew…
+            </div>
+          }
+          @case ('error') {
+            <p class="inline-error" role="alert">
+              <mat-icon>error</mat-icon>
+              <span>The crew could not be loaded. Other changes can still be saved.</span>
+              <button mat-button type="button" (click)="retryCrew()">Retry</button>
+            </p>
+          }
+        }
+      </section>
+
+      <!-- Danger zone -->
+      @if (isCreator()) {
+        <section class="section danger" aria-labelledby="danger-heading">
+          <h2 id="danger-heading">Delete memory</h2>
+          <p class="hint">Deletes the memory and all its photos for everyone.</p>
+          <button mat-stroked-button type="button" class="delete-btn" [disabled]="deleting() || saving()" (click)="deleteMemory()">
+            @if (deleting()) {
+              <mat-progress-spinner mode="indeterminate" diameter="18" />
+            } @else {
+              <mat-icon>delete</mat-icon>
             }
-          </mat-chip-set>
-        </mat-card>
+            Delete memory
+          </button>
+        </section>
+      }
+
+      @if (error()) {
+        <p class="error" role="alert">
+          <mat-icon>error</mat-icon>
+          {{ error() }}
+        </p>
+      }
+
+      <!-- Sticky action bar -->
+      <footer class="action-bar">
+        <span class="summary" aria-live="polite">
+          {{ hasChanges() ? 'Unsaved changes' : 'No changes' }}
+        </span>
+        <div class="actions">
+          <button mat-button type="button" [disabled]="saving()" (click)="cancel()">Cancel</button>
+          <button mat-flat-button type="button" class="save-btn" [disabled]="!canSave()" (click)="save()">
+            @if (saving()) {
+              <mat-progress-spinner mode="indeterminate" diameter="18" />
+            }
+            Save changes
+          </button>
+        </div>
+      </footer>
+    }
+
+    @default {
+      <div class="page-message" role="alert">
+        <mat-icon class="page-message-icon">{{ state() === 'forbidden' ? 'lock' : state() === 'not-found' ? 'search_off' : 'cloud_off' }}</mat-icon>
+        <h1>
+          @switch (state()) {
+            @case ('not-found') { Memory not found }
+            @case ('forbidden') { You can't edit this memory }
+            @default { Something went wrong }
+          }
+        </h1>
+        <div class="page-message-actions">
+          <a mat-button routerLink="/home">Go home</a>
+          @if (state() === 'error') {
+            <button mat-flat-button type="button" (click)="retry()">Try again</button>
+          }
+        </div>
       </div>
-      <br><br>
-      <div class="memory-card-empty map-wrap">
-        <img class="map-background" src="/assets/img/map.PNG" alt="picture of map">
-        <button mat-raised-button color="accent" class="fixed-fab" (click)="initialiseMapDialog()"
-          class="button-margin">
-          <mat-icon class="add-icon">search</mat-icon>
-          Update Address on Map
-        </button>
-      </div>
-    </div>
-  </div>
-</section>
-}
+    }
+  }
+</div>

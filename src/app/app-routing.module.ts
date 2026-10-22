@@ -39,7 +39,7 @@ export const routes: Routes = [
   },
   {
     path: 'editmemory/:id',
-    loadChildren: () => import('./pages/editmemory/editmemory.module').then(m => m.EditMemoryModule),
+    loadComponent: () => import('./pages/editmemory/editmemory.component').then(m => m.EditmemoryComponent),
     canActivate: [authGuard, MemoryEditorGuard]
   },
   {
@@ -49,7 +49,7 @@ export const routes: Routes = [
   },
   {
     path: 'editmemory/managephotos/:memoryId',
-    loadChildren: () => import('./pages/editmemory/manage-photos/manage-photos.module').then(m => m.ManagePhotosModule),
+    loadChildren: () => import('./pages/editmemory/manage-photos/manage-photos.component').then(m => m.ManagePhotosComponent),
     canActivate: [authGuard]
   },
   {

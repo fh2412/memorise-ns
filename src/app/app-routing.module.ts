@@ -49,7 +49,7 @@ export const routes: Routes = [
   },
   {
     path: 'editmemory/managephotos/:memoryId',
-    loadChildren: () => import('./pages/editmemory/manage-photos/manage-photos.component').then(m => m.ManagePhotosComponent),
+    loadComponent: () => import('./pages/editmemory/manage-photos/manage-photos.component').then(m => m.ManagePhotosComponent),
     canActivate: [authGuard]
   },
   {

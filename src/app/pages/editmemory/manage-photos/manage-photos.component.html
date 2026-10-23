@@ -1,50 +1,116 @@
-<div class="header">
-  <div class="headline">
-    <h1>MANAGE PICTURES</h1>
-  </div>
-  <div class="actions">
-    <app-back-button></app-back-button>
-    <button mat-flat-button color="warn" [disabled]="imagesToDelete.length === 0" (click)="deleteImages()"><mat-icon>delete</mat-icon>Delete
-  Selected</button>
-</div>
-</div>
-
-<div class="body">
-  <mat-grid-list cols="4" rowHeight="1:1" gutterSize="5">
-    @for (image of images; track image; let i = $index) {
-      <mat-grid-tile>
-        <mat-card class="card" [ngClass]="{'starred': starredIndex === i, 'hovered': hoverIndex === i}">
-          <div class="image-container">
-            <img mat-card-image [src]="image.url" alt="Image" class="background-image">
-            <button mat-icon-button
-              (mouseover)="hoverIndex = i"
-              (mouseleave)="hoverIndex = null"
-              (focus)="true"
-              (click)="onStar(i)"
-              class="position-top-right">
-              <mat-icon [ngClass]="{'starred-icon': starredIndex === i}">grade</mat-icon>
-            </button>
-            <button mat-icon-button (click)="onDelete(image.url)" class="position-bottom-right">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-        </mat-card>
-      </mat-grid-tile>
+<div class="page">
+  @switch (state()) {
+    @case ('loading') {
+      <div class="page-loading" role="status" aria-label="Loading photos">
+        <mat-progress-spinner mode="indeterminate" diameter="40" />
+      </div>
     }
-  </mat-grid-list>
 
-
-  @if (imagesToDelete.length > 0) {
-    <div class="images-to-delete-container">
-      <h2>Images to delete:</h2>
-      @for (imageUrl of imagesToDelete; track imageUrl) {
-        <div>
-          <img [src]="imageUrl" alt="Image to Delete" class="background-image">
-          <button mat-icon-button (click)="removeFromDeleteList(imageUrl)">
-            <mat-icon>close</mat-icon>
-          </button>
+    @case ('ready') {
+      <header class="page-header">
+        <app-back-button [text]="'Back'" />
+        <div class="title">
+          <h1>Manage photos</h1>
+          <span class="subtitle">{{ memory()?.title }} · {{ photos().length }} {{ photos().length === 1 ? 'photo' : 'photos' }}</span>
         </div>
+      </header>
+
+      @if (photos().length === 0) {
+        <div class="empty">
+          <mat-icon>photo_library</mat-icon>
+          <p>This memory has no photos yet.</p>
+          <a mat-flat-button [routerLink]="['/editmemory', memoryId()]">Add photos</a>
+        </div>
+      } @else {
+        <div class="toolbar">
+          <p class="hint">
+            Tap photos to select them · <mat-icon inline>star</mat-icon> sets the cover.
+            @if (!isCreator()) {
+              You can delete only photos you uploaded.
+            }
+          </p>
+          @if (deletableIds().size > 0) {
+            <button mat-button type="button" [disabled]="!!busy()" (click)="toggleAll()">
+              {{ allSelected() ? 'Deselect all' : 'Select all' }}
+            </button>
+          }
+        </div>
+
+        <ul class="grid" aria-label="Photos">
+          @for (photo of photos(); track photo.photoId) {
+            @let isSelected = selected().has(photo.photoId);
+            @let deletable = canDelete(photo);
+            <li class="tile" [class.selected]="isSelected" [class.cover]="photo.isCover" [class.locked]="!deletable">
+              <button type="button" class="select"
+                [attr.aria-pressed]="deletable ? isSelected : null"
+                [attr.aria-label]="(deletable ? (isSelected ? 'Deselect' : 'Select') : 'Photo') + ' ' + ($index + 1)"
+                [disabled]="!deletable || !!busy()"
+                (click)="toggle(photo)">
+                @if (!brokenIds().has(photo.photoId)) {
+                  <img [src]="photo.thumbUrl" alt="" loading="lazy" decoding="async" (error)="markBroken(photo.photoId)" />
+                }
+              </button>
+
+              @if (deletable) {
+                <span class="check" aria-hidden="true">
+                  <mat-icon>{{ isSelected ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+                </span>
+              }
+
+              <button mat-icon-button type="button" class="cover-btn"
+                [attr.aria-pressed]="photo.isCover"
+                [attr.aria-label]="photo.isCover ? 'Cover photo' : 'Use as cover photo'"
+                [title]="photo.isCover ? 'Cover photo' : 'Use as cover photo'"
+                [disabled]="!!busy()"
+                (click)="setCover(photo)">
+                <mat-icon>{{ photo.isCover ? 'star' : 'star_border' }}</mat-icon>
+              </button>
+
+              @if (photo.isCover) {
+                <span class="cover-badge">Cover</span>
+              }
+            </li>
+          }
+        </ul>
+
+        @if (selected().size > 0) {
+          <footer class="action-bar" role="region" aria-label="Selection">
+            <span class="summary" aria-live="polite">
+              <strong>{{ selected().size }}</strong> selected · {{ formatBytes(selectedBytes()) }}
+            </span>
+            <div class="actions">
+              <button mat-button type="button" [disabled]="!!busy()" (click)="clearSelection()">Cancel</button>
+              <button mat-flat-button type="button" class="delete-btn" [disabled]="!!busy()" (click)="deleteSelected()">
+                @if (busy() === 'delete') {
+                  <mat-progress-spinner mode="indeterminate" diameter="18" />
+                } @else {
+                  <mat-icon>delete</mat-icon>
+                }
+                Delete
+              </button>
+            </div>
+          </footer>
+        }
       }
-    </div>
+    }
+
+    @default {
+      <div class="page-message" role="alert">
+        <mat-icon class="page-message-icon">{{ state() === 'forbidden' ? 'lock' : state() === 'not-found' ? 'search_off' : 'cloud_off' }}</mat-icon>
+        <h1>
+          @switch (state()) {
+            @case ('not-found') { Memory not found }
+            @case ('forbidden') { No access to these photos }
+            @default { Something went wrong }
+          }
+        </h1>
+        <div class="page-message-actions">
+          <a mat-button routerLink="/home">Go home</a>
+          @if (state() === 'error') {
+            <button mat-flat-button type="button" (click)="retry()">Try again</button>
+          }
+        </div>
+      </div>
+    }
   }
 </div>

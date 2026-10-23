@@ -1,15 +1,15 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Storage } from '@angular/fire/storage';
-import { forkJoin, lastValueFrom, map, Observable, of, tap } from 'rxjs';
+import { forkJoin, map, Observable, of, tap } from 'rxjs';
 import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
-import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
 import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest, RegisterPhotoResponse, CompleteUploadSessionRequest, CompleteUploadSessionResponse } from '@models/photo-upload.model';
 import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.model';
 import { MemoryPhoto } from '@models/memory-photo.model';
+import { DeletePhotosResult, MemoryPlaceholder, UpdateMemoryRequest, UpdateMemoryResult } from '@models/memory-edit.model';
 
 @Injectable({
   providedIn: 'root'
@@ -117,20 +117,6 @@ export class MemoryService {
         body,
       )
       .pipe(this.invalidateOnSuccess());
-  }
-
-  updateMemory(memory_id: string, memoryData: FormGroup): Observable<UpdateStandardResponse> {
-    return this.http.put<UpdateStandardResponse>(`${this.apiUrl}/memories/${memory_id}`, memoryData).pipe(this.invalidateOnSuccess());
-  }
-
-  updateMemoryLocation(memoryId: number, locationId: number): Observable<UpdateStandardResponse> {
-    const url = `${this.apiUrl}/memories/updateMemoryLocation/${memoryId}`;
-    return this.http.put<UpdateStandardResponse>(url, { locationId });
-  }
-
-  updateTitlePic(memoryId: string | null, imageUrl: string): Observable<UpdateStandardResponse> {
-    const url = `${this.apiUrl}/memories/updateTitlePic/${memoryId}`;
-    return this.http.put<UpdateStandardResponse>(url, { imageUrl }).pipe(this.invalidateOnSuccess());
   }
 
   updateMemoryTitle(memoryId: string | null, newTitle: string): Observable<UpdateStandardResponse> {
@@ -246,6 +232,31 @@ export class MemoryService {
     return this.http.get<{ isMember: boolean }>(
       `${this.apiUrl}/memories/${memoryId}/member/${userId}`
     );
+  }
+
+  updateDetails(memoryId: number | string, request: UpdateMemoryRequest): Observable<UpdateMemoryResult> {
+    return this.http
+      .put<UpdateMemoryResult>(`${this.apiUrl}/memories/${memoryId}`, request)
+      .pipe(this.invalidateOnSuccess());
+  }
+
+  getPlaceholders(memoryId: number | string): Observable<MemoryPlaceholder[]> {
+    return this.http
+      .get<{ placeholders: MemoryPlaceholder[] }>(`${this.apiUrl}/memories/${memoryId}/placeholders`)
+      .pipe(map(response => response.placeholders ?? []));
+  }
+
+  /** Deletes DB rows + files (server side) and updates the storage of each uploader. */
+  deletePhotos(memoryId: number | string, photoIds: string[]): Observable<DeletePhotosResult> {
+    return this.http
+      .post<DeletePhotosResult>(`${this.apiUrl}/memories/${memoryId}/photos/delete`, { photoIds })
+      .pipe(this.invalidateOnSuccess());
+  }
+
+  setCover(memoryId: number | string, photoId: string): Observable<{ coverPhotoId: string }> {
+    return this.http
+      .put<{ coverPhotoId: string }>(`${this.apiUrl}/memories/${memoryId}/cover`, { photoId })
+      .pipe(this.invalidateOnSuccess());
   }
 
   invalidateMemoryList(): void {

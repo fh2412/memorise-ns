@@ -1,114 +1,283 @@
-@use '@angular/material' as mat;
-@use '../../memory-detail/image-preview.scss';
-
-.header {
-  margin-top: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    .headline{
-      width: 50%;
-      h1{
-        width: 100%;
-        font-size: 50px;
-        font-weight: bold;
-        margin-left: 25px;
-      }
-    }
-    button{
-        margin-right: 25px;
-    }
+:host {
+  display: block;
 }
 
-.body{
-    margin-top: 15px;
-    margin-left: 50px;
-    margin-right: 50px;
-    padding: 5px;
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 12px 12px 0;
+
+  @media (min-width: 600px) {
+    padding: 24px 24px 0;
+  }
 }
 
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-.images-to-delete-container {
-    bottom: 0; /* Positions the container at the bottom */
-    left: 0; /* Positions the container on the left side */
-    width: 100%; /* Stretches the container across the entire width */
-    height: 100px; 
-    display: flex;
-    flex-wrap: nowrap; /* Ensures images stay on one line */
-    overflow-x: auto; /* Enables horizontal scrollbar if needed */
-    padding: 5px; 
-    border-radius: 5px; /* Optional border radius */
-    margin-top: 20px;
+.title {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
+    font-weight: 700;
   }
-  
-  .images-to-delete-container div {
-    position: relative; /* Enable absolute positioning for buttons */
+}
+
+.subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.hint {
+  margin: 0;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon {
+    vertical-align: middle;
+    color: var(--mat-sys-primary);
+  }
+}
+
+// ── Grid ─────────────────────────────────────────────────────────────────────
+
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); // 3 columns on a 360px phone
+
+  @media (min-width: 600px) {
+    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}
+
+.tile {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--mat-sys-surface-container-highest); // also the fallback for broken images
+
+  &.cover {
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: -3px;
   }
 
-  .images-to-delete-container img {
-    margin: 0 5px;
-    width: 100px;
-    height: 100px;
+  &.selected {
+    outline: 3px solid var(--mat-sys-tertiary);
+    outline-offset: -3px;
+
+    img {
+      transform: scale(0.88);
+      border-radius: 8px;
+    }
+  }
+}
+
+.select {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 3px solid var(--mat-sys-primary);
+    outline-offset: -3px;
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
+    transition: transform 0.15s ease, border-radius 0.15s ease;
+  }
+}
+
+.check {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: color-mix(in srgb, var(--mat-sys-scrim) 35%, transparent);
+  pointer-events: none;
+
+  .selected & {
+    color: var(--mat-sys-on-tertiary);
+    background: var(--mat-sys-tertiary);
+  }
+}
+
+.cover-btn {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  color: #fff;
+  background: color-mix(in srgb, var(--mat-sys-scrim) 40%, transparent);
+
+  &[aria-pressed='true'] {
+    color: #ffd54f;
+  }
+}
+
+.cover-badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--mat-sys-primary);
+  color: var(--mat-sys-on-primary);
+  font: var(--mat-sys-label-small);
+  pointer-events: none;
+}
+
+// ── Empty ────────────────────────────────────────────────────────────────────
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 16px;
+  border-radius: 16px;
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface-variant);
+  text-align: center;
+
+  mat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
   }
 
-  .images-to-delete-container button {
-    position: absolute;
-    top: 2px;
-    right: 20px;
-    height: 10px;
-    width: 10px;
-    background-color: transparent; /* Removes default button background */
-    border: none; /* Removes default button border */
-    padding: 0; /* Removes default button padding */
+  p {
+    margin: 0;
   }
-  
-  .images-to-delete-container button mat-icon {
-    font-size: 18px;
-    color: var(--mat-sys-error);
+}
+
+// ── Selection bar ────────────────────────────────────────────────────────────
+
+.action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0 -12px;
+  padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--mat-sys-surface);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+
+  @media (min-width: 600px) {
+    margin: 0 -24px;
+    padding-inline: 24px;
   }
-  
-  .preview {
-    max-width: 30%; 
-    height: auto; 
-    margin: 1%; 
+}
+
+.summary {
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+
+  strong {
+    color: var(--mat-sys-on-surface);
   }
-  
-  .button-div {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+
+  mat-progress-spinner {
+    display: inline-block;
+    margin-right: 8px;
+    vertical-align: middle;
   }
-   
-  .card{
-    cursor: auto;
-    border-radius: 10px;
-    height: 98%;
-    width: 98%;
-  }
-  
-  .card {
-    transition: border-color 0.3s;
-    border: 2px solid transparent;
-  }
-  
-  .card.hovered, .ard.starred {
-    border-color: var(--mat-sys-secondary);
-  }
-  
-  .starred-icon {
-    color: var(--mat-sys-secondary);
+}
+
+.delete-btn {
+  --mat-button-filled-container-color: var(--mat-sys-error);
+  --mat-button-filled-label-text-color: var(--mat-sys-on-error);
+}
+
+@media (max-width: 599px) {
+  .summary,
+  .actions {
+    width: 100%;
   }
 
-  .position-bottom-right {
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
+  .delete-btn {
+    flex: 1;
   }
-  
-  .position-top-right {
-    position: absolute;
-    top: 5px;
-    right: 5px;
+}
+
+// ── Page states ──────────────────────────────────────────────────────────────
+
+.page-loading {
+  display: grid;
+  place-items: center;
+  min-height: 50vh;
+}
+
+.page-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin: 15vh auto 0;
+  text-align: center;
+
+  h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-small);
   }
+}
+
+.page-message-icon {
+  width: 48px;
+  height: 48px;
+  font-size: 48px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.page-message-actions {
+  display: flex;
+  gap: 8px;
+}

@@ -21,7 +21,6 @@ export interface MemoryPhoto {
 }
 
 /**
- * Shape used by ImageGalleryService (gallery + download page).
  * Kept compatible with the old Storage-based version; thumbUrl/photoId are new and optional.
  */
 export interface ImageWithMetadata {

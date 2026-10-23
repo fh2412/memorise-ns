@@ -1,6 +1,5 @@
 // Mobile first. Breakpoints: 600px (tablet), 960px (two columns).
-// Pure CSS on purpose: only the layout changes, no behaviour → no BreakpointObserver,
-// no layout jump after SSR hydration.
+@use '../../../styles/components/ghost-placeholders.scss';
 
 :host {
   display: block;
@@ -21,16 +20,31 @@
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
+// Phones:  [back ........ actions]
+//          [title                ]
+// ≥600px:  [back | title | actions]
 
 .page-header {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'back actions'
+    'title title';
   align-items: center;
-  flex-wrap: wrap;
   gap: 8px 12px;
+
+  @media (min-width: 600px) {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: 'back title actions';
+  }
+}
+
+.back {
+  grid-area: back;
 }
 
 .title {
-  flex: 1 1 0;
+  grid-area: title;
   min-width: 0;
   margin: 0;
   font: var(--mat-sys-headline-small);
@@ -45,6 +59,8 @@
 }
 
 .header-actions {
+  grid-area: actions;
+  justify-self: end;
   display: flex;
   gap: 8px;
 }
@@ -56,7 +72,8 @@
   }
 }
 
-.header-actions .mat-mdc-outlined-button mat-icon {
+.header-actions .mat-mdc-outlined-button mat-icon,
+.crew-action .mat-mdc-outlined-button mat-icon {
   @media (max-width: 599px) {
     margin: 0;
   }
@@ -87,8 +104,11 @@
 }
 
 // ── Photos (fixed 5 tiles) ───────────────────────────────────────────────────
-// Phone:  hero full width, 4 tiles in a 2×2 grid
-// ≥600px: hero 2×2 on the left, 4 tiles 2×2 on the right
+// Phone:  hero full width (4:3), 4 tiles in a 2×2 grid
+// ≥600px: hero 2×2 square on the left, 4 square tiles 2×2 on the right
+//
+// The tiles define the size; images are positioned absolutely inside them,
+// so a tall/portrait photo can never stretch the grid.
 
 .photo-grid {
   position: relative;
@@ -105,7 +125,9 @@
 }
 
 .tile {
+  position: relative;
   aspect-ratio: 1;
+  min-height: 0;
   background: var(--mat-sys-surface-container-highest); // gray placeholder
   overflow: hidden;
 
@@ -115,12 +137,13 @@
 
     @media (min-width: 600px) {
       grid-row: span 2;
-      aspect-ratio: auto; // height comes from the 2 rows next to it
+      aspect-ratio: 1; // 2 columns × 2 rows of squares = square
     }
   }
 
   img {
-    display: block;
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -261,6 +284,19 @@
     width: 48px;
     height: 48px;
   }
+
+  // Placeholder avatar (base look from ghost-placeholders.scss)
+  &.ghost-avatar {
+    display: grid;
+    place-items: center;
+
+    mat-icon {
+      width: 22px;
+      height: 22px;
+      font-size: 22px;
+      color: var(--mat-sys-primary);
+    }
+  }
 }
 
 // Description
@@ -276,7 +312,7 @@
   overflow: hidden;
 }
 
-// Crew (replaces the 5-column table → works on every width)
+// Crew
 .crew-list {
   list-style: none;
   margin: 0;
@@ -308,6 +344,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
+  .is-placeholder & {
+    font-style: italic;
+  }
+}
+
+.you {
+  font-weight: 400;
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .crew-meta {

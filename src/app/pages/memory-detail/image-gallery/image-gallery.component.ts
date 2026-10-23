@@ -55,7 +55,7 @@ export class ImageGalleryComponent implements OnInit {
 
   /**
    * CHANGED: always loads the photos of the memory in the URL from the database.
-   * Previously it reused ImageGalleryService data, which could belong to a different
+   * Previously it reused data, which could belong to a different
    * memory (or be outdated after photos were deleted in manage-photos).
    */
   async ngOnInit(): Promise<void> {

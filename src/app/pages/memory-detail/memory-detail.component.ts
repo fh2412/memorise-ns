@@ -19,7 +19,6 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { MemoryService } from '@services/memory.service';
 import { UserService } from '@services/userService';
 import { LocationService } from '@services/location.service';
-import { ImageGalleryService } from '@services/image-gallery.service';
 import { FriendsService } from '@services/friends.service';
 import { UploadQueueService } from '@services/upload-queue.service';
 import { FullDescriptionDialogComponent } from '@components/_dialogs/full-description-dialog/full-description-dialog.component';
@@ -34,10 +33,10 @@ import { MemoryPlaceholder } from '@models/memory-edit.model';
 import { NO_LOCATION_ID } from '@models/memory-constants';
 import {
   PageState, memoryDates, pageStateForError, peopleLabel, previewTiles,
-  toImageWithMetadata, uploadProgressFor,
+  uploadProgressFor,
 } from './memory-detail.helpers';
 
-/** Kept for existing imports (gallery, download page, ImageGalleryService). */
+/** Kept for existing imports (gallery, download page). */
 export type { ImageWithMetadata } from '@models/memory-photo.model';
 
 const DEFAULT_AVATAR = '/assets/img/1.png';
@@ -69,7 +68,6 @@ export class MemoryDetailComponent {
   private readonly memoryService = inject(MemoryService);
   private readonly userService = inject(UserService);
   private readonly locationService = inject(LocationService);
-  private readonly imageDataService = inject(ImageGalleryService);
   private readonly friendsService = inject(FriendsService);
   private readonly uploadQueue = inject(UploadQueueService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
@@ -273,34 +271,11 @@ export class MemoryDetailComponent {
   }
 
   protected openGallery(): void {
-    this.imageDataService.updateImageData(this.photos().map(toImageWithMetadata));
     void this.router.navigate(['memory', this.memoryId(), 'gallery']);
   }
 
   protected openDownloadPage(): void {
-    const memory = this.memory();
-    if (!memory) return;
-
-    this.imageDataService.updateImageData(this.photos().map(toImageWithMetadata));
-
-    const creator = this.creator();
-    const crew = this.crew();
-    if (creator) {
-      this.friendsService.updateFriendsData([
-        ...crew,
-        {
-          country: creator.country,
-          dob: null,
-          name: creator.name,
-          profilepic: creator.profilepic,
-          sharedMemoriesCount: 0,
-          user_id: creator.user_id,
-          friendship_status: 'none',
-        },
-      ]);
-    }
-
-    void this.router.navigate(['memory', this.memoryId(), 'download'], { state: { memory } });
+    void this.router.navigate(['memory', this.memoryId(), 'download']);
   }
 
   protected openFullDescDialog(): void {

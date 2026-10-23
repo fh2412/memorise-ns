@@ -1,201 +1,221 @@
-// photo-download.component.ts
-import { Component, OnInit, inject } from '@angular/core';
-import { MatTableDataSource, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
-import { SelectionModel } from '@angular/cdk/collections';
-import { ConfirmationDialogData, ConfirmDialogComponent } from '@components/_dialogs/confirm-dialog/confirm-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
-import { ImageGalleryService } from '@services/image-gallery.service';
-import { Memory } from '@models/memoryInterface.model';
-import { ImageWithMetadata } from '../memory-detail.component';
-import { Router } from '@angular/router';
-import { FriendsService } from '@services/friends.service';
-import { MemoryDetailFriend } from '@models/userInterface.model';
-import { MemoriseUser } from '@models/userInterface.model';
-import { forkJoin } from 'rxjs';
-import { UserService } from '@services/userService';
-import { BackButtonComponent } from '../../../components/back-button/back-button.component';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatFormField, MatLabel } from '@angular/material/input';
-import { MatSelect, MatOption } from '@angular/material/select';
-import { MatTooltip } from '@angular/material/tooltip';
-import { MatIcon } from '@angular/material/icon';
-import { MatCard, MatCardImage } from '@angular/material/card';
-import { MatCheckbox } from '@angular/material/checkbox';
-import { DatePipe } from '@angular/common';
-import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
+import {
+  ChangeDetectionStrategy, Component, computed, effect, inject, signal, untracked,
+} from '@angular/core';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { firstValueFrom } from 'rxjs';
 
-// Extended interface to include user data
-export interface ImageWithUserData extends ImageWithMetadata {
-  user?: MemoriseUser;
-}
+import { BackButtonComponent } from '@components/back-button/back-button.component';
+import { MemoryService } from '@services/memory.service';
+import { UserService } from '@services/userService';
+import { MemoryDownloadService } from '@services/memory-download.service';
+import { Memory } from '@models/memoryInterface.model';
+import { MemoryPhoto } from '@models/memory-photo.model';
+import { MemoriseUser } from '@models/userInterface.model';
+import { PageState, pageStateForError } from '../memory-detail.helpers';
+import { formatBytes } from '../../../utils/format-bytes';
+import {
+  Uploader, buildUploaders, describeDownloadError, downloadTarget, filterByUploaders,
+  intersectSelection, photoDateLabel, sumBytes,
+} from './photo-download.helpers';
+
+/** Button stays locked a moment after starting → no accidental double downloads. */
+const RESTART_LOCK_MS = 3000;
+const DEFAULT_AVATAR = '/assets/img/1.png';
 
 @Component({
-    selector: 'app-photo-download',
-    templateUrl: './photo-download.component.html',
-    styleUrls: ['./photo-download.component.scss'],
-    imports: [BackButtonComponent, MatButton, MatFormField, MatLabel, MatSelect, MatOption, MatIconButton, MatTooltip, MatIcon, MatCard, MatCheckbox, MatCardImage, MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, DatePipe, LoadingSpinnerComponent]
+  selector: 'app-photo-download',
+  templateUrl: './photo-download.component.html',
+  styleUrl: './photo-download.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterLink,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatChipsModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    BackButtonComponent,
+  ],
 })
-export class PhotoDownloadComponent implements OnInit {
-  dialog = inject(MatDialog);
-  private imageDataService = inject(ImageGalleryService);
-  private friendsService = inject(FriendsService);
-  private router = inject(Router);
-  private userService = inject(UserService);
+export class PhotoDownloadComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly memoryService = inject(MemoryService);
+  private readonly userService = inject(UserService);
+  private readonly downloader = inject(MemoryDownloadService);
 
-  photos: ImageWithUserData[] = [];
-  memorydb!: Memory;
-  dataSource: MatTableDataSource<ImageWithUserData>;
-  selection = new SelectionModel<ImageWithUserData>(true, []);
-  displayMode: 'grid' | 'table' = 'grid';
-  displayedColumns: string[] = ['select', 'thumbnail', 'userName', 'size', 'uploadDate'];
-  selectedUsers: MemoriseUser[] = [];
-  userList: MemoryDetailFriend[] = [];
-  availableUsers: MemoriseUser[] = [];
-  filterValue = '';
-  isDownloading = false;
-  isLoadingUsers = false;
+  protected readonly formatBytes = formatBytes;
+  protected readonly photoDateLabel = photoDateLabel;
+  protected readonly defaultAvatar = DEFAULT_AVATAR;
+
+  private readonly params = toSignal(this.route.paramMap, { requireSync: true });
+  protected readonly memoryId = computed(() => Number(this.params()!.get('id')));
+
+  // ── State ────────────────────────────────────────────────────────────────
+
+  protected readonly state = signal<PageState>('loading');
+  protected readonly memory = signal<Memory | null>(null);
+  protected readonly photos = signal<MemoryPhoto[]>([]);
+  private readonly users = signal<ReadonlyMap<string, MemoriseUser>>(new Map());
+
+  protected readonly view = signal<'grid' | 'list'>('grid');
+  protected readonly uploaderFilter = signal<ReadonlySet<string>>(new Set());
+  protected readonly selected = signal<ReadonlySet<string>>(new Set());
+  protected readonly downloading = signal(false);
+  protected readonly brokenIds = signal<ReadonlySet<string>>(new Set());
+
+  // ── Derived ──────────────────────────────────────────────────────────────
+
+  protected readonly uploaders = computed<Uploader[]>(() => buildUploaders(this.photos(), this.users()));
+  protected readonly uploaderById = computed(() => new Map(this.uploaders().map(u => [u.userId, u])));
+  protected readonly filterActive = computed(() => this.uploaderFilter().size > 0);
+  protected readonly visible = computed(() => filterByUploaders(this.photos(), this.uploaderFilter()));
+  protected readonly totalBytes = computed(() => sumBytes(this.photos()));
+
+  protected readonly selectedPhotos = computed(() => this.photos().filter(p => this.selected().has(p.photoId)));
+  protected readonly allVisibleSelected = computed(() =>
+    this.visible().length > 0 && this.visible().every(p => this.selected().has(p.photoId)),
+  );
+
+  /** What the main button downloads right now. */
+  protected readonly target = computed(() => {
+    const photos = this.selected().size > 0 ? this.selectedPhotos() : this.visible();
+    const label = this.selected().size > 0
+      ? `Download ${photos.length} selected`
+      : this.filterActive() ? `Download ${photos.length} ${photos.length === 1 ? 'photo' : 'photos'}` : 'Download all';
+    return { count: photos.length, bytes: sumBytes(photos), label };
+  });
+
+  // ── Loading ──────────────────────────────────────────────────────────────
+
+  private generation = 0;
 
   constructor() {
-    this.dataSource = new MatTableDataSource<ImageWithUserData>([]);
-    const navigation = this.router.currentNavigation();
-    if (navigation?.extras.state) {
-      this.memorydb = navigation.extras.state['memory'];
-    }
-  }
-
-  ngOnInit() {
-    this.imageDataService.currentImageData.subscribe((images) => {
-      this.loadUsersForImages(images);
-    });
-
-    this.friendsService.currentFriendData.subscribe((users) => {
-      this.userList = users;
+    effect(() => {
+      const id = this.memoryId();
+      untracked(() => void this.load(id));
     });
   }
 
-  // Load user data for all images
-  loadUsersForImages(images: ImageWithMetadata[]) {
-    this.isLoadingUsers = true;
-    
-    // Get unique user IDs
-    const uniqueUserIds = [...new Set(images.map(img => img.userId))];
-    
-    // Create observables for each user
-    const userRequests = uniqueUserIds.map(userId => 
-      this.userService.getUser(userId)
-    );
+  private async load(id: number): Promise<void> {
+    const gen = ++this.generation;
+    this.state.set('loading');
+    this.selected.set(new Set());
+    this.uploaderFilter.set(new Set());
 
-    // Execute all requests
-    forkJoin(userRequests).subscribe({
-      next: (users: MemoriseUser[]) => {
-        // Create a map for quick user lookup
-        const userMap = new Map<string, MemoriseUser>();
-        users.forEach(user => userMap.set(user.user_id, user));
-
-        // Attach user data to images
-        const imagesWithUsers: ImageWithUserData[] = images.map(img => ({
-          ...img,
-          user: userMap.get(img.userId)
-        }));
-
-        this.dataSource.data = imagesWithUsers;
-        this.availableUsers = users;
-        this.isLoadingUsers = false;
-      },
-      error: (error) => {
-        console.error('Error loading users:', error);
-        this.isLoadingUsers = false;
-        // Fallback: use images without user data
-        this.dataSource.data = images.map(img => ({ ...img }));
-      }
-    });
-  }
-
-  // Handle user selection change
-  onUserSelectionChange() {
-    this.applyFilter();
-  }
-
-  // Apply user filter
-  applyFilter() {
-    const selectedUserIds = this.selectedUsers?.map(user => user.user_id) || [];
-    
-    if (selectedUserIds.length === 0) {
-      // Show all images if no filter selected
-      this.dataSource.filter = '';
-    } else {
-      // Filter by selected users
-      this.dataSource.filterPredicate = (data: ImageWithUserData) => {
-        return selectedUserIds.includes(data.userId);
-      };
-      this.dataSource.filter = 'userFilter'; // Trigger filter
-    }
-  }
-
-  // Clear all filters
-  clearFilters() {
-    this.selectedUsers = [];
-    this.dataSource.filter = '';
-  }
-
-  // Toggle display mode
-  toggleDisplayMode() {
-    this.displayMode = this.displayMode === 'grid' ? 'table' : 'grid';
-  }
-
-  // Check if all items are selected
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.filteredData.length; // Use filteredData instead of data
-    return numSelected === numRows;
-  }
-
-  // Toggle selection of all photos
-  toggleAllRows() {
-    if (this.isAllSelected()) {
-      this.selection.clear();
+    if (!Number.isInteger(id) || id <= 0) {
+      this.state.set('not-found');
       return;
     }
-    this.selection.select(...this.dataSource.filteredData); // Use filteredData instead of data
+
+    try {
+      // Loaded from the URL → works after a page reload and via direct links.
+      const [memory, photos] = await Promise.all([
+        firstValueFrom(this.memoryService.getMemory(id)),
+        firstValueFrom(this.memoryService.getPhotos(id)),
+      ]);
+      if (gen !== this.generation) return;
+      this.memory.set(memory);
+      this.photos.set(photos);
+      this.brokenIds.set(new Set());
+      this.state.set('ready');
+      void this.loadUploaders(photos, gen);
+    } catch (error) {
+      if (gen === this.generation) this.state.set(pageStateForError(error));
+    }
   }
 
-  // Handle download all photos
-  downloadAllPhotos() {
-    const confirmationData: ConfirmationDialogData = {
-      title: 'Download memories images?',
-      message: 'With clicking "YES" you start the download of this memories images',
-    };
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
-    dialogRef.afterClosed().subscribe((confirmed) => {
-      if (confirmed) {
-        this.isDownloading = true;
-        this.imageDataService.downloadZip(this.memorydb.memory_id.toString(), this.memorydb.title).subscribe(() => {
-            this.isDownloading = false;
-          }, () => {
-            this.isDownloading = false;
-          });
-      }
+  /** Names/avatars only – a failed lookup just shows "Unknown". */
+  private async loadUploaders(photos: MemoryPhoto[], gen: number): Promise<void> {
+    const ids = [...new Set(photos.map(p => p.uploadedBy))];
+    const results = await Promise.allSettled(ids.map(id => firstValueFrom(this.userService.getUser(id))));
+    if (gen !== this.generation) return;
+
+    const map = new Map<string, MemoriseUser>();
+    results.forEach((result, i) => {
+      if (result.status === 'fulfilled' && result.value) map.set(ids[i], result.value);
+    });
+    this.users.set(map);
+  }
+
+  protected retry(): void {
+    void this.load(this.memoryId());
+  }
+
+  // ── Filter & selection ───────────────────────────────────────────────────
+
+  protected toggleUploader(userId: string): void {
+    this.uploaderFilter.update(filter => {
+      const next = new Set(filter);
+      if (next.has(userId)) next.delete(userId);
+      else next.add(userId);
+      return next;
+    });
+    // Hidden photos are never downloaded "by accident"
+    this.selected.update(sel => intersectSelection(sel, this.visible()));
+  }
+
+  protected clearFilter(): void {
+    this.uploaderFilter.set(new Set());
+  }
+
+  protected toggle(photo: MemoryPhoto): void {
+    if (this.downloading()) return;
+    this.selected.update(sel => {
+      const next = new Set(sel);
+      if (next.has(photo.photoId)) next.delete(photo.photoId);
+      else next.add(photo.photoId);
+      return next;
     });
   }
 
-  // Handle download selected photos
-  downloadSelectedPhotos() {
-    const confirmationData: ConfirmationDialogData = {
-      title: 'Download memories images?',
-      message: 'With clicking "YES" you start the download of this memories images',
-    };
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, { width: '450px', data: confirmationData });
-    dialogRef.afterClosed().subscribe((confirmed) => {
-      if (confirmed) {
-        this.isDownloading = true;
-        console.log("Selceted images: ", this.selection.selected);
-        this.imageDataService.downloadSelectedZip(this.selection.selected, this.memorydb.title)
-          .subscribe(() => {
-            this.isDownloading = false;
-          }, () => {
-            this.isDownloading = false;
-          });
-      }
+  protected toggleAllVisible(): void {
+    const visibleIds = this.visible().map(p => p.photoId);
+    this.selected.update(sel => {
+      const next = new Set(sel);
+      if (this.allVisibleSelected()) visibleIds.forEach(id => next.delete(id));
+      else visibleIds.forEach(id => next.add(id));
+      return next;
     });
+  }
+
+  protected clearSelection(): void {
+    this.selected.set(new Set());
+  }
+
+  protected markBroken(photoId: string): void {
+    this.brokenIds.update(ids => new Set(ids).add(photoId));
+  }
+
+  // ── Download ─────────────────────────────────────────────────────────────
+
+  protected async download(): Promise<void> {
+    if (this.downloading() || this.target().count === 0) return;
+
+    this.downloading.set(true);
+    let started = false;
+    try {
+      const ids = downloadTarget(this.selected(), this.visible(), this.filterActive());
+      const ticket = await this.downloader.download(this.memoryId(), ids);
+      started = true;
+      this.snackBar.open(
+        `Download started · ${ticket.fileCount} ${ticket.fileCount === 1 ? 'photo' : 'photos'} · ${formatBytes(ticket.totalBytes)}`,
+        undefined,
+        { duration: 4000 },
+      );
+    } catch (error) {
+      console.error('Starting download failed:', error);
+      this.snackBar.open(describeDownloadError(error), 'Close', { duration: 5000 });
+    } finally {
+      if (started) setTimeout(() => this.downloading.set(false), RESTART_LOCK_MS);
+      else this.downloading.set(false);
+    }
   }
 }

@@ -34,7 +34,7 @@ export const routes: Routes = [
   },
   {
     path: 'memory/:id/download',
-    loadChildren: () => import('./pages/memory-detail/photo-download/photo-download.module').then(m => m.PhotoDownloadModule),
+    loadComponent: () => import('./pages/memory-detail/photo-download/photo-download.component').then(m => m.PhotoDownloadComponent),
     canActivate: [authGuard]
   },
   {

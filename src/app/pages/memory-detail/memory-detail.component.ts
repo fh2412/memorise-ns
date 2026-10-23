@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { DateRange, MatDatepickerModule } from '@angular/material/datepicker';
 import { DatePipe } from '@angular/common';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -29,6 +30,7 @@ import { Memory } from '@models/memoryInterface.model';
 import { MemoriseUser, MemoryDetailFriend } from '@models/userInterface.model';
 import { MemoriseLocation } from '@models/location.model';
 import { MemoryPhoto } from '@models/memory-photo.model';
+import { MemoryPlaceholder } from '@models/memory-edit.model';
 import { NO_LOCATION_ID } from '@models/memory-constants';
 import {
   PageState, memoryDates, pageStateForError, peopleLabel, previewTiles,
@@ -52,6 +54,7 @@ const DEFAULT_AVATAR = '/assets/img/1.png';
     MatIconModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatTooltipModule,
     MatDatepickerModule,
     BackButtonComponent,
     FriendsProfilePicsComponent,
@@ -86,6 +89,7 @@ export class MemoryDetailComponent {
   protected readonly memory = signal<Memory | null>(null);
   protected readonly creator = signal<MemoriseUser | null>(null);
   protected readonly crew = signal<MemoryDetailFriend[]>([]);
+  protected readonly placeholders = signal<MemoryPlaceholder[]>([]);
   protected readonly location = signal<MemoriseLocation | null>(null);
   private readonly isMember = signal(false);
 
@@ -93,6 +97,10 @@ export class MemoryDetailComponent {
   protected readonly photosState = signal<'loading' | 'ready' | 'error'>('loading');
   /** Photos whose image failed to load (e.g. deleted in Storage) → shown as gray tile. */
   protected readonly brokenPhotoIds = signal<ReadonlySet<string>>(new Set());
+
+  /** Invite link is generated once per page visit and reused. */
+  private shareLink: string | null = null;
+  protected readonly sharing = signal(false);
 
   // ── Derived ──────────────────────────────────────────────────────────────
 
@@ -108,7 +116,8 @@ export class MemoryDetailComponent {
     return dates ? { ...dates, range: new DateRange<Date>(dates.start, dates.end) } : null;
   });
 
-  protected readonly peopleLabel = computed(() => peopleLabel(this.crew().length));
+  protected readonly peopleLabel = computed(() => peopleLabel(this.crew().length + this.placeholders().length));
+  protected readonly hasCrew = computed(() => this.crew().length + this.placeholders().length > 0);
   protected readonly description = computed(() => this.memory()?.text?.trim() ?? '');
 
   protected readonly previewTiles = computed(() =>
@@ -200,6 +209,7 @@ export class MemoryDetailComponent {
       me
         ? this.apply(gen, this.memoryService.getMemorysFriendsWithShared(id, me), crew => this.crew.set(crew ?? []), 'crew')
         : null,
+      this.apply(gen, this.memoryService.getPlaceholders(id), list => this.placeholders.set(list ?? []), 'placeholders'),
       memory.location_id && memory.location_id !== NO_LOCATION_ID
         ? this.apply(gen, this.locationService.getLocationById(memory.location_id),
             loc => this.location.set(loc?.location_id === NO_LOCATION_ID ? null : loc), 'location')
@@ -239,11 +249,13 @@ export class MemoryDetailComponent {
     this.memory.set(null);
     this.creator.set(null);
     this.crew.set([]);
+    this.placeholders.set([]);
     this.location.set(null);
     this.isMember.set(false);
     this.photos.set([]);
     this.photosState.set('loading');
     this.brokenPhotoIds.set(new Set());
+    this.shareLink = null;
   }
 
   // ── Actions ──────────────────────────────────────────────────────────────
@@ -316,6 +328,44 @@ export class MemoryDetailComponent {
 
   protected isKnown(friend: MemoryDetailFriend): boolean {
     return friend.friendship_status === 'accepted' || friend.user_id === this.loggedInUserId;
+  }
+
+  /**
+   * Shares the memory's invite link.
+   * Touch devices (later Capacitor): native share sheet. Desktop: copy to clipboard.
+   */
+  protected async invite(placeholder: MemoryPlaceholder): Promise<void> {
+    if (this.sharing() || !this.isBrowser) return;
+    this.sharing.set(true);
+
+    try {
+      if (!this.shareLink) {
+        const res = await firstValueFrom(this.memoryService.generateShareLink(String(this.memoryId())));
+        this.shareLink = res.directLink;
+      }
+      const url = this.shareLink;
+      const title = this.memory()?.title ?? 'Memorise';
+      const text = `Hi ${placeholder.name}, join our memory "${title}" on Memorise!`;
+
+      const isTouch = window.matchMedia('(pointer: coarse)').matches;
+      if (isTouch && typeof navigator.share === 'function') {
+        try {
+          await navigator.share({ title, text, url });
+          return;
+        } catch (error) {
+          if ((error as DOMException)?.name === 'AbortError') return; // user closed the sheet
+          // otherwise fall back to the clipboard
+        }
+      }
+
+      await navigator.clipboard.writeText(url);
+      this.showSnackbar(`Invite link for ${placeholder.name} copied!`);
+    } catch (error) {
+      console.error('Sharing invite link failed:', error);
+      this.showSnackbar('Invite link could not be created.');
+    } finally {
+      this.sharing.set(false);
+    }
   }
 
   private showSnackbar(message: string): void {

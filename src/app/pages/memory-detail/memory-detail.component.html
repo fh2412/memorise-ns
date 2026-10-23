@@ -8,9 +8,9 @@
 
     @case ('ready') {
       @if (memory(); as memory) {
-        <!-- Header -->
+        <!-- Header: phones = [back | actions] + title below · ≥600px = one row -->
         <header class="page-header">
-          <app-back-button [text]="'Back'" />
+          <app-back-button class="back" [text]="'Back'" />
           <h1 class="title">{{ memory.title }}</h1>
           @if (hasPrivileges()) {
             <div class="header-actions">
@@ -52,7 +52,6 @@
             <div class="tile" [class.hero]="$first">
               @if (photo) {
                 <img [src]="photo.thumbUrl" [alt]="'Photo ' + ($index + 1) + ' of ' + memory.title"
-                  [attr.width]="photo.width" [attr.height]="photo.height"
                   [attr.loading]="$first ? 'eager' : 'lazy'" decoding="async"
                   (error)="markBroken(photo.photoId)" />
               }
@@ -132,13 +131,17 @@
 
             <section class="card" aria-labelledby="crew-heading">
               <h2 id="crew-heading">Crew</h2>
-              @if (crew().length > 0) {
+              @if (hasCrew()) {
                 <ul class="crew-list">
+                  <!-- Registered users -->
                   @for (friend of crew(); track friend.user_id) {
-                    <li class="crew-row">
+                    <li class="crew-row" [class.is-current-user]="friend.user_id === loggedInUserId">
                       <img class="avatar" [src]="friend.profilepic || defaultAvatar" alt="" />
                       <div class="crew-info">
-                        <span class="crew-name">{{ friend.name }}</span>
+                        <span class="crew-name">
+                          {{ friend.name }}
+                          @if (friend.user_id === loggedInUserId) { <span class="you">(you)</span> }
+                        </span>
                         <span class="crew-meta">
                           @if (friend.dob) { {{ friend.dob | date }} }
                           @if (friend.dob && friend.country) { · }
@@ -158,6 +161,29 @@
                           </button>
                         }
                       </div>
+                    </li>
+                  }
+
+                  <!-- Placeholders (not on Memorise yet) -->
+                  @for (placeholder of placeholders(); track placeholder.id) {
+                    <li class="crew-row is-placeholder">
+                      <div class="avatar ghost-avatar" aria-hidden="true">
+                        <mat-icon>person_outline</mat-icon>
+                      </div>
+                      <div class="crew-info">
+                        <span class="crew-name">{{ placeholder.name }}</span>
+                        <span class="crew-meta">Not on Memorise yet</span>
+                      </div>
+                      @if (hasPrivileges()) {
+                        <div class="crew-action">
+                          <button mat-stroked-button type="button" [disabled]="sharing()"
+                            [attr.aria-label]="'Invite ' + placeholder.name"
+                            (click)="invite(placeholder)">
+                            <mat-icon>share</mat-icon>
+                            <span class="label">Invite</span>
+                          </button>
+                        </div>
+                      }
                     </li>
                   }
                 </ul>

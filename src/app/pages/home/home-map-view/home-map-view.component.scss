@@ -1,10 +1,469 @@
-@use 'components/mixins' as mixins;
+// Height is set by the component (fills the viewport below the home header).
+:host {
+  display: block;
+  margin-top: 8px;
 
-.size {
-    height: 400px;
-    width: 400px;
+  --mm-gold: #f5b301;
+  --mm-pin-size: 48px;
+  --mm-pin-pinned-size: 60px;
+  --mm-ring: 3px;
 }
 
-.fullcard {
-    @include mixins.full-size;
+.shell {
+  position: relative;
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid var(--mat-sys-outline-variant);
+  background: var(--mat-sys-surface-container);
+
+  @media (min-width: 960px) {
+    grid-template-columns: minmax(0, 1fr) 360px;
+  }
+}
+
+.map {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+}
+
+// ── Overlays ─────────────────────────────────────────────────────────────────
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+  background: var(--mat-sys-surface-container);
+
+  &.soft {
+    background: color-mix(in srgb, var(--mat-sys-surface) 70%, transparent);
+    backdrop-filter: blur(4px);
+  }
+
+  mat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 40px;
+  }
+
+  p {
+    max-width: 320px;
+    margin: 0;
+    font: var(--mat-sys-body-large);
+  }
+}
+
+// ── Panel: bottom sheet (phones) ─────────────────────────────────────────────
+
+.panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  max-height: 45%;
+  border-radius: 24px 24px 0 0;
+  background: var(--mat-sys-surface-container-low);
+  box-shadow: var(--mat-sys-level3);
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+
+  &.expanded {
+    max-height: 70%;
+  }
+
+  @media (min-width: 960px) {
+    position: static;
+    max-height: none;
+    height: 100%;
+    border-radius: 0;
+    box-shadow: none;
+    border-left: 1px solid var(--mat-sys-outline-variant);
+  }
+}
+
+.handle {
+  all: unset;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  padding: 8px 16px 10px;
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
+}
+
+.grabber {
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--mat-sys-outline-variant);
+}
+
+.handle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.handle-title,
+.panel-header h2 {
+  font: var(--mat-sys-title-small);
+  color: var(--mat-sys-on-surface);
+}
+
+.panel-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 56px;
+  padding: 4px 8px 4px 16px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  h2 {
+    margin: 0;
+  }
+}
+
+.spot-bar {
+  flex-shrink: 0;
+  padding: 0 8px;
+}
+
+// ── Selected memory ──────────────────────────────────────────────────────────
+
+.selected {
+  position: relative;
+  flex-shrink: 0;
+  display: flex;
+  gap: 12px;
+  margin: 0 12px 12px;
+  padding: 12px;
+  border-radius: 16px;
+  background: var(--mat-sys-surface-container-high);
+
+  @media (min-width: 960px) {
+    margin-top: 12px;
+  }
+}
+
+.selected-photo {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface-variant);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.selected-text {
+  flex: 1;
+  min-width: 0;
+  padding-right: 32px;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 2px;
+    font: var(--mat-sys-title-medium);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0;
+    font: var(--mat-sys-body-small);
+    color: var(--mat-sys-on-surface);
+  }
+
+  .muted {
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+.open-btn {
+  margin-top: 8px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+}
+
+.star {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  font-size: 18px;
+  color: var(--mm-gold);
+}
+
+// ── List ─────────────────────────────────────────────────────────────────────
+
+.list {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 0 0 88px; // last rows stay clear of the FAB
+  list-style: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.row {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+
+  &:hover,
+  &.active {
+    background: var(--mat-sys-surface-container-high);
+  }
+
+  &[aria-current='true'] {
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--mat-sys-primary);
+    outline-offset: -2px;
+  }
+}
+
+.row-thumb {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: var(--mat-sys-surface-container-highest);
+  color: var(--mat-sys-on-surface-variant);
+
+  &.pinned {
+    box-shadow: 0 0 0 2px var(--mm-gold);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.row-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.row-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: var(--mat-sys-body-large);
+  font-weight: 500;
+}
+
+.row-meta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// ── Marker contents ──────────────────────────────────────────────────────────
+// Created with document.createElement (map-marker-elements.ts), so Angular's
+// emulated encapsulation doesn't reach them → ::ng-deep, scoped by :host.
+
+:host ::ng-deep {
+  .mm-pin {
+    position: relative;
+    width: var(--mm-pin-size);
+    height: var(--mm-pin-size);
+    border-radius: 50%;
+    border: var(--mm-ring) solid #fff;
+    background: var(--mat-sys-surface-container-highest);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transform-origin: 50% 100%;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+    // little tail → it reads as a pin
+    &::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: calc(-1 * var(--mm-ring) - 6px);
+      width: 10px;
+      height: 10px;
+      background: inherit;
+      border-right: var(--mm-ring) solid #fff;
+      border-bottom: var(--mm-ring) solid #fff;
+      border-color: inherit;
+      transform: translateX(-50%) rotate(45deg);
+      z-index: -1;
+    }
+
+    &:hover,
+    &.mm-pin--active {
+      transform: scale(1.18);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4), 0 0 0 3px var(--mat-sys-primary);
+    }
+  }
+
+  .mm-pin__photo {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .mm-noimg {
+    color: var(--mat-sys-on-surface-variant);
+    background: var(--mat-sys-surface-container-highest);
+
+    .material-icons {
+      font-size: 20px;
+    }
+  }
+
+  .mm-pin--pinned {
+    --mm-pin-size: var(--mm-pin-pinned-size);
+    border-color: var(--mm-gold);
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(245, 179, 1, 0.35);
+    animation: mm-pulse 1.6s ease-out 2;
+  }
+
+  .mm-pin__star {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size: 15px;
+    color: #fff;
+    background: var(--mm-gold);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+  }
+
+  // Cluster: stack of up to 3 photos + count
+  .mm-stack {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    cursor: pointer;
+    transition: transform 0.15s ease;
+
+    &:hover,
+    &.mm-stack--active {
+      transform: scale(1.1);
+
+      .mm-stack__photo:last-of-type {
+        box-shadow: 0 0 0 3px var(--mat-sys-primary), 0 4px 12px rgba(0, 0, 0, 0.35);
+      }
+    }
+  }
+
+  .mm-stack__photo {
+    position: absolute;
+    inset: 4px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    border: 3px solid #fff;
+    object-fit: cover;
+    background: var(--mat-sys-surface-container-highest);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    // --layer: 0 = top photo, 1/2 = fanned out behind it
+    transform: rotate(calc(var(--layer, 0) * 7deg)) translate(calc(var(--layer, 0) * 3px), calc(var(--layer, 0) * -2px));
+    pointer-events: none;
+  }
+
+  .mm-stack__count {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    font: var(--mat-sys-label-medium);
+    font-weight: 700;
+    color: var(--mat-sys-on-primary);
+    background: var(--mat-sys-primary);
+    border: 2px solid #fff;
+    pointer-events: none;
+  }
+}
+
+@keyframes mm-pulse {
+  0% { box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 0 0 rgba(245, 179, 1, 0.55); }
+  100% { box-shadow: 0 3px 12px rgba(0, 0, 0, 0.4), 0 0 0 16px rgba(245, 179, 1, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host ::ng-deep .mm-pin--pinned {
+    animation: none;
+  }
+
+  .panel {
+    transition: none;
+  }
 }

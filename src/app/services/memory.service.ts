@@ -1,12 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
-import { forkJoin, lastValueFrom, Observable, of, tap } from 'rxjs';
+import { forkJoin, lastValueFrom, map, Observable, of, tap } from 'rxjs';
 import { CreateMemoryResponse, Memory, MemoryFormData, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { FormGroup } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { MapMemory } from '@models/memory-map.model';
 
 @Injectable({
   providedIn: 'root'
@@ -67,13 +68,10 @@ export class MemoryService {
     );
   }
 
-  getMemoriesMapData(userId: string, includeShared: boolean): Observable<MemoryMapData[]> {
-    return this.http.get<MemoryMapData[]>(
-      `${this.apiUrl}/memories/mapData/${userId}`,
-      {
-        params: { includeShared: includeShared.toString() }
-      }
-    );
+  getMapMemories(): Observable<MapMemory[]> {
+    return this.http
+      .get<{ memories: MapMemory[] }>(`${this.apiUrl}/memories/map`)
+      .pipe(map(response => response.memories ?? []));
   }
 
   async getMemoryTitlePictureUrl(memoryId: string, starredIndex: number): Promise<string> {

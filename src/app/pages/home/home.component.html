@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" [class.is-map]="viewMode() === 'map'">
     <header class="page-header">
         <div class="page-heading">
             <h1 class="page-title">Your Memories</h1>
@@ -64,7 +64,7 @@
             <button mat-stroked-button (click)="clearSearch()">Clear search</button>
         </section>
         } @else if (viewMode() === 'map') {
-        <app-home-map-view [userId]="userId" [memoryDetails]="items()"></app-home-map-view>
+        <app-home-map-view [search]="searchTerm()" />
         } @else {
         <ul class="memory-grid" [class.is-refreshing]="status() === 'loading'">
             @for (item of items(); track item.memory_id) {

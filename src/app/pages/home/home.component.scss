@@ -4,6 +4,8 @@
   display: block;
 }
 
+.page.is-map { padding-bottom: 0; }   // map fills the viewport, no extra scroll
+
 .page {
   box-sizing: border-box;
   max-width: 1400px;

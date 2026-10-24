@@ -1,24 +1,135 @@
-<google-map
-  height="80vh"
-  width="100%"
-  [zoom]="zoom"
-  [center]="center"
-  [options]="options"
-  >
-  @for (pos of markers; track pos) {
-    <map-marker
-      #marker="mapMarker"
-      [position]="pos.position"
-      [title]="pos.title"
-      (mapClick)="openInfoWindow(marker, pos)"
-    ></map-marker>
-  }
+<div class="shell">
+  <!-- Map -->
+  <div class="map">
+    @if (mapsReady()) {
+      <google-map width="100%" height="100%" [options]="mapOptions"
+        (mapInitialized)="onMapReady($event)" (mapClick)="clearSelection()">
 
-  <map-info-window>
-    <div class="size">
-      @if (currentMemory) {
-        <app-memory-card [cardData]="currentMemory" class="fullcard" (click)="onButtonClick(currentMemory)"></app-memory-card>
+        <!-- Pinned memories: never clustered, always on top -->
+        @for (m of pinned(); track m.memoryId) {
+          <map-advanced-marker [position]="m.position" [content]="pinContent(m)" [title]="m.title"
+            [zIndex]="zIndexFor(m)" (mapClick)="selectFromMap(m)" />
+        }
+
+        <map-marker-clusterer [renderer]="renderer" [algorithm]="algorithm"
+          (clusterClick)="onClusterClick($event)" (clusteringbegin)="onClusteringBegin()">
+          @for (m of regular(); track m.memoryId) {
+            <map-advanced-marker [position]="m.position" [content]="pinContent(m)" [title]="m.title"
+              [zIndex]="zIndexFor(m)" (mapClick)="selectFromMap(m)" />
+          }
+        </map-marker-clusterer>
+      </google-map>
+    }
+
+    <!-- Overlays -->
+    @if (mapsFailed()) {
+      <div class="overlay" role="alert">
+        <mat-icon>map</mat-icon>
+        <p>The map couldn't be loaded. Check your connection and reload the page.</p>
+      </div>
+    } @else if (!mapsReady() || state() === 'loading') {
+      <div class="overlay" role="status" aria-label="Loading map">
+        <mat-progress-spinner mode="indeterminate" diameter="36" />
+      </div>
+    } @else if (state() === 'error') {
+      <div class="overlay" role="alert">
+        <mat-icon>cloud_off</mat-icon>
+        <p>Your memories couldn't be loaded.</p>
+        <button mat-flat-button type="button" (click)="retry()">Try again</button>
+      </div>
+    } @else if (memories().length === 0) {
+      <div class="overlay soft" role="status">
+        <mat-icon>{{ search() ? 'search_off' : 'add_location_alt' }}</mat-icon>
+        @if (search()) {
+          <p>No memories on the map match “{{ search() }}”.</p>
+        } @else {
+          <p>No memories on the map yet. Add a location to a finished memory to see it here.</p>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Side list (≥960px) / bottom sheet (phones) -->
+  @if (state() === 'ready' && memories().length > 0) {
+    <aside #panel class="panel" [class.expanded]="sheetExpanded()" aria-label="Memories on the map">
+      @if (!isWide()) {
+        <button type="button" class="handle" [attr.aria-expanded]="sheetExpanded()" (click)="toggleSheet()">
+          <span class="grabber" aria-hidden="true"></span>
+          <span class="handle-row">
+            <span class="handle-title">{{ listTitle() }}</span>
+            <mat-icon aria-hidden="true">{{ sheetExpanded() ? 'expand_more' : 'expand_less' }}</mat-icon>
+          </span>
+        </button>
+      } @else {
+        <header class="panel-header">
+          <h2>{{ listTitle() }}</h2>
+          @if (spotIds()) {
+            <button mat-button type="button" (click)="showAll()">Show all</button>
+          }
+        </header>
       }
-    </div>
-  </map-info-window>
-</google-map>
+
+      @if (selected(); as s) {
+        <article class="selected" aria-live="polite">
+          <div class="selected-photo">
+            @if (s.thumb) {
+              <img [src]="s.thumb" alt="" decoding="async" />
+            } @else {
+              <mat-icon aria-hidden="true">photo</mat-icon>
+            }
+          </div>
+          <div class="selected-text">
+            <h3>
+              @if (s.isPinned) { <mat-icon class="star" aria-label="Pinned">star</mat-icon> }
+              {{ s.title }}
+            </h3>
+            <p>{{ s.dateLabel }}@if (s.place) { · {{ s.place }} }</p>
+            <p class="muted">{{ s.pictureCount }} {{ s.pictureCount === 1 ? 'photo' : 'photos' }}</p>
+            <a mat-flat-button class="open-btn" [routerLink]="['/memory', s.memoryId]">Open memory</a>
+          </div>
+          <button mat-icon-button type="button" class="close-btn" aria-label="Close" (click)="selectedId.set(null)">
+            <mat-icon>close</mat-icon>
+          </button>
+        </article>
+      }
+
+      @if (isWide() || sheetExpanded()) {
+        @if (!isWide() && spotIds()) {
+          <div class="spot-bar">
+            <button mat-button type="button" (click)="showAll()">
+              <mat-icon>arrow_back</mat-icon>
+              Show all memories
+            </button>
+          </div>
+        }
+        <ul class="list">
+          @for (m of listItems(); track m.memoryId) {
+            <li>
+              <button type="button" class="row" [attr.data-list-id]="m.memoryId"
+                [class.active]="m.memoryId === selectedId() || m.memoryId === hoveredId()"
+                [attr.aria-current]="m.memoryId === selectedId() ? 'true' : null"
+                (click)="selectFromList(m)"
+                (mouseenter)="hover(m.memoryId)" (mouseleave)="hover(null)"
+                (focus)="hover(m.memoryId)" (blur)="hover(null)">
+                <span class="row-thumb" [class.pinned]="m.isPinned">
+                  @if (m.thumb) {
+                    <img [src]="m.thumb" alt="" loading="lazy" decoding="async" />
+                  } @else {
+                    <mat-icon aria-hidden="true">photo</mat-icon>
+                  }
+                </span>
+                <span class="row-text">
+                  <span class="row-title">{{ m.title }}</span>
+                  <span class="row-meta">{{ m.dateLabel }}@if (m.place) { · {{ m.place }} }</span>
+                </span>
+                @if (m.isPinned) {
+                  <mat-icon class="star" aria-label="Pinned">star</mat-icon>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+  }
+</div>

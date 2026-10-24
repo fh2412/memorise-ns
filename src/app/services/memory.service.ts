@@ -6,6 +6,7 @@ import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearc
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
+import { MapMemory } from '@models/memory-map.model';
 import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest, RegisterPhotoResponse, CompleteUploadSessionRequest, CompleteUploadSessionResponse } from '@models/photo-upload.model';
 import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.model';
 import { MemoryPhoto } from '@models/memory-photo.model';
@@ -70,13 +71,10 @@ export class MemoryService {
     );
   }
 
-  getMemoriesMapData(userId: string, includeShared: boolean): Observable<MemoryMapData[]> {
-    return this.http.get<MemoryMapData[]>(
-      `${this.apiUrl}/memories/mapData/${userId}`,
-      {
-        params: { includeShared: includeShared.toString() }
-      }
-    );
+  getMapMemories(): Observable<MapMemory[]> {
+    return this.http
+      .get<{ memories: MapMemory[] }>(`${this.apiUrl}/memories/map`)
+      .pipe(map(response => response.memories ?? []));
   }
 
   getMemorysFriends(memory_id: string, user_id: string) {

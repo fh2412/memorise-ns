@@ -9,6 +9,19 @@
         }
     </header>
 
+    @if (activeMemories().length) {
+    <div class="active-slot" [class.is-collapsed]="hasSearch()" [attr.inert]="hasSearch() ? '' : null">
+        <div class="active-slot-inner">
+            <div class="active-stack">
+                @for (memory of activeMemories(); track memory.memory_id) {
+                <app-active-memory-banner [memory]="memory"></app-active-memory-banner>
+                }
+            </div>
+        </div>
+    </div>
+    }
+
+
     @if (!isFirstRun()) {
     <div class="toolbar" role="search">
         <label class="search-field">

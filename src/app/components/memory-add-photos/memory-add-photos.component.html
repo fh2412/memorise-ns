@@ -1,0 +1,22 @@
+<app-photo-picker [(photos)]="photos" [selectCover]="false" [disabled]="starting()" />
+
+@if (error()) {
+  <p class="error" role="alert">
+    <mat-icon>error</mat-icon>
+    {{ error() }}
+  </p>
+}
+
+@if (photos().length > 0) {
+  <div class="actions">
+    <button mat-button type="button" [disabled]="starting()" (click)="photos.set([])">Clear</button>
+    <button mat-flat-button type="button" [disabled]="!canStart()" (click)="startUpload()">
+      @if (starting()) {
+        <mat-progress-spinner mode="indeterminate" diameter="18" />
+      } @else {
+        <mat-icon>cloud_upload</mat-icon>
+      }
+      Upload {{ readyPhotos().length }} {{ readyPhotos().length === 1 ? 'photo' : 'photos' }}
+    </button>
+  </div>
+}

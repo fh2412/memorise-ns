@@ -9,7 +9,7 @@ import { MemoryEditorGuard } from './guards/memory-editor.guard';
 export const routes: Routes = [
   {
     path: 'login',
-    loadChildren: () => import('./pages/login/login.module').then(m => m.LoginModule),
+    loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
   },
   {
     path: 'home',
@@ -24,37 +24,37 @@ export const routes: Routes = [
   },
   {
     path: 'memory/:id',
-    loadChildren: () => import('./pages/memory-detail/memory-detail.module').then(m => m.MemoryModule),
+    loadComponent: () => import('./pages/memory-detail/memory-detail.component').then(m => m.MemoryDetailComponent),
     canActivate: [authGuard]
   },
   {
     path: 'memory/:id/gallery',
-    loadChildren: () => import('./pages/memory-detail/image-gallery/image-gallery.module').then(m => m.ImageGalleryModule),
+    loadComponent: () => import('./pages/memory-detail/image-gallery/image-gallery.component').then(m => m.ImageGalleryComponent),
     canActivate: [authGuard]
   },
   {
     path: 'memory/:id/download',
-    loadChildren: () => import('./pages/memory-detail/photo-download/photo-download.module').then(m => m.PhotoDownloadModule),
+    loadComponent: () => import('./pages/memory-detail/photo-download/photo-download.component').then(m => m.PhotoDownloadComponent),
     canActivate: [authGuard]
   },
   {
     path: 'editmemory/:id',
-    loadChildren: () => import('./pages/editmemory/editmemory.module').then(m => m.EditMemoryModule),
+    loadComponent: () => import('./pages/editmemory/editmemory.component').then(m => m.EditmemoryComponent),
     canActivate: [authGuard, MemoryEditorGuard]
   },
   {
     path: 'editmemory/:id/addphotos',
-    loadChildren: () => import('./pages/editmemory/add-photos/add-photos.module').then(m => m.AddPhotosModule),
+    loadComponent: () => import('./pages/editmemory/add-photos/add-photos.component').then(m => m.AddPhotosComponent),
     canActivate: [authGuard]
   },
   {
     path: 'editmemory/managephotos/:memoryId',
-    loadChildren: () => import('./pages/editmemory/manage-photos/manage-photos.module').then(m => m.ManagePhotosModule),
+    loadComponent: () => import('./pages/editmemory/manage-photos/manage-photos.component').then(m => m.ManagePhotosComponent),
     canActivate: [authGuard]
   },
   {
     path: 'newmemory',
-    loadChildren: () => import('./pages/adding-memory/adding-memory.module').then(m => m.AddingMemoryModule),
+    loadComponent: () => import('./pages/create-memory/create-memory.component').then(m => m.CreateMemoryComponent),
     canActivate: [authGuard]
   },
   /*{
@@ -64,24 +64,24 @@ export const routes: Routes = [
   },*/
   {
     path: 'friends',
-    loadChildren: () => import('./pages/friends/friends.module').then(m => m.FriendsModule),
+    loadComponent: () => import('./pages/friends/friends.component').then(m => m.FriendsComponent),
     canActivate: [authGuard]
   },
   { 
     path: 'invite/:userId', 
-    loadChildren: () => import('./pages/other-userprofile/other-userprofile.module').then(m => m.OtherUserProfileModule),
+    loadComponent: () => import('./pages/other-userprofile/other-userprofile.component').then(m => m.OtherUserprofileComponent),
     canActivate: [authGuard],
     resolve: { user: ProfileResolver }
   },
   { 
     path: 'userprofile/:userId', 
-    loadChildren: () => import('./pages/userprofile/userprofile.module').then(m => m.UserProfileModule),
+    loadComponent: () => import('./pages/userprofile/userprofile.component').then(m => m.UserProfileComponent),
     canActivate: [authGuard],
     resolve: { user: UserResolver }
   },
   { 
     path: 'user/:userId', 
-    loadChildren: () => import('./pages/other-userprofile/other-userprofile.module').then(m => m.OtherUserProfileModule),
+    loadComponent: () => import('./pages/other-userprofile/other-userprofile.component').then(m => m.OtherUserprofileComponent),
     canActivate: [authGuard],
     resolve: { user: ProfileResolver }
   },
@@ -127,7 +127,7 @@ export const routes: Routes = [
   },*/
   {
     path: 'error/:errorId',
-    loadChildren: () => import('./pages/navigation-error/navigation-error.module').then(m => m.NavigationErrorModule)
+    loadComponent: () => import('./pages/navigation-error/navigation-error.component').then(m => m.NavigationErrorComponent)
   },
   { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: '**', redirectTo: 'error/404', pathMatch: 'full' },

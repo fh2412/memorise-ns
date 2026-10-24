@@ -83,7 +83,6 @@ export class CrewSelectorComponent implements OnInit {
   private async fetchFriends(userId: string): Promise<void> {
     try {
       this.friendsList.set(await firstValueFrom(this.friendsService.getUserFriendsWithShared(userId)));
-      console.log("friendlist: ", this.friendsList());
     } catch (error) {
       console.error(`error fetching friends:`, error);
     }

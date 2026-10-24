@@ -1,0 +1,120 @@
+<input #fileInput type="file" accept="image/*,.heic,.heif" multiple hidden (change)="onFileInputChange($event)" />
+
+@if (photos().length === 0) {
+  <button type="button" class="dropzone" [disabled]="disabled()" (click)="openFileDialog()">
+    <mat-icon class="dropzone-icon">add_photo_alternate</mat-icon>
+    <span class="dropzone-title">Add your photos</span>
+    <span class="dropzone-hint">Drag &amp; drop or click to browse · stored in original quality</span>
+  </button>
+} @else {
+  <div class="toolbar">
+    <div class="summary" aria-live="polite">
+      <strong>{{ readyPhotos().length }} {{ readyPhotos().length === 1 ? 'photo' : 'photos' }}</strong>
+      <span>· {{ formatBytes(totalBytes()) }}</span>
+      @if (processingCount() > 0) {
+        <span class="processing">
+          <mat-progress-spinner mode="indeterminate" diameter="14" />
+          preparing {{ processingCount() }}…
+        </span>
+      }
+    </div>
+  </div>
+
+  @if (exceedsStorage()) {
+    <div class="notice notice-error" role="alert">
+      <mat-icon>cloud_off</mat-icon>
+      <span>
+        These photos need {{ formatBytes(totalBytes()) }}, but only {{ formatBytes(remainingBytes()) }} are left.
+        Remove some photos or upgrade your plan.
+      </span>
+    </div>
+  }
+
+  @if (errorCount() > 0) {
+    <div class="notice notice-warning" role="status">
+      <mat-icon>broken_image</mat-icon>
+      <span>{{ errorCount() }} {{ errorCount() === 1 ? 'file' : 'files' }} can't be read by this browser and won't be uploaded.</span>
+      <button mat-button type="button" (click)="removeFailed()">Remove</button>
+    </div>
+  }
+
+  @if (selectCover()) {
+    <p class="hint">
+      <mat-icon>star</mat-icon>
+      Tap the star to choose the cover photo of your memory.
+    </p>
+  }
+
+  <ul class="grid">
+    @for (photo of photos(); track photo.id) {
+      @let isCover = selectCover() && photo.id === coverId();
+      <li class="tile" [class.is-cover]="isCover" [class.has-error]="photo.status === 'error'">
+        @switch (photo.status) {
+          @case ('ready') {
+            <img [src]="photo.previewUrl" [alt]="photo.file.name" decoding="async" />
+          }
+          @case ('processing') {
+            <div class="tile-skeleton">
+              <mat-progress-spinner mode="indeterminate" diameter="24" />
+            </div>
+          }
+          @case ('error') {
+            <div class="tile-error">
+              <mat-icon>broken_image</mat-icon>
+              <span>{{ photo.error }}</span>
+              <span class="file-name">{{ photo.file.name }}</span>
+            </div>
+          }
+        }
+
+        @if (selectCover() && photo.status === 'ready') {
+          <button mat-icon-button type="button" class="tile-action cover-btn"
+            [attr.aria-pressed]="isCover"
+            [attr.aria-label]="isCover ? 'Cover photo' : 'Use as cover photo'"
+            [title]="isCover ? 'Cover photo' : 'Use as cover photo'"
+            (click)="setCover(photo.id)">
+            <mat-icon>{{ isCover ? 'star' : 'star_border' }}</mat-icon>
+          </button>
+        }
+
+        <button mat-icon-button type="button" class="tile-action remove-btn"
+          [disabled]="disabled()"
+          [attr.aria-label]="'Remove ' + photo.file.name"
+          title="Remove"
+          (click)="remove(photo.id)">
+          <mat-icon>close</mat-icon>
+        </button>
+
+        @if (isCover) {
+          <span class="cover-badge">Cover</span>
+        }
+      </li>
+    }
+
+    <li class="tile add-tile">
+      <button type="button" [disabled]="disabled()" (click)="openFileDialog()" aria-label="Add more photos">
+        <mat-icon>add_photo_alternate</mat-icon>
+      </button>
+    </li>
+  </ul>
+}
+
+@if (rejected().length > 0) {
+  <div class="notice notice-warning rejected" role="status">
+    <mat-icon>info</mat-icon>
+    <div>
+      <span>Some files were skipped:</span>
+      <ul>
+        @for (message of visibleRejected(); track $index) {
+          <li>{{ message }}</li>
+        }
+        @if (hiddenRejectedCount() > 0) {
+          <li>… and {{ hiddenRejectedCount() }} more</li>
+        }
+      </ul>
+    </div>
+    <button mat-icon-button type="button" aria-label="Dismiss" (click)="dismissRejected()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+}

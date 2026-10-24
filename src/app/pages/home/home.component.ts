@@ -21,6 +21,7 @@ import { ViewMode, ViewSelectorComponent } from '../../components/view-selecor/v
 import { InViewportDirective } from '../../directives/in-viewport.directive';
 import { HomeListStore } from './home-list.store';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
+import { ActiveMemoryBannerComponent } from '@components/active-memory-banner/active-memory-banner.component';
 
 /** 12 is divisible by 2, 3 and 4, so every full page fills complete rows. */
 const PAGE_SIZE = 12;
@@ -53,6 +54,7 @@ function appendUnique(current: PlannedMemory[], incoming: PlannedMemory[]): Plan
     MatFabButton,
     MatIconButton,
     MatIcon,
+    ActiveMemoryBannerComponent
   ],
 })
 export class HomeComponent {
@@ -116,6 +118,12 @@ export class HomeComponent {
   protected readonly isEmpty = computed(() => this.status() === 'ready' && this.items().length === 0);
   protected readonly isFirstRun = computed(() => this.isEmpty() && !this.hasSearch());
   protected readonly sortLabel = computed(() => (this.sortAscending() ? 'Oldest first' : 'Newest first'));
+
+  /** Memories that are running right now (usually one). Loaded once, independent of the grid. */
+  protected readonly activeMemories = signal<PlannedMemory[]>([]);
+  private readonly activeLoaded = signal(false);
+
+
   /** Skeletons appended while the next page loads – never more than what's left. */
   protected readonly pendingSkeletons = computed(() =>
     Array.from({ length: Math.max(0, Math.min(PAGE_SIZE, this.total() - this.items().length)) }),
@@ -151,6 +159,22 @@ export class HomeComponent {
   private connectLoader(): void {
     let restoring = this.snapshot !== null;
     let isFirstQuery = true;
+
+    this.memoryService
+      .getMemoriesPage(this.userId, { ascending: false, page: 0, pageSize: 3, filter: 'active' })
+      .pipe(
+        map((response) => response.data ?? []),
+        catchError((error) => {
+          console.error('Error loading active memories:', error);
+          return of([] as PlannedMemory[]);
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe((memories) => {
+        this.activeMemories.set(memories);
+        this.activeLoaded.set(true);
+      });
+
 
     toObservable(this.query)
       .pipe(
@@ -272,6 +296,19 @@ export class HomeComponent {
   }
 
   protected addMemory(): void {
-    // unchanged
+    if (!this.billingService.canCreateNewMemory()) {
+      this.dialog
+        .open(StorageLimitDialogComponent, {
+          data: { usedGb: this.billingService.storageUsedGB() },
+        })
+        .afterClosed()
+        .subscribe((choice) => {
+          if (choice === 'upgrade') {
+            this.router.navigate([UPGRADE_ROUTE]);
+          }
+        });
+      return;
+    }
+    this.router.navigate(['/newmemory'], { state: { activityId: 1 } });
   }
 }

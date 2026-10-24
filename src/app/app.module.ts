@@ -25,7 +25,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { ChangePasswordDialogComponent } from './components/_dialogs/change-password-dialog/change-password-dialog.component';
-import { UploadProgressDialogComponent } from './components/_dialogs/upload-progress-dialog/upload-progress-dialog.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ImageDialogComponent } from './components/_dialogs/image-dialog/image-dialog.component';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -43,48 +42,49 @@ import { FeedbackButtonComponent } from "./components/feedback-button/feedback-b
 import { ThemeSwitcherComponent } from "./components/theme-switcher/theme-switcher.component";
 import { SubscriptionStatusComponent } from "./components/subscription-status/subscription-status.component";
 import { initializeUserData } from './app.initializer';
+import { UploadIndicatorComponent } from '@components/upload-indicator/upload-indicator.component';
 
 @NgModule({
     declarations: [AppComponent],
     bootstrap: [AppComponent],
     imports: [
-        BrowserModule,
-        RouterModule.forRoot(routes, {
-            errorHandler: (error) => {
-                console.error('Navigation Error:', error);
-                alert("A navigation error occurred. Please try again later.");
-            }
-        }),
-        AppRoutingModule,
-        MatSidenavModule,
-        MatIconModule,
-        MatToolbarModule,
-        MatListModule,
-        MatDialogModule,
-        MatFormFieldModule,
-        FormsModule,
-        MatButtonModule,
-        MatInputModule,
-        ReactiveFormsModule,
-        MatSelectModule,
-        MatProgressBarModule,
-        GoogleMapsModule,
-        MatCheckboxModule,
-        ConfirmDialogComponent,
-        FullDescriptionDialogComponent,
-        ImageDialogComponent,
-        InfoDialogComponent,
-        ShareFriendCodeDialogComponent,
-        FriendPreviewComponent,
-        FeedbackButtonComponent,
-        ThemeSwitcherComponent,
-        SubscriptionStatusComponent,
-        MainNavComponent,
-        ChangePasswordDialogComponent,
-        UploadProgressDialogComponent,
-        PinnedDialogComponent,
-        CompanyDialogComponent
-    ],
+    BrowserModule,
+    RouterModule.forRoot(routes, {
+        errorHandler: (error) => {
+            console.error('Navigation Error:', error);
+            alert("A navigation error occurred. Please try again later.");
+        }
+    }),
+    AppRoutingModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatListModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    FormsModule,
+    MatButtonModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatProgressBarModule,
+    GoogleMapsModule,
+    MatCheckboxModule,
+    ConfirmDialogComponent,
+    FullDescriptionDialogComponent,
+    ImageDialogComponent,
+    InfoDialogComponent,
+    ShareFriendCodeDialogComponent,
+    FriendPreviewComponent,
+    FeedbackButtonComponent,
+    ThemeSwitcherComponent,
+    SubscriptionStatusComponent,
+    MainNavComponent,
+    ChangePasswordDialogComponent,
+    PinnedDialogComponent,
+    CompanyDialogComponent,
+    UploadIndicatorComponent
+],
     providers: [
         provideFirebaseApp(() => initializeApp(environment.firebase)),
         provideAuth(() => getAuth()),

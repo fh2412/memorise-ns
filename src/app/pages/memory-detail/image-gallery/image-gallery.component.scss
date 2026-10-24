@@ -1,8 +1,9 @@
 @use 'components/mixins' as mixins;
 
-
-.bd-home-section {
-  @include mixins.background-gradient;
+.page {
+  max-width: 850px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
 }
 
 .layout-spacing {

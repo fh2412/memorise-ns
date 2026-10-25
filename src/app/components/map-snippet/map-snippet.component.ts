@@ -1,5 +1,7 @@
 import { Component, ViewChild, OnInit, input } from '@angular/core';
 import { GoogleMap, GoogleMapsModule, MapInfoWindow } from '@angular/google-maps';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
     selector: 'app-map-snippet',
@@ -16,13 +18,16 @@ export class MapSnippetComponent implements OnInit {
   readonly lat = input.required<number>();
 
   mapOptions: google.maps.MapOptions = {
-    zoomControl: true,
-    scrollwheel: true,
-    disableDoubleClickZoom: true,
-    maxZoom: 20,
-    minZoom: 4,
-    streetViewControl: false,
-  };
+  mapId: environment.googleMapId,
+  zoomControl: true,
+  scrollwheel: true,
+  disableDoubleClickZoom: true,
+  maxZoom: 20,
+  minZoom: 4,
+  streetViewControl: false,
+};
+
+// remove: options: google.maps.MapOptions = { draggable: false };
   options: google.maps.MapOptions = { draggable: false };
   mapCenter: google.maps.LatLngLiteral = { lat: 11.319161, lng: 18.684998 };
   markerPosition: google.maps.LatLngLiteral = { lat: 11.319161, lng: 18.684998 };

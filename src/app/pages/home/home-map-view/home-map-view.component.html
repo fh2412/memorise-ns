@@ -10,7 +10,6 @@
           <map-advanced-marker [position]="m.position" [content]="pinContent(m)" [title]="m.title"
             [zIndex]="zIndexFor(m)" (mapClick)="selectFromMap(m)" />
         }
-
         <map-marker-clusterer [renderer]="renderer" [algorithm]="algorithm"
           (clusterClick)="onClusterClick($event)" (clusteringbegin)="onClusteringBegin()">
           @for (m of regular(); track m.memoryId) {

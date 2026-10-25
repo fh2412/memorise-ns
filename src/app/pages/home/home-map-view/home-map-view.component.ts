@@ -7,7 +7,8 @@ import { RouterLink } from '@angular/router';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { GoogleMap, MapAdvancedMarker, MapMarkerClusterer } from '@angular/google-maps';
-import { Cluster, Renderer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
+import { Renderer, SuperClusterAlgorithm } from '@googlemaps/markerclusterer';
+import { Cluster } from '@angular/google-maps';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -227,9 +228,9 @@ export class HomeMapViewComponent {
     return el;
   }
 
-  protected zIndexFor(memory: MapMemoryView): number | null {
+  protected zIndexFor(memory: MapMemoryView): number {
     if (this.activeIds().has(memory.memoryId)) return Z_ACTIVE;
-    return memory.isPinned ? Z_PINNED : null;
+    return memory.isPinned ? Z_PINNED : 0;
   }
 
   protected onClusteringBegin(): void {

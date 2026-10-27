@@ -19,25 +19,18 @@
     padding: 24px;
     overflow: hidden;
 
-    .placeholder-view {
-      width: 100%;
-      height: 100%;
-      box-sizing: border-box;
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      border: 2px dashed var(--mat-sys-outline);
-    }
+    .canvas-viewport {
+      flex: 1;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
 
-    .corkboard-bg {
-      background-color: #fafafa;
-    }
-
-    .structured-bg {
-      background-color: var(--mat-sys-surface-container-high);
+      .add-item-fab {
+        position: absolute;
+        right: 40px;
+        bottom: 40px;
+        z-index: 10;
+      }
     }
   }
 }

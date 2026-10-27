@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,6 +18,11 @@ import { TripWsHeaderComponent } from "./trip-ws-header/trip-ws-header.component
 import { CrewMember } from '@models/userInterface.model';
 import { AddCrewDialogComponent } from './trip-ws-header/add-crew-dialog.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { CorkboardViewComponent } from './corkboard-view/corkboard-view.component';
+import { StructuredViewComponent } from './structured-view/structured-view.component';
+import { PlanBoardStore } from './plan-board.store';
+import { PlanItem, NewPlanItem } from '@models/planItem.model';
+import { PlanItemDialogComponent, PlanItemDialogData } from './plan-item-dialog/plan-item-dialog.component';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -31,10 +36,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatButtonToggleModule,
     MatBadgeModule,
     MatTooltipModule,
-    MatDialogModule, // <-- ADD THIS
+    MatDialogModule,
     LoadingSpinnerComponent,
     NgClass,
-    TripWsHeaderComponent
+    TripWsHeaderComponent,
+    CorkboardViewComponent, 
+    StructuredViewComponent
   ],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
@@ -56,15 +63,41 @@ export class TripWorkspaceComponent implements OnInit {
   crew = signal<CrewMember[]>([]); // Initialize without undefined to prevent errors
   shareToken?: string;
 
+  protected board = inject(PlanBoardStore);
+
+  constructor() {
+    effect(() => {
+      const msg = this.board.error();
+      if (msg) {
+        this.snackBar.open(msg, 'Close', { duration: 3000 });
+        this.board.error.set(null);
+      }
+    });
+  }
 
   async ngOnInit(): Promise<void> {
     this.memoryId = this.route.snapshot.paramMap.get('memoryId') || '';
     this.loggedInUserId = this.userService.getLoggedInUserId();
     try {
-      await this.loadMemoriesPage();
+      await Promise.all([this.loadMemoriesPage(), this.board.load(this.memoryId)]);
     } catch (error) {
       console.error('Initialization error:', error);
     }
+  }
+
+  openItemDialog(item?: PlanItem): void {
+    this.dialog
+      .open<PlanItemDialogComponent, PlanItemDialogData, NewPlanItem>(PlanItemDialogComponent, {
+        width: '520px',
+        maxWidth: '90vw',
+        data: { item },
+      })
+      .afterClosed()
+      .subscribe(result => {
+        if (!result) return;
+        if (item) this.board.update(item.item_id, result);
+        else this.board.create(result);
+      });
   }
 
   private async loadMemoriesPage(): Promise<void> {

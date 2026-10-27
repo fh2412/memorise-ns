@@ -1,0 +1,36 @@
+:host { display: block; position: relative; height: 100%; }
+
+.corkboard-scroll { height: 100%; overflow: auto; border-radius: 16px; }
+
+.corkboard {
+  position: relative;
+  width: 2400px;
+  height: 1600px;
+  background-color: #c9a47c;
+  background-image: radial-gradient(rgb(0 0 0 / 0.08) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+.pin {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  cursor: grab;
+
+  &.on-top { z-index: 2; }
+  &.cdk-drag-dragging { cursor: grabbing; z-index: 3; }
+}
+
+.empty-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: rgb(0 0 0 / 0.55);
+
+  mat-icon { font-size: 48px; width: 48px; height: 48px; }
+}

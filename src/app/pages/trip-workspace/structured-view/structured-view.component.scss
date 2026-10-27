@@ -1,0 +1,50 @@
+:host { display: block; height: 100%; }
+
+.columns {
+  display: flex;
+  gap: 16px;
+  height: 100%;
+  overflow-x: auto;
+}
+
+.column {
+  flex: 0 0 260px;
+  display: flex;
+  flex-direction: column;
+  background: var(--mat-sys-surface-container-high);
+  border-radius: 12px;
+  padding: 12px;
+  box-sizing: border-box;
+
+  header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+
+    h3 { flex: 1; margin: 0; font-size: 1rem; }
+    .count {
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--mat-sys-secondary-container);
+      color: var(--mat-sys-on-secondary-container);
+    }
+  }
+}
+
+.drop-zone {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 80px;
+  overflow-y: auto;
+
+  app-plan-item-card { width: 100%; cursor: grab; }
+}
+
+.cdk-drag-placeholder { opacity: 0.3; }
+.cdk-drag-animating, .drop-zone.cdk-drop-list-dragging app-plan-item-card:not(.cdk-drag-placeholder) {
+  transition: transform 200ms cubic-bezier(0, 0, 0.2, 1);
+}

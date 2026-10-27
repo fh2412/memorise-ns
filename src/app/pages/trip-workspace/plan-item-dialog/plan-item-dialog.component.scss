@@ -1,0 +1,10 @@
+.dialog-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 8px !important;
+  
+    mat-button-toggle-group { margin-bottom: 16px; flex-wrap: wrap; }
+    mat-form-field { width: 100%; }
+    .row { display: flex; gap: 12px; mat-form-field { flex: 1; } }
+  }

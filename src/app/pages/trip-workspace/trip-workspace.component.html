@@ -9,19 +9,25 @@
       (titleUpdated)="handleTitleUpdate($event)"
       (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"></app-trip-ws-header>
     <div class="canvas-viewport">
-      @if (currentView() === 'corkboard') {
-      <div class="placeholder-view corkboard-bg">
-        <mat-icon class="huge-icon">push_pin</mat-icon>
-        <h3>[Placeholder] Free-form Corkboard Canvas</h3>
-        <p>Cards will be absolutely positioned here ($X/Y$ coordinates).</p>
-      </div>
+      @if (board.isLoading()) {
+        <app-loading-spinner />
+      } @else if (currentView() === 'corkboard') {
+        <app-corkboard-view [items]="board.activeItems()"
+                            (moved)="board.moveOnBoard($event.itemId, $event.x, $event.y)"
+                            (toggleDone)="board.toggleDone($event)"
+                            (edit)="openItemDialog($event)"
+                            (remove)="board.remove($event.item_id)" />
       } @else {
-      <div class="placeholder-view structured-bg">
-        <mat-icon class="huge-icon">view_column</mat-icon>
-        <h3>[Placeholder] Organized Grid Columns</h3>
-        <p>Cards will automatically snap here sorted cleanly into rows or columns.</p>
-      </div>
+        <app-structured-view [columns]="board.columns()"
+                             (categoryChanged)="board.changeCategory($event.itemId, $event.category)"
+                             (toggleDone)="board.toggleDone($event)"
+                             (edit)="openItemDialog($event)"
+                             (remove)="board.remove($event.item_id)" />
       }
+    
+      <button mat-fab extended class="add-item-fab" (click)="openItemDialog()">
+        <mat-icon>add</mat-icon> Add item
+      </button>
     </div>
   </main>
 

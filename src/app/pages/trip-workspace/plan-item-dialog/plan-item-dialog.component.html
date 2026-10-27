@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit item' : 'Add to plan' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="dialog-content">
+    <mat-button-toggle-group formControlName="type" aria-label="Item type">
+      @for (t of types; track t) {
+        <mat-button-toggle [value]="t">
+          <mat-icon>{{ typeMeta[t].icon }}</mat-icon> {{ typeMeta[t].label }}
+        </mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" cdkFocusInitial />
+      @if (form.controls.title.hasError('required')) { <mat-error>Title is required</mat-error> }
+    </mat-form-field>
+
+    @if (selectedType() === 'link') {
+      <mat-form-field appearance="outline">
+        <mat-label>URL</mat-label>
+        <input matInput formControlName="url" placeholder="https://…" />
+        <mat-error>Please enter a valid http(s) link</mat-error>
+      </mat-form-field>
+    }
+
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="category">
+          @for (c of categories; track c.key) {
+            <mat-option [value]="c.key">{{ c.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      @if (selectedType() === 'todo') {
+        <mat-form-field appearance="outline">
+          <mat-label>Due date</mat-label>
+          <input matInput type="date" formControlName="due_date" />
+        </mat-form-field>
+      }
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit">{{ isEdit ? 'Save' : 'Add' }}</button>
+  </mat-dialog-actions>
+</form>

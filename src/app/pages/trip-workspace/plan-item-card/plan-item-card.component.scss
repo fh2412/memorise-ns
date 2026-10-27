@@ -1,0 +1,41 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    width: 220px;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    background: var(--card-color);
+    color: #1f1f1f; // pastel notes stay readable in dark mode too
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.18);
+  }
+  
+  :host(.is-done) {
+    opacity: 0.6;
+    .card-title { text-decoration: line-through; }
+  }
+  
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  
+    .type-icon { font-size: 18px; width: 18px; height: 18px; opacity: 0.7; }
+    .card-title { flex: 1; margin: 0; font-size: 0.95rem; font-weight: 600; overflow-wrap: anywhere; }
+    .menu-btn { margin: -8px -8px -8px 0; color: inherit; }
+  }
+  
+  .card-body { margin: 0; font-size: 0.85rem; white-space: pre-line; }
+  
+  .card-link, .card-due {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.8rem;
+    color: inherit;
+    min-width: 0;
+  
+    mat-icon { font-size: 14px; width: 14px; height: 14px; flex-shrink: 0; }
+    span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  }

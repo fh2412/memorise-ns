@@ -23,6 +23,19 @@ export class TripWsHeaderComponent {
   editValue = signal('');
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
 
+  daysLeft = computed(() => {
+    const start = this.plan().memory_date;
+    if (!start) return null;
+  
+    const target = new Date(start);
+    target.setHours(0, 0, 0, 0);
+  
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+  
+    return Math.round((target.getTime() - today.getTime()) / 86_400_000);
+  });
+
   constructor() {
     effect(() => {
       const inputEl = this.titleInput();

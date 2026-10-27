@@ -1,0 +1,20 @@
+<div class="columns" cdkDropListGroup>
+    @for (col of columns(); track col.key) {
+      <section class="column">
+        <header>
+          <mat-icon>{{ col.icon }}</mat-icon>
+          <h3>{{ col.label }}</h3>
+          <span class="count">{{ col.items.length }}</span>
+        </header>
+  
+        <div class="drop-zone" cdkDropList [cdkDropListData]="col.key" (cdkDropListDropped)="onDrop($event)">
+          @for (item of col.items; track item.item_id) {
+            <app-plan-item-card cdkDrag [cdkDragData]="item" [item]="item"
+                                (toggleDone)="toggleDone.emit(item)"
+                                (edit)="edit.emit(item)"
+                                (remove)="remove.emit(item)" />
+          }
+        </div>
+      </section>
+    }
+  </div>

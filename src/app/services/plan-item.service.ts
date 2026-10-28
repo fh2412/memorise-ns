@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '@environments/environment'; // ← use the same apiUrl source as MemoryService
-import { NewPlanItem, PlanItem, PlanItemPatch } from '@models/planItem.model';
+import { environment } from '../../environments/environment';
+import { NewPlanItem, PlanEvent, PlanItem, PlanItemPatch } from '@models/planItem.model';
 
 @Injectable({ providedIn: 'root' })
 export class PlanItemService {
@@ -10,8 +10,15 @@ export class PlanItemService {
   private apiUrl = environment.apiUrl;
 
   private base(memoryId: string): string {
-    return `${this.apiUrl}/memories/${memoryId}/plan-items`;
+    return `${this.apiUrl}/memories/${memoryId}/plan/items`;
   }
+
+  getEvents(memoryId: string, before?: number): Observable<PlanEvent[]> {
+    const params = before ? { before } : undefined;
+    return this.http
+    .get<{ events: PlanEvent[] }>(`${this.apiUrl}/memories/${memoryId}/plan/events`, { params })
+    .pipe(map(r => r.events));
+    }
 
   getItems(memoryId: string): Observable<PlanItem[]> {
     return this.http.get<{ items: PlanItem[] }>(this.base(memoryId)).pipe(map(r => r.items));

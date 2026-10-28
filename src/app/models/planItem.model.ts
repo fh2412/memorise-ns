@@ -50,3 +50,29 @@ export const PLAN_CATEGORIES: { key: PlanCategory; label: string; icon: string }
   { key: 'activity',    label: 'Activities',  icon: 'hiking' },
   { key: 'other',       label: 'Other',       icon: 'more_horiz' },
 ];
+
+export interface PlanEvent {
+  event_id: number;
+  user_id: CrewMember['user_id'];   // resolve name/avatar from the crew signal
+  action: 'item_created' | 'item_updated' | 'item_completed' | 'item_reopened' | 'item_dismissed' | 'item_deleted';
+  item_id: number | null;
+  item_title: string | null;
+  created_at: string;
+}
+
+export type PlanPhase = 'planning' | 'upcoming' | 'live' | 'wrapping_up' | 'archived';
+const WRAP_UP_DAYS = 7;
+
+const isoDay = (d: Date) =>
+  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+
+export function planPhase(start?: string | null, end?: string | null, now = new Date()): PlanPhase {
+  if (!start) return 'planning';
+  const today = isoDay(now);
+  const s = start.slice(0, 10);
+  const e = (end || start).slice(0, 10);
+  if (today < s) return 'upcoming';
+  if (today <= e) return 'live';
+  const [y, m, d] = e.split('-').map(Number);
+  return today <= isoDay(new Date(y, m - 1, d + WRAP_UP_DAYS)) ? 'wrapping_up' : 'archived';
+}

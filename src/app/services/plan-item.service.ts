@@ -1,8 +1,10 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { NewPlanItem, PlanEvent, PlanItem, PlanItemPatch } from '@models/planItem.model';
+import { NewPlanItem, PlanBoard, PlanEvent, PlanItem, PlanItemPatch } from '@models/planItem.model';
+
+export interface EventQuery { before?: number; after?: number; limit?: number; }
 
 @Injectable({ providedIn: 'root' })
 export class PlanItemService {
@@ -13,15 +15,18 @@ export class PlanItemService {
     return `${this.apiUrl}/memories/${memoryId}/plan/items`;
   }
 
-  getEvents(memoryId: string, before?: number): Observable<PlanEvent[]> {
-    const params = before ? { before } : undefined;
-    return this.http
-    .get<{ events: PlanEvent[] }>(`${this.apiUrl}/memories/${memoryId}/plan/events`, { params })
-    .pipe(map(r => r.events));
+  getEvents(memoryId: string, query: EventQuery = {}): Observable<PlanEvent[]> {
+    let params = new HttpParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value != null) params = params.set(key, value);
     }
+    return this.http
+      .get<{ events: PlanEvent[] }>(`${this.apiUrl}/memories/${memoryId}/plan/events`, { params })
+      .pipe(map(r => r.events));
+  }
 
-  getItems(memoryId: string): Observable<PlanItem[]> {
-    return this.http.get<{ items: PlanItem[] }>(this.base(memoryId)).pipe(map(r => r.items));
+  getBoard(memoryId: string): Observable<PlanBoard> {
+    return this.http.get<PlanBoard>(this.base(memoryId));
   }
 
   createItem(memoryId: string, item: NewPlanItem): Observable<PlanItem> {

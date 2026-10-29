@@ -1,23 +1,19 @@
 <div class="corkboard-scroll">
-    <div class="corkboard">
-      @for (item of items(); track item.item_id) {
-        <div class="pin" cdkDrag cdkDragBoundary=".corkboard"
-             [cdkDragFreeDragPosition]="{ x: item.board_x, y: item.board_y }"
-             [class.on-top]="topItemId() === item.item_id"
-             (cdkDragStarted)="topItemId.set(item.item_id)"
-             (cdkDragEnded)="onDragEnded(item, $event)">
-          <app-plan-item-card [item]="item"
-                              (toggleDone)="toggleDone.emit(item)"
-                              (edit)="edit.emit(item)"
-                              (remove)="remove.emit(item)" />
-        </div>
-      }
+  <div class="corkboard">
+    @for (item of items(); track item.item_id) {
+    <div class="pin" cdkDrag cdkDragBoundary=".corkboard"
+      [cdkDragFreeDragPosition]="{ x: item.board_x, y: item.board_y }" [class.on-top]="topItemId() === item.item_id"
+      (cdkDragStarted)="topItemId.set(item.item_id)" (cdkDragEnded)="onDragEnded(item, $event)">
+      <app-plan-item-card [item]="item" [canDelete]="canDelete()(item)" (toggleDone)="toggleDone.emit(item)"
+        (edit)="edit.emit(item)" (remove)="remove.emit(item)" />
     </div>
+    }
   </div>
-  
-  @if (items().length === 0) {
-    <div class="empty-state">
-      <mat-icon>push_pin</mat-icon>
-      <p>Nothing pinned yet. Add your first idea!</p>
-    </div>
-  }
+</div>
+
+@if (items().length === 0) {
+<div class="empty-state">
+  <mat-icon>push_pin</mat-icon>
+  <p>Nothing pinned yet. Add your first idea!</p>
+</div>
+}

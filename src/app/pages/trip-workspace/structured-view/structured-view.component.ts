@@ -18,6 +18,7 @@ export class StructuredViewComponent {
   toggleDone = output<PlanItem>();
   edit = output<PlanItem>();
   remove = output<PlanItem>();
+  canDelete = input.required<(item: PlanItem) => boolean>();
 
   onDrop(event: CdkDragDrop<PlanCategory, PlanCategory, PlanItem>): void {
     if (event.previousContainer === event.container) return;

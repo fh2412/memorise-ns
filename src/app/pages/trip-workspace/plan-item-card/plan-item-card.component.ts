@@ -22,6 +22,7 @@ export class PlanItemCardComponent {
   toggleDone = output<void>();
   edit = output<void>();
   remove = output<void>();
+  canDelete = input(false);
 
   meta = computed(() => PLAN_ITEM_TYPES[this.item().type]);
   cardColor = computed(() => this.item().color ?? this.meta().color);

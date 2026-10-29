@@ -1,0 +1,30 @@
+@if (rows().length === 0) {
+    <div class="empty">
+      <mat-icon>history</mat-icon>
+      <p>No activity yet. Add the first item to the board!</p>
+    </div>
+  } @else {
+    <ol class="feed" aria-live="polite">
+      @for (row of rows(); track row.id) {
+        <li class="event">
+          <div class="avatar">
+            @if (row.avatar) { <img [src]="row.avatar" alt="" /> } @else { {{ row.initial }} }
+            <mat-icon class="action-badge">{{ row.icon }}</mat-icon>
+          </div>
+          <div class="text">
+            <p>
+              <strong>{{ row.who }}</strong> {{ row.verb }}
+              @if (row.title) { <span class="item-title">"{{ row.title }}"</span> }
+            </p>
+            <time [attr.datetime]="row.at" [title]="row.at | date: 'medium'">{{ row.ago }}</time>
+          </div>
+        </li>
+      }
+    </ol>
+  
+    @if (hasMore()) {
+      <button mat-button class="load-more" type="button" [disabled]="loadingMore()" (click)="loadMore.emit()">
+        {{ loadingMore() ? 'Loading…' : 'Show older' }}
+      </button>
+    }
+  }

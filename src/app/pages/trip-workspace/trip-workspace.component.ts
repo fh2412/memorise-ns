@@ -23,6 +23,8 @@ import { StructuredViewComponent } from './structured-view/structured-view.compo
 import { PlanBoardStore } from './plan-board.store';
 import { PlanItem, NewPlanItem } from '@models/planItem.model';
 import { PlanItemDialogComponent, PlanItemDialogData } from './plan-item-dialog/plan-item-dialog.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { PlanActivityFeedComponent } from './plan-activity-feed/plan-activity-feed.component';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -40,8 +42,10 @@ import { PlanItemDialogComponent, PlanItemDialogData } from './plan-item-dialog/
     LoadingSpinnerComponent,
     NgClass,
     TripWsHeaderComponent,
-    CorkboardViewComponent, 
-    StructuredViewComponent
+    CorkboardViewComponent,
+    StructuredViewComponent,
+    MatTabsModule,
+    PlanActivityFeedComponent
   ],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
@@ -55,6 +59,8 @@ export class TripWorkspaceComponent implements OnInit {
 
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
+  sidebarTab = signal(0); // 0 = Crew, 1 = Activity
+
 
   loggedInUserId: string | null = null;
   memoryId = '';
@@ -72,6 +78,12 @@ export class TripWorkspaceComponent implements OnInit {
         this.snackBar.open(msg, 'Close', { duration: 3000 });
         this.board.error.set(null);
       }
+    });
+
+    // While the Activity tab is open, everything arriving counts as seen
+    effect(() => {
+      this.board.events();
+      if (this.sidebarTab() === 1) this.board.markEventsSeen();
     });
   }
 

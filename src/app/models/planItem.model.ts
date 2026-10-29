@@ -5,6 +5,16 @@ export type PlanItemType = 'note' | 'idea' | 'todo' | 'link' | 'poll' | 'booking
 export type PlanItemStatus = 'open' | 'decided' | 'done' | 'dismissed';
 export type PlanCategory = 'dates' | 'destination' | 'stay' | 'transport' | 'activity' | 'other';
 
+export interface PlanViewer {
+  userId: CrewMember['user_id'];
+  isOwner: boolean;
+}
+
+export interface PlanBoard {
+  items: PlanItem[];
+  viewer: PlanViewer;
+}
+
 export interface PlanItem {
   item_id: number;
   memory_id: PlannedMemory['memory_id'];
@@ -53,8 +63,8 @@ export const PLAN_CATEGORIES: { key: PlanCategory; label: string; icon: string }
 
 export interface PlanEvent {
   event_id: number;
-  user_id: CrewMember['user_id'];   // resolve name/avatar from the crew signal
-  action: 'item_created' | 'item_updated' | 'item_completed' | 'item_reopened' | 'item_dismissed' | 'item_deleted';
+  user_id: CrewMember['user_id'];
+  action: string;
   item_id: number | null;
   item_title: string | null;
   created_at: string;
@@ -76,3 +86,13 @@ export function planPhase(start?: string | null, end?: string | null, now = new 
   const [y, m, d] = e.split('-').map(Number);
   return today <= isoDay(new Date(y, m - 1, d + WRAP_UP_DAYS)) ? 'wrapping_up' : 'archived';
 }
+
+export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
+  item_created:   { verb: 'added',     icon: 'add_circle' },
+  item_updated:   { verb: 'edited',    icon: 'edit' },
+  item_completed: { verb: 'completed', icon: 'task_alt' },
+  item_reopened:  { verb: 'reopened',  icon: 'replay' },
+  item_dismissed: { verb: 'dismissed', icon: 'block' },
+  item_deleted:   { verb: 'deleted',   icon: 'delete' },
+};
+export const PLAN_EVENT_FALLBACK = { verb: 'updated', icon: 'bolt' };

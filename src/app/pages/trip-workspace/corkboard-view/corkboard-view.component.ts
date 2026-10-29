@@ -17,6 +17,7 @@ export class CorkboardViewComponent {
   toggleDone = output<PlanItem>();
   edit = output<PlanItem>();
   remove = output<PlanItem>();
+  canDelete = input.required<(item: PlanItem) => boolean>();
 
   topItemId = signal<number | null>(null);
 

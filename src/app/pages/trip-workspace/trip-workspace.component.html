@@ -10,21 +10,17 @@
       (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"></app-trip-ws-header>
     <div class="canvas-viewport">
       @if (board.isLoading()) {
-        <app-loading-spinner />
+      <app-loading-spinner />
       } @else if (currentView() === 'corkboard') {
-        <app-corkboard-view [items]="board.activeItems()"
-                            (moved)="board.moveOnBoard($event.itemId, $event.x, $event.y)"
-                            (toggleDone)="board.toggleDone($event)"
-                            (edit)="openItemDialog($event)"
-                            (remove)="board.remove($event.item_id)" />
+      <app-corkboard-view [items]="board.activeItems()" [canDelete]="board.canDelete()"
+        (moved)="board.moveOnBoard($event.itemId, $event.x, $event.y)" (toggleDone)="board.toggleDone($event)"
+        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" />
       } @else {
-        <app-structured-view [columns]="board.columns()"
-                             (categoryChanged)="board.changeCategory($event.itemId, $event.category)"
-                             (toggleDone)="board.toggleDone($event)"
-                             (edit)="openItemDialog($event)"
-                             (remove)="board.remove($event.item_id)" />
+      <app-structured-view [columns]="board.columns()" [canDelete]="board.canDelete()"
+        (categoryChanged)="board.changeCategory($event.itemId, $event.category)" (toggleDone)="board.toggleDone($event)"
+        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" />
       }
-    
+
       <button mat-fab extended class="add-item-fab" (click)="openItemDialog()">
         <mat-icon>add</mat-icon> Add item
       </button>
@@ -32,51 +28,69 @@
   </main>
 
   <aside class="crew-sidebar">
-    <div class="sidebar-header">
-      <h2>Trip Crew</h2>
-      <button mat-icon-button (click)="addCrewMember()" matTooltip="Manage crew members">
-        <mat-icon>person_add</mat-icon>
-      </button>
-    </div>
-
-    <div class="crew-list">
-      @for (member of crew(); track member.user_id) {
-      <div class="crew-item" [style.borderRightColor]="member.status" [ngClass]="{
-           'is-current-user': member.user_id === loggedInUserId,
-           'is-placeholder-user': member.isPlaceholder
-         }">
-
-        <div class="avatar-wrapper">
-          @if (member.isPlaceholder) {
-          <!-- Display Ghost Avatar for Placeholders -->
-          <div class="row-avatar ghost-avatar" matTooltip="Placeholder (Not registered)">
-            <mat-icon>person_outline</mat-icon>
+    <mat-tab-group class="sidebar-tabs" mat-stretch-tabs animationDuration="0ms" [selectedIndex]="sidebarTab()"
+      (selectedIndexChange)="sidebarTab.set($event)">
+      <mat-tab label="Crew">
+        <div class="tab-pane">
+          <div class="sidebar-header">
+            <h2>Trip Crew</h2>
+            <button mat-icon-button (click)="addCrewMember()" matTooltip="Manage crew members">
+              <mat-icon>person_add</mat-icon>
+            </button>
           </div>
-          } @else {
-          <!-- Display Real User Avatar -->
-          <div class="avatar-circle"
-            [style.backgroundImage]="member.profilepic_thumb ? 'url(' + member.profilepic_thumb + ')' : null">
-            @if (member.profilepic_thumb) {
-            <img [src]="member.profilepic_thumb" [alt]="member.name" />
-            }
+          <div class="crew-list">
+            @for (member of crew(); track member.user_id) {
+            <div class="crew-item" [style.borderRightColor]="member.status" [ngClass]="{
+             'is-current-user': member.user_id === loggedInUserId,
+             'is-placeholder-user': member.isPlaceholder
+           }">
+
+              <div class="avatar-wrapper">
+                @if (member.isPlaceholder) {
+                <!-- Display Ghost Avatar for Placeholders -->
+                <div class="row-avatar ghost-avatar" matTooltip="Placeholder (Not registered)">
+                  <mat-icon>person_outline</mat-icon>
+                </div>
+                } @else {
+                <!-- Display Real User Avatar -->
+                <div class="avatar-circle"
+                  [style.backgroundImage]="member.profilepic_thumb ? 'url(' + member.profilepic_thumb + ')' : null">
+                  @if (member.profilepic_thumb) {
+                  <img [src]="member.profilepic_thumb" [alt]="member.name" />
+                  }
+                </div>
+                <span class="status-badge" [ngClass]="member.status"></span>
+                }
+              </div>
+
+              <div class="row-info">
+                <span class="member-name">{{ member.name }}</span>
+              </div>
+
+              @if (member.isPlaceholder) {
+              <button mat-icon-button class="share-btn" aria-label="Share invite link"
+                (click)="shareInviteLink($event)">
+                <mat-icon>share</mat-icon>
+              </button>
+              }
+
+            </div>
           </div>
-          <span class="status-badge" [ngClass]="member.status"></span>
-          }
         </div>
+      </mat-tab>
 
-        <div class="row-info">
-          <span class="member-name">{{ member.name }}</span>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span [matBadge]="board.unseenCount()" [matBadgeHidden]="board.unseenCount() === 0" matBadgeOverlap="false"
+            matBadgeSize="small">Activity</span>
+        </ng-template>
+        <div class="tab-pane">
+          <app-plan-activity-feed [events]="board.events()" [crew]="crew()" [viewerId]="loggedInUserId"
+            [hasMore]="board.hasMoreEvents()" [loadingMore]="board.isLoadingOlder()"
+            (loadMore)="board.loadOlderEvents()" />
         </div>
-
-        @if (member.isPlaceholder) {
-        <button mat-icon-button class="share-btn" aria-label="Share invite link" (click)="shareInviteLink($event)">
-          <mat-icon>share</mat-icon>
-        </button>
-        }
-
-      </div>
-      }
-    </div>
+      </mat-tab>
+    </mat-tab-group>
   </aside>
 </div>
 }

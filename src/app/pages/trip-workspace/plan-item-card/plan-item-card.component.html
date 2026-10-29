@@ -1,35 +1,36 @@
 <div class="card-header">
-    <mat-icon class="type-icon">{{ meta().icon }}</mat-icon>
-  
-    @if (item().type === 'todo') {
-      <mat-checkbox [checked]="item().status === 'done'" (change)="toggleDone.emit()"
-                    (mousedown)="$event.stopPropagation()" aria-label="Mark as done" />
-    }
-  
-    <h4 class="card-title">{{ item().title }}</h4>
-  
-    <button mat-icon-button class="menu-btn" [matMenuTriggerFor]="menu"
-            (mousedown)="$event.stopPropagation()" aria-label="Item actions">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-  </div>
-  
-  @if (item().description) {
-    <p class="card-body">{{ item().description }}</p>
+  <mat-icon class="type-icon">{{ meta().icon }}</mat-icon>
+
+  @if (item().type === 'todo') {
+  <mat-checkbox [checked]="item().status === 'done'" (change)="toggleDone.emit()" (mousedown)="$event.stopPropagation()"
+    aria-label="Mark as done" />
   }
-  
-  @if (linkUrl(); as url) {
-    <a class="card-link" [href]="url" target="_blank" rel="noopener noreferrer"
-       (mousedown)="$event.stopPropagation()">
-      <mat-icon>open_in_new</mat-icon><span>{{ url }}</span>
-    </a>
+
+  <h4 class="card-title">{{ item().title }}</h4>
+
+  <button mat-icon-button class="menu-btn" [matMenuTriggerFor]="menu" (mousedown)="$event.stopPropagation()"
+    aria-label="Item actions">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</div>
+
+@if (item().description) {
+<p class="card-body">{{ item().description }}</p>
+}
+
+@if (linkUrl(); as url) {
+<a class="card-link" [href]="url" target="_blank" rel="noopener noreferrer" (mousedown)="$event.stopPropagation()">
+  <mat-icon>open_in_new</mat-icon><span>{{ url }}</span>
+</a>
+}
+
+@if (item().due_date) {
+<div class="card-due"><mat-icon>schedule</mat-icon>{{ item().due_date | date: 'mediumDate' }}</div>
+}
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="edit.emit()"><mat-icon>edit</mat-icon><span>Edit</span></button>
+  @if (canDelete()) {
+  <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
   }
-  
-  @if (item().due_date) {
-    <div class="card-due"><mat-icon>schedule</mat-icon>{{ item().due_date | date: 'mediumDate' }}</div>
-  }
-  
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="edit.emit()"><mat-icon>edit</mat-icon><span>Edit</span></button>
-    <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
-  </mat-menu>
+</mat-menu>

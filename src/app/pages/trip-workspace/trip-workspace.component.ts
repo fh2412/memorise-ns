@@ -47,6 +47,7 @@ import { PlanActivityFeedComponent } from './plan-activity-feed/plan-activity-fe
     MatTabsModule,
     PlanActivityFeedComponent
   ],
+  providers: [PlanBoardStore],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
 })

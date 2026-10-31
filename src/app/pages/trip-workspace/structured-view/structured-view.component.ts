@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { MatIconModule } from '@angular/material/icon';
 import { PlanCategory, PlanItem } from '@models/planItem.model';
 import { PlanColumn } from '../plan-board.store';
@@ -7,7 +7,7 @@ import { PlanItemCardComponent } from '../plan-item-card/plan-item-card.componen
 
 @Component({
   selector: 'app-structured-view',
-  imports: [CdkDropListGroup, CdkDropList, CdkDrag, MatIconModule, PlanItemCardComponent],
+  imports: [CdkDropListGroup, CdkDropList, MatIconModule, PlanItemCardComponent],
   templateUrl: './structured-view.component.html',
   styleUrl: './structured-view.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

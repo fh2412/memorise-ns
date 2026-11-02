@@ -257,6 +257,12 @@ export class MemoryService {
       .pipe(this.invalidateOnSuccess());
   }
 
+  updateMemoryDates(memoryId: string, startDate: string | null, endDate: string | null) {
+    return this.http.patch<{ memoryId: number; startDate: string | null; endDate: string | null; changed: boolean }>(
+      `${this.apiUrl}/memories/${memoryId}/dates`, { startDate, endDate },
+    );
+  }
+
   invalidateMemoryList(): void {
     this._listVersion.update((v) => v + 1);
   }

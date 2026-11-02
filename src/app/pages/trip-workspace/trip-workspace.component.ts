@@ -1,4 +1,4 @@
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, Injector, OnInit, signal, untracked } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog'; // <-- ADD THIS
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
@@ -25,6 +25,8 @@ import { PlanItem, NewPlanItem } from '@models/planItem.model';
 import { PlanItemDialogComponent, PlanItemDialogData } from './plan-item-dialog/plan-item-dialog.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlanActivityFeedComponent } from './plan-activity-feed/plan-activity-feed.component';
+import { DateFinderDialogComponent, DateFinderDialogData, DateFinderDialogResult } from './date-finder/date-finder-dialog/date-finder-dialog.component';
+import { DateFinderStore } from './date-finder/date-finder.store';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -47,7 +49,7 @@ import { PlanActivityFeedComponent } from './plan-activity-feed/plan-activity-fe
     MatTabsModule,
     PlanActivityFeedComponent
   ],
-  providers: [PlanBoardStore],
+  providers: [PlanBoardStore, DateFinderStore],
   templateUrl: './trip-workspace.component.html',
   styleUrls: ['./trip-workspace.component.scss']
 })
@@ -57,6 +59,7 @@ export class TripWorkspaceComponent implements OnInit {
   private memoryService = inject(MemoryService);
   private dialog = inject(MatDialog);
   private snackBar = inject(MatSnackBar);
+  private injector = inject(Injector);
 
   // Signal to track the current board view mode
   currentView = signal<'corkboard' | 'structured'>('corkboard');
@@ -85,6 +88,13 @@ export class TripWorkspaceComponent implements OnInit {
     effect(() => {
       this.board.events();
       if (this.sidebarTab() === 1) this.board.markEventsSeen();
+    });
+
+    effect(() => {
+      const events = this.board.remoteEvents();
+      if (events.some(e => e.action === 'dates_set' || e.action === 'dates_cleared')) {
+        untracked(() => void this.refreshPlan());
+      }
     });
   }
 
@@ -202,6 +212,45 @@ export class TripWorkspaceComponent implements OnInit {
     } catch (err) {
       console.error('Failed to copy to clipboard:', err);
       this.snackBar.open('Could not copy link automatically', 'Close', { duration: 3000 });
+    }
+  }
+
+  openDateFinder(): void {
+    const plan = this.plannedMemory();
+    if (!plan) return;
+
+    this.dialog
+      .open<DateFinderDialogComponent, DateFinderDialogData, DateFinderDialogResult>(DateFinderDialogComponent, {
+        width: '1100px',
+        maxWidth: '95vw',
+        maxHeight: '92vh',
+        autoFocus: false,
+        injector: this.injector,
+        data: {
+          memoryId: this.memoryId,
+          myId: this.loggedInUserId,
+          isOwner: this.board.viewer()?.isOwner ?? false,
+          crew: this.crew(),
+          lockedStart: plan.memory_date ?? null,
+          lockedEnd: plan.memory_end_date ?? null,
+        },
+      })
+      .afterClosed()
+      .subscribe(result => {
+        if (!result) return;
+        this.plannedMemory.update(p =>
+          p ? { ...p, memory_date: result.startDate, memory_end_date: result.endDate } : p);
+      });
+  }
+
+  /** Silent reload (no spinner) after remote changes. */
+  private async refreshPlan(): Promise<void> {
+    try {
+      const result = await firstValueFrom(this.memoryService.getMemoryToPlan(this.memoryId));
+      this.plannedMemory.set(result);
+      this.crew.set(result.crew_members || []);
+    } catch (err) {
+      console.warn('Plan refresh failed:', err);
     }
   }
 }

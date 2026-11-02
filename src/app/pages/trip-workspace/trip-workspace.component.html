@@ -7,7 +7,8 @@
   <main class="board-area">
     <app-trip-ws-header [plan]="plannedMemory()!" [currentView]="currentView()"
       (titleUpdated)="handleTitleUpdate($event)"
-      (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"></app-trip-ws-header>
+      (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"
+      (dateFinderRequested)="openDateFinder()" />
     <div class="canvas-viewport">
       @if (board.isLoading()) {
       <app-loading-spinner />
@@ -75,7 +76,7 @@
               }
 
             </div>
-          }
+            }
           </div>
         </div>
       </mat-tab>

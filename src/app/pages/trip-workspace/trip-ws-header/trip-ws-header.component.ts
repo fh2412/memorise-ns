@@ -5,6 +5,7 @@ import { MatSlideToggle } from "@angular/material/slide-toggle";
 import { PlannedMemory } from '@models/memoryInterface.model';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { formatRange } from '../date-finder/date-utils';
 
 @Component({
   selector: 'app-trip-ws-header',
@@ -18,10 +19,16 @@ export class TripWsHeaderComponent {
   currentView = input.required<'corkboard' | 'structured'>();
   titleUpdated = output<{ memoryId: string; title: string }>();
   currentViewUpdated = output<{checked: boolean}>();
+  dateFinderRequested = output<void>();
 
   isEditing = signal(false);
   editValue = signal('');
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
+
+  dateLabel = computed(() => {
+    const p = this.plan();
+    return p.memory_date ? formatRange(p.memory_date, p.memory_end_date) : null;
+  });
 
   daysLeft = computed(() => {
     const start = this.plan().memory_date;

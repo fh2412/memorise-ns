@@ -13,6 +13,10 @@ const EVENTS_PAGE = 30;
 const CATCH_UP_LIMIT = 100; // = backend max
 const LAYOUT_KEYS = new Set<string>(['board_x', 'board_y', 'color']); // backend writes no event for these
 
+const COALESCED_ACTIONS = new Set(['availability_updated']);
+const COALESCE_WINDOW_MS = 6 * 3_600_000;
+const eventKey = (e: PlanEvent) => `${e.user_id}|${e.action}`;
+
 const seenKey = (memoryId: string) => `memorise.plan.${memoryId}.lastSeenEvent`;
 const readSeen = (memoryId: string): number => {
   try { return Number(localStorage.getItem(seenKey(memoryId))) || 0; } catch { return 0; }
@@ -32,6 +36,7 @@ export class PlanBoardStore {
   readonly viewer = signal<PlanViewer | null>(null);
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
+  readonly remoteEvents = signal<PlanEvent[]>([]);
 
   readonly activeItems = computed(() => this._items().filter(i => i.status !== 'dismissed'));
 
@@ -242,17 +247,22 @@ export class PlanBoardStore {
         this.api.getEvents(this.memoryId, { after, limit: CATCH_UP_LIMIT }),
       );
 
+      let incoming = fresh;
       if (fresh.length === CATCH_UP_LIMIT) {
-        // Too far behind (e.g. laptop slept) → restart the feed from the newest page
         const latest = await firstValueFrom(this.api.getEvents(this.memoryId, { limit: EVENTS_PAGE }));
         this._events.set(latest);
         this.hasMoreEvents.set(true);
+        incoming = latest;
+        this.itemsStale = true;
       } else if (fresh.length) {
-        this._events.update(list => [...fresh, ...list]);
+        this.mergeFresh(fresh);
       }
 
       const me = this.viewer()?.userId;
-      if (fresh.some(e => e.user_id !== me)) this.itemsStale = true;
+      const remote = incoming.filter(e => e.user_id !== me);
+      if (remote.length) this.remoteEvents.set(remote);
+      // Only item events require reloading the board (availability changes don't)
+      if (remote.some(e => e.action.startsWith('item_'))) this.itemsStale = true;
       if (this.itemsStale) await this.refreshItems();
     } catch (err) {
       if (err instanceof HttpErrorResponse && err.status === 404) {
@@ -282,6 +292,21 @@ export class PlanBoardStore {
   private replace(item: PlanItem): void {
     this._items.update(list => list.map(i => (i.item_id === item.item_id ? item : i)));
   }
+
+  syncNow(): void {
+    void this.poll();
+  }
+
+  private mergeFresh(fresh: PlanEvent[]): void {
+    // Backend replaces a user's recent availability_updated event → mirror that locally
+    const keys = new Set(fresh.filter(e => COALESCED_ACTIONS.has(e.action)).map(eventKey));
+    const cutoff = Date.now() - COALESCE_WINDOW_MS;
+    this._events.update(list => [
+      ...fresh,
+      ...list.filter(e => !(keys.has(eventKey(e)) && Date.parse(e.created_at) > cutoff)),
+    ]);
+  }
+
 }
 
 function byStatusThenDate(a: PlanItem, b: PlanItem): number {

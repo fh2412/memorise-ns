@@ -1,0 +1,31 @@
+@if (months().length === 0) {
+<p class="empty">This search range is in the past. The plan owner needs to pick a new one.</p>
+}
+
+<div class="months" [class.paintable]="mode() === 'mine'" (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)">
+    @for (month of months(); track month.key) {
+    <section class="month">
+        <h4>{{ month.label }}</h4>
+        <div class="grid">
+            @for (w of weekdays; track w) {
+            <span class="weekday" aria-hidden="true">{{ w }}</span>
+            }
+            @for (d of month.days; track d.iso; let first = $first) {
+            <button type="button" class="day" [attr.data-iso]="d.iso"
+                [style.grid-column-start]="first ? month.offset + 1 : null"
+                [class.yes]="mode() === 'mine' && d.state === 'yes'"
+                [class.maybe]="mode() === 'mine' && d.state === 'maybe'"
+                [attr.data-level]="mode() === 'group' ? d.level : null" [class.today]="d.isToday"
+                [class.in-window]="d.inWindow" [class.disabled]="d.disabled"
+                [attr.aria-disabled]="d.disabled || mode() === 'group' ? true : null"
+                [attr.aria-pressed]="mode() === 'mine' && !d.disabled ? d.state !== null : null"
+                [attr.tabindex]="d.disabled ? -1 : null" [attr.aria-label]="d.label" [attr.title]="d.label"
+                (click)="onClick($event, d)">
+                {{ d.day }}
+            </button>
+            }
+        </div>
+    </section>
+    }
+</div>

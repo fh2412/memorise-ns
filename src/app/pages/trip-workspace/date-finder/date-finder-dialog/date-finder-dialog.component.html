@@ -1,0 +1,153 @@
+<h2 mat-dialog-title>Find the best dates</h2>
+
+<mat-dialog-content class="df-content">
+  @if (lockedLabel) {
+    <div class="locked-banner">
+      <mat-icon>event_available</mat-icon>
+      <span>Dates locked: <strong>{{ lockedLabel }}</strong></span>
+      @if (data.isOwner) {
+        <button mat-button type="button" [disabled]="locking()" (click)="reopen()">Reopen search</button>
+      }
+    </div>
+  }
+
+  <div class="search-summary">
+    <mat-icon>date_range</mat-icon>
+    <span>Searching {{ searchLabel() }}</span>
+    @if (!store.isConfigured()) { <span class="muted">(default)</span> }
+    @if (data.isOwner) {
+      <button mat-button type="button" (click)="toggleSettings()">{{ showSettings() ? 'Cancel' : 'Change' }}</button>
+    }
+  </div>
+
+  @if (showSettings()) {
+    <form class="settings-form" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+      <mat-form-field appearance="outline">
+        <mat-label>Earliest start</mat-label>
+        <input matInput type="date" formControlName="rangeStart" />
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Latest end</mat-label>
+        <input matInput type="date" formControlName="rangeEnd" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="narrow">
+        <mat-label>Min. days</mat-label>
+        <input matInput type="number" min="1" max="30" formControlName="minDays" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="narrow">
+        <mat-label>Max. days</mat-label>
+        <input matInput type="number" min="1" max="30" formControlName="maxDays" />
+      </mat-form-field>
+      <button mat-flat-button type="submit">Save</button>
+      @if (settingsError(); as err) { <p class="form-error" role="alert">{{ err }}</p> }
+    </form>
+  }
+
+  @if (store.isLoading()) {
+    <app-loading-spinner />
+  } @else {
+    <div class="layout">
+      <section class="calendar-pane">
+        <div class="toolbar">
+          <mat-button-toggle-group [value]="tab()" (change)="tab.set($event.value)" aria-label="Calendar view">
+            <mat-button-toggle value="mine">My availability</mat-button-toggle>
+            <mat-button-toggle value="group">Group overview</mat-button-toggle>
+          </mat-button-toggle-group>
+
+          @if (tab() === 'mine') {
+            <mat-button-toggle-group class="brush" [value]="brush()" (change)="brush.set($event.value)" aria-label="Brush">
+              <mat-button-toggle value="yes"><span class="swatch yes"></span> Available</mat-button-toggle>
+              <mat-button-toggle value="maybe"><span class="swatch maybe"></span> If needed</mat-button-toggle>
+              <mat-button-toggle value="erase"><mat-icon>ink_eraser</mat-icon> Erase</mat-button-toggle>
+            </mat-button-toggle-group>
+          } @else {
+            <div class="legend" aria-hidden="true">
+              <span class="swatch l1"></span> few <span class="swatch l4"></span> everyone
+            </div>
+          }
+        </div>
+
+        @if (tab() === 'mine') {
+          <div class="mine-actions">
+            <span class="hint">Click or drag across days to mark them.</span>
+            <button mat-button type="button" (click)="store.clearMine()">I can't make any of these days</button>
+            <span class="save-state" aria-live="polite">
+              @switch (store.saveState()) {
+                @case ('pending') { Saving… }
+                @case ('saving') { Saving… }
+                @case ('saved') { <mat-icon>cloud_done</mat-icon> Saved }
+                @case ('error') {
+                  Not saved
+                  <button mat-button type="button" (click)="store.retrySave()">Retry</button>
+                }
+              }
+            </span>
+          </div>
+        }
+
+        <app-availability-calendar
+          [rangeStart]="store.settings().range_start"
+          [rangeEnd]="store.settings().range_end"
+          [mode]="tab()"
+          [marks]="store.myMarks()"
+          [heat]="store.heat()"
+          [responderCount]="store.responders().length"
+          [names]="names()"
+          [brush]="brush()"
+          [highlight]="highlight()"
+          (paint)="store.setDay($event.day, $event.state)" />
+      </section>
+
+      <aside class="suggestions-pane">
+        <h3>Best options</h3>
+
+        @if (store.responders().length === 0) {
+          <p class="muted">Mark your days. Suggestions appear as soon as someone responds.</p>
+        } @else if (store.suggestions().length === 0) {
+          <p class="muted">No {{ searchLabel() }} window works for anyone yet.</p>
+        }
+
+        @for (s of store.suggestions(); track s.key; let i = $index) {
+          <article class="suggestion" [class.selected]="selected()?.key === s.key">
+            <button type="button" class="suggestion-main" (click)="select(s)">
+              <span class="rank">{{ i + 1 }}</span>
+              <span class="when">
+                <strong>{{ formatRange(s.start, s.end) }}</strong>
+                <small>
+                  {{ s.days }} {{ s.days === 1 ? 'day' : 'days' }} ·
+                  {{ s.available.length + s.ifNeeded.length }}/{{ store.responders().length }} can come
+                </small>
+              </span>
+            </button>
+
+            <div class="people">
+              @for (id of s.available; track id) { <span class="chip yes">{{ nameOf(id) }}</span> }
+              @for (id of s.ifNeeded; track id) { <span class="chip maybe" title="If needed">{{ nameOf(id) }}</span> }
+              @for (u of s.unavailable; track u.userId) {
+                <span class="chip no" [title]="u.conflictDays + ' day(s) not possible'">{{ nameOf(u.userId) }}</span>
+              }
+            </div>
+
+            @if (data.isOwner) {
+              <button mat-stroked-button type="button" class="lock-btn" [disabled]="locking()" (click)="lock(s)">
+                <mat-icon>lock</mat-icon>
+                {{ confirmKey() === s.key ? 'Confirm: lock these dates' : 'Lock dates' }}
+              </button>
+            }
+          </article>
+        }
+
+        @if (store.waitingFor().length) {
+          <p class="waiting"><mat-icon>hourglass_empty</mat-icon> Waiting for {{ waitingNames() }}</p>
+        }
+        @if (!data.isOwner && store.suggestions().length) {
+          <p class="muted">The plan owner locks the final dates.</p>
+        }
+      </aside>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Close</button>
+</mat-dialog-actions>

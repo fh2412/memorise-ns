@@ -17,28 +17,18 @@
       }
       }
     </div>
-    @if (plan().memory_date && plan().memory_end_date) {
-    <div class="date-widget">
-      <mat-icon>calendar_today</mat-icon>
-      <span>{{plan().memory_date}} - {{plan().memory_end_date}}</span>
+    <button type="button" class="date-widget" (click)="dateFinderRequested.emit()">
+      <mat-icon>{{ dateLabel() ? 'calendar_today' : 'edit_calendar' }}</mat-icon>
+      <span>{{ dateLabel() ?? 'Find dates that work for everyone' }}</span>
       @let days = daysLeft();
-      @if (days !== null && days > 0) { <span class="countdown-tag">{{ days }} days left!</span> }
-      @else if (days === 0) { <span class="countdown-tag">Today!</span> }
-    </div>
-    } @else if (plan().memory_date) {
-    <div class="date-widget">
-      <mat-icon>calendar_today</mat-icon>
-      <span>{{plan().memory_date}}</span>
-      @let days = daysLeft();
-      @if (days !== null && days > 0) { <span class="countdown-tag">{{ days }} days left!</span> }
-      @else if (days === 0) { <span class="countdown-tag">Today!</span> }
-    </div>
-    } @else {
-    <div class="date-widget">
-      <mat-icon>calendar_today</mat-icon>
-      <span>Vote for your fitting time</span>
-    </div>
-    }
+      @if (days !== null && days > 1) {
+        <span class="countdown-tag">{{ days }} days left</span>
+      } @else if (days === 1) {
+        <span class="countdown-tag">Tomorrow!</span>
+      } @else if (days === 0) {
+        <span class="countdown-tag">Today!</span>
+      }
+    </button>
   </div>
 
   <div class="view-switcher-wrapper">

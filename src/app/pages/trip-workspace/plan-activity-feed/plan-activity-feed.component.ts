@@ -4,8 +4,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CrewMember } from '@models/userInterface.model';
 import { PLAN_EVENT_FALLBACK, PLAN_EVENT_META, PlanEvent } from '@models/planItem.model';
+import { formatRange } from '../date-finder/date-utils';
 
 const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+const RANGE_ACTIONS = new Set(['dates_set', 'date_finder_updated']);
 
 function timeAgo(iso: string, now: number): string {
   const t = Date.parse(iso);
@@ -50,6 +52,8 @@ export class PlanActivityFeedComponent {
       const member = byId.get(e.user_id);
       const name = member?.name ?? 'Former member';
       const meta = PLAN_EVENT_META[e.action] ?? PLAN_EVENT_FALLBACK;
+      const isRange = RANGE_ACTIONS.has(e.action) && !!e.item_title;
+      const [from, to] = isRange ? e.item_title!.split('/') : [];
       return {
         id: e.event_id,
         who: e.user_id === me ? 'You' : name,
@@ -57,7 +61,8 @@ export class PlanActivityFeedComponent {
         avatar: member?.profilepic_thumb || null,
         verb: meta.verb,
         icon: meta.icon,
-        title: e.item_title,
+        title: isRange ? formatRange(from, to) : e.item_title,
+        quoted: !isRange,
         at: e.created_at,
         ago: timeAgo(e.created_at, now),
       };

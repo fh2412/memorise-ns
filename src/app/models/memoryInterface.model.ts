@@ -41,8 +41,8 @@ export interface PlannedMemory {
   memory_id: string;
   title?: string;
   title_pic: string;
-  memory_date: Date | null;
-  memory_end_date: Date | null;
+  memory_date: string | null;
+  memory_end_date: string | null;
   crew_members?: CrewMember[];
   isPinned?: boolean;
 }

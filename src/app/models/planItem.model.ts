@@ -44,21 +44,21 @@ export type PlanItemPatch = Partial<
 
 export const PLAN_ITEM_TYPES: Record<PlanItemType,
   { label: string; icon: string; color: string; creatable: boolean }> = {
-  note:    { label: 'Note',    icon: 'sticky_note_2', color: '#fff59d', creatable: true },
-  idea:    { label: 'Idea',    icon: 'lightbulb',     color: '#ffe0b2', creatable: true },
-  todo:    { label: 'To-do',   icon: 'check_circle',  color: '#c8e6c9', creatable: true },
-  link:    { label: 'Link',    icon: 'link',          color: '#bbdefb', creatable: true },
-  poll:    { label: 'Poll',    icon: 'how_to_vote',   color: '#e1bee7', creatable: false }, // Phase 1a
-  booking: { label: 'Booking', icon: 'hotel',         color: '#b2dfdb', creatable: false }, // Phase 1c
+  note: { label: 'Note', icon: 'sticky_note_2', color: '#fff59d', creatable: true },
+  idea: { label: 'Idea', icon: 'lightbulb', color: '#ffe0b2', creatable: true },
+  todo: { label: 'To-do', icon: 'check_circle', color: '#c8e6c9', creatable: true },
+  link: { label: 'Link', icon: 'link', color: '#bbdefb', creatable: true },
+  poll: { label: 'Poll', icon: 'how_to_vote', color: '#e1bee7', creatable: false }, // Phase 1a
+  booking: { label: 'Booking', icon: 'hotel', color: '#b2dfdb', creatable: false }, // Phase 1c
 };
 
 export const PLAN_CATEGORIES: { key: PlanCategory; label: string; icon: string }[] = [
-  { key: 'dates',       label: 'Dates',       icon: 'event' },
+  { key: 'dates', label: 'Dates', icon: 'event' },
   { key: 'destination', label: 'Destination', icon: 'place' },
-  { key: 'stay',        label: 'Stay',        icon: 'hotel' },
-  { key: 'transport',   label: 'Transport',   icon: 'commute' },
-  { key: 'activity',    label: 'Activities',  icon: 'hiking' },
-  { key: 'other',       label: 'Other',       icon: 'more_horiz' },
+  { key: 'stay', label: 'Stay', icon: 'hotel' },
+  { key: 'transport', label: 'Transport', icon: 'commute' },
+  { key: 'activity', label: 'Activities', icon: 'hiking' },
+  { key: 'other', label: 'Other', icon: 'more_horiz' },
 ];
 
 export interface PlanEvent {
@@ -88,11 +88,15 @@ export function planPhase(start?: string | null, end?: string | null, now = new 
 }
 
 export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
-  item_created:   { verb: 'added',     icon: 'add_circle' },
-  item_updated:   { verb: 'edited',    icon: 'edit' },
+  item_created: { verb: 'added', icon: 'add_circle' },
+  item_updated: { verb: 'edited', icon: 'edit' },
   item_completed: { verb: 'completed', icon: 'task_alt' },
-  item_reopened:  { verb: 'reopened',  icon: 'replay' },
+  item_reopened: { verb: 'reopened', icon: 'replay' },
   item_dismissed: { verb: 'dismissed', icon: 'block' },
-  item_deleted:   { verb: 'deleted',   icon: 'delete' },
+  item_deleted: { verb: 'deleted', icon: 'delete' },
+  dates_set: { verb: 'locked the dates to', icon: 'event_available' },
+  dates_cleared: { verb: 'reopened the date search', icon: 'event_busy' },
+  availability_updated: { verb: 'updated their availability', icon: 'edit_calendar' },
+  date_finder_updated: { verb: 'changed the date search to', icon: 'date_range' },
 };
 export const PLAN_EVENT_FALLBACK = { verb: 'updated', icon: 'bolt' };

@@ -29,6 +29,12 @@
         <span class="countdown-tag">Today!</span>
       }
     </button>
+    <div class="meta-row">
+      <!-- existing date-widget button -->
+      @if (destinationLabel(); as dest) {
+        <span class="destination-widget"><mat-icon>place</mat-icon>{{ dest }}</span>
+      }
+    </div>
   </div>
 
   <div class="view-switcher-wrapper">

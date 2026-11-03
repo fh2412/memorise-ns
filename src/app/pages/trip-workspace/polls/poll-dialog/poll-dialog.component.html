@@ -1,0 +1,144 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Manage poll' : 'New poll' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="poll-dialog">
+    <mat-form-field appearance="outline">
+      <mat-label>Question</mat-label>
+      <input matInput formControlName="title" placeholder="Where should we go?" />
+      @if (form.controls.title.hasError('required')) { <mat-error>A question is required</mat-error> }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Details (optional)</mat-label>
+      <textarea matInput formControlName="description" rows="2"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Category</mat-label>
+      <mat-select formControlName="category">
+        @for (c of categories; track c.key) { <mat-option [value]="c.key">{{ c.label }}</mat-option> }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Options -->
+    <section class="options">
+      <h3>Options</h3>
+
+      @if (!isEdit) {
+        @for (d of drafts(); track d.key; let i = $index) {
+          <div class="option-row">
+            <input class="option-input" maxlength="200" [placeholder]="'Option ' + (i + 1)"
+                   [attr.aria-label]="'Option ' + (i + 1)" [value]="d.label"
+                   (input)="setDraftLabel(d.key, $any($event.target).value)"
+                   (keydown.enter)="$event.preventDefault(); addDraft()" />
+            @if (isDestination()) {
+              <button mat-icon-button type="button" (click)="pinDraft(d.key)"
+                      [matTooltip]="d.location ? formatLocation(d.location) : 'Pin on map (optional)'">
+                <mat-icon [class.pinned]="d.location">{{ d.location ? 'location_on' : 'add_location_alt' }}</mat-icon>
+              </button>
+            }
+            <button mat-icon-button type="button" aria-label="Remove option"
+                    [disabled]="drafts().length <= 1" (click)="removeDraft(d.key)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+        <button mat-button type="button" [disabled]="drafts().length >= 20" (click)="addDraft()">
+          <mat-icon>add</mat-icon> Add option
+        </button>
+      } @else if (poll(); as p) {
+        @for (o of p.options; track o.option_id) {
+          <div class="option-row">
+            <input class="option-input" maxlength="200" [value]="o.label" [readonly]="!canEditOption(o)"
+                   [attr.aria-label]="'Option ' + o.label"
+                   (keydown.enter)="$event.preventDefault(); $any($event.target).blur()"
+                   (blur)="renameOption(o, $any($event.target))" />
+            <span class="votes" matTooltip="Votes">{{ o.votes ?? '–' }}</span>
+            @if (isDestination() && canEditOption(o)) {
+              <button mat-icon-button type="button" (click)="pinOption(o)"
+                      [matTooltip]="o.location ? formatLocation(o.location) : 'Pin on map'">
+                <mat-icon [class.pinned]="o.location">{{ o.location ? 'location_on' : 'add_location_alt' }}</mat-icon>
+              </button>
+            }
+            @if (canManage()) {
+              <button mat-icon-button type="button" (click)="removeOption(o)"
+                      [class.armed]="confirmDelete() === o.option_id"
+                      [disabled]="p.decided_option_id === o.option_id || p.options.length <= 1"
+                      [matTooltip]="confirmDelete() === o.option_id ? 'Click again – its votes are removed too' : 'Remove option'">
+                <mat-icon>{{ confirmDelete() === o.option_id ? 'delete_forever' : 'delete' }}</mat-icon>
+              </button>
+            }
+          </div>
+        }
+        @if (canAddOption()) {
+          <div class="option-row">
+            <input class="option-input" maxlength="200" placeholder="Add an option…" aria-label="New option"
+                   [value]="newOption()" (input)="newOption.set($any($event.target).value)"
+                   (keydown.enter)="$event.preventDefault(); addOption()" />
+            <button mat-icon-button type="button" aria-label="Add option"
+                    [disabled]="!newOption().trim()" (click)="addOption()">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        }
+        <p class="muted">Option changes are saved immediately.</p>
+      }
+    </section>
+
+    <!-- Settings -->
+    <section class="settings">
+      <h3>Settings</h3>
+
+      <div class="row">
+        <mat-form-field appearance="outline">
+          <mat-label>Poll closes</mat-label>
+          <mat-select formControlName="closesPreset">
+            @if (isEdit) {
+              <mat-option value="keep">
+                Keep current ({{ poll()?.closes_at ? (poll()!.closes_at | date: 'short') : 'no deadline' }})
+              </mat-option>
+            }
+            <mat-option value="none">No deadline</mat-option>
+            <mat-option value="1h">In 1 hour</mat-option>
+            <mat-option value="1d">In 1 day</mat-option>
+            <mat-option value="3d">In 3 days</mat-option>
+            <mat-option value="1w">In 1 week</mat-option>
+            <mat-option value="custom">Pick date &amp; time…</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        @if (preset() === 'custom') {
+          <mat-form-field appearance="outline">
+            <mat-label>Closes at</mat-label>
+            <input matInput type="datetime-local" formControlName="closesCustom" [min]="minCustom" />
+          </mat-form-field>
+        }
+      </div>
+
+      <mat-slide-toggle formControlName="multiple">Allow multiple choices</mat-slide-toggle>
+      @if (multiple()) {
+        <mat-form-field appearance="outline" class="narrow">
+          <mat-label>Max. choices</mat-label>
+          <input matInput type="number" min="2" max="20" formControlName="maxChoices" placeholder="No limit" />
+        </mat-form-field>
+      }
+      <mat-slide-toggle formControlName="allowMemberOptions">Everyone can add options</mat-slide-toggle>
+      <mat-slide-toggle formControlName="hideResults">Hide results until you've voted</mat-slide-toggle>
+
+      @if (isEdit) {
+        <p class="muted">
+          @if (isDecided()) { Settings are locked while the poll is decided. }
+          @else if (!canManage()) { Only the plan owner or the poll creator can change the settings. }
+          @else { Choice mode and category can't change after creation. }
+        </p>
+      }
+    </section>
+
+    @if (formError(); as err) { <p class="form-error" role="alert">{{ err }}</p> }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>{{ isEdit ? 'Close' : 'Cancel' }}</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">{{ isEdit ? 'Save' : 'Create poll' }}</button>
+  </mat-dialog-actions>
+</form>

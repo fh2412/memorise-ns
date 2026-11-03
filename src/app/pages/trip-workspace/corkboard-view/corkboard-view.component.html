@@ -5,7 +5,7 @@
       [cdkDragFreeDragPosition]="{ x: item.board_x, y: item.board_y }" [class.on-top]="topItemId() === item.item_id"
       (cdkDragStarted)="topItemId.set(item.item_id)" (cdkDragEnded)="onDragEnded(item, $event)">
       <app-plan-item-card [item]="item" [canDelete]="canDelete()(item)" (toggleDone)="toggleDone.emit(item)"
-        (edit)="edit.emit(item)" (remove)="remove.emit(item)" />
+        (edit)="edit.emit(item)" (remove)="remove.emit(item)" (promote)="promote.emit(item)"/>
     </div>
     }
   </div>

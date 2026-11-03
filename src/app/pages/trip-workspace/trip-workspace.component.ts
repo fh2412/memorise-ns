@@ -21,12 +21,14 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { CorkboardViewComponent } from './corkboard-view/corkboard-view.component';
 import { StructuredViewComponent } from './structured-view/structured-view.component';
 import { PlanBoardStore } from './plan-board.store';
-import { PlanItem, NewPlanItem } from '@models/planItem.model';
+import { PlanItem, NewPlanItem, NewPoll, POLL_QUESTIONS, PollCategory } from '@models/planItem.model';
 import { PlanItemDialogComponent, PlanItemDialogData } from './plan-item-dialog/plan-item-dialog.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { PlanActivityFeedComponent } from './plan-activity-feed/plan-activity-feed.component';
 import { DateFinderDialogComponent, DateFinderDialogData, DateFinderDialogResult } from './date-finder/date-finder-dialog/date-finder-dialog.component';
 import { DateFinderStore } from './date-finder/date-finder.store';
+import { MatMenuModule } from '@angular/material/menu';
+import { PollDialogData, PollDialogComponent } from './polls/poll-dialog/poll-dialog.component';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -47,7 +49,8 @@ import { DateFinderStore } from './date-finder/date-finder.store';
     CorkboardViewComponent,
     StructuredViewComponent,
     MatTabsModule,
-    PlanActivityFeedComponent
+    PlanActivityFeedComponent,
+    MatMenuModule,
   ],
   providers: [PlanBoardStore, DateFinderStore],
   templateUrl: './trip-workspace.component.html',
@@ -96,6 +99,22 @@ export class TripWorkspaceComponent implements OnInit {
         untracked(() => void this.refreshPlan());
       }
     });
+
+    effect(() => this.board.crew.set(this.crew()));
+    effect(() => this.board.destination.set(this.plannedMemory()?.location ?? null))
+
+    // My own destination change → reload the header
+    effect(() => {
+      if (this.board.planVersion() > 0) untracked(() => void this.refreshPlan());
+    });
+
+    // Replace the existing remote-dates effect with this one (adds destination_set)
+    effect(() => {
+      const events = this.board.remoteEvents();
+      if (events.some(e => ['dates_set', 'dates_cleared', 'destination_set'].includes(e.action))) {
+        untracked(() => void this.refreshPlan());
+      }
+    });
   }
 
   async ngOnInit(): Promise<void> {
@@ -109,6 +128,10 @@ export class TripWorkspaceComponent implements OnInit {
   }
 
   openItemDialog(item?: PlanItem): void {
+    if (item?.type === 'poll') {
+      this.openPollDialog({ mode: 'edit', itemId: item.item_id });
+      return;
+    }
     this.dialog
       .open<PlanItemDialogComponent, PlanItemDialogData, NewPlanItem>(PlanItemDialogComponent, {
         width: '520px',
@@ -123,6 +146,22 @@ export class TripWorkspaceComponent implements OnInit {
       });
   }
 
+  openPollDialog(data: PollDialogData): void {
+    this.dialog
+      .open<PollDialogComponent, PollDialogData, NewPoll>(PollDialogComponent, {
+        width: '600px',
+        maxWidth: '95vw',
+        maxHeight: '92vh',
+        autoFocus: false,
+        injector: this.injector, // dialog needs PlanBoardStore
+        data,
+      })
+      .afterClosed()
+      .subscribe(result => {
+        if (result) void this.board.createPoll(result);
+      });
+  }
+  
   private async loadMemoriesPage(): Promise<void> {
     this.isLoading.set(true);
 
@@ -252,5 +291,19 @@ export class TripWorkspaceComponent implements OnInit {
     } catch (err) {
       console.warn('Plan refresh failed:', err);
     }
+  }
+
+  promoteIdea(idea: PlanItem): void {
+    const category: PollCategory = idea.category === 'dates' ? 'other' : idea.category;
+    this.openPollDialog({
+      mode: 'create',
+      draft: {
+        title: POLL_QUESTIONS[category],
+        description: idea.description,
+        category,
+        options: [idea.title],
+        sourceItemId: idea.item_id,
+      },
+    });
   }
 }

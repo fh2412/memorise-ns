@@ -1,0 +1,74 @@
+@let p = poll();
+
+<div class="poll-meta">
+  <span>{{ choiceLabel() }}</span>
+  @if (deadlineLabel(); as dl) {
+    <span class="deadline" [class.closed]="closed()"><mat-icon>schedule</mat-icon>{{ dl }}</span>
+  }
+</div>
+
+<ul class="options">
+  @for (row of rows(); track row.option_id) {
+    <li>
+      <button type="button" class="option"
+              [class.mine]="row.mine" [class.winner]="row.winner" [class.leading]="row.leading"
+              [disabled]="!votingOpen() || (atLimit() && !row.mine)"
+              [attr.aria-pressed]="row.mine"
+              (click)="vote(row.option_id)">
+        @if (p.results_visible) { <span class="bar" [style.width.%]="row.percent"></span> }
+        <mat-icon class="check">
+          {{ row.winner ? 'emoji_events'
+             : row.mine ? (p.multiple ? 'check_box' : 'radio_button_checked')
+             : (p.multiple ? 'check_box_outline_blank' : 'radio_button_unchecked') }}
+        </mat-icon>
+        <span class="label">{{ row.label }}</span>
+        @if (row.hasLocation) { <mat-icon class="pin" [matTooltip]="row.locationLabel">place</mat-icon> }
+        @if (p.results_visible) { <span class="count">{{ row.votes }}</span> }
+      </button>
+
+      @if (row.shownVoters.length) {
+        <div class="voters" [title]="row.voterNames">
+          @for (v of row.shownVoters; track v.id) {
+            <span class="mini">
+              @if (v.avatar) { <img [src]="v.avatar" alt="" /> } @else { {{ v.initial }} }
+            </span>
+          }
+          @if (row.moreVoters) { <span class="more">+{{ row.moreVoters }}</span> }
+        </div>
+      }
+    </li>
+  }
+</ul>
+
+@if (!p.results_visible) {
+  <p class="hint">Vote to see the results.</p>
+}
+
+@if (canAddOption()) {
+  <div class="add-option">
+    <input type="text" placeholder="Add an option…" maxlength="200" aria-label="New option"
+           [value]="newOption()" (input)="newOption.set($any($event.target).value)"
+           (keydown.enter)="addOption()" />
+    <button mat-icon-button type="button" aria-label="Add option"
+            [disabled]="!newOption().trim() || busy()" (click)="addOption()">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+}
+
+<div class="poll-actions">
+  @if (decided()) {
+    <span class="decided-label"><mat-icon>check_circle</mat-icon> Decided</span>
+    @if (needsDestination() && canManage()) {
+      <button mat-stroked-button type="button" [disabled]="busy()" (click)="setLocation()">
+        <mat-icon>add_location_alt</mat-icon> Set destination location
+      </button>
+    }
+    @if (canManage()) {
+      <button mat-button type="button" [disabled]="busy()" (click)="reopen()">Reopen</button>
+    }
+  } @else if (canManage()) {
+    <button mat-flat-button type="button" [disabled]="busy() || !p.options.length" (click)="decide()">Decide</button>
+  }
+  <span class="voter-count">{{ p.total_voters }}/{{ eligibleVoters() }} voted</span>
+</div>

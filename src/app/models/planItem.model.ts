@@ -1,5 +1,6 @@
 import { CrewMember } from '@models/userInterface.model';
-import { PlannedMemory } from '@models/memoryInterface.model';
+import { PlannedMemory, PlanLocation } from '@models/memoryInterface.model';
+
 
 export type PlanItemType = 'note' | 'idea' | 'todo' | 'link' | 'poll' | 'booking';
 export type PlanItemStatus = 'open' | 'decided' | 'done' | 'dismissed';
@@ -32,6 +33,7 @@ export interface PlanItem {
   assignees: CrewMember['user_id'][];
   created_at: string;
   updated_at: string;
+  poll?: PollData | null;
 }
 
 export type NewPlanItem = Pick<PlanItem, 'type' | 'title'> &
@@ -98,5 +100,74 @@ export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
   dates_cleared: { verb: 'reopened the date search', icon: 'event_busy' },
   availability_updated: { verb: 'updated their availability', icon: 'edit_calendar' },
   date_finder_updated: { verb: 'changed the date search to', icon: 'date_range' },
+  poll_created: { verb: 'started a poll', icon: 'how_to_vote' },
+  poll_voted: { verb: 'voted on', icon: 'how_to_vote' },
+  poll_unvoted: { verb: 'withdrew their vote on', icon: 'undo' },
+  poll_option_added: { verb: 'added an option to', icon: 'playlist_add' },
+  poll_option_updated: { verb: 'edited an option in', icon: 'edit' },
+  poll_option_removed: { verb: 'removed an option from', icon: 'playlist_remove' },
+  poll_updated: { verb: 'changed the settings of', icon: 'tune' },
+  poll_decided: { verb: 'picked', icon: 'emoji_events' },
+  poll_reopened: { verb: 'reopened', icon: 'replay' },
+  destination_set: { verb: 'set the destination to', icon: 'place' },
 };
 export const PLAN_EVENT_FALLBACK = { verb: 'updated', icon: 'bolt' };
+
+export interface PollOption {
+  option_id: number;
+  label: string;
+  sort_order: number;
+  created_by: string;
+  location: PlanLocation | null;
+  votes: number | null;     // null = results hidden for me
+  voters: string[] | null;
+}
+
+export interface PollData {
+  multiple: boolean;
+  max_choices: number | null;
+  closes_at: string | null; // ISO UTC
+  is_closed: boolean;
+  allow_member_options: boolean;
+  hide_results: boolean;
+  decided_option_id: number | null;
+  decided_by: string | null;
+  decided_at: string | null;
+  source_item_id: number | null;
+  results_visible: boolean;
+  total_voters: number;
+  my_votes: number[];
+  options: PollOption[];
+}
+
+export type PollCategory = Exclude<PlanCategory, 'dates'>;
+export const POLL_CATEGORIES = PLAN_CATEGORIES.filter(c => c.key !== 'dates');
+export const POLL_QUESTIONS: Record<PollCategory, string> = {
+  destination: 'Where should we go?',
+  stay: 'Where should we stay?',
+  transport: 'How do we get there?',
+  activity: 'What should we do?',
+  other: 'What do you prefer?',
+};
+
+export interface NewPollOption { label: string; location?: PlanLocation | null; }
+
+export interface NewPoll {
+  title: string;
+  description?: string | null;
+  category: PollCategory;
+  options: NewPollOption[];
+  multiple?: boolean;
+  maxChoices?: number | null;
+  closesAt?: string | null;
+  allowMemberOptions?: boolean;
+  hideResults?: boolean;
+  sourceItemId?: number;
+  board_x?: number;
+  board_y?: number;
+  color?: string | null;
+}
+
+export interface PollSettingsPatch { closesAt?: string | null; allowMemberOptions?: boolean; hideResults?: boolean; }
+export interface PollOptionPatch { label?: string; location?: PlanLocation | null; }
+export interface DecidePollBody { optionId: number; location?: PlanLocation; }

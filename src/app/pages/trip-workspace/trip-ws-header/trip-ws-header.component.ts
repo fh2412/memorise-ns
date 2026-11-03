@@ -6,6 +6,7 @@ import { PlannedMemory } from '@models/memoryInterface.model';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { formatRange } from '../date-finder/date-utils';
+import { formatLocation } from '../polls/location-utils';
 
 @Component({
   selector: 'app-trip-ws-header',
@@ -41,6 +42,11 @@ export class TripWsHeaderComponent {
     today.setHours(0, 0, 0, 0);
   
     return Math.round((target.getTime() - today.getTime()) / 86_400_000);
+  });
+
+  destinationLabel = computed(() => {
+    const loc = this.plan().location;
+    return loc ? formatLocation(loc) : null;
   });
 
   constructor() {

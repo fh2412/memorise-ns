@@ -1,0 +1,46 @@
+.poll-dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 8px !important;
+  
+    mat-form-field { width: 100%; }
+    h3 { margin: 8px 0; font: var(--mat-sys-title-small); }
+  }
+  
+  .option-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-bottom: 6px;
+  
+    .option-input {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 12px;
+      border: 1px solid var(--mat-sys-outline-variant);
+      border-radius: 8px;
+      background: var(--mat-sys-surface-container-low);
+      color: var(--mat-sys-on-surface);
+      font: inherit;
+  
+      &:focus { outline: 2px solid var(--mat-sys-primary); outline-offset: -1px; }
+      &[readonly] { opacity: 0.7; }
+    }
+  
+    .votes { min-width: 24px; text-align: center; font-size: 0.85rem; color: var(--mat-sys-on-surface-variant); }
+    .pinned { color: var(--mat-sys-primary); }
+    .armed { color: var(--mat-sys-error); }
+  }
+  
+  .settings {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  
+    .row { display: flex; flex-wrap: wrap; gap: 12px; mat-form-field { flex: 1 1 200px; } }
+    .narrow { max-width: 160px; }
+  }
+  
+  .muted { margin: 0; font-size: 0.8rem; color: var(--mat-sys-on-surface-variant); }
+  .form-error { margin: 8px 0 0; color: var(--mat-sys-error); }

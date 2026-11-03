@@ -15,16 +15,24 @@
       } @else if (currentView() === 'corkboard') {
       <app-corkboard-view [items]="board.activeItems()" [canDelete]="board.canDelete()"
         (moved)="board.moveOnBoard($event.itemId, $event.x, $event.y)" (toggleDone)="board.toggleDone($event)"
-        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" />
+        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" (promote)="promoteIdea($event)" />
       } @else {
       <app-structured-view [columns]="board.columns()" [canDelete]="board.canDelete()"
         (categoryChanged)="board.changeCategory($event.itemId, $event.category)" (toggleDone)="board.toggleDone($event)"
-        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" />
+        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" (promote)="promoteIdea($event)" />
       }
 
-      <button mat-fab extended class="add-item-fab" (click)="openItemDialog()">
-        <mat-icon>add</mat-icon> Add item
+      <button mat-fab extended class="add-item-fab" [matMenuTriggerFor]="addMenu">
+        <mat-icon>add</mat-icon> Add
       </button>
+      <mat-menu #addMenu="matMenu" yPosition="above">
+        <button mat-menu-item (click)="openItemDialog()">
+          <mat-icon>sticky_note_2</mat-icon><span>Note, idea, to-do or link</span>
+        </button>
+        <button mat-menu-item (click)="openPollDialog({ mode: 'create' })">
+          <mat-icon>how_to_vote</mat-icon><span>Poll</span>
+        </button>
+      </mat-menu>
     </div>
   </main>
 

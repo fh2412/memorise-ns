@@ -19,6 +19,7 @@ export class StructuredViewComponent {
   edit = output<PlanItem>();
   remove = output<PlanItem>();
   canDelete = input.required<(item: PlanItem) => boolean>();
+  promote = output<PlanItem>();
 
   onDrop(event: CdkDragDrop<PlanCategory, PlanCategory, PlanItem>): void {
     if (event.previousContainer === event.container) return;

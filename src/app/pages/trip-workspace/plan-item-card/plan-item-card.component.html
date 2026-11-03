@@ -18,6 +18,23 @@
 <p class="card-body">{{ item().description }}</p>
 }
 
+@if (item().type === 'poll' && item().poll) {
+  <app-poll-body [item]="item()" />
+}
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="edit.emit()">
+    <mat-icon>{{ item().type === 'poll' ? 'tune' : 'edit' }}</mat-icon>
+    <span>{{ item().type === 'poll' ? 'Manage poll' : 'Edit' }}</span>
+  </button>
+  @if (canPromote()) {
+    <button mat-menu-item (click)="promote.emit()"><mat-icon>how_to_vote</mat-icon><span>Start a poll</span></button>
+  }
+  @if (canDelete()) {
+    <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
+  }
+</mat-menu>
+
 @if (linkUrl(); as url) {
 <a class="card-link" [href]="url" target="_blank" rel="noopener noreferrer" (mousedown)="$event.stopPropagation()">
   <mat-icon>open_in_new</mat-icon><span>{{ url }}</span>

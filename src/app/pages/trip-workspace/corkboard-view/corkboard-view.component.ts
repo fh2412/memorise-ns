@@ -18,7 +18,7 @@ export class CorkboardViewComponent {
   edit = output<PlanItem>();
   remove = output<PlanItem>();
   canDelete = input.required<(item: PlanItem) => boolean>();
-
+  promote = output<PlanItem>();
   topItemId = signal<number | null>(null);
 
   onDragEnded(item: PlanItem, event: CdkDragEnd): void {

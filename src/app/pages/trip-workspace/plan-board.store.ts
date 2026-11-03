@@ -2,8 +2,12 @@ import { computed, DestroyRef, inject, Injectable, signal } from '@angular/core'
 import { HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { PlanItemService } from '@services/plan-item.service';
+import { Observable } from 'rxjs';
+import { CrewMember } from '@models/userInterface.model';
+import { PlanLocation } from '@models/memoryInterface.model';
+import { PlanPollService } from '@services/plan-poll.service';
 import {
-  NewPlanItem, PLAN_CATEGORIES, PLAN_ITEM_TYPES, PlanCategory, PlanEvent, PlanItem, PlanItemPatch, PlanViewer,
+  NewPlanItem, PLAN_CATEGORIES, PLAN_ITEM_TYPES, PlanCategory, PlanEvent, PlanItem, PlanItemPatch, PlanViewer, DecidePollBody, NewPoll, NewPollOption, PollOptionPatch, PollSettingsPatch
 } from '@models/planItem.model';
 
 export type PlanColumn = (typeof PLAN_CATEGORIES)[number] & { items: PlanItem[] };
@@ -13,9 +17,18 @@ const EVENTS_PAGE = 30;
 const CATCH_UP_LIMIT = 100; // = backend max
 const LAYOUT_KEYS = new Set<string>(['board_x', 'board_y', 'color']); // backend writes no event for these
 
-const COALESCED_ACTIONS = new Set(['availability_updated']);
+const COALESCE_GROUP: Record<string, string> = {
+  availability_updated: 'availability',
+  poll_voted: 'vote',
+  poll_unvoted: 'vote',
+};
 const COALESCE_WINDOW_MS = 6 * 3_600_000;
-const eventKey = (e: PlanEvent) => `${e.user_id}|${e.action}`;
+const coalesceKey = (e: PlanEvent): string | null => {
+  const group = COALESCE_GROUP[e.action];
+  return group ? `${e.user_id}|${group}|${e.item_id ?? ''}` : null;
+};
+
+const BOARD_ACTION = /^(item_|poll_|destination_set$)/;
 
 const seenKey = (memoryId: string) => `memorise.plan.${memoryId}.lastSeenEvent`;
 const readSeen = (memoryId: string): number => {
@@ -25,9 +38,19 @@ const writeSeen = (memoryId: string, id: number): void => {
   try { localStorage.setItem(seenKey(memoryId), String(id)); } catch { /* storage unavailable */ }
 };
 
+function apiMessage(err: unknown, fallback: string): string {
+  if (err instanceof HttpErrorResponse && err.status >= 400 && err.status < 500) {
+    const msg = err.error?.message;
+    if (typeof msg === 'string' && msg) return msg;
+  }
+  return fallback;
+}
+
 @Injectable()
 export class PlanBoardStore {
   private api = inject(PlanItemService);
+  private pollApi = inject(PlanPollService);
+
   private memoryId = '';
 
   // ---------- items ----------
@@ -37,7 +60,17 @@ export class PlanBoardStore {
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly remoteEvents = signal<PlanEvent[]>([]);
+  readonly crew = signal<CrewMember[]>([]);
+  readonly destination = signal<PlanLocation | null>(null);
+  readonly planVersion = signal(0);
 
+  readonly canManagePoll = computed(() => {
+    const v = this.viewer();
+    return (item: PlanItem) => !!v && (v.isOwner || item.created_by === v.userId);
+  });
+
+  private voteQueue = new Map<number, Promise<PlanItem | null>>();
+  private voteSeq = new Map<number, number>();
   readonly activeItems = computed(() => this._items().filter(i => i.status !== 'dismissed'));
 
   readonly columns = computed<PlanColumn[]>(() => {
@@ -298,18 +331,130 @@ export class PlanBoardStore {
   }
 
   private mergeFresh(fresh: PlanEvent[]): void {
-    // Backend replaces a user's recent availability_updated event → mirror that locally
-    const keys = new Set(fresh.filter(e => COALESCED_ACTIONS.has(e.action)).map(eventKey));
+    const keys = new Set(fresh.map(coalesceKey).filter((k): k is string => k !== null));
     const cutoff = Date.now() - COALESCE_WINDOW_MS;
     this._events.update(list => [
       ...fresh,
-      ...list.filter(e => !(keys.has(eventKey(e)) && Date.parse(e.created_at) > cutoff)),
+      ...list.filter(e => {
+        const key = coalesceKey(e);
+        return !(key && keys.has(key) && Date.parse(e.created_at) > cutoff);
+      }),
     ]);
   }
+
+// ---------- polls ----------
+
+createPoll(draft: NewPoll): Promise<PlanItem | null> {
+  const offset = (this._items().length % 8) * 32;
+  const body: NewPoll = {
+    color: PLAN_ITEM_TYPES.poll.color,
+    // promoted polls take the idea's spot on the corkboard (set by the backend)
+    ...(draft.sourceItemId ? {} : { board_x: 40 + offset, board_y: 40 + offset }),
+    ...draft,
+  };
+  return this.tracked(true, async () => {
+    try {
+      const created = await firstValueFrom(this.pollApi.create(this.memoryId, body));
+      this._items.update(list => [
+        ...list.map(i => (i.item_id === draft.sourceItemId ? { ...i, status: 'dismissed' as const } : i)),
+        created,
+      ]);
+      return created;
+    } catch (err) {
+      console.error('Failed to create poll:', err);
+      this.error.set(apiMessage(err, 'Could not create the poll'));
+      return null;
+    }
+  });
+}
+
+/** Optimistic for my own choice; requests per poll are sent strictly in order. */
+vote(itemId: number, optionIds: number[]): Promise<PlanItem | null> {
+  const current = this._items().find(i => i.item_id === itemId);
+  if (current?.poll) this.replace({ ...current, poll: { ...current.poll, my_votes: optionIds } });
+
+  const seq = (this.voteSeq.get(itemId) ?? 0) + 1;
+  this.voteSeq.set(itemId, seq);
+  const previous = this.voteQueue.get(itemId) ?? Promise.resolve(null);
+  const next = previous.then(() => this.pollWrite(
+    'Could not save your vote',
+    () => this.pollApi.vote(this.memoryId, itemId, optionIds),
+    () => this.voteSeq.get(itemId) === seq, // a newer click wins → no flicker
+  ));
+  this.voteQueue.set(itemId, next);
+  return next;
+}
+
+updatePollSettings(itemId: number, patch: PollSettingsPatch): Promise<PlanItem | null> {
+  return this.pollWrite('Could not save the poll settings',
+    () => this.pollApi.updateSettings(this.memoryId, itemId, patch));
+}
+
+addPollOption(itemId: number, option: NewPollOption): Promise<PlanItem | null> {
+  return this.pollWrite('Could not add the option', () => this.pollApi.addOption(this.memoryId, itemId, option));
+}
+
+updatePollOption(itemId: number, optionId: number, patch: PollOptionPatch): Promise<PlanItem | null> {
+  return this.pollWrite('Could not save the option',
+    () => this.pollApi.updateOption(this.memoryId, itemId, optionId, patch));
+}
+
+deletePollOption(itemId: number, optionId: number): Promise<PlanItem | null> {
+  return this.pollWrite('Could not remove the option',
+    () => this.pollApi.deleteOption(this.memoryId, itemId, optionId));
+}
+
+reopenPoll(itemId: number): Promise<PlanItem | null> {
+  return this.pollWrite('Could not reopen the poll', () => this.pollApi.reopen(this.memoryId, itemId));
+}
+
+decidePoll(itemId: number, body: DecidePollBody): Promise<{ needsLocation: boolean } | null> {
+  return this.tracked(true, async () => {
+    try {
+      const res = await firstValueFrom(this.pollApi.decide(this.memoryId, itemId, body));
+      this.replace(res.item);
+      this.planVersion.update(v => v + 1);
+      return { needsLocation: res.needsLocation };
+    } catch (err) {
+      console.error('Failed to decide poll:', err);
+      this.error.set(apiMessage(err, 'Could not decide the poll'));
+      this.itemsStale = true;
+      return null;
+    }
+  });
+}
+
+async setPollDestination(itemId: number, location: PlanLocation): Promise<PlanItem | null> {
+  const saved = await this.pollWrite('Could not set the destination',
+    () => this.pollApi.setDestination(this.memoryId, itemId, location));
+  if (saved) this.planVersion.update(v => v + 1);
+  return saved;
+}
+
+/** On failure: mark stale and re-sync from the server instead of a manual rollback. */
+private pollWrite(
+  fallback: string,
+  call: () => Observable<PlanItem>,
+  shouldApply: () => boolean = () => true,
+): Promise<PlanItem | null> {
+  return this.tracked(true, async () => {
+    try {
+      const item = await firstValueFrom(call());
+      if (shouldApply()) this.replace(item);
+      return item;
+    } catch (err) {
+      console.error(fallback, err);
+      this.error.set(apiMessage(err, fallback));
+      this.itemsStale = true;
+      return null;
+    }
+  });
+}
 
 }
 
 function byStatusThenDate(a: PlanItem, b: PlanItem): number {
   const rank = (i: PlanItem) => (i.status === 'done' ? 1 : 0);
   return rank(a) - rank(b) || a.created_at.localeCompare(b.created_at);
+
 }

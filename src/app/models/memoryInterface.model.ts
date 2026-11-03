@@ -116,3 +116,22 @@ export interface MemoryDisplayStats {
 export interface VisitedCountry {
   alpha_2_codes: string | null;
 }
+
+export interface PlanLocation {
+  lat: number;
+  lng: number;
+  city: string;
+  country: string;
+  countryCode: string;
+}
+
+export interface PlannedMemory {
+  memory_id: string;
+  title?: string;
+  title_pic: string;
+  memory_date: string | null;
+  memory_end_date: string | null;
+  location?: (PlanLocation & { location_id: number }) | null;
+  crew_members?: CrewMember[];
+  isPinned?: boolean;
+}

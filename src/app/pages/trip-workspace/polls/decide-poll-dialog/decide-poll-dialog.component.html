@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Decide: {{ data.item.title }}</h2>
+
+<mat-dialog-content class="decide-content">
+  @if (!poll.results_visible) {
+    <p class="note"><mat-icon>visibility_off</mat-icon> Results are hidden until you vote or voting closes.</p>
+  }
+  @if (isTie) {
+    <p class="note warn"><mat-icon>balance</mat-icon> It's a tie. Pick the winner.</p>
+  }
+
+  <mat-radio-group class="choices" aria-label="Winning option"
+                   [value]="selectedId()" (change)="select($event.value)">
+    @for (o of ranked; track o.option_id) {
+      <mat-radio-button [value]="o.option_id">
+        <span class="choice-label">{{ o.label }}</span>
+        @if (o.votes !== null) {
+          <span class="choice-votes">{{ o.votes }} {{ o.votes === 1 ? 'vote' : 'votes' }}</span>
+        }
+      </mat-radio-button>
+    }
+  </mat-radio-group>
+
+  @if (isDestination && selected(); as s) {
+    <section class="destination">
+      <h3><mat-icon>place</mat-icon> Destination</h3>
+      @if (location(); as loc) {
+        <p>The plan's destination will be set to <strong>{{ formatLocation(loc) }}</strong>.</p>
+        <button mat-button type="button" (click)="pick()">Change on map</button>
+      } @else {
+        <p>"{{ s.label }}" has no location yet. Pin it now, or set it later from the poll card.</p>
+        <button mat-stroked-button type="button" (click)="pick()">
+          <mat-icon>add_location_alt</mat-icon> Pick on map
+        </button>
+      }
+      @if (needsReplaceConfirm()) {
+        <mat-checkbox [checked]="replaceConfirmed()" (change)="replaceConfirmed.set($event.checked)">
+          Replace the current destination ({{ formatLocation(data.currentDestination) }})
+        </mat-checkbox>
+      }
+    </section>
+  }
+
+  <p class="hint">Deciding closes voting. You can reopen the poll later.</p>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Cancel</button>
+  <button mat-flat-button type="button" [disabled]="!canConfirm()" (click)="confirm()">Decide</button>
+</mat-dialog-actions>

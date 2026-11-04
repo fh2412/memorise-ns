@@ -45,6 +45,25 @@
           <input matInput type="date" formControlName="due_date" />
         </mat-form-field>
       }
+      @if (selectedType() === 'todo' && assignableCrew().length) {
+        <div class="assignees">
+          <span class="assignees-label">Assigned to</span>
+          <div class="assignee-list" role="group" aria-label="Assignees">
+            @for (m of assignableCrew(); track m.user_id) {
+              <button type="button" class="assignee"
+                      [class.selected]="assignees().includes(m.user_id)"
+                      [attr.aria-pressed]="assignees().includes(m.user_id)"
+                      (click)="toggleAssignee(m.user_id)">
+                <span class="avatar">
+                  @if (m.profilepic_thumb) { <img [src]="m.profilepic_thumb" alt="" /> }
+                  @else { {{ m.name.charAt(0).toUpperCase() }} }
+                </span>
+                <span>{{ m.user_id === me ? 'Me' : m.name }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
     </div>
   </mat-dialog-content>
 

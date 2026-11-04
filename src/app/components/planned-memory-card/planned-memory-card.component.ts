@@ -4,18 +4,20 @@ import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlannedMemory } from '@models/memoryInterface.model';
 import { Router } from '@angular/router';
+import { PlanSummary } from '@models/planSummary.model';
+import { PlanProgressSummaryComponent } from '@components/plan-progress-summary/plan-progress-summary.component';
 
 @Component({
   selector: 'app-planned-memory-card',
   standalone: true,
-  imports: [MatIcon, DatePipe, NgClass, FormsModule],
+  imports: [MatIcon, DatePipe, NgClass, FormsModule, PlanProgressSummaryComponent],
   templateUrl: './planned-memory-card.component.html',
   styleUrl: './planned-memory-card.component.scss',
 })
 export class PlannedMemoryCardComponent {
   private router = inject(Router);
 
-  plan = input.required<PlannedMemory>();
+  plan = input.required<PlanSummary>()
   titleUpdated = output<{ memoryId: string; title: string }>();
 
   isEditing = signal(false);

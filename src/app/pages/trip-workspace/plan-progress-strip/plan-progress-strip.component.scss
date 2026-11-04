@@ -1,0 +1,117 @@
+:host {
+    display: block;
+    padding: 8px 24px;
+    background: var(--mat-sys-surface);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+}
+
+.strip {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 24px;
+}
+
+.steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.step {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 8px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 16px;
+    background: transparent;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-label-large);
+    cursor: pointer;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--mat-sys-primary);
+        outline-offset: 1px;
+    }
+
+    &:hover {
+        background: var(--mat-sys-surface-container-high);
+    }
+
+    &[data-state='done'] {
+        border-color: transparent;
+        background: var(--mat-sys-primary-container);
+        color: var(--mat-sys-on-primary-container);
+    }
+
+    &[data-state='skipped'] {
+        opacity: 0.6;
+
+        span {
+            text-decoration: line-through;
+        }
+    }
+}
+
+.todos {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--mat-sys-on-surface-variant);
+
+    mat-progress-bar {
+        width: 100px;
+    }
+}
+
+.mine-toggle {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 16px;
+    background: transparent;
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-label-large);
+    cursor: pointer;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    &:focus-visible {
+        outline: 2px solid var(--mat-sys-primary);
+        outline-offset: 1px;
+    }
+
+    &.active {
+        border-color: transparent;
+        background: var(--mat-sys-secondary-container);
+        color: var(--mat-sys-on-secondary-container);
+    }
+
+    .count {
+        min-width: 18px;
+        padding: 0 6px;
+        border-radius: 9px;
+        font-size: 0.75rem;
+        text-align: center;
+        background: var(--mat-sys-primary);
+        color: var(--mat-sys-on-primary);
+    }
+}

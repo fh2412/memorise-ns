@@ -29,6 +29,10 @@ import { DateFinderDialogComponent, DateFinderDialogData, DateFinderDialogResult
 import { DateFinderStore } from './date-finder/date-finder.store';
 import { MatMenuModule } from '@angular/material/menu';
 import { PollDialogData, PollDialogComponent } from './polls/poll-dialog/poll-dialog.component';
+import { PlanProgressStripComponent } from './plan-progress-strip/plan-progress-strip.component';
+import { ManualMilestoneKey } from '@models/planProgress.model';
+import { PlanCommentsPanelComponent } from './plan-comments-panel/plan-comments-panel.component';
+
 
 @Component({
   selector: 'app-trip-workspace',
@@ -51,6 +55,8 @@ import { PollDialogData, PollDialogComponent } from './polls/poll-dialog/poll-di
     MatTabsModule,
     PlanActivityFeedComponent,
     MatMenuModule,
+    PlanProgressStripComponent,
+    PlanCommentsPanelComponent,
   ],
   providers: [PlanBoardStore, DateFinderStore],
   templateUrl: './trip-workspace.component.html',
@@ -115,6 +121,8 @@ export class TripWorkspaceComponent implements OnInit {
         untracked(() => void this.refreshPlan());
       }
     });
+
+    effect(() => this.board.hasDates.set(!!this.plannedMemory()?.memory_date));
   }
 
   async ngOnInit(): Promise<void> {
@@ -136,13 +144,14 @@ export class TripWorkspaceComponent implements OnInit {
       .open<PlanItemDialogComponent, PlanItemDialogData, NewPlanItem>(PlanItemDialogComponent, {
         width: '520px',
         maxWidth: '90vw',
+        injector: this.injector,
         data: { item },
       })
       .afterClosed()
       .subscribe(result => {
         if (!result) return;
-        if (item) this.board.update(item.item_id, result);
-        else this.board.create(result);
+        if (item) void this.board.update(item.item_id, result);
+        else void this.board.create(result);
       });
   }
 
@@ -305,5 +314,9 @@ export class TripWorkspaceComponent implements OnInit {
         sourceItemId: idea.item_id,
       },
     });
+  }
+
+  startPollFor(category: ManualMilestoneKey): void {
+    this.openPollDialog({ mode: 'create', draft: { category, title: POLL_QUESTIONS[category] } });
   }
 }

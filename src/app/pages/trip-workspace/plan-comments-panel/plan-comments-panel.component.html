@@ -1,0 +1,81 @@
+<header class="thread-header">
+    <button mat-icon-button type="button" aria-label="Back to sidebar" (click)="closed.emit()">
+        <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div class="thread-title">
+        <span class="kicker">Comments</span>
+        <h3>{{ item()?.title }}</h3>
+    </div>
+</header>
+
+<div class="thread" #thread aria-live="polite">
+    @if (isLoading()) {
+    <p class="muted center">Loading comments…</p>
+    } @else {
+    @if (hasMore()) {
+    <button mat-button type="button" class="load-older" [disabled]="isLoadingOlder()" (click)="loadOlder()">
+        {{ isLoadingOlder() ? 'Loading…' : 'Show older comments' }}
+    </button>
+    }
+
+    @for (c of rows(); track c.comment_id) {
+    <article class="comment" [class.mine]="c.isMine">
+        <span class="avatar" aria-hidden="true">
+            @if (c.avatar) { <img [src]="c.avatar" alt="" /> } @else { {{ c.initial }} }
+        </span>
+
+        <div class="bubble">
+            <div class="meta">
+                <strong>{{ c.name }}</strong>
+                <time [attr.datetime]="c.created_at" [title]="c.created_at | date: 'medium'">{{ c.ago }}</time>
+                @if (c.edited_at) { <span class="edited" [title]="c.edited_at | date: 'medium'">(edited)</span> }
+            </div>
+
+            @if (editingId() === c.comment_id) {
+            <textarea class="edit-box" rows="3" [attr.maxlength]="maxLength" aria-label="Edit comment"
+                [value]="editDraft()" (input)="editDraft.set($any($event.target).value)"
+                (keydown)="onEditKeydown($event, c)"></textarea>
+            <div class="edit-actions">
+                <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
+                <button mat-flat-button type="button" [disabled]="!editDraft().trim()"
+                    (click)="saveEdit(c)">Save</button>
+            </div>
+            } @else {
+            <p class="body">{{ c.body }}</p>
+            }
+        </div>
+
+        @if (editingId() !== c.comment_id && (c.isMine || c.canDelete)) {
+        <div class="actions">
+            @if (c.isMine) {
+            <button mat-icon-button type="button" matTooltip="Edit" aria-label="Edit comment" (click)="startEdit(c)">
+                <mat-icon>edit</mat-icon>
+            </button>
+            }
+            @if (c.canDelete) {
+            <button mat-icon-button type="button" [class.armed]="confirmDeleteId() === c.comment_id"
+                [matTooltip]="confirmDeleteId() === c.comment_id ? 'Click again to delete' : 'Delete'"
+                aria-label="Delete comment" (click)="remove(c)">
+                <mat-icon>{{ confirmDeleteId() === c.comment_id ? 'delete_forever' : 'delete' }}</mat-icon>
+            </button>
+            }
+        </div>
+        }
+    </article>
+    } @empty {
+    <div class="empty">
+        <mat-icon>forum</mat-icon>
+        <p>No comments yet. Start the discussion!</p>
+    </div>
+    }
+    }
+</div>
+
+<form class="composer" (submit)="$event.preventDefault(); send()">
+    <textarea rows="2" placeholder="Write a comment…" aria-label="Write a comment" [attr.maxlength]="maxLength"
+        [value]="draft()" (input)="draft.set($any($event.target).value)"
+        (keydown.enter)="onComposerEnter($event)"></textarea>
+    <button mat-icon-button type="submit" aria-label="Send comment" [disabled]="!draft().trim() || sending()">
+        <mat-icon>send</mat-icon>
+    </button>
+</form>

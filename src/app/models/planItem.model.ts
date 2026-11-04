@@ -1,5 +1,6 @@
 import { CrewMember } from '@models/userInterface.model';
 import { PlannedMemory, PlanLocation } from '@models/memoryInterface.model';
+import { ManualMilestone } from '@models/planProgress.model';
 
 
 export type PlanItemType = 'note' | 'idea' | 'todo' | 'link' | 'poll' | 'booking';
@@ -14,6 +15,7 @@ export interface PlanViewer {
 export interface PlanBoard {
   items: PlanItem[];
   viewer: PlanViewer;
+  milestones: ManualMilestone[];
 }
 
 export interface PlanItem {
@@ -34,15 +36,16 @@ export interface PlanItem {
   created_at: string;
   updated_at: string;
   poll?: PollData | null;
+  comment_count: number;
+  reactions: ReactionSummary[];
 }
 
 export type NewPlanItem = Pick<PlanItem, 'type' | 'title'> &
   Partial<Pick<PlanItem,
     'category' | 'description' | 'payload' | 'due_date' | 'board_x' | 'board_y' | 'color' | 'assignees'>>;
 
-export type PlanItemPatch = Partial<
-  Omit<PlanItem, 'item_id' | 'memory_id' | 'created_by' | 'created_at' | 'updated_at'>
->;
+export type PlanItemPatch = Partial<Omit<PlanItem,
+  'item_id' | 'memory_id' | 'created_by' | 'created_at' | 'updated_at' | 'poll' | 'comment_count' | 'reactions'>>;
 
 export const PLAN_ITEM_TYPES: Record<PlanItemType,
   { label: string; icon: string; color: string; creatable: boolean }> = {
@@ -70,6 +73,7 @@ export interface PlanEvent {
   item_id: number | null;
   item_title: string | null;
   created_at: string;
+  target_user_id: string | null;
 }
 
 export type PlanPhase = 'planning' | 'upcoming' | 'live' | 'wrapping_up' | 'archived';
@@ -110,6 +114,12 @@ export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
   poll_decided: { verb: 'picked', icon: 'emoji_events' },
   poll_reopened: { verb: 'reopened', icon: 'replay' },
   destination_set: { verb: 'set the destination to', icon: 'place' },
+  item_assigned: { verb: 'assigned', icon: 'person_add' },
+  milestone_done: { verb: 'checked off', icon: 'flag' },
+  milestone_skipped: { verb: 'marked as not needed:', icon: 'do_not_disturb_on' },
+  milestone_reset: { verb: 'reopened', icon: 'outlined_flag' },
+  comment_added: { verb: 'commented on', icon: 'chat_bubble' },
+  item_reacted: { verb: 'reacted to', icon: 'add_reaction' },
 };
 export const PLAN_EVENT_FALLBACK = { verb: 'updated', icon: 'bolt' };
 
@@ -171,3 +181,32 @@ export interface NewPoll {
 export interface PollSettingsPatch { closesAt?: string | null; allowMemberOptions?: boolean; hideResults?: boolean; }
 export interface PollOptionPatch { label?: string; location?: PlanLocation | null; }
 export interface DecidePollBody { optionId: number; location?: PlanLocation; }
+export const HIDDEN_EVENT_ACTIONS = new Set(['comment_edited', 'comment_deleted', 'item_unreacted']);
+
+export type ReactionKey = 'thumbs_up' | 'heart' | 'laugh' | 'wow' | 'party' | 'thumbs_down';
+
+export interface ReactionSummary {
+  key: ReactionKey;
+  count: number;
+  mine: boolean;
+  users: string[];
+}
+
+export const REACTIONS: { key: ReactionKey; emoji: string; label: string }[] = [
+  { key: 'thumbs_up', emoji: '👍', label: 'Like' },
+  { key: 'heart', emoji: '❤️', label: 'Love' },
+  { key: 'laugh', emoji: '😂', label: 'Haha' },
+  { key: 'wow', emoji: '😮', label: 'Wow' },
+  { key: 'party', emoji: '🎉', label: 'Party' },
+  { key: 'thumbs_down', emoji: '👎', label: 'Dislike' },
+];
+export const REACTION_EMOJI = Object.fromEntries(REACTIONS.map(r => [r.key, r.emoji])) as Record<ReactionKey, string>;
+
+export interface PlanComment {
+  comment_id: number;
+  item_id: number;
+  user_id: string;
+  body: string;
+  created_at: string;
+  edited_at: string | null;
+}

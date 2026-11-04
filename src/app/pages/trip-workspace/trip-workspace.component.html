@@ -9,11 +9,12 @@
       (titleUpdated)="handleTitleUpdate($event)"
       (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"
       (dateFinderRequested)="openDateFinder()" />
+    <app-plan-progress-strip (datesClicked)="openDateFinder()" (startPoll)="startPollFor($event)" />
     <div class="canvas-viewport">
       @if (board.isLoading()) {
       <app-loading-spinner />
       } @else if (currentView() === 'corkboard') {
-      <app-corkboard-view [items]="board.activeItems()" [canDelete]="board.canDelete()"
+      <app-corkboard-view [items]="board.visibleItems()" [canDelete]="board.canDelete()"
         (moved)="board.moveOnBoard($event.itemId, $event.x, $event.y)" (toggleDone)="board.toggleDone($event)"
         (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" (promote)="promoteIdea($event)" />
       } @else {
@@ -37,6 +38,9 @@
   </main>
 
   <aside class="crew-sidebar">
+    @if (board.openThreadId(); as threadId) {
+    <app-plan-comments-panel [itemId]="threadId" (closed)="board.openThreadId.set(null)" />
+    } @else {
     <mat-tab-group class="sidebar-tabs" mat-stretch-tabs animationDuration="0ms" [selectedIndex]="sidebarTab()"
       (selectedIndexChange)="sidebarTab.set($event)">
       <mat-tab label="Crew">
@@ -101,6 +105,7 @@
         </div>
       </mat-tab>
     </mat-tab-group>
+    }
   </aside>
 </div>
 }

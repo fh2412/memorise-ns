@@ -11,6 +11,7 @@ import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest
 import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.model';
 import { MemoryPhoto } from '@models/memory-photo.model';
 import { DeletePhotosResult, MemoryPlaceholder, UpdateMemoryRequest, UpdateMemoryResult } from '@models/memory-edit.model';
+import { PlanSummary } from '@models/planSummary.model';
 
 @Injectable({
   providedIn: 'root'
@@ -52,9 +53,10 @@ export class MemoryService {
     });
   }
 
-  getUserPlannedMemories(loggedInUserId: string): Observable<PlannedMemory[]> {
-    return this.http.get<PlannedMemory[]>(`${this.apiUrl}/memories/planned/${loggedInUserId}`, {
-    });
+  getMyPlans(): Observable<PlanSummary[]> {
+    return this.http
+      .get<PlanSummary[]>(`${this.apiUrl}/plans`)
+      .pipe(map(list => list.map(p => ({ ...p, memory_id: String(p.memory_id) }))));
   }
 
   getMemoryToPlan(memoryId: string): Observable<PlannedMemory> {

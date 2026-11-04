@@ -3,23 +3,12 @@ import { DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CrewMember } from '@models/userInterface.model';
-import { PLAN_EVENT_FALLBACK, PLAN_EVENT_META, PlanEvent } from '@models/planItem.model';
+import { HIDDEN_EVENT_ACTIONS, PLAN_EVENT_FALLBACK, PLAN_EVENT_META, PlanEvent } from '@models/planItem.model';
 import { formatRange } from '../date-finder/date-utils';
+import { MILESTONE_META, MilestoneKey } from '@models/planProgress.model';
+import { timeAgo } from '../time-ago';
 
-const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 const RANGE_ACTIONS = new Set(['dates_set', 'date_finder_updated']);
-
-function timeAgo(iso: string, now: number): string {
-  const t = Date.parse(iso);
-  if (Number.isNaN(t)) return '';
-  const sec = Math.round((t - now) / 1000);
-  const abs = Math.abs(sec);
-  if (abs < 45) return 'just now';
-  if (abs < 3_600) return rtf.format(Math.round(sec / 60), 'minute');
-  if (abs < 86_400) return rtf.format(Math.round(sec / 3_600), 'hour');
-  if (abs < 7 * 86_400) return rtf.format(Math.round(sec / 86_400), 'day');
-  return new Date(t).toLocaleDateString();
-}
 
 @Component({
   selector: 'app-plan-activity-feed',
@@ -47,25 +36,42 @@ export class PlanActivityFeedComponent {
     const now = this.now();
     const me = this.viewerId();
     const byId = new Map(this.crew().map(m => [m.user_id, m]));
-
-    return this.events().map(e => {
-      const member = byId.get(e.user_id);
-      const name = member?.name ?? 'Former member';
-      const meta = PLAN_EVENT_META[e.action] ?? PLAN_EVENT_FALLBACK;
-      const isRange = RANGE_ACTIONS.has(e.action) && !!e.item_title;
-      const [from, to] = isRange ? e.item_title!.split('/') : [];
-      return {
-        id: e.event_id,
-        who: e.user_id === me ? 'You' : name,
-        initial: name.charAt(0).toUpperCase(),
-        avatar: member?.profilepic_thumb || null,
-        verb: meta.verb,
-        icon: meta.icon,
-        title: isRange ? formatRange(from, to) : e.item_title,
-        quoted: !isRange,
-        at: e.created_at,
-        ago: timeAgo(e.created_at, now),
-      };
-    });
+    const nameOf = (id: string | null) =>
+      id === me ? 'you' : (id && byId.get(id)?.name) || 'a former member';
+  
+    return this.events()
+      .filter(e => !HIDDEN_EVENT_ACTIONS.has(e.action))
+      .map(e => {
+        const member = byId.get(e.user_id);
+        const name = member?.name ?? 'Former member';
+        const meta = PLAN_EVENT_META[e.action] ?? PLAN_EVENT_FALLBACK;
+        let verb = meta.verb;
+        let title = e.item_title;
+        let quoted = true;
+  
+        if (e.action === 'item_assigned') {
+          verb = e.target_user_id === e.user_id ? 'took on' : `assigned ${nameOf(e.target_user_id)} to`;
+        } else if (RANGE_ACTIONS.has(e.action) && title) {
+          const [from, to] = title.split('/');
+          title = formatRange(from, to);
+          quoted = false;
+        } else if (e.action.startsWith('milestone_') && title) {
+          title = MILESTONE_META[title as MilestoneKey]?.label ?? title;
+          quoted = false;
+        }
+  
+        return {
+          id: e.event_id,
+          who: e.user_id === me ? 'You' : name,
+          initial: name.charAt(0).toUpperCase(),
+          avatar: member?.profilepic_thumb || null,
+          verb,
+          icon: meta.icon,
+          title,
+          quoted,
+          at: e.created_at,
+          ago: timeAgo(e.created_at, now),
+        };
+      });
   });
 }

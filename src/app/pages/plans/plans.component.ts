@@ -6,6 +6,7 @@ import { MemoryService } from '@services/memory.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@services/userService';
 import { PlannedMemoryCardComponent } from "@components/planned-memory-card/planned-memory-card.component";
+import { PlanSummary } from '@models/planSummary.model';
 
 @Component({
   selector: 'app-plans',
@@ -20,7 +21,7 @@ export class PlansComponent implements OnInit {
   private memoryService = inject(MemoryService);
 
   isLoading = false;
-  plannedMemories = signal<PlannedMemory[]>([]);
+  plannedMemories = signal<PlanSummary[]>([]);
   loggedInUserId: string | null = null;
 
 
@@ -34,29 +35,13 @@ export class PlansComponent implements OnInit {
   }
 
   private async loadMemoriesPage(): Promise<void> {
-    /*if (this.isSearchActive) {
-      // If search is active, filter from cached results
-      this.filterFromCache();
-      return;
-    }*/
-
     this.isLoading = true;
-
-    if (this.loggedInUserId) {
-      try {
-        const result = await firstValueFrom(
-          this.memoryService.getUserPlannedMemories(
-            this.loggedInUserId,
-          )
-        );
-
-        this.plannedMemories.set(result);
-        console.log(this.plannedMemories);
-      } catch (error) {
-        console.error('Error loading planned memories:', error);
-      } finally {
-        this.isLoading = false;
-      }
+    try {
+      this.plannedMemories.set(await firstValueFrom(this.memoryService.getMyPlans()));
+    } catch (error) {
+      console.error('Error loading planned memories:', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 

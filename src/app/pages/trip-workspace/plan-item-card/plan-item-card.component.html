@@ -19,7 +19,7 @@
 }
 
 @if (item().type === 'poll' && item().poll) {
-  <app-poll-body [item]="item()" />
+<app-poll-body [item]="item()" />
 }
 
 <mat-menu #menu="matMenu">
@@ -28,10 +28,10 @@
     <span>{{ item().type === 'poll' ? 'Manage poll' : 'Edit' }}</span>
   </button>
   @if (canPromote()) {
-    <button mat-menu-item (click)="promote.emit()"><mat-icon>how_to_vote</mat-icon><span>Start a poll</span></button>
+  <button mat-menu-item (click)="promote.emit()"><mat-icon>how_to_vote</mat-icon><span>Start a poll</span></button>
   }
   @if (canDelete()) {
-    <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
+  <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
   }
 </mat-menu>
 
@@ -44,6 +44,44 @@
 @if (item().due_date) {
 <div class="card-due"><mat-icon>schedule</mat-icon>{{ item().due_date | date: 'mediumDate' }}</div>
 }
+
+@if (assigneeChips().length) {
+<div class="card-assignees" [title]="'Assigned to ' + assigneeNames()">
+  @for (a of assigneeChips(); track a.id) {
+  <span class="mini" [class.me]="a.isMe">
+    @if (a.avatar) { <img [src]="a.avatar" alt="" /> } @else { {{ a.initial }} }
+  </span>
+  }
+</div>
+}
+
+<div class="card-footer" (mousedown)="$event.stopPropagation()" (touchstart)="$event.stopPropagation()">
+  @for (r of reactionChips(); track r.key) {
+    <button type="button" class="reaction" [class.mine]="r.mine" [title]="r.names"
+            [attr.aria-pressed]="r.mine" [attr.aria-label]="r.emoji + ' ' + r.count + ': ' + r.names"
+            (click)="react(r.key)">
+      <span class="emoji">{{ r.emoji }}</span>{{ r.count }}
+    </button>
+  }
+
+  <button type="button" class="icon-chip" aria-label="Add reaction" [matMenuTriggerFor]="reactMenu">
+    <mat-icon>add_reaction</mat-icon>
+  </button>
+
+  <button type="button" class="icon-chip comments" (click)="openComments()"
+          [attr.aria-label]="item().comment_count + ' comments'">
+    <mat-icon>{{ item().comment_count ? 'chat_bubble' : 'chat_bubble_outline' }}</mat-icon>
+    @if (item().comment_count) { <span>{{ item().comment_count }}</span> }
+  </button>
+</div>
+
+<mat-menu #reactMenu="matMenu" class="reaction-menu">
+  <div class="reaction-picker">
+    @for (r of reactionOptions; track r.key) {
+      <button type="button" [attr.aria-label]="r.label" [title]="r.label" (click)="react(r.key)">{{ r.emoji }}</button>
+    }
+  </div>
+</mat-menu>
 
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="edit.emit()"><mat-icon>edit</mat-icon><span>Edit</span></button>

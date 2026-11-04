@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { NewPlanItem, PlanBoard, PlanEvent, PlanItem, PlanItemPatch } from '@models/planItem.model';
+import { ManualMilestoneKey, ManualState, ManualMilestone } from '@models/planProgress.model';
 
 export interface EventQuery { before?: number; after?: number; limit?: number; }
 
@@ -41,5 +42,11 @@ export class PlanItemService {
 
   deleteItem(memoryId: string, itemId: number): Observable<void> {
     return this.http.delete<void>(`${this.base(memoryId)}/${itemId}`);
+  }
+
+  setMilestone(memoryId: string, milestone: ManualMilestoneKey, state: ManualState | null): Observable<ManualMilestone[]> {
+    return this.http
+      .put<{ milestones: ManualMilestone[] }>(`${this.apiUrl}/memories/${memoryId}/plan/milestones/${milestone}`, { state })
+      .pipe(map(r => r.milestones));
   }
 }

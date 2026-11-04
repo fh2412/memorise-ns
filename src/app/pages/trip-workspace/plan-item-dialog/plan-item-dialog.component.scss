@@ -1,10 +1,85 @@
 .dialog-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    padding-top: 8px !important;
-  
-    mat-button-toggle-group { margin-bottom: 16px; flex-wrap: wrap; }
-    mat-form-field { width: 100%; }
-    .row { display: flex; gap: 12px; mat-form-field { flex: 1; } }
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px !important;
+
+  mat-button-toggle-group {
+    margin-bottom: 16px;
+    flex-wrap: wrap;
   }
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  .row {
+    display: flex;
+    gap: 12px;
+
+    mat-form-field {
+      flex: 1;
+    }
+  }
+}
+
+.assignees {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+
+  .assignees-label {
+    font: var(--mat-sys-label-large);
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  .assignee-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .assignee {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 12px 3px 3px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 16px;
+    background: transparent;
+    color: var(--mat-sys-on-surface);
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: 1px;
+    }
+
+    &.selected {
+      background: var(--mat-sys-secondary-container);
+      color: var(--mat-sys-on-secondary-container);
+      border-color: transparent;
+    }
+  }
+
+  .avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: var(--mat-sys-surface-container-highest);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}

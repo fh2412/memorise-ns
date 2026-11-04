@@ -1,11 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
-import { PLAN_ITEM_TYPES, PlanItem } from '@models/planItem.model';
+import { PLAN_ITEM_TYPES, PlanItem, REACTIONS, REACTION_EMOJI, ReactionKey } from '@models/planItem.model';
 import { PollBodyComponent } from '../polls/poll-body/poll-body.component';
+import { PlanBoardStore } from '../plan-board.store';
 
 @Component({
   selector: 'app-plan-item-card',
@@ -17,9 +18,12 @@ import { PollBodyComponent } from '../polls/poll-body/poll-body.component';
     '[class.is-done]': "item().status === 'done'",
     '[class.is-poll]': "item().type === 'poll'",
     '[style.--card-color]': 'cardColor()',
+    '[class.thread-open]': 'store.openThreadId() === item().item_id',
   },
 })
 export class PlanItemCardComponent {
+  protected store = inject(PlanBoardStore);
+
   item = input.required<PlanItem>();
   canDelete = input(false);
   toggleDone = output<void>();
@@ -34,4 +38,35 @@ export class PlanItemCardComponent {
     const url = this.item().payload?.['url'];
     return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : null;
   });
+
+  readonly assigneeChips = computed(() => {
+    const byId = new Map(this.store.crew().map(m => [m.user_id, m]));
+    const me = this.store.viewer()?.userId;
+    return this.item().assignees.map(id => {
+      const m = byId.get(id);
+      const name = id === me ? 'You' : m?.name ?? 'Former member';
+      return { id, name, initial: name.charAt(0).toUpperCase(), avatar: m?.profilepic_thumb || null, isMe: id === me };
+    });
+  });
+  readonly assigneeNames = computed(() => this.assigneeChips().map(a => a.name).join(', '));
+
+  readonly reactionOptions = REACTIONS;
+
+  readonly reactionChips = computed(() => {
+    const byId = new Map(this.store.crew().map(m => [m.user_id, m.name]));
+    const me = this.store.viewer()?.userId;
+    return (this.item().reactions ?? []).map(r => ({
+      ...r,
+      emoji: REACTION_EMOJI[r.key],
+      names: r.users.map(id => (id === me ? 'You' : byId.get(id) ?? 'Former member')).join(', '),
+    }));
+  });
+
+  react(key: ReactionKey): void {
+    void this.store.toggleReaction(this.item().item_id, key);
+  }
+  
+  openComments(): void {
+    this.store.openThreadId.set(this.item().item_id);
+  }
 }

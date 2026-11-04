@@ -1,0 +1,63 @@
+<nav class="strip" aria-label="Plan progress">
+    <ol class="steps">
+      @for (s of steps(); track s.key) {
+        <li>
+          @if (s.key === 'dates') {
+            <button type="button" class="step" [attr.data-state]="s.state" [matTooltip]="s.tooltip"
+                    (click)="datesClicked.emit()">
+              <mat-icon>{{ s.stateIcon }}</mat-icon><span>{{ s.label }}</span>
+            </button>
+          } @else {
+            <button type="button" class="step" [attr.data-state]="s.state" [matTooltip]="s.tooltip"
+                    [matMenuTriggerFor]="stepMenu" [matMenuTriggerData]="{ step: s }">
+              <mat-icon>{{ s.stateIcon }}</mat-icon><span>{{ s.label }}</span>
+            </button>
+          }
+        </li>
+      }
+    </ol>
+  
+    @if (todos().total) {
+      <div class="todos" [attr.aria-label]="todos().done + ' of ' + todos().total + ' to-dos done'">
+        <span>To-dos {{ todos().done }}/{{ todos().total }}</span>
+        <mat-progress-bar mode="determinate" [value]="todos().percent" />
+      </div>
+    }
+  
+    <button type="button" class="mine-toggle" [class.active]="store.onlyMine()"
+            [attr.aria-pressed]="store.onlyMine()" (click)="toggleMine()">
+      <mat-icon>{{ store.onlyMine() ? 'filter_alt' : 'person' }}</mat-icon>
+      My to-dos
+      @if (store.myOpenTodos()) { <span class="count">{{ store.myOpenTodos() }}</span> }
+    </button>
+  </nav>
+  
+  <mat-menu #stepMenu="matMenu">
+    <ng-template matMenuContent let-step="step">
+      <button mat-menu-item disabled><span>{{ step.tooltip }}</span></button>
+  
+      @if (step.state === 'open') {
+        <button mat-menu-item (click)="startPoll.emit(step.key)">
+          <mat-icon>how_to_vote</mat-icon><span>Start a poll</span>
+        </button>
+      }
+  
+      @if (isOwner() && step.source !== 'auto') {
+        @if (step.state !== 'done') {
+          <button mat-menu-item (click)="set(step.key, 'done')">
+            <mat-icon>check_circle</mat-icon><span>Mark as done</span>
+          </button>
+        }
+        @if (step.state !== 'skipped') {
+          <button mat-menu-item (click)="set(step.key, 'skipped')">
+            <mat-icon>do_not_disturb_on</mat-icon><span>Not needed for this trip</span>
+          </button>
+        }
+        @if (step.state !== 'open') {
+          <button mat-menu-item (click)="set(step.key, null)">
+            <mat-icon>replay</mat-icon><span>Reopen</span>
+          </button>
+        }
+      }
+    </ng-template>
+  </mat-menu>

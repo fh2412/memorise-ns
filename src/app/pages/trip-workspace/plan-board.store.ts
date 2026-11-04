@@ -7,8 +7,10 @@ import { CrewMember } from '@models/userInterface.model';
 import { PlanLocation } from '@models/memoryInterface.model';
 import { PlanPollService } from '@services/plan-poll.service';
 import {
-  NewPlanItem, PLAN_CATEGORIES, PLAN_ITEM_TYPES, PlanCategory, PlanEvent, PlanItem, PlanItemPatch, PlanViewer, DecidePollBody, NewPoll, NewPollOption, PollOptionPatch, PollSettingsPatch
+  NewPlanItem, PLAN_CATEGORIES, PLAN_ITEM_TYPES, PlanCategory, PlanEvent, PlanItem, PlanItemPatch, PlanViewer, DecidePollBody, NewPoll, NewPollOption, PollOptionPatch, PollSettingsPatch, HIDDEN_EVENT_ACTIONS, REACTIONS, ReactionKey, ReactionSummary
 } from '@models/planItem.model';
+import { buildProgress, ManualMilestone, ManualMilestoneKey, ManualState } from '@models/planProgress.model';
+import { PlanCommentService } from '@services/plan-comment.service';
 
 export type PlanColumn = (typeof PLAN_CATEGORIES)[number] & { items: PlanItem[] };
 
@@ -21,14 +23,17 @@ const COALESCE_GROUP: Record<string, string> = {
   availability_updated: 'availability',
   poll_voted: 'vote',
   poll_unvoted: 'vote',
+  item_reacted: 'react',
+  item_unreacted: 'react',
 };
+
 const COALESCE_WINDOW_MS = 6 * 3_600_000;
 const coalesceKey = (e: PlanEvent): string | null => {
   const group = COALESCE_GROUP[e.action];
   return group ? `${e.user_id}|${group}|${e.item_id ?? ''}` : null;
 };
 
-const BOARD_ACTION = /^(item_|poll_|destination_set$)/;
+const BOARD_ACTION = /^(item_|poll_|comment_|milestone_|destination_set$)/;
 
 const seenKey = (memoryId: string) => `memorise.plan.${memoryId}.lastSeenEvent`;
 const readSeen = (memoryId: string): number => {
@@ -38,12 +43,22 @@ const writeSeen = (memoryId: string, id: number): void => {
   try { localStorage.setItem(seenKey(memoryId), String(id)); } catch { /* storage unavailable */ }
 };
 
-function apiMessage(err: unknown, fallback: string): string {
+export function apiMessage(err: unknown, fallback: string): string {
   if (err instanceof HttpErrorResponse && err.status >= 400 && err.status < 500) {
     const msg = err.error?.message;
     if (typeof msg === 'string' && msg) return msg;
   }
   return fallback;
+}
+
+/** Local mirror of the backend's summarizeReactions (fixed order, only used keys). */
+function applyReaction(list: ReactionSummary[], key: ReactionKey, me: string, on: boolean): ReactionSummary[] {
+  const byKey = new Map(list.map(r => [r.key, r]));
+  const users = (byKey.get(key)?.users ?? []).filter(u => u !== me);
+  if (on) users.push(me);
+  if (users.length) byKey.set(key, { key, count: users.length, mine: on, users });
+  else byKey.delete(key);
+  return REACTIONS.flatMap(r => byKey.get(r.key) ?? []);
 }
 
 @Injectable()
@@ -74,7 +89,7 @@ export class PlanBoardStore {
   readonly activeItems = computed(() => this._items().filter(i => i.status !== 'dismissed'));
 
   readonly columns = computed<PlanColumn[]>(() => {
-    const items = this.activeItems();
+    const items = this.visibleItems();
     return PLAN_CATEGORIES.map(cat => ({
       ...cat,
       items: items.filter(i => i.category === cat.key).sort(byStatusThenDate),
@@ -103,8 +118,54 @@ export class PlanBoardStore {
   readonly unseenCount = computed(() => {
     const me = this.viewer()?.userId;
     const seen = this.lastSeenEventId();
-    return this._events().filter(e => e.event_id > seen && e.user_id !== me).length;
+    return this._events()
+      .filter(e => e.event_id > seen && e.user_id !== me && !HIDDEN_EVENT_ACTIONS.has(e.action)).length;
   });
+
+  readonly hasDates = signal(false);
+  readonly milestoneStates = signal<ManualMilestone[]>([]);
+  readonly onlyMine = signal(false);
+
+  readonly visibleItems = computed(() => {
+    const items = this.activeItems();
+    if (!this.onlyMine()) return items;
+    const me = this.viewer()?.userId;
+    return me ? items.filter(i => i.type === 'todo' && i.assignees.includes(me)) : [];
+  });
+
+  readonly myOpenTodos = computed(() => {
+    const me = this.viewer()?.userId;
+    if (!me) return 0;
+    return this.activeItems()
+      .filter(i => i.type === 'todo' && i.status === 'open' && i.assignees.includes(me)).length;
+  });
+
+  readonly progress = computed(() => {
+    const items = this.activeItems();
+    const decided = new Set<string>(items
+      .filter(i => i.type === 'poll' && i.poll?.decided_option_id != null)
+      .map(i => i.category));
+    const { done, total } = this.todoProgress();
+    return buildProgress({
+      hasDates: this.hasDates(),
+      hasLocation: !!this.destination(),
+      decided,
+      manual: this.milestoneStates(),
+      todos: { done, total },
+    });
+  });
+
+  private commentApi = inject(PlanCommentService);
+
+  /** Item whose comment thread is open in the sidebar. */
+  readonly openThreadId = signal<number | null>(null);
+
+  private reactionQueue = new Map<number, Promise<void>>();
+  private reactionSeq = new Map<number, number>();
+
+  get currentMemoryId(): string {
+    return this.memoryId;
+  }
 
   // ---------- sync bookkeeping ----------
   private pendingWrites = 0;
@@ -133,6 +194,7 @@ export class PlanBoardStore {
       ]);
       this._items.set(board.items);
       this.viewer.set(board.viewer);
+      this.milestoneStates.set(board.milestones ?? []);
       this._events.set(events);
       this.hasMoreEvents.set(events.length === EVENTS_PAGE);
       this.lastSeenEventId.set(readSeen(memoryId));
@@ -319,6 +381,7 @@ export class PlanBoardStore {
     if (this.pendingWrites > 0) return; // a local write started meanwhile – don't clobber it
     this._items.set(board.items);
     this.viewer.set(board.viewer);
+    this.milestoneStates.set(board.milestones ?? []);
     this.itemsStale = false;
   }
 
@@ -342,114 +405,170 @@ export class PlanBoardStore {
     ]);
   }
 
-// ---------- polls ----------
+  // ---------- polls ----------
 
-createPoll(draft: NewPoll): Promise<PlanItem | null> {
-  const offset = (this._items().length % 8) * 32;
-  const body: NewPoll = {
-    color: PLAN_ITEM_TYPES.poll.color,
-    // promoted polls take the idea's spot on the corkboard (set by the backend)
-    ...(draft.sourceItemId ? {} : { board_x: 40 + offset, board_y: 40 + offset }),
-    ...draft,
-  };
-  return this.tracked(true, async () => {
-    try {
-      const created = await firstValueFrom(this.pollApi.create(this.memoryId, body));
-      this._items.update(list => [
-        ...list.map(i => (i.item_id === draft.sourceItemId ? { ...i, status: 'dismissed' as const } : i)),
-        created,
+  createPoll(draft: NewPoll): Promise<PlanItem | null> {
+    const offset = (this._items().length % 8) * 32;
+    const body: NewPoll = {
+      color: PLAN_ITEM_TYPES.poll.color,
+      // promoted polls take the idea's spot on the corkboard (set by the backend)
+      ...(draft.sourceItemId ? {} : { board_x: 40 + offset, board_y: 40 + offset }),
+      ...draft,
+    };
+    return this.tracked(true, async () => {
+      try {
+        const created = await firstValueFrom(this.pollApi.create(this.memoryId, body));
+        this._items.update(list => [
+          ...list.map(i => (i.item_id === draft.sourceItemId ? { ...i, status: 'dismissed' as const } : i)),
+          created,
+        ]);
+        return created;
+      } catch (err) {
+        console.error('Failed to create poll:', err);
+        this.error.set(apiMessage(err, 'Could not create the poll'));
+        return null;
+      }
+    });
+  }
+
+  /** Optimistic for my own choice; requests per poll are sent strictly in order. */
+  vote(itemId: number, optionIds: number[]): Promise<PlanItem | null> {
+    const current = this._items().find(i => i.item_id === itemId);
+    if (current?.poll) this.replace({ ...current, poll: { ...current.poll, my_votes: optionIds } });
+
+    const seq = (this.voteSeq.get(itemId) ?? 0) + 1;
+    this.voteSeq.set(itemId, seq);
+    const previous = this.voteQueue.get(itemId) ?? Promise.resolve(null);
+    const next = previous.then(() => this.pollWrite(
+      'Could not save your vote',
+      () => this.pollApi.vote(this.memoryId, itemId, optionIds),
+      () => this.voteSeq.get(itemId) === seq, // a newer click wins → no flicker
+    ));
+    this.voteQueue.set(itemId, next);
+    return next;
+  }
+
+  updatePollSettings(itemId: number, patch: PollSettingsPatch): Promise<PlanItem | null> {
+    return this.pollWrite('Could not save the poll settings',
+      () => this.pollApi.updateSettings(this.memoryId, itemId, patch));
+  }
+
+  addPollOption(itemId: number, option: NewPollOption): Promise<PlanItem | null> {
+    return this.pollWrite('Could not add the option', () => this.pollApi.addOption(this.memoryId, itemId, option));
+  }
+
+  updatePollOption(itemId: number, optionId: number, patch: PollOptionPatch): Promise<PlanItem | null> {
+    return this.pollWrite('Could not save the option',
+      () => this.pollApi.updateOption(this.memoryId, itemId, optionId, patch));
+  }
+
+  deletePollOption(itemId: number, optionId: number): Promise<PlanItem | null> {
+    return this.pollWrite('Could not remove the option',
+      () => this.pollApi.deleteOption(this.memoryId, itemId, optionId));
+  }
+
+  reopenPoll(itemId: number): Promise<PlanItem | null> {
+    return this.pollWrite('Could not reopen the poll', () => this.pollApi.reopen(this.memoryId, itemId));
+  }
+
+  decidePoll(itemId: number, body: DecidePollBody): Promise<{ needsLocation: boolean } | null> {
+    return this.tracked(true, async () => {
+      try {
+        const res = await firstValueFrom(this.pollApi.decide(this.memoryId, itemId, body));
+        this.replace(res.item);
+        this.planVersion.update(v => v + 1);
+        return { needsLocation: res.needsLocation };
+      } catch (err) {
+        console.error('Failed to decide poll:', err);
+        this.error.set(apiMessage(err, 'Could not decide the poll'));
+        this.itemsStale = true;
+        return null;
+      }
+    });
+  }
+
+  async setPollDestination(itemId: number, location: PlanLocation): Promise<PlanItem | null> {
+    const saved = await this.pollWrite('Could not set the destination',
+      () => this.pollApi.setDestination(this.memoryId, itemId, location));
+    if (saved) this.planVersion.update(v => v + 1);
+    return saved;
+  }
+
+  /** On failure: mark stale and re-sync from the server instead of a manual rollback. */
+  private pollWrite(
+    fallback: string,
+    call: () => Observable<PlanItem>,
+    shouldApply: () => boolean = () => true,
+  ): Promise<PlanItem | null> {
+    return this.tracked(true, async () => {
+      try {
+        const item = await firstValueFrom(call());
+        if (shouldApply()) this.replace(item);
+        return item;
+      } catch (err) {
+        console.error(fallback, err);
+        this.error.set(apiMessage(err, fallback));
+        this.itemsStale = true;
+        return null;
+      }
+    });
+  }
+
+  /** Owner only. Optimistic; rolls back on failure. */
+  setMilestone(key: ManualMilestoneKey, state: ManualState | null): Promise<void> {
+    return this.tracked(true, async () => {
+      const previous = this.milestoneStates();
+      this.milestoneStates.set([
+        ...previous.filter(m => m.milestone !== key),
+        ...(state ? [{ milestone: key, state }] : []),
       ]);
-      return created;
-    } catch (err) {
-      console.error('Failed to create poll:', err);
-      this.error.set(apiMessage(err, 'Could not create the poll'));
-      return null;
-    }
-  });
-}
+      try {
+        this.milestoneStates.set(await firstValueFrom(this.api.setMilestone(this.memoryId, key, state)));
+      } catch (err) {
+        console.error('Failed to update milestone:', err);
+        this.milestoneStates.set(previous);
+        this.error.set(apiMessage(err, 'Could not update the milestone'));
+      }
+    });
+  }
 
-/** Optimistic for my own choice; requests per poll are sent strictly in order. */
-vote(itemId: number, optionIds: number[]): Promise<PlanItem | null> {
-  const current = this._items().find(i => i.item_id === itemId);
-  if (current?.poll) this.replace({ ...current, poll: { ...current.poll, my_votes: optionIds } });
+  /** Optimistic toggle; requests per item are sent strictly in order. */
+  toggleReaction(itemId: number, key: ReactionKey): Promise<void> {
+    const me = this.viewer()?.userId;
+    const item = this._items().find(i => i.item_id === itemId);
+    if (!me || !item) return Promise.resolve();
 
-  const seq = (this.voteSeq.get(itemId) ?? 0) + 1;
-  this.voteSeq.set(itemId, seq);
-  const previous = this.voteQueue.get(itemId) ?? Promise.resolve(null);
-  const next = previous.then(() => this.pollWrite(
-    'Could not save your vote',
-    () => this.pollApi.vote(this.memoryId, itemId, optionIds),
-    () => this.voteSeq.get(itemId) === seq, // a newer click wins → no flicker
-  ));
-  this.voteQueue.set(itemId, next);
-  return next;
-}
+    const on = !item.reactions.some(r => r.key === key && r.mine);
+    this.replace({ ...item, reactions: applyReaction(item.reactions, key, me, on) });
 
-updatePollSettings(itemId: number, patch: PollSettingsPatch): Promise<PlanItem | null> {
-  return this.pollWrite('Could not save the poll settings',
-    () => this.pollApi.updateSettings(this.memoryId, itemId, patch));
-}
+    const seq = (this.reactionSeq.get(itemId) ?? 0) + 1;
+    this.reactionSeq.set(itemId, seq);
 
-addPollOption(itemId: number, option: NewPollOption): Promise<PlanItem | null> {
-  return this.pollWrite('Could not add the option', () => this.pollApi.addOption(this.memoryId, itemId, option));
-}
+    const send = () => this.tracked(true, async () => {
+      try {
+        const reactions = await firstValueFrom(this.commentApi.react(this.memoryId, itemId, key, on));
+        if (this.reactionSeq.get(itemId) === seq) this.patchItem(itemId, { reactions }); // newest click wins
+      } catch (err) {
+        console.error('Failed to update reaction:', err);
+        this.error.set(apiMessage(err, 'Could not save your reaction'));
+        this.itemsStale = true; // next sync restores the server state
+      }
+    });
 
-updatePollOption(itemId: number, optionId: number, patch: PollOptionPatch): Promise<PlanItem | null> {
-  return this.pollWrite('Could not save the option',
-    () => this.pollApi.updateOption(this.memoryId, itemId, optionId, patch));
-}
+    const next = (this.reactionQueue.get(itemId) ?? Promise.resolve()).then(send);
+    this.reactionQueue.set(itemId, next);
+    return next;
+  }
 
-deletePollOption(itemId: number, optionId: number): Promise<PlanItem | null> {
-  return this.pollWrite('Could not remove the option',
-    () => this.pollApi.deleteOption(this.memoryId, itemId, optionId));
-}
+  patchItem(itemId: number, patch: Partial<PlanItem>): void {
+    this._items.update(list => list.map(i => (i.item_id === itemId ? { ...i, ...patch } : i)));
+  }
 
-reopenPoll(itemId: number): Promise<PlanItem | null> {
-  return this.pollWrite('Could not reopen the poll', () => this.pollApi.reopen(this.memoryId, itemId));
-}
-
-decidePoll(itemId: number, body: DecidePollBody): Promise<{ needsLocation: boolean } | null> {
-  return this.tracked(true, async () => {
-    try {
-      const res = await firstValueFrom(this.pollApi.decide(this.memoryId, itemId, body));
-      this.replace(res.item);
-      this.planVersion.update(v => v + 1);
-      return { needsLocation: res.needsLocation };
-    } catch (err) {
-      console.error('Failed to decide poll:', err);
-      this.error.set(apiMessage(err, 'Could not decide the poll'));
-      this.itemsStale = true;
-      return null;
-    }
-  });
-}
-
-async setPollDestination(itemId: number, location: PlanLocation): Promise<PlanItem | null> {
-  const saved = await this.pollWrite('Could not set the destination',
-    () => this.pollApi.setDestination(this.memoryId, itemId, location));
-  if (saved) this.planVersion.update(v => v + 1);
-  return saved;
-}
-
-/** On failure: mark stale and re-sync from the server instead of a manual rollback. */
-private pollWrite(
-  fallback: string,
-  call: () => Observable<PlanItem>,
-  shouldApply: () => boolean = () => true,
-): Promise<PlanItem | null> {
-  return this.tracked(true, async () => {
-    try {
-      const item = await firstValueFrom(call());
-      if (shouldApply()) this.replace(item);
-      return item;
-    } catch (err) {
-      console.error(fallback, err);
-      this.error.set(apiMessage(err, fallback));
-      this.itemsStale = true;
-      return null;
-    }
-  });
-}
+  /** Own comment added/deleted → keep the card count right until the next sync. */
+  adjustCommentCount(itemId: number, delta: number): void {
+    const item = this._items().find(i => i.item_id === itemId);
+    if (item) this.patchItem(itemId, { comment_count: Math.max(0, item.comment_count + delta) });
+  }
 
 }
 

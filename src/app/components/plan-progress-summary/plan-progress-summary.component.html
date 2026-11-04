@@ -1,0 +1,9 @@
+@let s = summary();
+<div class="progress" [matTooltip]="tooltip()">
+  <mat-progress-bar mode="determinate" [value]="s.percent" [attr.aria-label]="s.percent + '% planned'" />
+  <div class="labels">
+    <span>{{ s.milestonesDone }}/{{ s.milestonesTotal }} milestones</span>
+    @if (s.todosTotal) { <span>{{ s.todosDone }}/{{ s.todosTotal }} to-dos</span> }
+    <span class="pct">{{ s.percent }}%</span>
+  </div>
+</div>

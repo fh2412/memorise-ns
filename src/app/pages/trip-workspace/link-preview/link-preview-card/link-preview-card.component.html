@@ -1,0 +1,17 @@
+@let p = preview();
+@if (href(); as link) {
+  <a class="lp" [href]="link" target="_blank" rel="noopener noreferrer"
+     (mousedown)="$event.stopPropagation()" (touchstart)="$event.stopPropagation()">
+    @if (image(); as img) {
+      <img class="lp-image" [src]="img" alt="" loading="lazy" referrerpolicy="no-referrer"
+           (error)="imgFailed.set(true)" />
+    }
+    <span class="lp-text">
+      <span class="lp-site">{{ p.site_name || host() }}</span>
+      <span class="lp-title">{{ p.title || link }}</span>
+      @if (p.description && !compact()) {
+        <span class="lp-desc">{{ p.description }}</span>
+      }
+    </span>
+  </a>
+}

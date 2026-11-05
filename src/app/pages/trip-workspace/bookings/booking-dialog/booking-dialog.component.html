@@ -1,0 +1,170 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit booking' : 'New booking' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="booking-dialog">
+
+    @if (!isEdit) {
+      <mat-button-toggle-group class="kinds" formControlName="kind" aria-label="Booking type">
+        @for (k of kinds; track k.key) {
+          <mat-button-toggle [value]="k.key"><mat-icon>{{ k.icon }}</mat-icon> {{ k.label }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+    }
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ labels().title }}</mat-label>
+        <input matInput formControlName="title" maxlength="200" />
+        @if (form.controls.title.hasError('required')) { <mat-error>A name is required</mat-error> }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="status">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          @for (s of statuses; track s.key) {
+            <mat-option [value]="s.key">{{ s.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Link (optional)</mat-label>
+      <input matInput formControlName="url" placeholder="https://…" />
+      <mat-error>Please enter a valid http(s) link</mat-error>
+    </mat-form-field>
+    <app-link-preview-field [url]="urlValue()" [memoryId]="memoryId" [initialPreview]="initialPreview"
+                            (previewChange)="onPreview($event)" (usePrice)="applyPrice($event)" />
+
+    @if (kind() === 'transport') {
+      <div class="row">
+        <mat-form-field appearance="outline" class="narrow">
+          <mat-label>Mode</mat-label>
+          <mat-select formControlName="transportMode">
+            <mat-option value="">–</mat-option>
+            @for (m of transportModes; track m.key) {
+              <mat-option [value]="m.key"><mat-icon>{{ m.icon }}</mat-icon> {{ m.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>From</mat-label>
+          <input matInput formControlName="origin" placeholder="Vienna" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>To</mat-label>
+          <input matInput formControlName="destination" placeholder="Rome" />
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>Carrier</mat-label>
+          <input matInput formControlName="carrier" placeholder="Austrian Airlines" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="narrow">
+          <mat-label>Number</mat-label>
+          <input matInput formControlName="transportNumber" placeholder="OS 501" />
+        </mat-form-field>
+      </div>
+    }
+
+    <h3>{{ labels().when }}</h3>
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ labels().start }}</mat-label>
+        <input matInput type="datetime-local" formControlName="startsAt" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ kind() === 'transport' ? 'Departure time zone' : 'Time zone' }}</mat-label>
+        <input matInput formControlName="startTz" [matAutocomplete]="startTzAuto" />
+        <mat-autocomplete #startTzAuto="matAutocomplete">
+          @for (tz of startTzOptions(); track tz) { <mat-option [value]="tz">{{ tz }}</mat-option> }
+        </mat-autocomplete>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ labels().end }}</mat-label>
+        <input matInput type="datetime-local" formControlName="endsAt" />
+      </mat-form-field>
+      @if (kind() === 'transport') {
+        <mat-form-field appearance="outline" class="grow">
+          <mat-label>Arrival time zone</mat-label>
+          <input matInput formControlName="endTz" [matAutocomplete]="endTzAuto" />
+          <mat-autocomplete #endTzAuto="matAutocomplete">
+            @for (tz of endTzOptions(); track tz) { <mat-option [value]="tz">{{ tz }}</mat-option> }
+          </mat-autocomplete>
+        </mat-form-field>
+      } @else {
+        <span class="grow"></span>
+      }
+    </div>
+
+    @if (kind() !== 'transport') {
+      <mat-form-field appearance="outline">
+        <mat-label>Address</mat-label>
+        <input matInput formControlName="address" />
+      </mat-form-field>
+      <div class="location-row">
+        @if (location(); as loc) {
+          <mat-icon>place</mat-icon>
+          <span>{{ formatLocation(loc) }}</span>
+          <button mat-button type="button" (click)="pickLocation()">Change</button>
+          <button mat-button type="button" (click)="location.set(null)">Remove</button>
+        } @else {
+          <button mat-stroked-button type="button" (click)="pickLocation()">
+            <mat-icon>add_location_alt</mat-icon> Pin on map
+          </button>
+        }
+      </div>
+    }
+
+    <h3>Booking details</h3>
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>{{ labels().provider }}</mat-label>
+        <input matInput formControlName="provider" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Confirmation number</mat-label>
+        <input matInput formControlName="confirmationCode" />
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="narrow">
+        <mat-label>Price</mat-label>
+        <input matInput formControlName="price" inputmode="decimal" placeholder="0.00" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="currency">
+        <mat-label>Currency</mat-label>
+        <mat-select formControlName="currency">
+          @for (cur of currencyOptions(); track cur) { <mat-option [value]="cur">{{ cur }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Paid by</mat-label>
+        <mat-select formControlName="paidBy">
+          <mat-option value="">Not paid yet</mat-option>
+          @for (m of payers(); track m.user_id) {
+            <mat-option [value]="m.user_id">{{ m.user_id === me ? 'Me' : m.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="notes" rows="2"></textarea>
+    </mat-form-field>
+
+    @if (formError(); as err) { <p class="form-error" role="alert">{{ err }}</p> }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">
+      {{ saving() ? 'Saving…' : isEdit ? 'Save' : 'Add booking' }}
+    </button>
+  </mat-dialog-actions>
+</form>

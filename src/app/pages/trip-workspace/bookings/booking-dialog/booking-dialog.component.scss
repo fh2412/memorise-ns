@@ -1,0 +1,36 @@
+.booking-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px !important;
+
+  mat-form-field { width: 100%; }
+  h3 { margin: 4px 0 8px; font: var(--mat-sys-title-small); }
+}
+
+.kinds { margin-bottom: 16px; align-self: flex-start; flex-wrap: wrap; }
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 12px;
+
+  mat-form-field { width: auto; }
+  .grow { flex: 1 1 200px; }
+  .narrow { flex: 0 1 150px; }
+  .status { flex: 0 1 150px; }
+  .currency { flex: 0 1 110px; }
+}
+
+.location-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: -8px 0 12px;
+  font-size: 0.9rem;
+
+  mat-icon { color: var(--mat-sys-primary); }
+}
+
+.form-error { margin: 4px 0 0; color: var(--mat-sys-error); }

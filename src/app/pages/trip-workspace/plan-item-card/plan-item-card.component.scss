@@ -23,6 +23,18 @@
   width: 280px;
 }
 
+:host(.is-booking) {
+  width: 260px;
+}
+
+:host(.is-cancelled) {
+  opacity: 0.6;
+
+  .card-title {
+    text-decoration: line-through;
+  }
+}
+
 .card-header {
   display: flex;
   align-items: center;

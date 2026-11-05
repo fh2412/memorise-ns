@@ -59,6 +59,11 @@
 <div class="poll-actions">
   @if (decided()) {
     <span class="decided-label"><mat-icon>check_circle</mat-icon> Decided</span>
+    @if (canCreateBooking()) {
+    <button mat-stroked-button type="button" [disabled]="busy()" (click)="createBooking()">
+      <mat-icon>bookmark_add</mat-icon> Create booking
+    </button>
+    }
     @if (needsDestination() && canManage()) {
       <button mat-stroked-button type="button" [disabled]="busy()" (click)="setLocation()">
         <mat-icon>add_location_alt</mat-icon> Set destination location

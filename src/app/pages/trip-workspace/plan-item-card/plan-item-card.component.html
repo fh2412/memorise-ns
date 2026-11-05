@@ -1,5 +1,5 @@
 <div class="card-header">
-  <mat-icon class="type-icon">{{ meta().icon }}</mat-icon>
+  <mat-icon class="type-icon">{{ icon() }}</mat-icon>
 
   @if (item().type === 'todo') {
   <mat-checkbox [checked]="item().status === 'done'" (change)="toggleDone.emit()" (mousedown)="$event.stopPropagation()"
@@ -24,9 +24,12 @@
 
 <mat-menu #menu="matMenu">
   <button mat-menu-item (click)="edit.emit()">
-    <mat-icon>{{ item().type === 'poll' ? 'tune' : 'edit' }}</mat-icon>
-    <span>{{ item().type === 'poll' ? 'Manage poll' : 'Edit' }}</span>
+    <mat-icon>{{ item().type === 'poll' ? 'tune' : item().type === 'booking' ? 'edit_calendar' : 'edit' }}</mat-icon>
+    <span>{{ item().type === 'poll' ? 'Manage poll' : item().type === 'booking' ? 'Edit booking' : 'Edit' }}</span>
   </button>
+  @if (link()) {
+  <button mat-menu-item (click)="refreshPreview()"><mat-icon>refresh</mat-icon><span>Refresh preview</span></button>
+  }
   @if (canPromote()) {
   <button mat-menu-item (click)="promote.emit()"><mat-icon>how_to_vote</mat-icon><span>Start a poll</span></button>
   }
@@ -35,10 +38,19 @@
   }
 </mat-menu>
 
-@if (linkUrl(); as url) {
-<a class="card-link" [href]="url" target="_blank" rel="noopener noreferrer" (mousedown)="$event.stopPropagation()">
-  <mat-icon>open_in_new</mat-icon><span>{{ url }}</span>
-</a>
+@if (item().type === 'booking' && item().booking) {
+  <app-booking-body [item]="item()" />
+}
+
+@if (link(); as l) {
+  @if (l.preview) {
+    <app-link-preview-card [preview]="l.preview" [url]="l.url" [compact]="item().type === 'booking'" />
+  } @else {
+    <a class="card-link" [href]="l.url" target="_blank" rel="noopener noreferrer"
+       (mousedown)="$event.stopPropagation()">
+      <mat-icon>open_in_new</mat-icon><span>{{ l.url }}</span>
+    </a>
+  }
 }
 
 @if (item().due_date) {

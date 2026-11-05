@@ -7,6 +7,7 @@ import {
   ManualMilestoneKey, ManualState, MILESTONE_META, MilestoneStatus,
 } from '@models/planProgress.model';
 import { PlanBoardStore } from '../plan-board.store';
+import { BookingKind } from '@models/planBooking.model';
 
 function tooltipFor(m: MilestoneStatus): string {
   if (m.key === 'dates') return m.state === 'done' ? 'Dates are locked' : 'Find dates in the date finder';
@@ -28,6 +29,7 @@ export class PlanProgressStripComponent {
 
   datesClicked = output<void>();
   startPoll = output<ManualMilestoneKey>();
+  addBooking = output<BookingKind>();
 
   readonly isOwner = computed(() => this.store.viewer()?.isOwner ?? false);
 

@@ -7,10 +7,14 @@ import { MatMenuModule } from '@angular/material/menu';
 import { PLAN_ITEM_TYPES, PlanItem, REACTIONS, REACTION_EMOJI, ReactionKey } from '@models/planItem.model';
 import { PollBodyComponent } from '../polls/poll-body/poll-body.component';
 import { PlanBoardStore } from '../plan-board.store';
+import { BookingBodyComponent } from '../bookings/booking-body/booking-body.component';
+import { LinkPreviewCardComponent } from '../link-preview/link-preview-card/link-preview-card.component';
+import { readLinkPayload } from '../link-preview/link-utils';
+import { BOOKING_KIND_META } from '@models/planBooking.model';
 
 @Component({
   selector: 'app-plan-item-card',
-  imports: [MatIconModule, MatButtonModule, MatCheckboxModule, MatMenuModule, DatePipe, PollBodyComponent],
+  imports: [MatIconModule, MatButtonModule, MatCheckboxModule, MatMenuModule, DatePipe, PollBodyComponent, BookingBodyComponent, LinkPreviewCardComponent],
   templateUrl: './plan-item-card.component.html',
   styleUrl: './plan-item-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,6 +23,8 @@ import { PlanBoardStore } from '../plan-board.store';
     '[class.is-poll]': "item().type === 'poll'",
     '[style.--card-color]': 'cardColor()',
     '[class.thread-open]': 'store.openThreadId() === item().item_id',
+    '[class.is-booking]': "item().type === 'booking'",
+    '[class.is-cancelled]': "item().booking?.status === 'cancelled'",
   },
 })
 export class PlanItemCardComponent {
@@ -34,9 +40,11 @@ export class PlanItemCardComponent {
   meta = computed(() => PLAN_ITEM_TYPES[this.item().type]);
   cardColor = computed(() => this.item().color ?? this.meta().color);
   canPromote = computed(() => this.item().type === 'idea' && this.item().status === 'open');
-  linkUrl = computed(() => {
-    const url = this.item().payload?.['url'];
-    return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : null;
+  readonly link = computed(() => readLinkPayload(this.item()));
+
+  readonly icon = computed(() => {
+    const b = this.item().booking;
+    return b ? BOOKING_KIND_META[b.kind].icon : this.meta().icon;
   });
 
   readonly assigneeChips = computed(() => {
@@ -65,8 +73,12 @@ export class PlanItemCardComponent {
   react(key: ReactionKey): void {
     void this.store.toggleReaction(this.item().item_id, key);
   }
-  
+
   openComments(): void {
     this.store.openThreadId.set(this.item().item_id);
+  }
+
+  refreshPreview(): void {
+    void this.store.refreshPreview(this.item());
   }
 }

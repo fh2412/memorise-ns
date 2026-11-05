@@ -11,6 +11,10 @@ import {
 } from '@models/planItem.model';
 import { buildProgress, ManualMilestone, ManualMilestoneKey, ManualState } from '@models/planProgress.model';
 import { PlanCommentService } from '@services/plan-comment.service';
+import { PlanBookingService } from '@services/plan-booking.service';
+import { LinkPreviewService } from '@services/link-preview.service';
+import { BookingInput, NewBooking } from '@models/planBooking.model';
+import { readLinkPayload } from './link-preview/link-utils';
 
 export type PlanColumn = (typeof PLAN_CATEGORIES)[number] & { items: PlanItem[] };
 
@@ -51,6 +55,11 @@ export function apiMessage(err: unknown, fallback: string): string {
   return fallback;
 }
 
+function byStatusThenDate(a: PlanItem, b: PlanItem): number {
+  const rank = (i: PlanItem) => (i.status === 'done' ? 1 : 0);
+  return rank(a) - rank(b) || a.created_at.localeCompare(b.created_at);
+}
+
 /** Local mirror of the backend's summarizeReactions (fixed order, only used keys). */
 function applyReaction(list: ReactionSummary[], key: ReactionKey, me: string, on: boolean): ReactionSummary[] {
   const byKey = new Map(list.map(r => [r.key, r]));
@@ -65,6 +74,10 @@ function applyReaction(list: ReactionSummary[], key: ReactionKey, me: string, on
 export class PlanBoardStore {
   private api = inject(PlanItemService);
   private pollApi = inject(PlanPollService);
+  private bookingApi = inject(PlanBookingService);
+  private previewApi = inject(LinkPreviewService);
+  private commentApi = inject(PlanCommentService);
+
 
   private memoryId = '';
 
@@ -145,6 +158,12 @@ export class PlanBoardStore {
     const decided = new Set<string>(items
       .filter(i => i.type === 'poll' && i.poll?.decided_option_id != null)
       .map(i => i.category));
+    for (const i of items) {
+      const b = i.booking;
+      if (i.type === 'booking' && b?.status === 'booked' && (b.kind === 'stay' || b.kind === 'transport')) {
+        decided.add(b.kind);
+      }
+    }
     const { done, total } = this.todoProgress();
     return buildProgress({
       hasDates: this.hasDates(),
@@ -154,8 +173,6 @@ export class PlanBoardStore {
       todos: { done, total },
     });
   });
-
-  private commentApi = inject(PlanCommentService);
 
   /** Item whose comment thread is open in the sidebar. */
   readonly openThreadId = signal<number | null>(null);
@@ -256,6 +273,14 @@ export class PlanBoardStore {
   changeCategory(itemId: number, category: PlanCategory): Promise<void> {
     const item = this._items().find(i => i.item_id === itemId);
     if (!item || item.category === category) return Promise.resolve();
+    if (item.type === 'booking') {
+      this.error.set('Bookings stay in their own column');
+      return Promise.resolve();
+    }
+    if (item.type === 'poll' && category === 'dates') {
+      this.error.set('Dates are chosen with the date finder');
+      return Promise.resolve();
+    }
     return this.update(itemId, { category });
   }
 
@@ -570,10 +595,50 @@ export class PlanBoardStore {
     if (item) this.patchItem(itemId, { comment_count: Math.max(0, item.comment_count + delta) });
   }
 
-}
+  // ---------- bookings ----------
 
-function byStatusThenDate(a: PlanItem, b: PlanItem): number {
-  const rank = (i: PlanItem) => (i.status === 'done' ? 1 : 0);
-  return rank(a) - rank(b) || a.created_at.localeCompare(b.created_at);
+  /** Throws on failure – the booking dialog shows the message inline. */
+  createBooking(draft: NewBooking): Promise<PlanItem> {
+    const offset = (this._items().length % 8) * 32;
+    const body: NewBooking = {
+      color: PLAN_ITEM_TYPES.booking.color,
+      board_x: 40 + offset,
+      board_y: 40 + offset,
+      ...draft,
+    };
+    return this.tracked(true, async () => {
+      const created = await firstValueFrom(this.bookingApi.create(this.memoryId, body));
+      this._items.update(list => [...list, created]);
+      return created;
+    });
+  }
+
+  /** Throws on failure – the booking dialog shows the message inline. */
+  updateBooking(itemId: number, patch: BookingInput): Promise<PlanItem> {
+    return this.tracked(true, async () => {
+      const saved = await firstValueFrom(this.bookingApi.update(this.memoryId, itemId, patch));
+      this.replace(saved);
+      return saved;
+    });
+  }
+
+  /** Re-fetches the preview (bypassing the cache) and re-saves the link so the item gets it. */
+  refreshPreview(item: PlanItem): Promise<void> {
+    const link = readLinkPayload(item);
+    if (!link) return Promise.resolve();
+    return this.tracked(true, async () => {
+      try {
+        const res = await firstValueFrom(this.previewApi.get(this.memoryId, link.url, true));
+        if (!res.preview) this.error.set('No preview available for this link');
+        const saved = item.type === 'booking'
+          ? await firstValueFrom(this.bookingApi.update(this.memoryId, item.item_id, { url: link.url }))
+          : await firstValueFrom(this.api.updateItem(this.memoryId, item.item_id, { payload: { url: link.url } }));
+        this.replace(saved);
+      } catch (err) {
+        console.error('Failed to refresh preview:', err);
+        this.error.set(apiMessage(err, 'Could not refresh the preview'));
+      }
+    });
+  }
 
 }

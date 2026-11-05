@@ -1,7 +1,7 @@
 import { CrewMember } from '@models/userInterface.model';
 import { PlannedMemory, PlanLocation } from '@models/memoryInterface.model';
 import { ManualMilestone } from '@models/planProgress.model';
-
+import { BookingData } from '@models/planBooking.model';
 
 export type PlanItemType = 'note' | 'idea' | 'todo' | 'link' | 'poll' | 'booking';
 export type PlanItemStatus = 'open' | 'decided' | 'done' | 'dismissed';
@@ -38,6 +38,7 @@ export interface PlanItem {
   poll?: PollData | null;
   comment_count: number;
   reactions: ReactionSummary[];
+  booking?: BookingData | null;
 }
 
 export type NewPlanItem = Pick<PlanItem, 'type' | 'title'> &
@@ -45,7 +46,7 @@ export type NewPlanItem = Pick<PlanItem, 'type' | 'title'> &
     'category' | 'description' | 'payload' | 'due_date' | 'board_x' | 'board_y' | 'color' | 'assignees'>>;
 
 export type PlanItemPatch = Partial<Omit<PlanItem,
-  'item_id' | 'memory_id' | 'created_by' | 'created_at' | 'updated_at' | 'poll' | 'comment_count' | 'reactions'>>;
+  'item_id' | 'memory_id' | 'created_by' | 'created_at' | 'updated_at' | 'poll' | 'comment_count' | 'reactions' | 'booking'>>;
 
 export const PLAN_ITEM_TYPES: Record<PlanItemType,
   { label: string; icon: string; color: string; creatable: boolean }> = {
@@ -53,8 +54,8 @@ export const PLAN_ITEM_TYPES: Record<PlanItemType,
   idea: { label: 'Idea', icon: 'lightbulb', color: '#ffe0b2', creatable: true },
   todo: { label: 'To-do', icon: 'check_circle', color: '#c8e6c9', creatable: true },
   link: { label: 'Link', icon: 'link', color: '#bbdefb', creatable: true },
-  poll: { label: 'Poll', icon: 'how_to_vote', color: '#e1bee7', creatable: false }, // Phase 1a
-  booking: { label: 'Booking', icon: 'hotel', color: '#b2dfdb', creatable: false }, // Phase 1c
+  poll: { label: 'Poll', icon: 'how_to_vote', color: '#e1bee7', creatable: false },
+  booking: { label: 'Booking', icon: 'hotel', color: '#b2dfdb', creatable: false },
 };
 
 export const PLAN_CATEGORIES: { key: PlanCategory; label: string; icon: string }[] = [
@@ -120,6 +121,10 @@ export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
   milestone_reset: { verb: 'reopened', icon: 'outlined_flag' },
   comment_added: { verb: 'commented on', icon: 'chat_bubble' },
   item_reacted: { verb: 'reacted to', icon: 'add_reaction' },
+  booking_created: { verb: 'added the booking', icon: 'bookmark_add' },
+  booking_booked: { verb: 'booked', icon: 'verified' },
+  booking_cancelled: { verb: 'cancelled the booking', icon: 'cancel' },
+  booking_updated: { verb: 'updated the booking', icon: 'edit_calendar' },
 };
 export const PLAN_EVENT_FALLBACK = { verb: 'updated', icon: 'bolt' };
 

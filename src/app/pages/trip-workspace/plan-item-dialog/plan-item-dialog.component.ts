@@ -13,6 +13,10 @@ import {
   NewPlanItem, PLAN_CATEGORIES, PLAN_ITEM_TYPES, PlanCategory, PlanItem, PlanItemType,
 } from '@models/planItem.model';
 import { PlanBoardStore } from '../plan-board.store';
+import { viewChild } from '@angular/core';
+import { LinkPreview } from '@models/planBooking.model';
+import { LinkPreviewFieldComponent } from '../link-preview/link-preview-field/link-preview-field.component';
+import { readLinkPayload } from '../link-preview/link-utils';
 
 export interface PlanItemDialogData { item?: PlanItem; }
 type UserId = CrewMember['user_id'];
@@ -21,7 +25,7 @@ type UserId = CrewMember['user_id'];
   selector: 'app-plan-item-dialog',
   imports: [
     ReactiveFormsModule, MatDialogModule, MatFormFieldModule, MatInputModule,
-    MatSelectModule, MatButtonModule, MatButtonToggleModule, MatIconModule,
+    MatSelectModule, MatButtonModule, MatButtonToggleModule, MatIconModule, LinkPreviewFieldComponent
   ],
   templateUrl: './plan-item-dialog.component.html',
   styleUrl: './plan-item-dialog.component.scss',
@@ -62,6 +66,10 @@ export class PlanItemDialogComponent {
   readonly assignees = toSignal(this.form.controls.assignees.valueChanges, {
     initialValue: this.form.controls.assignees.value,
   });
+  readonly memoryId = this.store.currentMemoryId;
+  readonly initialPreview: LinkPreview | null = readLinkPayload(this.data.item)?.preview ?? null;
+  readonly urlValue = toSignal(this.form.controls.url.valueChanges, { initialValue: this.form.controls.url.value });
+  private readonly linkField = viewChild(LinkPreviewFieldComponent);
 
   toggleAssignee(id: UserId): void {
     const current = this.form.controls.assignees.value;
@@ -69,7 +77,7 @@ export class PlanItemDialogComponent {
       current.includes(id) ? current.filter(x => x !== id) : [...current, id]);
   }
 
-  save(): void {
+  async save(): Promise<void> {
     const v = this.form.getRawValue();
 
     if (v.type === 'link' && !v.url.trim()) {
@@ -79,6 +87,7 @@ export class PlanItemDialogComponent {
       this.form.markAllAsTouched();
       return;
     }
+    if (v.type === 'link') await this.linkField()?.settle();
 
     this.dialogRef.close({
       type: v.type,
@@ -89,5 +98,11 @@ export class PlanItemDialogComponent {
       due_date: v.type === 'todo' && v.due_date ? v.due_date : null,
       ...(v.type === 'todo' ? { assignees: v.assignees } : {}),
     });
+  }
+
+  onPreview(p: LinkPreview | null): void {
+    if (p?.title && !this.form.controls.title.value.trim()) {
+      this.form.controls.title.setValue(p.title.slice(0, 200));
+    }
   }
 }

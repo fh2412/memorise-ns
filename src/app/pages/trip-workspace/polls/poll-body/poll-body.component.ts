@@ -6,8 +6,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { PlanItem } from '@models/planItem.model';
 import { PlanBoardStore } from '../../plan-board.store';
-import { DecidePollData, DecidePollDialogComponent, DecidePollResult} from '../decide-poll-dialog/decide-poll-dialog.component';
+import { DecidePollData, DecidePollDialogComponent, DecidePollResult } from '../decide-poll-dialog/decide-poll-dialog.component';
 import { formatLocation, pickLocation } from '../location-utils';
+import { Injector } from '@angular/core';
+import { BookingKind } from '@models/planBooking.model';
+import { BookingDialogComponent, BookingDialogData } from '../../bookings/booking-dialog/booking-dialog.component';
 
 const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
 const MAX_AVATARS = 5;
@@ -37,6 +40,7 @@ export class PollBodyComponent {
 
   private store = inject(PlanBoardStore);
   private dialog = inject(MatDialog);
+  private injector = inject(Injector);
 
   private readonly now = signal(Date.now());
   readonly busy = signal(false);
@@ -116,6 +120,13 @@ export class PollBodyComponent {
     return !p.options.find(o => o.option_id === p.decided_option_id)?.location;
   });
 
+  readonly canCreateBooking = computed(() => {
+    const category = this.item().category;
+    if (!this.decided() || !['stay', 'transport', 'activity'].includes(category)) return false;
+    const id = this.item().item_id;
+    return !this.store.items().some(i => i.type === 'booking' && i.booking?.source_poll_id === id);
+  });
+
   vote(optionId: number): void {
     if (!this.votingOpen()) return;
     const p = this.poll();
@@ -166,5 +177,26 @@ export class PollBodyComponent {
     this.busy.set(true);
     await this.store.reopenPoll(this.item().item_id);
     this.busy.set(false);
+  }
+
+  createBooking(): void {
+    const p = this.poll();
+    const winner = p.options.find(o => o.option_id === p.decided_option_id);
+    this.dialog.open<BookingDialogComponent, BookingDialogData, boolean>(BookingDialogComponent, {
+      width: '680px',
+      maxWidth: '95vw',
+      maxHeight: '92vh',
+      autoFocus: false,
+      injector: this.injector, // dialog needs PlanBoardStore
+      data: {
+        mode: 'create',
+        draft: {
+          kind: this.item().category as BookingKind,
+          title: winner?.label ?? '',
+          location: winner?.location ?? null,
+          sourcePollId: this.item().item_id,
+        },
+      },
+    });
   }
 }

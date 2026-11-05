@@ -9,7 +9,8 @@
       (titleUpdated)="handleTitleUpdate($event)"
       (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"
       (dateFinderRequested)="openDateFinder()" />
-    <app-plan-progress-strip (datesClicked)="openDateFinder()" (startPoll)="startPollFor($event)" />
+    <app-plan-progress-strip (datesClicked)="openDateFinder()" (startPoll)="startPollFor($event)"
+      (addBooking)="openBookingDialog({ mode: 'create', draft: { kind: $event } })" />
     <div class="canvas-viewport">
       @if (board.isLoading()) {
       <app-loading-spinner />
@@ -32,6 +33,9 @@
         </button>
         <button mat-menu-item (click)="openPollDialog({ mode: 'create' })">
           <mat-icon>how_to_vote</mat-icon><span>Poll</span>
+        </button>
+        <button mat-menu-item (click)="openBookingDialog({ mode: 'create' })">
+          <mat-icon>bookmark_add</mat-icon><span>Booking</span>
         </button>
       </mat-menu>
     </div>

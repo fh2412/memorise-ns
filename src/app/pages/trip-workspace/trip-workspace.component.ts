@@ -32,7 +32,7 @@ import { PollDialogData, PollDialogComponent } from './polls/poll-dialog/poll-di
 import { PlanProgressStripComponent } from './plan-progress-strip/plan-progress-strip.component';
 import { ManualMilestoneKey } from '@models/planProgress.model';
 import { PlanCommentsPanelComponent } from './plan-comments-panel/plan-comments-panel.component';
-
+import { BookingDialogComponent, BookingDialogData } from './bookings/booking-dialog/booking-dialog.component';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -140,6 +140,10 @@ export class TripWorkspaceComponent implements OnInit {
       this.openPollDialog({ mode: 'edit', itemId: item.item_id });
       return;
     }
+    if (item?.type === 'booking') {
+      this.openBookingDialog({ mode: 'edit', itemId: item.item_id });
+      return;
+    }
     this.dialog
       .open<PlanItemDialogComponent, PlanItemDialogData, NewPlanItem>(PlanItemDialogComponent, {
         width: '520px',
@@ -170,7 +174,18 @@ export class TripWorkspaceComponent implements OnInit {
         if (result) void this.board.createPoll(result);
       });
   }
-  
+
+  openBookingDialog(data: BookingDialogData): void {
+    this.dialog.open<BookingDialogComponent, BookingDialogData, boolean>(BookingDialogComponent, {
+      width: '680px',
+      maxWidth: '95vw',
+      maxHeight: '92vh',
+      autoFocus: false,
+      injector: this.injector, // dialog needs PlanBoardStore
+      data,
+    });
+  }
+
   private async loadMemoriesPage(): Promise<void> {
     this.isLoading.set(true);
 

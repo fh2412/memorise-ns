@@ -59,7 +59,7 @@
     </button>
     }
     @if (step.state !== 'open') {
-    <button mat-menu-item (click)="set(step.key, null)">
+    <button mat-menu-item (click)="set(step.key, null)" class="reopen-btn">
       <mat-icon>replay</mat-icon><span>Reopen</span>
     </button>
     }

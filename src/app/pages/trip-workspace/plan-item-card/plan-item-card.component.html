@@ -2,7 +2,7 @@
   <mat-icon class="type-icon">{{ icon() }}</mat-icon>
 
   @if (item().type === 'todo') {
-  <mat-checkbox [checked]="item().status === 'done'" (change)="toggleDone.emit()" (mousedown)="$event.stopPropagation()"
+  <mat-checkbox class="done-checkbox" [checked]="item().status === 'done'" (change)="toggleDone.emit()" (mousedown)="$event.stopPropagation()"
     aria-label="Mark as done" />
   }
 

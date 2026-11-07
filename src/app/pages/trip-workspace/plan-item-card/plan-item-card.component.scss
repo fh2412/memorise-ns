@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -181,4 +183,12 @@
   .comments {
     margin-left: auto;
   }
+}
+
+.done-checkbox {
+  /* unchecked border (optional, keeps it consistent) */
+  --mat-checkbox-unselected-icon-color: var(--mat-sys-neutral-variant20);
+  --mat-checkbox-unselected-hover-icon-color: var(--mat-sys-neutral-variant20);
+   --mat-checkbox-unselected-focus-icon-color: var(--mat-sys-neutral-variant20);
+  --mat-checkbox-unselected-pressed-icon-color: var(--mat-sys-neutral-variant20);
 }

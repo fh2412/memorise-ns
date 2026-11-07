@@ -6,7 +6,7 @@
       <mat-icon>event_available</mat-icon>
       <span>Dates locked: <strong>{{ lockedLabel }}</strong></span>
       @if (data.isOwner) {
-        <button mat-button type="button" [disabled]="locking()" (click)="reopen()">Reopen search</button>
+        <button mat-button type="button" [disabled]="locking()" (click)="reopen()" class="reopen-btn">Reopen search</button>
       }
     </div>
   }

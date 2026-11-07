@@ -70,7 +70,7 @@
       </button>
     }
     @if (canManage()) {
-      <button mat-button type="button" [disabled]="busy()" (click)="reopen()">Reopen</button>
+      <button mat-button type="button" [disabled]="busy()" (click)="reopen()" class="reopen-btn">Reopen</button>
     }
   } @else if (canManage()) {
     <button mat-flat-button type="button" [disabled]="busy() || !p.options.length" (click)="decide()">Decide</button>

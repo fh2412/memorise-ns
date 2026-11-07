@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '@environments/environment';
+import { environment } from '../../environments/environment';
 import { PlanLocation } from '@models/memoryInterface.model';
 import {
   DecidePollBody, NewPoll, NewPollOption, PlanItem, PollOptionPatch, PollSettingsPatch,

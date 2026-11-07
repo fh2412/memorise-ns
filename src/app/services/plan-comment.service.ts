@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '@environments/environment'; // same source as PlanItemService
+import { environment } from '../../environments/environment';
 import { PlanComment, ReactionKey, ReactionSummary } from '@models/planItem.model';
 
 /** Comments come newest first. */

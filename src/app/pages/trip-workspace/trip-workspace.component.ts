@@ -195,6 +195,7 @@ export class TripWorkspaceComponent implements OnInit {
           this.memoryService.getMemoryToPlan(this.memoryId)
         );
         this.plannedMemory.set(result);
+        console.log("Planned Memory: ", this.plannedMemory());
         this.crew.set(result.crew_members || []);
       } catch (error) {
         console.error('Error loading planned memories:', error);

@@ -18,20 +18,13 @@
     flex: 1;
     padding: 24px;
     overflow: hidden;
+  }
 
-    .canvas-viewport {
-      flex: 1;
-      padding: 24px;
-      overflow: hidden;
-      position: relative;
-
-      .add-item-fab {
-        position: absolute;
-        right: 40px;
-        bottom: 40px;
-        z-index: 10;
-      }
-    }
+  .add-item-fab {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    z-index: 10;
   }
 }
 

@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatIcon } from "@angular/material/icon";
-import { PlannedMemory } from '@models/memoryInterface.model';
 import { MemoryService } from '@services/memory.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@services/userService';

@@ -56,9 +56,9 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 14px 18px;
+  padding: 8px 18px;
   overflow: hidden;
-  position: relative; // Defines context boundary for absolute positions
+  position: relative;
 }
 
 .card-header {

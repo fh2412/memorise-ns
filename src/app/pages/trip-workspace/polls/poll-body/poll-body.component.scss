@@ -95,9 +95,9 @@
     flex: 1;
     min-width: 0;
     padding: 4px 6px;
-    border: 1px solid rgb(0 0 0 / 0.2);
+    border: 1px solid var(--mat-sys-outline);
     border-radius: 6px;
-    background: rgb(255 255 255 / 0.6);
+    background: rgba(255, 255, 255, 0.55);
     color: inherit;
     font: inherit;
     font-size: 0.8rem;

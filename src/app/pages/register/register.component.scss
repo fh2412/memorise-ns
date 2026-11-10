@@ -1,0 +1,5 @@
+@use '../login/auth-page';
+
+mat-form-field + mat-form-field {
+  margin-top: 4px; // room for the password hint
+}

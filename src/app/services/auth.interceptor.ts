@@ -1,37 +1,25 @@
-import { Injectable } from '@angular/core';
-import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/common/http';
-import { Observable, from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
-import { getAuth, User } from '@angular/fire/auth';
+import { inject } from '@angular/core';
+import { HttpInterceptorFn } from '@angular/common/http';
+import { Auth } from '@angular/fire/auth';
+import { from, switchMap } from 'rxjs';
+import { environment } from '../../environments/environment';
 
-@Injectable()
-export class AuthInterceptor implements HttpInterceptor {
-  intercept<T>(request: HttpRequest<T>, next: HttpHandler): Observable<HttpEvent<T>> {
-    const auth = getAuth();
-    
-    return from(
-      new Promise<User | null>((resolve) => {
-        const unsubscribe = auth.onAuthStateChanged((user) => {
-          unsubscribe(); // prevent memory leaks
-          resolve(user);
-        });
-      })
-    ).pipe(
-      switchMap((user) => {
-        if (user) {
-          return from(user.getIdToken()).pipe(
-            switchMap((token: string) => {
-              const clonedRequest = request.clone({
-                setHeaders: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              return next.handle(clonedRequest);
-            })
-          );
-        }
-        return next.handle(request);
-      })
-    );
-  }
+const API_PREFIX = environment.apiUrl.replace(/\/+$/, '');
+
+/** Only our own API gets the ID token – never third-party URLs (Maps, Storage, etc.). */
+function isApiRequest(url: string): boolean {
+  return url === API_PREFIX || url.startsWith(`${API_PREFIX}/`);
 }
+
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const auth = inject(Auth);
+  if (!isApiRequest(req.url)) return next(req);
+
+  return from(
+    auth.authStateReady().then(() => auth.currentUser?.getIdToken() ?? null)
+  ).pipe(
+    switchMap((token) =>
+      next(token ? req.clone({ setHeaders: { Authorization: `Bearer ${token}` } }) : req)
+    )
+  );
+};

@@ -15,11 +15,10 @@ export class AppComponent implements OnDestroy, OnInit {
   authStateSubscription: Subscription;
 
   loggedIn: boolean | undefined;
-  isFirstTimeUser = false;
 
   constructor() {
     this.authStateSubscription = this.authState$.subscribe((aUser: User | null) => {
-      if (aUser && !this.isFirstTimeUser) {
+      if (aUser) {
         this.loggedIn = true;
       } else {
         this.loggedIn = false;

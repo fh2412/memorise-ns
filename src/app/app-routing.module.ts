@@ -1,15 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { authGuard } from './auth.guard';
 import { UserResolver } from './models/user-resolver';
 import { ProfileResolver } from './models/profile-resolver';
 //import { ActivityOwnerGuard } from './guards/activity-owner.guard';
 import { MemoryEditorGuard } from './guards/memory-editor.guard';
+import { authGuard, guestGuard } from '@services/auth/auth.guard';
 
 export const routes: Routes = [
   {
-    path: 'login',
+    path: 'login', canActivate: [guestGuard], title: 'Sign in · Memorise',
     loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent),
+  },
+  { 
+    path: 'register', canActivate: [guestGuard], title: 'Create account · Memorise',
+    loadComponent: () => import('./pages/register/register.component').then(m => m.RegisterComponent) 
   },
   {
     path: 'home',

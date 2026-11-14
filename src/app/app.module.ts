@@ -4,7 +4,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { provideStorage, getStorage } from '@angular/fire/storage';
 
-import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { RouterModule } from '@angular/router';
 
@@ -35,7 +35,7 @@ import { PinnedDialogComponent } from './components/_dialogs/pinned-dialog/pinne
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { CompanyDialogComponent } from './components/_dialogs/company-dialog/company-dialog.component';
 import { FullDescriptionDialogComponent } from './components/_dialogs/full-description-dialog/full-description-dialog.component';
-import { AuthInterceptor } from './services/auth.interceptor';
+import { authInterceptor } from './services/auth.interceptor';
 import { routes } from './app-routing.module';
 import { FriendPreviewComponent } from './components/friend-preview/friend-preview.component';
 import { FeedbackButtonComponent } from "./components/feedback-button/feedback-button.component";
@@ -90,13 +90,7 @@ import { UploadIndicatorComponent } from '@components/upload-indicator/upload-in
         provideAuth(() => getAuth()),
         provideStorage(() => getStorage()),
         provideNativeDateAdapter(),
-        // { provide: DateAdapter, useClass: MatNativeDateModule },
-        provideHttpClient(withInterceptorsFromDi()),
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true,
-        },
+        provideHttpClient(withInterceptors([authInterceptor])),
         provideAppInitializer(initializeUserData)
     ]
 })

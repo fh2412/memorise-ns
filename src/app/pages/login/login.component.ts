@@ -1,107 +1,111 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
-import { AuthenticationService } from '@services/authentication.service';
-import { MatFormField, MatLabel, MatInput, MatError } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
-import { RegisterComponent } from './register/register.component';
-import { LoadingSpinnerComponent } from "@components/loading-spinner/loading-spinner.component";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { MatFormField, MatLabel, MatInput, MatError, MatSuffix } from '@angular/material/input';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { LoadingSpinnerComponent } from '@components/loading-spinner/loading-spinner.component';
+import { AuthenticationService, SignInResult } from '@services/authentication.service';
+import { AuthFlowService } from '@services/auth/auth-flow.service';
+import { AccountLinkRequiredError } from '@services/auth/auth-errors';
+import { sanitizeReturnUrl } from '@services/auth/return-url';
+import { SOCIAL_PROVIDER_LABELS, SocialProvider } from '@services/auth/social-auth.strategy';
+import { SocialLoginButtonsComponent } from '@components/social-login-buttons/social-login-buttons.component';
+
+type BusyAction = 'password' | 'reset' | SocialProvider;
 
 @Component({
-    selector: 'app-login',
-    templateUrl: './login.component.html',
-    styleUrls: ['./login.component.scss'],
-    imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatError, MatButton, RegisterComponent, LoadingSpinnerComponent]
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule, RouterLink, MatFormField, MatLabel, MatInput, MatError, MatSuffix,
+    MatButton, MatIconButton, MatIcon, LoadingSpinnerComponent, SocialLoginButtonsComponent,
+  ],
 })
-export class LoginComponent implements OnInit {
-  private authenticationService = inject(AuthenticationService);
-  private formBuilder = inject(FormBuilder);
-  private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
+export class LoginComponent {
+  private readonly auth = inject(AuthenticationService);
+  private readonly flow = inject(AuthFlowService);
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly route = inject(ActivatedRoute);
 
-  form!: FormGroup;
-  isActionInProgress = false;
-  isRegistering = false;
+  private readonly returnUrl = sanitizeReturnUrl(this.route.snapshot.queryParamMap.get('returnUrl'));
 
-  ngOnInit(): void {
-    this.initializeForm();
-  }
+  readonly busy = signal<BusyAction | null>(null);
+  readonly isBusy = computed(() => this.busy() !== null);
+  readonly socialBusy = computed(() => {
+    const action = this.busy();
+    return action === 'google' || action === 'apple' ? action : null;
+  });
+  readonly hidePassword = signal(true);
+  readonly pendingLink = this.auth.pendingLink;
+  readonly providerLabels = SOCIAL_PROVIDER_LABELS;
 
-  private initializeForm() {
-    this.form = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
-    });
+  readonly form = this.fb.group({
+    email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
+    password: ['', [Validators.required]],
+  });
+
+  constructor() {
+    const pendingEmail = this.pendingLink()?.email;
+    if (pendingEmail) this.form.controls.email.setValue(pendingEmail);
   }
 
   login(): void {
     if (this.form.invalid) {
-      this.showSnackBar('Please provide valid email and password.', 'OK');
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { email, password } = this.form.getRawValue();
+    void this.run('password', () => this.auth.signInWithEmail(email.trim(), password));
+  }
+
+  socialLogin(provider: SocialProvider): void {
+    void this.run(provider, () => this.auth.signInWithSocial(provider));
+  }
+
+  async resetPassword(): Promise<void> {
+    if (this.isBusy()) return;
+    const email = this.form.controls.email;
+    if (email.invalid) {
+      email.markAsTouched();
+      this.flow.notify('Please enter your email address first.');
       return;
     }
 
-    this.toggleActionState(true);
-
-    this.authenticationService.signIn(this.form.value).subscribe({
-      next: () => this.handleLoginSuccess(),
-      error: (error) => this.handleError(error, 'Login failed.')
-    });
-  }
-
-  recoverPassword(): void {
-    if (!this.form.value.email) {
-      this.showSnackBar('Please enter a valid email address.', 'OK');
-      return;
-    }
-
-    this.toggleActionState(true);
-
-    this.authenticationService.recoverPassword(this.form.value.email).subscribe({
-      next: () => {
-        this.toggleActionState(false);
-        this.showSnackBar('Password recovery email sent. Check your inbox.', 'OK');
-      },
-      error: (error) => this.handleError(error, 'Password recovery failed.')
-    });
-  }
-
-  toggleRegister(): void {
-    this.isRegistering = !this.isRegistering;
-  }
-
-  private handleLoginSuccess(): void {
-    const pendingToken = localStorage.getItem('pendingMemoryJoinToken');
-    const redirectUrl = localStorage.getItem('redirectUrl') || '/';
-    localStorage.setItem('isFirstTimeUser', 'false');
-    if (pendingToken) {
-      localStorage.removeItem('pendingMemoryJoinToken');
-      localStorage.removeItem('redirectUrl');
-
-      this.router.navigate(['/memory/join', pendingToken]);
-    } else if (redirectUrl) {
-      localStorage.removeItem('redirectUrl');
-      this.router.navigateByUrl(redirectUrl);
-    } else {
-      this.router.navigate(['/home']);
+    this.busy.set('reset');
+    try {
+      await this.auth.sendPasswordReset(email.value.trim());
+      this.flow.notify('If an account exists for this email, you will receive a reset link shortly.');
+    } catch (error) {
+      this.flow.notifyError(error);
+    } finally {
+      this.busy.set(null);
     }
   }
 
-  private handleError(error: Error, defaultMessage: string): void {
-    const message = error?.message === "Firebase: Error (auth/invalid-credential)."
-      ? "Username or Password is wrong!"
-      : error?.message || defaultMessage;
-
-    this.showSnackBar(message, 'OK');
-    this.toggleActionState(false);
+  cancelLink(): void {
+    this.auth.clearPendingLink();
   }
 
-
-  private showSnackBar(message: string, action: string): void {
-    this.snackBar.open(message, action, { duration: 5000 });
+  togglePasswordVisibility(): void {
+    this.hidePassword.update((hidden) => !hidden);
   }
 
-  private toggleActionState(isInProgress: boolean): void {
-    this.isActionInProgress = isInProgress;
+  private async run(action: BusyAction, signIn: () => Promise<SignInResult>): Promise<void> {
+    if (this.isBusy()) return; // prevents double submit
+    this.busy.set(action);
+    try {
+      const result = await signIn();
+      await this.flow.complete(result, this.returnUrl);
+    } catch (error) {
+      if (error instanceof AccountLinkRequiredError && error.email) {
+        this.form.patchValue({ email: error.email, password: '' });
+      }
+      this.flow.notifyError(error);
+    } finally {
+      this.busy.set(null);
+    }
   }
 }

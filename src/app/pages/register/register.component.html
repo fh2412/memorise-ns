@@ -1,0 +1,86 @@
+<main class="auth-page">
+  <div class="auth-content">
+    <div class="auth-logo">
+      <img src="/assets/img/logo_big.png" alt="Memorise">
+    </div>
+
+    <section class="auth-card" aria-labelledby="register-title">
+      <h1 id="register-title" class="auth-title">Create your account</h1>
+
+      <form [formGroup]="form" (ngSubmit)="register()" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput type="text" formControlName="displayName"
+                 autocomplete="name" autocapitalize="words" enterkeyhint="next" maxlength="100">
+          @if (form.controls.displayName.hasError('required') || form.controls.displayName.hasError('blank')) {
+            <mat-error>Name is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email"
+                 autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false"
+                 enterkeyhint="next" placeholder="pat@example.com">
+          @if (form.controls.email.hasError('required')) {
+            <mat-error>Email is required</mat-error>
+          } @else if (form.controls.email.hasError('email') || form.controls.email.hasError('maxlength')) {
+            <mat-error>Please enter a valid email address</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password"
+                 autocomplete="new-password" enterkeyhint="next" [attr.minlength]="passwordMinLength">
+          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()"
+                  [attr.aria-label]="hidePassword() ? 'Show password' : 'Hide password'"
+                  [attr.aria-pressed]="!hidePassword()">
+            <mat-icon>{{ hidePassword() ? 'visibility' : 'visibility_off' }}</mat-icon>
+          </button>
+          <mat-hint>At least {{ passwordMinLength }} characters</mat-hint>
+          <mat-hint align="end">{{ form.controls.password.value.length }}</mat-hint>
+          @if (form.controls.password.hasError('required')) {
+            <mat-error>Password is required</mat-error>
+          } @else if (form.controls.password.hasError('minlength')) {
+            <mat-error>Use at least {{ passwordMinLength }} characters</mat-error>
+          } @else if (form.controls.password.hasError('maxlength')) {
+            <mat-error>Password is too long</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm password</mat-label>
+          <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="confirmPassword"
+                 autocomplete="new-password" enterkeyhint="done" [errorStateMatcher]="confirmMatcher">
+          @if (form.controls.confirmPassword.hasError('required')) {
+            <mat-error>Please confirm your password</mat-error>
+          } @else if (form.hasError('passwordsMismatch')) {
+            <mat-error>Passwords do not match</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="auth-actions">
+          <button mat-flat-button type="submit" [disabled]="isBusy()" [attr.aria-busy]="busy() === 'register'"
+                  test-id="register-button">
+            @if (busy() === 'register') {
+              <app-loading-spinner [diameter]="20" [color]="'accent'" />
+            } @else {
+              Create account
+            }
+          </button>
+        </div>
+      </form>
+
+      <app-social-login-buttons [busyProvider]="socialBusy()" [disabled]="isBusy()"
+                                (selected)="socialLogin($event)" />
+
+      <p class="auth-switch">
+        Already have an account?
+        <a routerLink="/login" queryParamsHandling="preserve" test-id="login-link">Sign in</a>
+      </p>
+    </section>
+  </div>
+
+  <div class="auth-landscape" aria-hidden="true"></div>
+</main>

@@ -1,0 +1,103 @@
+// Shared, mobile-first layout for /login and /register (Capacitor-ready: safe areas, dvh, 48px touch targets)
+:host {
+  display: block;
+}
+
+.auth-page {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+
+.auth-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 24px 16px;
+
+  @media (min-width: 900px) {
+    flex-direction: row;
+    gap: 64px;
+  }
+}
+
+.auth-logo {
+  width: min(55vw, 220px);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  @media (min-width: 900px) {
+    width: min(38vw, 460px);
+  }
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-title {
+  margin: 0 0 20px;
+  text-align: center;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  line-height: 1.2;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.auth-row-end {
+  display: flex;
+  justify-content: flex-end;
+  margin: -4px 0 12px;
+}
+
+.auth-actions button {
+  width: 100%;
+  min-height: 48px;
+}
+
+.auth-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--mat-sys-secondary-container, rgba(0, 0, 0, 0.06));
+  color: var(--mat-sys-on-secondary-container, inherit);
+  font-size: 0.9rem;
+}
+
+.auth-switch {
+  margin: 20px 0 0;
+  text-align: center;
+
+  a {
+    font-weight: 500;
+    color: var(--mat-sys-primary, inherit);
+  }
+}
+
+.auth-landscape {
+  height: clamp(96px, 22vh, 220px);
+  padding-bottom: env(safe-area-inset-bottom);
+  background: url('/assets/img/mountain3.png') repeat-x bottom / auto 100%;
+}

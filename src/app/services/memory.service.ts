@@ -1,6 +1,5 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Storage } from '@angular/fire/storage';
 import { forkJoin, map, Observable, of, tap } from 'rxjs';
 import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
@@ -12,6 +11,7 @@ import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.m
 import { MemoryPhoto } from '@models/memory-photo.model';
 import { DeletePhotosResult, MemoryPlaceholder, UpdateMemoryRequest, UpdateMemoryResult } from '@models/memory-edit.model';
 import { PlanSummary } from '@models/planSummary.model';
+import { todayIso } from '@models/livePlan.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,6 @@ export class MemoryService {
   private http = inject(HttpClient);
 
   private apiUrl = `${environment.apiUrl}`; // Replace with your API endpoint
-  private storage = inject(Storage);
 
   private readonly _listVersion = signal(0);
   readonly listVersion = this._listVersion.asReadonly();
@@ -53,12 +52,12 @@ export class MemoryService {
     });
   }
 
-  getMyPlans(): Observable<PlanSummary[]> {
+  getMyPlans(today = todayIso()): Observable<PlanSummary[]> {
     return this.http
-      .get<PlanSummary[]>(`${this.apiUrl}/plans`)
+      .get<PlanSummary[]>(`${this.apiUrl}/plans`, { params: { today } })
       .pipe(map(list => list.map(p => ({ ...p, memory_id: String(p.memory_id) }))));
   }
-
+  
   getMemoryToPlan(memoryId: string): Observable<PlannedMemory> {
     return this.http.get<PlannedMemory>(`${this.apiUrl}/memories/planning/${memoryId}`, {
     });

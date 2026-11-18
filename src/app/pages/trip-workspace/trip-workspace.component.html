@@ -9,6 +9,13 @@
       (titleUpdated)="handleTitleUpdate($event)"
       (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"
       (dateFinderRequested)="openDateFinder()" />
+    @if (phase() === 'live') {
+    <a class="live-banner" [routerLink]="['/memory', memoryId, 'live']">
+      <span class="dot" aria-hidden="true"></span>
+      The trip is live – open the live view
+      <mat-icon>arrow_forward</mat-icon>
+    </a>
+    }
     <app-plan-progress-strip (datesClicked)="openDateFinder()" (startPoll)="startPollFor($event)"
       (addBooking)="openBookingDialog({ mode: 'create', draft: { kind: $event } })" />
     <div class="canvas-viewport">

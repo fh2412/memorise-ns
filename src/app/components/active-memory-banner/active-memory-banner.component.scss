@@ -56,6 +56,14 @@
       background: var(--mat-sys-on-secondary);
       animation: none;
     }
+
+    // Chips and the camera button sit on a coloured surface here, not on a photo
+    .info-chip,
+    .add-photos-icon {
+      background: color-mix(in srgb, var(--mat-sys-on-secondary-container) 10%, transparent);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+    }
   }
 }
 
@@ -131,7 +139,7 @@
 .content {
   position: relative;
   padding: 64px 20px 24px;
-  pointer-events: none; // taps fall through to .banner-link, except on the button
+  pointer-events: none; // taps fall through to .banner-link, except on the buttons
 
   @media (min-width: 600px) {
     padding: 64px 28px 28px;
@@ -158,11 +166,63 @@
   color: color-mix(in srgb, var(--banner-fg) 75%, transparent);
 }
 
-.actions {
+// Today's bookings, e.g. "Check-out 10:00 · Hotel Adria"
+.today-line {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 6px;
+  margin: 6px 0 0;
+  min-width: 0;
+  font: var(--mat-sys-body-medium);
+
+  mat-icon {
+    flex-shrink: 0;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+// Open polls + my balance
+.info-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.info-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font: var(--mat-sys-label-medium);
+  color: var(--banner-fg);
+  background: color-mix(in srgb, var(--mat-sys-surface) 70%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  mat-icon {
+    font-size: 15px;
+    width: 15px;
+    height: 15px;
+  }
+
+  // "2 polls need your vote"
+  &.attention {
+    color: var(--mat-sys-on-tertiary-container);
+    background: var(--mat-sys-tertiary-container);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap; // very narrow phones: buttons move to a second row
+  align-items: center;
+  gap: 8px 12px;
   margin-top: 16px;
 }
 
@@ -174,10 +234,23 @@
   }
 }
 
-.add-photos {
+// Secondary action: quick photo upload
+.add-photos-icon {
+  --mat-icon-button-icon-color: var(--banner-fg);
+  margin-left: auto; // pushes both buttons to the right
+  flex-shrink: 0;
+  pointer-events: auto;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--mat-sys-surface) 55%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+// Primary action: open the live view
+.open-live {
   --mat-button-filled-container-color: var(--mat-sys-secondary);
   --mat-button-filled-label-text-color: var(--mat-sys-on-secondary);
-  margin-left: auto;
+  --mat-button-filled-icon-color: var(--mat-sys-on-secondary);
   flex-shrink: 0;
   pointer-events: auto;
 }

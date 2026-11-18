@@ -26,6 +26,28 @@
     bottom: 40px;
     z-index: 10;
   }
+
+  .live-banner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 24px;
+    background: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+    font: var(--mat-sys-label-large);
+    text-decoration: none;
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mat-sys-error);
+    }
+
+    mat-icon {
+      margin-left: auto;
+    }
+  }
 }
 
 // Right Panel Sidebar

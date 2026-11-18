@@ -1,4 +1,5 @@
 import { PlanProgress } from '@models/planProgress.model';
+import { PlanPhase } from '@models/livePlan.model';
 
 export interface PlanSummaryCrewMember {
   user_id: string;
@@ -19,4 +20,5 @@ export interface PlanSummary {
   last_activity_at: string | null;
   crew_members: PlanSummaryCrewMember[];
   progress: PlanProgress;
+  phase: PlanPhase;
 }

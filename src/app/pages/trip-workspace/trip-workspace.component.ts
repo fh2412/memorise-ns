@@ -1,4 +1,4 @@
-import { Component, effect, inject, Injector, OnInit, signal, untracked } from '@angular/core';
+import { Component, effect, inject, Injector, OnInit, signal, untracked, computed } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,7 +7,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { UserService } from '@services/userService';
 import { firstValueFrom } from 'rxjs';
 import { MemoryService } from '@services/memory.service';
@@ -33,6 +33,7 @@ import { PlanProgressStripComponent } from './plan-progress-strip/plan-progress-
 import { ManualMilestoneKey } from '@models/planProgress.model';
 import { PlanCommentsPanelComponent } from './plan-comments-panel/plan-comments-panel.component';
 import { BookingDialogComponent, BookingDialogData } from './bookings/booking-dialog/booking-dialog.component';
+import { planPhase } from '@models/livePlan.model';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -57,6 +58,7 @@ import { BookingDialogComponent, BookingDialogData } from './bookings/booking-di
     MatMenuModule,
     PlanProgressStripComponent,
     PlanCommentsPanelComponent,
+    RouterLink,
   ],
   providers: [PlanBoardStore, DateFinderStore],
   templateUrl: './trip-workspace.component.html',
@@ -83,6 +85,11 @@ export class TripWorkspaceComponent implements OnInit {
   shareToken?: string;
 
   protected board = inject(PlanBoardStore);
+
+  readonly phase = computed(() => {
+    const p = this.plannedMemory();
+    return p ? planPhase(p.memory_date, p.memory_end_date) : 'planning';
+  });
 
   constructor() {
     effect(() => {

@@ -7,6 +7,8 @@ import { UserService } from '@services/userService';
 import { PlannedMemoryCardComponent } from "@components/planned-memory-card/planned-memory-card.component";
 import { PlanSummary } from '@models/planSummary.model';
 
+const PHASE_RANK: Record<string, number> = { live: 0, wrapping_up: 1 };
+
 @Component({
   selector: 'app-plans',
   imports: [MatIcon, PlannedMemoryCardComponent],
@@ -14,7 +16,6 @@ import { PlanSummary } from '@models/planSummary.model';
   styleUrl: './plans.component.scss',
 })
 export class PlansComponent implements OnInit {
-
   private userService = inject(UserService);
   private router = inject(Router);
   private memoryService = inject(MemoryService);
@@ -36,7 +37,8 @@ export class PlansComponent implements OnInit {
   private async loadMemoriesPage(): Promise<void> {
     this.isLoading = true;
     try {
-      this.plannedMemories.set(await firstValueFrom(this.memoryService.getMyPlans()));
+      const plans = await firstValueFrom(this.memoryService.getMyPlans());
+      this.plannedMemories.set([...plans].sort((a, b) => (PHASE_RANK[a.phase] ?? 2) - (PHASE_RANK[b.phase] ?? 2)));
     } catch (error) {
       console.error('Error loading planned memories:', error);
     } finally {
@@ -46,7 +48,7 @@ export class PlansComponent implements OnInit {
 
   handleTitleUpdate(event: { memoryId: string; title: string }) {
     // 1. Optimistically update local state so the UI feels instant
-    this.plannedMemories.update(memories => 
+    this.plannedMemories.update(memories =>
       memories.map(m => m.memory_id === event.memoryId ? { ...m, title: event.title } : m)
     );
 

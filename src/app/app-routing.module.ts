@@ -28,6 +28,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'memory/:id/live',
+    loadComponent: () => import('./pages/live-memory/live-memory.component').then(m => m.LiveMemoryComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'memory/:id/gallery',
     loadComponent: () => import('./pages/memory-detail/image-gallery/image-gallery.component').then(m => m.ImageGalleryComponent),
     canActivate: [authGuard]

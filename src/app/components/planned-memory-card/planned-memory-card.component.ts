@@ -24,6 +24,8 @@ export class PlannedMemoryCardComponent {
 
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
 
+  readonly isLive = computed(() => this.plan().phase === 'live');
+
   constructor() {
     // 3. This effect automatically runs whenever the 'titleInput' signal changes
     effect(() => {
@@ -39,10 +41,8 @@ export class PlannedMemoryCardComponent {
   }
 
   navigateToWorkspace(): void {
-    // Prevent navigating if the user is currently typing a new name
-    //if (this.isEditing()) return;
-
-    this.router.navigate(['plans/trip-workspace', this.plan().memory_id]);
+    if (this.isLive()) this.router.navigate(['/memory', this.plan().memory_id, 'live']);
+    else this.router.navigate(['plans/trip-workspace', this.plan().memory_id]);
   }
 
   isUntitled = computed(() => {

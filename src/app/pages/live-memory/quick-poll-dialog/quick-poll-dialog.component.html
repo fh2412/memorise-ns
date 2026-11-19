@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>Quick poll</h2>
+
+<mat-dialog-content class="quick-poll">
+  <input class="question" maxlength="200" placeholder="Pizza or sushi tonight?" aria-label="Question"
+         [value]="question()" (input)="question.set($any($event.target).value)" />
+
+  @for (o of options(); track o.key; let i = $index) {
+    <div class="option-row">
+      <input class="option" maxlength="200" [placeholder]="'Option ' + (i + 1)" [attr.aria-label]="'Option ' + (i + 1)"
+             [value]="o.label" (input)="setLabel(o.key, $any($event.target).value)"
+             (keydown.enter)="$event.preventDefault(); addOption()" />
+      <button mat-icon-button type="button" aria-label="Remove option" [disabled]="options().length <= 2"
+              (click)="removeOption(o.key)">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  }
+  <button mat-button type="button" class="add" (click)="addOption()"><mat-icon>add</mat-icon> Add option</button>
+
+  <h3>Voting closes in</h3>
+  <mat-button-toggle-group [value]="closes()" (change)="closes.set($event.value)" aria-label="Voting closes in">
+    @for (p of presets; track p.key) { <mat-button-toggle [value]="p.key">{{ p.label }}</mat-button-toggle> }
+  </mat-button-toggle-group>
+
+  <h3>Topic</h3>
+  <div class="chips" role="radiogroup" aria-label="Topic">
+    @for (c of categories; track c.key) {
+      <button type="button" class="chip" role="radio" [attr.aria-checked]="category() === c.key"
+              [class.selected]="category() === c.key" (click)="category.set(c.key)">
+        <mat-icon>{{ c.icon }}</mat-icon>{{ c.label }}
+      </button>
+    }
+  </div>
+
+  <mat-slide-toggle [checked]="multiple()" (change)="multiple.set($event.checked)">Allow multiple choices</mat-slide-toggle>
+  <p class="muted">Everyone can add options while voting is open.</p>
+
+  @if (error(); as err) { <p class="error" role="alert">{{ err }}</p> }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" mat-dialog-close>Cancel</button>
+  <button mat-flat-button type="button" (click)="create()"><mat-icon>bolt</mat-icon> Start poll</button>
+</mat-dialog-actions>

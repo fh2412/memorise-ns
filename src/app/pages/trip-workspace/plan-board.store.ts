@@ -83,6 +83,7 @@ export class PlanBoardStore {
 
   // ---------- items ----------
   private readonly _items = signal<PlanItem[]>([]);
+  private pollMs = POLL_MS;
   readonly items = this._items.asReadonly();
   readonly viewer = signal<PlanViewer | null>(null);
   readonly isLoading = signal(false);
@@ -346,7 +347,12 @@ export class PlanBoardStore {
 
   private startPolling(): void {
     this.stopPolling();
-    this.pollTimer = setInterval(() => void this.poll(), POLL_MS);
+    this.pollTimer = setInterval(() => void this.poll(), this.pollMs);
+  }
+  
+  setPollInterval(ms: number): void {
+    this.pollMs = ms;
+    if (this.pollTimer) this.startPolling();
   }
 
   private stopPolling(): void {
@@ -640,5 +646,4 @@ export class PlanBoardStore {
       }
     });
   }
-
 }

@@ -32,6 +32,7 @@ export class MemoryAddPhotosComponent {
   readonly memoryId = input.required<string>();
   /** Emits the number of queued photos – e.g. to close a dialog/panel. */
   readonly uploadStarted = output<number>();
+  readonly navigateAfterUpload = input(true);
 
   protected readonly photos = signal<PickedPhoto[]>([]);
   protected readonly starting = signal(false);
@@ -78,7 +79,9 @@ export class MemoryAddPhotosComponent {
       this.photos.set([]);
       this.uploadStarted.emit(queued);
 
-      await this.router.navigate(['/memory', this.memoryId()]);
+      if (this.navigateAfterUpload()) {
+        await this.router.navigate(['/memory', this.memoryId()]);
+      }
     } catch (err) {
       this.error.set(
         err instanceof HttpErrorResponse && err.status === 409

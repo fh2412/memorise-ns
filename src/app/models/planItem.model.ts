@@ -77,22 +77,6 @@ export interface PlanEvent {
   target_user_id: string | null;
 }
 
-export type PlanPhase = 'planning' | 'upcoming' | 'live' | 'wrapping_up' | 'archived';
-const WRAP_UP_DAYS = 7;
-
-const isoDay = (d: Date) =>
-  `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-export function planPhase(start?: string | null, end?: string | null, now = new Date()): PlanPhase {
-  if (!start) return 'planning';
-  const today = isoDay(now);
-  const s = start.slice(0, 10);
-  const e = (end || start).slice(0, 10);
-  if (today < s) return 'upcoming';
-  if (today <= e) return 'live';
-  const [y, m, d] = e.split('-').map(Number);
-  return today <= isoDay(new Date(y, m - 1, d + WRAP_UP_DAYS)) ? 'wrapping_up' : 'archived';
-}
 
 export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
   item_created: { verb: 'added', icon: 'add_circle' },
@@ -125,6 +109,10 @@ export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
   booking_booked: { verb: 'booked', icon: 'verified' },
   booking_cancelled: { verb: 'cancelled the booking', icon: 'cancel' },
   booking_updated: { verb: 'updated the booking', icon: 'edit_calendar' },
+  expense_added: { verb: 'added the expense', icon: 'add_card' },
+  expense_updated: { verb: 'edited the expense', icon: 'edit_note' },
+  expense_deleted: { verb: 'deleted the expense', icon: 'money_off' },
+  currency_updated: { verb: 'set the settlement currency to', icon: 'currency_exchange' },
 };
 export const PLAN_EVENT_FALLBACK = { verb: 'updated', icon: 'bolt' };
 

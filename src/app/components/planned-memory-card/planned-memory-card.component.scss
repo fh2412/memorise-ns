@@ -7,12 +7,12 @@
   height: 120px;
   width: 100%;
   cursor: pointer;
-  
+
   // Clean, high-performance hover transformation parameters
-  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
-              background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
     transform: translateY(-2px);
@@ -91,7 +91,7 @@
   color: var(--mat-sys-on-surface-variant);
   opacity: 0.6;
   transition: opacity 0.15s ease-in-out;
-  
+
   &:hover {
     opacity: 1;
   }
@@ -175,11 +175,11 @@
   padding-left: 10px;
 
   .avatar-bubble {
-    width: 32px;  
-    height: 32px; 
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     border: 2px solid var(--mat-sys-surface-container-high);
-    margin-left: -10px; 
+    margin-left: -10px;
     background: var(--mat-sys-primary-container);
     color: var(--mat-sys-on-primary-container);
     display: flex;
@@ -200,5 +200,25 @@
       color: var(--mat-sys-on-surface-variant);
       font-size: 0.7rem;
     }
+  }
+}
+
+.live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-right: 6px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: vat(--mat-sys-error);
   }
 }

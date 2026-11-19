@@ -76,7 +76,7 @@
             <li>
               <span class="name">{{ nameOf(p) }}</span>
               <input class="share-input" inputmode="decimal" placeholder="0.00" [attr.aria-label]="'Share of ' + p.name"
-                     [value]="custom()[p.key] ?? ''" (input)="setCustom(p.key, $any($event.target).value)" />
+                     [value]="custom()[p.key]" (input)="setCustom(p.key, $any($event.target).value)" />
             </li>
           }
         </ul>

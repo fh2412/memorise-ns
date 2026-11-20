@@ -19,6 +19,7 @@ export interface PlanSummary {
   location: { city: string; country: string } | null;
   last_activity_at: string | null;
   crew_members: PlanSummaryCrewMember[];
+  destination_label: string | null;
   progress: PlanProgress;
   phase: PlanPhase;
 }

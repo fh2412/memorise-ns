@@ -20,7 +20,7 @@ export const MILESTONE_META: Record<MilestoneKey, { label: string; icon: string 
 /** Mirror of the backend's buildProgress: derived data wins over manual states. */
 export function buildProgress(input: {
   hasDates: boolean;
-  hasLocation: boolean;
+  hasDestination: boolean;
   decided: ReadonlySet<string>;
   manual: readonly ManualMilestone[];
   todos: TodoCount;
@@ -29,7 +29,7 @@ export function buildProgress(input: {
   return {
     milestones: MILESTONES.map((key): MilestoneStatus => {
       const auto = key === 'dates' ? input.hasDates
-        : key === 'destination' ? input.hasLocation || input.decided.has('destination')
+        : key === 'destination' ? input.hasDestination      // decided polls no longer count on their own
         : input.decided.has(key);
       if (auto) return { key, state: 'done', source: 'auto' };
       const state = key === 'dates' ? undefined : manual.get(key);

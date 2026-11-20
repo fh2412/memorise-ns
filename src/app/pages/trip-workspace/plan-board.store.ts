@@ -4,7 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { PlanItemService } from '@services/plan-item.service';
 import { Observable } from 'rxjs';
 import { CrewMember } from '@models/userInterface.model';
-import { PlanLocation } from '@models/memoryInterface.model';
+import { PlanLocation, PlanDestination } from '@models/memoryInterface.model';
 import { PlanPollService } from '@services/plan-poll.service';
 import {
   NewPlanItem, PLAN_CATEGORIES, PLAN_ITEM_TYPES, PlanCategory, PlanEvent, PlanItem, PlanItemPatch, PlanViewer, DecidePollBody, NewPoll, NewPollOption, PollOptionPatch, PollSettingsPatch, HIDDEN_EVENT_ACTIONS, REACTIONS, ReactionKey, ReactionSummary
@@ -15,6 +15,7 @@ import { PlanBookingService } from '@services/plan-booking.service';
 import { LinkPreviewService } from '@services/link-preview.service';
 import { BookingInput, NewBooking } from '@models/planBooking.model';
 import { readLinkPayload } from './link-preview/link-utils';
+import { PlanDestinationService } from '@services/plan-destination.service';
 
 export type PlanColumn = (typeof PLAN_CATEGORIES)[number] & { items: PlanItem[] };
 
@@ -37,7 +38,7 @@ const coalesceKey = (e: PlanEvent): string | null => {
   return group ? `${e.user_id}|${group}|${e.item_id ?? ''}` : null;
 };
 
-const BOARD_ACTION = /^(item_|poll_|comment_|milestone_|destination_set$)/;
+const BOARD_ACTION = /^(item_|poll_|comment_|milestone_|booking_|destination_)/;
 
 const seenKey = (memoryId: string) => `memorise.plan.${memoryId}.lastSeenEvent`;
 const readSeen = (memoryId: string): number => {
@@ -77,7 +78,7 @@ export class PlanBoardStore {
   private bookingApi = inject(PlanBookingService);
   private previewApi = inject(LinkPreviewService);
   private commentApi = inject(PlanCommentService);
-
+  private destinationApi = inject(PlanDestinationService);
 
   private memoryId = '';
 
@@ -90,7 +91,9 @@ export class PlanBoardStore {
   readonly error = signal<string | null>(null);
   readonly remoteEvents = signal<PlanEvent[]>([]);
   readonly crew = signal<CrewMember[]>([]);
-  readonly destination = signal<PlanLocation | null>(null);
+  readonly destinationInfo = signal<PlanDestination | null>(null);
+  readonly destination = computed(() => this.destinationInfo()?.location ?? null);
+  readonly hasDestination = computed(() => !!this.destinationInfo());
   readonly planVersion = signal(0);
 
   readonly canManagePoll = computed(() => {
@@ -168,7 +171,7 @@ export class PlanBoardStore {
     const { done, total } = this.todoProgress();
     return buildProgress({
       hasDates: this.hasDates(),
-      hasLocation: !!this.destination(),
+      hasDestination: this.hasDestination(),
       decided,
       manual: this.milestoneStates(),
       todos: { done, total },
@@ -297,6 +300,7 @@ export class PlanBoardStore {
       this._items.update(list => list.filter(i => i.item_id !== itemId));
       try {
         await firstValueFrom(this.api.deleteItem(this.memoryId, itemId));
+        if (removed.type === 'poll' && removed.category === 'destination') this.planVersion.update(v => v + 1);
       } catch (err) {
         console.error('Failed to delete plan item:', err);
         this._items.update(list => [...list, removed]);
@@ -349,7 +353,7 @@ export class PlanBoardStore {
     this.stopPolling();
     this.pollTimer = setInterval(() => void this.poll(), this.pollMs);
   }
-  
+
   setPollInterval(ms: number): void {
     this.pollMs = ms;
     if (this.pollTimer) this.startPolling();
@@ -388,8 +392,7 @@ export class PlanBoardStore {
       const remote = incoming.filter(e => e.user_id !== me);
       if (remote.length) this.remoteEvents.set(remote);
       // Only item events require reloading the board (availability changes don't)
-      if (remote.some(e => e.action.startsWith('item_'))) this.itemsStale = true;
-      if (this.itemsStale) await this.refreshItems();
+      if (remote.some(e => BOARD_ACTION.test(e.action))) this.itemsStale = true; if (this.itemsStale) await this.refreshItems();
     } catch (err) {
       if (err instanceof HttpErrorResponse && err.status === 404) {
         this.stopPolling();
@@ -498,8 +501,11 @@ export class PlanBoardStore {
       () => this.pollApi.deleteOption(this.memoryId, itemId, optionId));
   }
 
-  reopenPoll(itemId: number): Promise<PlanItem | null> {
-    return this.pollWrite('Could not reopen the poll', () => this.pollApi.reopen(this.memoryId, itemId));
+  async reopenPoll(itemId: number): Promise<PlanItem | null> {
+    const isDestination = this._items().find(i => i.item_id === itemId)?.category === 'destination';
+    const saved = await this.pollWrite('Could not reopen the poll', () => this.pollApi.reopen(this.memoryId, itemId));
+    if (saved && isDestination) this.planVersion.update(v => v + 1);
+    return saved;
   }
 
   decidePoll(itemId: number, body: DecidePollBody): Promise<{ needsLocation: boolean } | null> {
@@ -518,13 +524,6 @@ export class PlanBoardStore {
     });
   }
 
-  async setPollDestination(itemId: number, location: PlanLocation): Promise<PlanItem | null> {
-    const saved = await this.pollWrite('Could not set the destination',
-      () => this.pollApi.setDestination(this.memoryId, itemId, location));
-    if (saved) this.planVersion.update(v => v + 1);
-    return saved;
-  }
-
   /** On failure: mark stale and re-sync from the server instead of a manual rollback. */
   private pollWrite(
     fallback: string,
@@ -541,6 +540,38 @@ export class PlanBoardStore {
         this.error.set(apiMessage(err, fallback));
         this.itemsStale = true;
         return null;
+      }
+    });
+  }
+
+  // ---------- destination (owner) ----------
+
+  /** location: undefined = keep the pin, null = name only, object = new pin. */
+  setDestination(label: string, location?: PlanLocation | null): Promise<boolean> {
+    return this.tracked(true, async () => {
+      try {
+        this.destinationInfo.set(await firstValueFrom(this.destinationApi.set(this.memoryId, label, location)));
+        this.planVersion.update(v => v + 1); // header reloads the plan
+        return true;
+      } catch (err) {
+        console.error('Failed to save destination:', err);
+        this.error.set(apiMessage(err, 'Could not save the destination'));
+        return false;
+      }
+    });
+  }
+
+  removeDestination(): Promise<boolean> {
+    return this.tracked(true, async () => {
+      try {
+        await firstValueFrom(this.destinationApi.remove(this.memoryId));
+        this.destinationInfo.set(null);
+        this.planVersion.update(v => v + 1);
+        return true;
+      } catch (err) {
+        console.error('Failed to remove destination:', err);
+        this.error.set(apiMessage(err, 'Could not remove the destination'));
+        return false;
       }
     });
   }

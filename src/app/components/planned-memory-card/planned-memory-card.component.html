@@ -46,6 +46,10 @@
         Dates TBD
         }
       </span>
+      @if (plan().destination_label) {
+      <mat-icon class="meta-icon">place</mat-icon>
+      <span class="meta-text">{{ plan().destination_label }}</span>
+      }
     </div>
 
     <div class="card-footer">

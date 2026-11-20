@@ -36,6 +36,19 @@
   <ng-template matMenuContent let-step="step">
     <button mat-menu-item disabled><span>{{ step.tooltip }}</span></button>
 
+    <!-- Destination: set / change directly (owner) -->
+    @if (step.key === 'destination' && isOwner()) {
+    <button mat-menu-item (click)="destinationClicked.emit()">
+      <mat-icon>edit_location_alt</mat-icon>
+      <span>{{ step.state === 'done' ? 'Change destination' : 'Set destination' }}</span>
+    </button>
+    @if (needsPin()) {
+    <button mat-menu-item (click)="pinRequested.emit()">
+      <mat-icon>add_location_alt</mat-icon><span>Pick on map</span>
+    </button>
+    }
+    }
+
     @if (step.state === 'open') {
     <button mat-menu-item (click)="startPoll.emit(step.key)">
       <mat-icon>how_to_vote</mat-icon><span>Start a poll</span>
@@ -48,7 +61,8 @@
     }
 
     @if (isOwner() && step.source !== 'auto') {
-    @if (step.state !== 'done') {
+    <!-- Destination is completed by setting one, not by "Mark as done" -->
+    @if (step.state !== 'done' && step.key !== 'destination') {
     <button mat-menu-item (click)="set(step.key, 'done')">
       <mat-icon>check_circle</mat-icon><span>Mark as done</span>
     </button>

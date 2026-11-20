@@ -43,6 +43,8 @@ export interface PlannedMemory {
   title_pic: string;
   memory_date: string | null;
   memory_end_date: string | null;
+  location?: (PlanLocation & { location_id: number }) | null;
+  destination?: PlanDestination | null;
   crew_members?: CrewMember[];
   isPinned?: boolean;
 }
@@ -125,13 +127,9 @@ export interface PlanLocation {
   countryCode: string;
 }
 
-export interface PlannedMemory {
-  memory_id: string;
-  title?: string;
-  title_pic: string;
-  memory_date: string | null;
-  memory_end_date: string | null;
-  location?: (PlanLocation & { location_id: number }) | null;
-  crew_members?: CrewMember[];
-  isPinned?: boolean;
+export interface PlanDestination {
+  label: string;
+  location: PlanLocation | null;   // null = name only, no map pin yet
+  has_coordinates: boolean;
+  source_poll_id: number | null;   // decided poll it came from; null = set directly
 }

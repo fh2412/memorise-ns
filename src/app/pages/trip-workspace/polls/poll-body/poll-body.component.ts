@@ -1,15 +1,16 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, signal } from '@angular/core';
+// trip-workspace/polls/poll-body/poll-body.component.ts  (full replacement)
+// Change: "Set destination location" removed – the header is the single place for the map pin.
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, Injector, input, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { PlanItem } from '@models/planItem.model';
+import { BookingKind } from '@models/planBooking.model';
 import { PlanBoardStore } from '../../plan-board.store';
 import { DecidePollData, DecidePollDialogComponent, DecidePollResult } from '../decide-poll-dialog/decide-poll-dialog.component';
-import { formatLocation, pickLocation } from '../location-utils';
-import { Injector } from '@angular/core';
-import { BookingKind } from '@models/planBooking.model';
+import { formatLocation } from '../location-utils';
 import { BookingDialogComponent, BookingDialogData } from '../../bookings/booking-dialog/booking-dialog.component';
 
 const rtf = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
@@ -114,11 +115,10 @@ export class PollBodyComponent {
     });
   });
 
-  readonly needsDestination = computed(() => {
-    const p = this.poll();
-    if (!this.decided() || this.item().category !== 'destination') return false;
-    return !p.options.find(o => o.option_id === p.decided_option_id)?.location;
-  });
+  /** A decided destination poll that is (still) the plan's destination. */
+  readonly isPlanDestination = computed(() =>
+    this.decided() && this.item().category === 'destination'
+    && this.store.destinationInfo()?.source_poll_id === this.item().item_id);
 
   readonly canCreateBooking = computed(() => {
     const category = this.item().category;
@@ -162,14 +162,6 @@ export class PollBodyComponent {
     if (!result) return;
     this.busy.set(true);
     await this.store.decidePoll(this.item().item_id, result);
-    this.busy.set(false);
-  }
-
-  async setLocation(): Promise<void> {
-    const loc = await pickLocation(this.dialog, this.store.destination());
-    if (!loc) return;
-    this.busy.set(true);
-    await this.store.setPollDestination(this.item().item_id, loc);
     this.busy.set(false);
   }
 

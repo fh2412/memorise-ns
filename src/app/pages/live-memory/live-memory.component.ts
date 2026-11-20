@@ -23,12 +23,12 @@ import { PlanItemDialogComponent, PlanItemDialogData } from '../trip-workspace/p
 import { PollDialogComponent, PollDialogData } from '../trip-workspace/polls/poll-dialog/poll-dialog.component';
 import { BookingDialogComponent, BookingDialogData } from '../trip-workspace/bookings/booking-dialog/booking-dialog.component';
 import { formatRange } from '../trip-workspace/date-finder/date-utils';
-import { formatLocation } from '../trip-workspace/polls/location-utils';
 import { ExpenseStore } from './expenses/expense.store';
 import { ExpensesPanelComponent } from './expenses/expenses-panel/expenses-panel.component';
 import { balanceText, openExpenseDialog } from './expenses/expense-utils';
 import { QuickPollDialogComponent } from './quick-poll-dialog/quick-poll-dialog.component';
 import { MemoryAddPhotosComponent } from '@components/memory-add-photos/memory-add-photos.component';
+import { pinDestinationOnMap, showDestinationDialog } from '../trip-workspace/destination/destination-utils';
 
 const LIVE_POLL_MS = 5_000;
 enum Tab { Today, Polls, Expenses, Plan, Photos }
@@ -64,6 +64,8 @@ export class LiveMemoryComponent implements OnInit {
   readonly plan = signal<PlannedMemory | null>(null);
   readonly isLoading = signal(true);
   readonly tab = signal<Tab>(Tab.Today);
+  readonly isOwner = computed(() => this.board.viewer()?.isOwner ?? false);
+  readonly destination = computed(() => this.plan()?.destination ?? null);
 
   /** Re-evaluated every minute so "today" and closed polls stay correct. */
   private readonly now = signal(Date.now());
@@ -85,7 +87,6 @@ export class LiveMemoryComponent implements OnInit {
     const p = this.plan();
     return p?.memory_date ? formatRange(p.memory_date, p.memory_end_date) : '';
   });
-  readonly destinationLabel = computed(() => formatLocation(this.plan()?.location ?? null));
 
   readonly todayEvents = computed(() => {
     const t = this.today();
@@ -136,14 +137,13 @@ export class LiveMemoryComponent implements OnInit {
       }
     });
     effect(() => this.board.crew.set(this.plan()?.crew_members ?? []));
-    effect(() => this.board.destination.set(this.plan()?.location ?? null));
-    effect(() => this.board.hasDates.set(!!this.plan()?.memory_date));
+    effect(() => this.board.destinationInfo.set(this.plan()?.destination ?? null));    effect(() => this.board.hasDates.set(!!this.plan()?.memory_date));
     effect(() => {
       if (this.board.planVersion() > 0) untracked(() => void this.refreshPlan());
     });
     effect(() => {
       const events = this.board.remoteEvents();
-      if (events.some(e => ['dates_set', 'dates_cleared', 'destination_set'].includes(e.action))) {
+      if (events.some(e => e.action.startsWith('dates_') || e.action.startsWith('destination_'))) {
         untracked(() => void this.refreshPlan());
       }
     });
@@ -228,6 +228,14 @@ export class LiveMemoryComponent implements OnInit {
 
   onUploadStarted(count: number): void {
     this.snackBar.open(`${count} photo${count === 1 ? '' : 's'} uploading in the background`, 'OK', { duration: 3000 });
+  }
+
+  openDestinationDialog(): void {
+    showDestinationDialog(this.dialog, this.injector);
+  }
+  
+  pinDestination(): void {
+    void pinDestinationOnMap(this.dialog, this.board);
   }
 
   // ---------- loading ----------

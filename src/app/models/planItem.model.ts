@@ -99,6 +99,8 @@ export const PLAN_EVENT_META: Record<string, { verb: string; icon: string }> = {
   poll_decided: { verb: 'picked', icon: 'emoji_events' },
   poll_reopened: { verb: 'reopened', icon: 'replay' },
   destination_set: { verb: 'set the destination to', icon: 'place' },
+  destination_located: { verb: 'pinned the destination', icon: 'add_location_alt' },
+  destination_cleared: { verb: 'removed the destination', icon: 'wrong_location' },
   item_assigned: { verb: 'assigned', icon: 'person_add' },
   milestone_done: { verb: 'checked off', icon: 'flag' },
   milestone_skipped: { verb: 'marked as not needed:', icon: 'do_not_disturb_on' },

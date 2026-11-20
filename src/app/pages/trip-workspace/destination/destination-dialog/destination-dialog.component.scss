@@ -1,0 +1,59 @@
+.destination-dialog {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px !important;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font: var(--mat-sys-label-large);
+  color: var(--mat-sys-on-surface-variant);
+
+  input {
+    padding: 12px 14px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: 10px;
+    background: var(--mat-sys-surface-container-low);
+    color: var(--mat-sys-on-surface);
+    font: var(--mat-sys-body-large);
+
+    &:focus { outline: 2px solid var(--mat-sys-primary); outline-offset: -1px; }
+  }
+}
+
+.pin {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--mat-sys-surface-container-high);
+
+  .pin-icon { color: var(--mat-sys-primary); }
+  .pin-text { flex: 1 1 160px; min-width: 0; overflow-wrap: anywhere; }
+}
+
+.muted { color: var(--mat-sys-on-surface-variant) !important; }
+
+.hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon { flex-shrink: 0; font-size: 18px; width: 18px; height: 18px; }
+}
+
+.error { margin: 0; color: var(--mat-sys-error); }
+
+mat-dialog-actions {
+  display: flex;
+  .spacer { flex: 1; }
+  .remove.armed { color: var(--mat-sys-error); }
+}

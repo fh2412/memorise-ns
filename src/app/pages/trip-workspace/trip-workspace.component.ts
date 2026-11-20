@@ -34,6 +34,7 @@ import { ManualMilestoneKey } from '@models/planProgress.model';
 import { PlanCommentsPanelComponent } from './plan-comments-panel/plan-comments-panel.component';
 import { BookingDialogComponent, BookingDialogData } from './bookings/booking-dialog/booking-dialog.component';
 import { planPhase } from '@models/livePlan.model';
+import { pinDestinationOnMap, showDestinationDialog } from './destination/destination-utils';
 
 @Component({
   selector: 'app-trip-workspace',
@@ -106,16 +107,8 @@ export class TripWorkspaceComponent implements OnInit {
       if (this.sidebarTab() === 1) this.board.markEventsSeen();
     });
 
-    effect(() => {
-      const events = this.board.remoteEvents();
-      if (events.some(e => e.action === 'dates_set' || e.action === 'dates_cleared')) {
-        untracked(() => void this.refreshPlan());
-      }
-    });
-
     effect(() => this.board.crew.set(this.crew()));
-    effect(() => this.board.destination.set(this.plannedMemory()?.location ?? null))
-
+    effect(() => this.board.destinationInfo.set(this.plannedMemory()?.destination ?? null));
     // My own destination change → reload the header
     effect(() => {
       if (this.board.planVersion() > 0) untracked(() => void this.refreshPlan());
@@ -124,7 +117,7 @@ export class TripWorkspaceComponent implements OnInit {
     // Replace the existing remote-dates effect with this one (adds destination_set)
     effect(() => {
       const events = this.board.remoteEvents();
-      if (events.some(e => ['dates_set', 'dates_cleared', 'destination_set'].includes(e.action))) {
+      if (events.some(e => e.action.startsWith('dates_') || e.action.startsWith('destination_'))) {
         untracked(() => void this.refreshPlan());
       }
     });
@@ -193,6 +186,10 @@ export class TripWorkspaceComponent implements OnInit {
     });
   }
 
+  openDestinationDialog(): void {
+    showDestinationDialog(this.dialog, this.injector);
+  }
+
   private async loadMemoriesPage(): Promise<void> {
     this.isLoading.set(true);
 
@@ -220,6 +217,10 @@ export class TripWorkspaceComponent implements OnInit {
         console.error('Failed to save title backend side:', err);
       }
     });
+  }
+
+  pinDestination(): void {
+    void pinDestinationOnMap(this.dialog, this.board);
   }
 
   addCrewMember() {

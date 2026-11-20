@@ -27,8 +27,7 @@
         <p>The plan's destination will be set to <strong>{{ formatLocation(loc) }}</strong>.</p>
         <button mat-button type="button" (click)="pick()">Change on map</button>
       } @else {
-        <p>"{{ s.label }}" has no location yet. Pin it now, or set it later from the poll card.</p>
-        <button mat-stroked-button type="button" (click)="pick()">
+        <p>"{{ s.label }}" has no location yet. Pin it now, or later from the trip header.</p>        <button mat-stroked-button type="button" (click)="pick()">
           <mat-icon>add_location_alt</mat-icon> Pick on map
         </button>
       }

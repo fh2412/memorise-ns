@@ -6,9 +6,10 @@
 <div class="workspace-container">
   <main class="board-area">
     <app-trip-ws-header [plan]="plannedMemory()!" [currentView]="currentView()"
-      (titleUpdated)="handleTitleUpdate($event)"
+      [isOwner]="board.viewer()?.isOwner ?? false" (titleUpdated)="handleTitleUpdate($event)"
       (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"
-      (dateFinderRequested)="openDateFinder()" />
+      (dateFinderRequested)="openDateFinder()" (destinationRequested)="openDestinationDialog()"
+      (pinRequested)="pinDestination()" />
     @if (phase() === 'live') {
     <a class="live-banner" [routerLink]="['/memory', memoryId, 'live']">
       <span class="dot" aria-hidden="true"></span>
@@ -16,7 +17,8 @@
       <mat-icon>arrow_forward</mat-icon>
     </a>
     }
-    <app-plan-progress-strip (datesClicked)="openDateFinder()" (startPoll)="startPollFor($event)"
+    <app-plan-progress-strip (datesClicked)="openDateFinder()" (destinationClicked)="openDestinationDialog()"
+      (pinRequested)="pinDestination()" (startPoll)="startPollFor($event)"
       (addBooking)="openBookingDialog({ mode: 'create', draft: { kind: $event } })" />
     <div class="canvas-viewport">
       @if (board.isLoading()) {

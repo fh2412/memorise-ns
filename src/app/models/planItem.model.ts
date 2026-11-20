@@ -6,6 +6,7 @@ import { BookingData } from '@models/planBooking.model';
 export type PlanItemType = 'note' | 'idea' | 'todo' | 'link' | 'poll' | 'booking';
 export type PlanItemStatus = 'open' | 'decided' | 'done' | 'dismissed';
 export type PlanCategory = 'dates' | 'destination' | 'stay' | 'transport' | 'activity' | 'other';
+export type PollCategory = Exclude<PlanCategory, 'dates'>;
 
 export interface PlanViewer {
   userId: CrewMember['user_id'];
@@ -145,8 +146,13 @@ export interface PollData {
   options: PollOption[];
 }
 
-export type PollCategory = Exclude<PlanCategory, 'dates'>;
-export const POLL_CATEGORIES = PLAN_CATEGORIES.filter(c => c.key !== 'dates');
+type PlanCategoryOption = (typeof PLAN_CATEGORIES)[number];
+export type PollCategoryOption = PlanCategoryOption & { key: PollCategory };
+
+export const POLL_CATEGORIES = PLAN_CATEGORIES.filter(
+  (c): c is PollCategoryOption => c.key !== 'dates'
+);
+
 export const POLL_QUESTIONS: Record<PollCategory, string> = {
   destination: 'Where should we go?',
   stay: 'Where should we stay?',

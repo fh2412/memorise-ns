@@ -2,7 +2,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '@environments/environment';
+import { environment } from '../../environments/environment';
 import { CurrencyInput, ExpenseInput, Ledger, ParticipantKey } from '@models/livePlan.model';
 
 /** Every call returns the full, recalculated ledger. */

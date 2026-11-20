@@ -74,7 +74,7 @@
         @for (cur of rateCurrencies(); track cur) {
           <label class="field">
             <span>1 {{ cur }} =</span>
-            <input inputmode="decimal" placeholder="0.0000" [value]="rateDrafts()[cur] ?? ''"
+            <input inputmode="decimal" placeholder="0.0000" [value]="rateDrafts()[cur]"
                    (input)="setRate(cur, $any($event.target).value)" />
             <span>{{ baseDraft() }}</span>
           </label>

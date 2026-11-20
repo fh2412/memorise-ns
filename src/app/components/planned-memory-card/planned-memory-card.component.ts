@@ -2,7 +2,6 @@ import { Component, computed, effect, ElementRef, inject, input, output, signal,
 import { MatIcon } from "@angular/material/icon";
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PlannedMemory } from '@models/memoryInterface.model';
 import { Router } from '@angular/router';
 import { PlanSummary } from '@models/planSummary.model';
 import { PlanProgressSummaryComponent } from '@components/plan-progress-summary/plan-progress-summary.component';

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { forkJoin, map, Observable, of, tap } from 'rxjs';
-import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { Memory, MemoryJoinResponse, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
@@ -181,7 +181,7 @@ export class MemoryService {
     // Diffs for Placeholders
     const addedPlaceholders = Array.from(newPlaceholders.entries())
       .filter(([id]) => !oldPlaceholders.has(id))
-      .map(([_, member]) => member);
+      .map(([, member]) => member);
 
     const removedPlaceholderIds = Array.from(oldPlaceholders.keys()).filter(id => !newPlaceholders.has(id));
 

@@ -2,7 +2,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
-import { environment } from '../environments/environment'; // same source as PlanItemService
+import { environment } from '../../environments/environment'; // same source as PlanItemService
 import { PlanDestination, PlanLocation } from '@models/memoryInterface.model';
 
 @Injectable({ providedIn: 'root' })

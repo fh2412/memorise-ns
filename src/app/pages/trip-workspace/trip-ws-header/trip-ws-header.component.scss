@@ -50,7 +50,7 @@
       max-width: 100%;
       padding: 4px 8px;
       border: 0;
-      border-radius: 8px;
+      border-radius: 16px;
       background: transparent;
       color: var(--mat-sys-on-surface-variant);
       font: inherit;
@@ -58,10 +58,16 @@
       cursor: pointer;
       transition: background-color 0.2s ease;
 
-      &:hover { background-color: var(--mat-sys-surface-container-highest); }
-      &:focus-visible { outline: 2px solid var(--mat-sys-primary); outline-offset: 1px; }
+      &:hover {
+        background-color: var(--mat-sys-surface-container-highest);
+      }
 
-      > span:not(.countdown-tag) {
+      &:focus-visible {
+        outline: 2px solid var(--mat-sys-primary);
+        outline-offset: 1px;
+      }
+
+      >span:not(.countdown-tag) {
         min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -77,15 +83,29 @@
 
       &.static {
         cursor: default;
-        &:hover { background: transparent; }
+
+        &:hover {
+          background: transparent;
+        }
       }
 
       &.placeholder {
         font-style: italic;
         color: var(--mat-sys-primary);
+
+        span {
+          padding-right: 4px;
+        }
       }
 
-      .no-pin { opacity: 0.7; font-size: 0.8rem; }
+      span {
+        padding-top: 1px;
+      }
+
+      .no-pin {
+        opacity: 0.7;
+        font-size: 0.8rem;
+      }
 
       .countdown-tag {
         background-color: var(--mat-sys-tertiary-container);
@@ -111,10 +131,20 @@
       font: var(--mat-sys-label-medium);
       cursor: pointer;
 
-      &:hover { background: var(--mat-sys-primary-container); }
-      &:focus-visible { outline: 2px solid var(--mat-sys-primary); outline-offset: 1px; }
+      &:hover {
+        background: var(--mat-sys-primary-container);
+      }
 
-      mat-icon { font-size: 15px; width: 15px; height: 15px; }
+      &:focus-visible {
+        outline: 2px solid var(--mat-sys-primary);
+        outline-offset: 1px;
+      }
+
+      mat-icon {
+        font-size: 15px;
+        width: 15px;
+        height: 15px;
+      }
     }
   }
 

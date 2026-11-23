@@ -60,6 +60,7 @@ export class DestinationDialogComponent {
     this.error.set(null);
     this.saving.set(true);
     const ok = await this.store.setDestination(label, this.location());
+    console.log("OK: ", ok);
     this.saving.set(false);
     if (ok) this.dialogRef.close(true);
   }

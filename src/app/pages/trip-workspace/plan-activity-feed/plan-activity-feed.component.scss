@@ -1,0 +1,68 @@
+:host { display: flex; flex-direction: column; }
+
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.event {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.avatar {
+  position: relative;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  background: var(--mat-sys-secondary-container);
+  color: var(--mat-sys-on-secondary-container);
+
+  img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+  .action-badge {
+    position: absolute;
+    right: -4px;
+    bottom: -4px;
+    font-size: 14px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    border-radius: 50%;
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-primary);
+  }
+}
+
+.text {
+  min-width: 0;
+
+  p { margin: 0; font-size: 0.875rem; line-height: 1.35; overflow-wrap: anywhere; }
+  .item-title { font-style: italic; }
+  time { font-size: 0.75rem; color: var(--mat-sys-on-surface-variant); }
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 8px;
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant);
+
+  mat-icon { font-size: 36px; width: 36px; height: 36px; }
+}
+
+.load-more { align-self: center; margin-top: 12px; }

@@ -2,26 +2,29 @@ import { Component, computed, effect, ElementRef, inject, input, output, signal,
 import { MatIcon } from "@angular/material/icon";
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PlannedMemory } from '@models/memoryInterface.model';
 import { Router } from '@angular/router';
+import { PlanSummary } from '@models/planSummary.model';
+import { PlanProgressSummaryComponent } from '@components/plan-progress-summary/plan-progress-summary.component';
 
 @Component({
   selector: 'app-planned-memory-card',
   standalone: true,
-  imports: [MatIcon, DatePipe, NgClass, FormsModule],
+  imports: [MatIcon, DatePipe, NgClass, FormsModule, PlanProgressSummaryComponent],
   templateUrl: './planned-memory-card.component.html',
   styleUrl: './planned-memory-card.component.scss',
 })
 export class PlannedMemoryCardComponent {
   private router = inject(Router);
 
-  plan = input.required<PlannedMemory>();
+  plan = input.required<PlanSummary>()
   titleUpdated = output<{ memoryId: string; title: string }>();
 
   isEditing = signal(false);
   editValue = signal('');
 
   titleInput = viewChild<ElementRef<HTMLInputElement>>('titleInput');
+
+  readonly isLive = computed(() => this.plan().phase === 'live');
 
   constructor() {
     // 3. This effect automatically runs whenever the 'titleInput' signal changes
@@ -38,10 +41,8 @@ export class PlannedMemoryCardComponent {
   }
 
   navigateToWorkspace(): void {
-    // Prevent navigating if the user is currently typing a new name
-    //if (this.isEditing()) return;
-
-    this.router.navigate(['plans/trip-workspace', this.plan().memory_id]);
+    if (this.isLive()) this.router.navigate(['/memory', this.plan().memory_id, 'live']);
+    else this.router.navigate(['plans/trip-workspace', this.plan().memory_id]);
   }
 
   isUntitled = computed(() => {

@@ -5,17 +5,15 @@
   <img class="cover" [src]="memory().title_pic" alt="" decoding="async" />
   }
 
-  <!-- Real link over the whole card: keyboard focus, middle-click, open in new tab. -->
-  <a class="banner-link" [routerLink]="['/memory', memory().memory_id]"
-    [attr.aria-label]="'Open memory ' + (memory().title || 'without title')"></a>
+  <!-- Real link over the whole card: opens the live view -->
+  <a class="banner-link" [routerLink]="['/memory', memory().memory_id, 'live']"
+    [attr.aria-label]="'Open live view of ' + (memory().title || 'memory')"></a>
 
   <div class="status-chip">
     <span class="live-dot" aria-hidden="true"></span>
     <span>Happening now</span>
-    @if (progress(); as p) {
     <span aria-hidden="true">·</span>
-    <span>{{ p.total > 1 ? 'Day ' + p.day + ' of ' + p.total : 'Today' }}</span>
-    }
+    <span>{{ progress().total > 1 ? 'Day ' + progress().day + ' of ' + progress().total : 'Today' }}</span>
   </div>
 
   <button mat-icon-button type="button" class="dismiss" aria-label="Hide until tomorrow" title="Not today"
@@ -29,21 +27,40 @@
     <p class="date">{{ dateLabel() }}</p>
     }
 
+    @for (line of todayLines(); track $index) {
+    <p class="today-line"><mat-icon aria-hidden="true">schedule</mat-icon>{{ line }}</p>
+    }
+
+    @if (pollsLabel() || balanceLabel()) {
+    <div class="info-chips">
+      @if (pollsLabel(); as polls) {
+      <span class="info-chip" [class.attention]="memory().today.unvoted_polls > 0">
+        <mat-icon aria-hidden="true">how_to_vote</mat-icon>{{ polls }}
+      </span>
+      }
+      @if (balanceLabel(); as bal) {
+      <span class="info-chip"><mat-icon aria-hidden="true">account_balance_wallet</mat-icon>{{ bal }}</span>
+      }
+    </div>
+    }
+
     <div class="actions">
-      @if (memory().crew_members?.length) {
+      @if (crewAsFriends().length) {
       <app-friends-profile-pics class="crew" [friends]="crewAsFriends()"></app-friends-profile-pics>
       }
-      <a mat-flat-button class="add-photos" [routerLink]="['/editmemory', memory().memory_id, 'addphotos']">
+      <a mat-icon-button class="add-photos-icon" [routerLink]="['/editmemory', memory().memory_id, 'addphotos']"
+        aria-label="Add photos" title="Add photos">
         <mat-icon>add_a_photo</mat-icon>
-        Add photos
+      </a>
+      <a mat-flat-button class="open-live" [routerLink]="['/memory', memory().memory_id, 'live']">
+        <mat-icon>bolt</mat-icon>
+        Open live view
       </a>
     </div>
   </div>
 
-  @if (progress(); as p) {
   <div class="progress" aria-hidden="true">
-    <span [style.width.%]="p.fraction * 100"></span>
+    <span [style.width.%]="progress().fraction * 100"></span>
   </div>
-  }
 </section>
 }

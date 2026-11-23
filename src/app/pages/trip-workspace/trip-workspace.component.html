@@ -6,71 +6,119 @@
 <div class="workspace-container">
   <main class="board-area">
     <app-trip-ws-header [plan]="plannedMemory()!" [currentView]="currentView()"
-      (titleUpdated)="handleTitleUpdate($event)"
-      (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"></app-trip-ws-header>
+      [isOwner]="board.viewer()?.isOwner ?? false" (titleUpdated)="handleTitleUpdate($event)"
+      (currentViewUpdated)="currentView.set($event.checked ? 'structured' : 'corkboard')"
+      (dateFinderRequested)="openDateFinder()" (destinationRequested)="openDestinationDialog()"
+      (pinRequested)="pinDestination()" />
+    @if (phase() === 'live') {
+    <a class="live-banner" [routerLink]="['/memory', memoryId, 'live']">
+      <span class="dot" aria-hidden="true"></span>
+      The trip is live – open the live view
+      <mat-icon>arrow_forward</mat-icon>
+    </a>
+    }
+    <app-plan-progress-strip (datesClicked)="openDateFinder()" (destinationClicked)="openDestinationDialog()"
+      (pinRequested)="pinDestination()" (startPoll)="startPollFor($event)"
+      (addBooking)="openBookingDialog({ mode: 'create', draft: { kind: $event } })" />
     <div class="canvas-viewport">
-      @if (currentView() === 'corkboard') {
-      <div class="placeholder-view corkboard-bg">
-        <mat-icon class="huge-icon">push_pin</mat-icon>
-        <h3>[Placeholder] Free-form Corkboard Canvas</h3>
-        <p>Cards will be absolutely positioned here ($X/Y$ coordinates).</p>
-      </div>
+      @if (board.isLoading()) {
+      <app-loading-spinner />
+      } @else if (currentView() === 'corkboard') {
+      <app-corkboard-view [items]="board.visibleItems()" [canDelete]="board.canDelete()"
+        (moved)="board.moveOnBoard($event.itemId, $event.x, $event.y)" (toggleDone)="board.toggleDone($event)"
+        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" (promote)="promoteIdea($event)" />
       } @else {
-      <div class="placeholder-view structured-bg">
-        <mat-icon class="huge-icon">view_column</mat-icon>
-        <h3>[Placeholder] Organized Grid Columns</h3>
-        <p>Cards will automatically snap here sorted cleanly into rows or columns.</p>
-      </div>
+      <app-structured-view [columns]="board.columns()" [canDelete]="board.canDelete()"
+        (categoryChanged)="board.changeCategory($event.itemId, $event.category)" (toggleDone)="board.toggleDone($event)"
+        (edit)="openItemDialog($event)" (remove)="board.remove($event.item_id)" (promote)="promoteIdea($event)" />
       }
+
+      <button mat-fab extended class="add-item-fab" [matMenuTriggerFor]="addMenu">
+        <mat-icon>add</mat-icon> Add
+      </button>
+      <mat-menu #addMenu="matMenu" yPosition="above">
+        <button mat-menu-item (click)="openItemDialog()">
+          <mat-icon>sticky_note_2</mat-icon><span>Note, idea, to-do or link</span>
+        </button>
+        <button mat-menu-item (click)="openPollDialog({ mode: 'create' })">
+          <mat-icon>how_to_vote</mat-icon><span>Poll</span>
+        </button>
+        <button mat-menu-item (click)="openBookingDialog({ mode: 'create' })">
+          <mat-icon>bookmark_add</mat-icon><span>Booking</span>
+        </button>
+      </mat-menu>
     </div>
   </main>
 
   <aside class="crew-sidebar">
-    <div class="sidebar-header">
-      <h2>Trip Crew</h2>
-      <button mat-icon-button (click)="addCrewMember()" matTooltip="Manage crew members">
-        <mat-icon>person_add</mat-icon>
-      </button>
-    </div>
-
-    <div class="crew-list">
-      @for (member of crew(); track member.user_id) {
-      <div class="crew-item" [style.borderRightColor]="member.status" [ngClass]="{
-           'is-current-user': member.user_id === loggedInUserId,
-           'is-placeholder-user': member.isPlaceholder
-         }">
-
-        <div class="avatar-wrapper">
-          @if (member.isPlaceholder) {
-          <!-- Display Ghost Avatar for Placeholders -->
-          <div class="row-avatar ghost-avatar" matTooltip="Placeholder (Not registered)">
-            <mat-icon>person_outline</mat-icon>
+    @if (board.openThreadId(); as threadId) {
+    <app-plan-comments-panel [itemId]="threadId" (closed)="board.openThreadId.set(null)" />
+    } @else {
+    <mat-tab-group class="sidebar-tabs" mat-stretch-tabs animationDuration="0ms" [selectedIndex]="sidebarTab()"
+      (selectedIndexChange)="sidebarTab.set($event)">
+      <mat-tab label="Crew">
+        <div class="tab-pane">
+          <div class="sidebar-header">
+            <h2>Trip Crew</h2>
+            <button mat-icon-button (click)="addCrewMember()" matTooltip="Manage crew members">
+              <mat-icon>person_add</mat-icon>
+            </button>
           </div>
-          } @else {
-          <!-- Display Real User Avatar -->
-          <div class="avatar-circle"
-            [style.backgroundImage]="member.profilepic_thumb ? 'url(' + member.profilepic_thumb + ')' : null">
-            @if (member.profilepic_thumb) {
-            <img [src]="member.profilepic_thumb" [alt]="member.name" />
+          <div class="crew-list">
+            @for (member of crew(); track member.user_id) {
+            <div class="crew-item" [style.borderRightColor]="member.status" [ngClass]="{
+             'is-current-user': member.user_id === loggedInUserId,
+             'is-placeholder-user': member.isPlaceholder
+           }">
+
+              <div class="avatar-wrapper">
+                @if (member.isPlaceholder) {
+                <!-- Display Ghost Avatar for Placeholders -->
+                <div class="row-avatar ghost-avatar" matTooltip="Placeholder (Not registered)">
+                  <mat-icon>person_outline</mat-icon>
+                </div>
+                } @else {
+                <!-- Display Real User Avatar -->
+                <div class="avatar-circle"
+                  [style.backgroundImage]="member.profilepic_thumb ? 'url(' + member.profilepic_thumb + ')' : null">
+                  @if (member.profilepic_thumb) {
+                  <img [src]="member.profilepic_thumb" [alt]="member.name" />
+                  }
+                </div>
+                <span class="status-badge" [ngClass]="member.status"></span>
+                }
+              </div>
+
+              <div class="row-info">
+                <span class="member-name">{{ member.name }}</span>
+              </div>
+
+              @if (member.isPlaceholder) {
+              <button mat-icon-button class="share-btn" aria-label="Share invite link"
+                (click)="shareInviteLink($event)">
+                <mat-icon>share</mat-icon>
+              </button>
+              }
+
+            </div>
             }
           </div>
-          <span class="status-badge" [ngClass]="member.status"></span>
-          }
         </div>
+      </mat-tab>
 
-        <div class="row-info">
-          <span class="member-name">{{ member.name }}</span>
+      <mat-tab>
+        <ng-template mat-tab-label>
+          <span [matBadge]="board.unseenCount()" [matBadgeHidden]="board.unseenCount() === 0" matBadgeOverlap="false"
+            matBadgeSize="small">Activity</span>
+        </ng-template>
+        <div class="tab-pane">
+          <app-plan-activity-feed [events]="board.events()" [crew]="crew()" [viewerId]="loggedInUserId"
+            [hasMore]="board.hasMoreEvents()" [loadingMore]="board.isLoadingOlder()"
+            (loadMore)="board.loadOlderEvents()" />
         </div>
-
-        @if (member.isPlaceholder) {
-        <button mat-icon-button class="share-btn" aria-label="Share invite link" (click)="shareInviteLink($event)">
-          <mat-icon>share</mat-icon>
-        </button>
-        }
-
-      </div>
-      }
-    </div>
+      </mat-tab>
+    </mat-tab-group>
+    }
   </aside>
 </div>
 }

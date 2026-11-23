@@ -1,0 +1,65 @@
+:host { display: flex; flex-direction: column; gap: 3px; }
+
+.bk-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  font-size: 0.8rem;
+
+  > mat-icon { font-size: 15px; width: 15px; height: 15px; flex-shrink: 0; opacity: 0.7; }
+  > span { min-width: 0; overflow-wrap: anywhere; }
+
+  &.head { justify-content: space-between; margin-bottom: 2px; }
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 1px 8px 1px 5px;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  background: rgb(0 0 0 / 0.08);
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; }
+
+  &[data-status='booked'] { background: rgb(46 125 50 / 0.18); color: #1b5e20; }
+  &[data-status='cancelled'] { background: rgb(179 38 30 / 0.15); color: #8c1d18; }
+}
+
+.price { font-weight: 700; font-size: 0.85rem; }
+
+code {
+  font-size: 0.78rem;
+  padding: 0 4px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.07);
+  overflow-wrap: anywhere;
+}
+
+.copy {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+
+  mat-icon { font-size: 14px; width: 14px; height: 14px; }
+  &:hover { background: rgb(0 0 0 / 0.08); }
+  &:focus-visible { outline: 2px solid #6750a4; }
+}
+
+.notes {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  opacity: 0.85;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}

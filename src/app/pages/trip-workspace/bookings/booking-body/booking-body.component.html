@@ -1,0 +1,42 @@
+@let bk = b();
+
+<div class="bk-row head">
+  <span class="status" [attr.data-status]="bk.status">
+    <mat-icon>{{ status().icon }}</mat-icon>{{ status().label }}
+  </span>
+  @if (price(); as p) { <span class="price">{{ p }}</span> }
+</div>
+
+@if (route(); as r) {
+  <div class="bk-row"><mat-icon>{{ modeIcon() }}</mat-icon><span>{{ r }}</span></div>
+}
+@if (service(); as s) {
+  <div class="bk-row"><mat-icon>tag</mat-icon><span>{{ s }}</span></div>
+}
+@if (when(); as w) {
+  <div class="bk-row"><mat-icon>schedule</mat-icon><span>{{ w }}</span></div>
+}
+@if (place(); as pl) {
+  <div class="bk-row"><mat-icon>place</mat-icon><span>{{ pl }}</span></div>
+}
+@if (bk.provider) {
+  <div class="bk-row"><mat-icon>storefront</mat-icon><span>{{ bk.provider }}</span></div>
+}
+@if (bk.confirmation_code) {
+  <div class="bk-row">
+    <mat-icon>confirmation_number</mat-icon>
+    <code>{{ bk.confirmation_code }}</code>
+    <button type="button" class="copy" [matTooltip]="copied() ? 'Copied!' : 'Copy'"
+            aria-label="Copy confirmation number"
+            (mousedown)="$event.stopPropagation()" (touchstart)="$event.stopPropagation()"
+            (click)="copyCode()">
+      <mat-icon>{{ copied() ? 'check' : 'content_copy' }}</mat-icon>
+    </button>
+  </div>
+}
+@if (payer(); as who) {
+  <div class="bk-row"><mat-icon>payments</mat-icon><span>Paid by {{ who }}</span></div>
+}
+@if (bk.notes) {
+  <p class="notes">{{ bk.notes }}</p>
+}

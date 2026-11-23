@@ -1,0 +1,17 @@
+.progress {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.labels {
+    display: flex;
+    gap: 12px;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+
+    .pct {
+        margin-left: auto;
+        font-weight: 600;
+    }
+}

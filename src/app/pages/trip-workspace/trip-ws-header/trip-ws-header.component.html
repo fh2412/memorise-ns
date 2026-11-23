@@ -4,45 +4,67 @@
   <div class="trip-info">
     <div class="title-row">
       @if (isEditing()) {
-        <div class="inline-edit-form" (click)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
-          <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()"
-                 (keyup.escape)="cancelEdit()" (blur)="saveEdit()" placeholder="Name your adventure..."
-                 class="title-input" />
-        </div>
+      <div class="inline-edit-form" (click)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
+        <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()"
+          (blur)="saveEdit()" placeholder="Name your adventure..." class="title-input" />
+      </div>
       } @else {
-        <h1>{{ displayTitle() }}</h1>
-        @if (isUntitled()) {
-          <button mat-icon-button (click)="$event.stopPropagation(); startEdit()" matTooltip="Edit Title">
-            <mat-icon>edit</mat-icon>
-          </button>
-        }
+      <h1>{{ displayTitle() }}</h1>
+      @if (isUntitled()) {
+      <button mat-icon-button (click)="$event.stopPropagation(); startEdit()" matTooltip="Edit title">
+        <mat-icon>edit</mat-icon>
+      </button>
+      }
       }
     </div>
-    @if (plan().memory_date && plan().memory_end_date) {
-    <div class="date-widget">
-      <mat-icon>calendar_today</mat-icon>
-      <span>{{plan().memory_date}} - {{plan().memory_end_date}}</span>
-      <span class="countdown-tag">36 days left!</span>
+
+    <div class="meta-row">
+      <!-- Dates -->
+      <button type="button" class="widget" (click)="dateFinderRequested.emit()">
+        <mat-icon>{{ dateLabel() ? 'calendar_today' : 'edit_calendar' }}</mat-icon>
+        <span>{{ dateLabel() ?? 'Find dates that work for everyone' }}</span>
+        @let days = daysLeft();
+        @if (days !== null && days > 1) {
+        <span class="countdown-tag">{{ days }} days left</span>
+        } @else if (days === 1) {
+        <span class="countdown-tag">Tomorrow!</span>
+        } @else if (days === 0) {
+        <span class="countdown-tag">Today!</span>
+        }
+      </button>
+
+      <!-- Destination -->
+      @if (destination(); as d) {
+        @if (isOwner()) {
+        <button type="button" class="widget" matTooltip="Change destination" (click)="destinationRequested.emit()">
+          <mat-icon>{{ d.has_coordinates ? 'place' : 'location_off' }}</mat-icon>
+          <span>{{ d.label }}</span>
+        </button>
+        @if (!d.has_coordinates) {
+        <button type="button" class="pin-chip" (click)="pinRequested.emit()">
+          <mat-icon>add_location_alt</mat-icon>Pick on map
+        </button>
+        }
+        } @else {
+        <span class="widget static">
+          <mat-icon>{{ d.has_coordinates ? 'place' : 'location_off' }}</mat-icon>
+          <span>{{ d.label }}</span>
+          @if (!d.has_coordinates) { <span class="no-pin">(no map pin yet)</span> }
+        </span>
+        }
+      } @else if (isOwner()) {
+      <button type="button" class="widget placeholder" (click)="destinationRequested.emit()">
+        <mat-icon>add_location</mat-icon>
+        <span>Where to?</span>
+      </button>
+      }
     </div>
-    } @else if (plan().memory_date) {
-    <div class="date-widget">
-      <mat-icon>calendar_today</mat-icon>
-      <span>{{plan().memory_date}}</span>
-      <span class="countdown-tag">36 days left!</span>
-    </div>
-    } @else {
-      <div class="date-widget">
-      <mat-icon>calendar_today</mat-icon>
-      <span>Vote for your fitting time</span>
-    </div>
-    }
   </div>
 
   <div class="view-switcher-wrapper">
     <mat-icon [class.active-icon]="currentView() === 'corkboard'">push_pin</mat-icon>
-    <mat-slide-toggle [checked]="currentView() === 'structured'"
-                      (change)="switchView($event.checked)" 
-                      aria-label="Toggle board view mode">
+    <mat-slide-toggle [checked]="currentView() === 'structured'" (change)="switchView($event.checked)"
+      aria-label="Toggle board view mode">
     </mat-slide-toggle>
     <mat-icon [class.active-icon]="currentView() === 'structured'">view_column</mat-icon>
   </div>

@@ -1,0 +1,103 @@
+<div class="card-header">
+  <mat-icon class="type-icon">{{ icon() }}</mat-icon>
+
+  @if (item().type === 'todo') {
+  <mat-checkbox class="done-checkbox" [checked]="item().status === 'done'" (change)="toggleDone.emit()" (mousedown)="$event.stopPropagation()"
+    aria-label="Mark as done" />
+  }
+
+  <h4 class="card-title">{{ item().title }}</h4>
+
+  <button mat-icon-button class="menu-btn" [matMenuTriggerFor]="menu" (mousedown)="$event.stopPropagation()"
+    aria-label="Item actions">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+</div>
+
+@if (item().description) {
+<p class="card-body">{{ item().description }}</p>
+}
+
+@if (item().type === 'poll' && item().poll) {
+<app-poll-body [item]="item()" />
+}
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="edit.emit()">
+    <mat-icon>{{ item().type === 'poll' ? 'tune' : item().type === 'booking' ? 'edit_calendar' : 'edit' }}</mat-icon>
+    <span>{{ item().type === 'poll' ? 'Manage poll' : item().type === 'booking' ? 'Edit booking' : 'Edit' }}</span>
+  </button>
+  @if (link()) {
+  <button mat-menu-item (click)="refreshPreview()"><mat-icon>refresh</mat-icon><span>Refresh preview</span></button>
+  }
+  @if (canPromote()) {
+  <button mat-menu-item (click)="promote.emit()"><mat-icon>how_to_vote</mat-icon><span>Start a poll</span></button>
+  }
+  @if (canDelete()) {
+  <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
+  }
+</mat-menu>
+
+@if (item().type === 'booking' && item().booking) {
+  <app-booking-body [item]="item()" />
+}
+
+@if (link(); as l) {
+  @if (l.preview) {
+    <app-link-preview-card [preview]="l.preview" [url]="l.url" [compact]="item().type === 'booking'" />
+  } @else {
+    <a class="card-link" [href]="l.url" target="_blank" rel="noopener noreferrer"
+       (mousedown)="$event.stopPropagation()">
+      <mat-icon>open_in_new</mat-icon><span>{{ l.url }}</span>
+    </a>
+  }
+}
+
+@if (item().due_date) {
+<div class="card-due"><mat-icon>schedule</mat-icon>{{ item().due_date | date: 'mediumDate' }}</div>
+}
+
+@if (assigneeChips().length) {
+<div class="card-assignees" [title]="'Assigned to ' + assigneeNames()">
+  @for (a of assigneeChips(); track a.id) {
+  <span class="mini" [class.me]="a.isMe">
+    @if (a.avatar) { <img [src]="a.avatar" alt="" /> } @else { {{ a.initial }} }
+  </span>
+  }
+</div>
+}
+
+<div class="card-footer" (mousedown)="$event.stopPropagation()" (touchstart)="$event.stopPropagation()">
+  @for (r of reactionChips(); track r.key) {
+    <button type="button" class="reaction" [class.mine]="r.mine" [title]="r.names"
+            [attr.aria-pressed]="r.mine" [attr.aria-label]="r.emoji + ' ' + r.count + ': ' + r.names"
+            (click)="react(r.key)">
+      <span class="emoji">{{ r.emoji }}</span>{{ r.count }}
+    </button>
+  }
+
+  <button type="button" class="icon-chip" aria-label="Add reaction" [matMenuTriggerFor]="reactMenu">
+    <mat-icon>add_reaction</mat-icon>
+  </button>
+
+  <button type="button" class="icon-chip comments" (click)="openComments()"
+          [attr.aria-label]="item().comment_count + ' comments'">
+    <mat-icon>{{ item().comment_count ? 'chat_bubble' : 'chat_bubble_outline' }}</mat-icon>
+    @if (item().comment_count) { <span>{{ item().comment_count }}</span> }
+  </button>
+</div>
+
+<mat-menu #reactMenu="matMenu" class="reaction-menu">
+  <div class="reaction-picker">
+    @for (r of reactionOptions; track r.key) {
+      <button type="button" [attr.aria-label]="r.label" [title]="r.label" (click)="react(r.key)">{{ r.emoji }}</button>
+    }
+  </div>
+</mat-menu>
+
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="edit.emit()"><mat-icon>edit</mat-icon><span>Edit</span></button>
+  @if (canDelete()) {
+  <button mat-menu-item (click)="remove.emit()"><mat-icon>delete</mat-icon><span>Delete</span></button>
+  }
+</mat-menu>

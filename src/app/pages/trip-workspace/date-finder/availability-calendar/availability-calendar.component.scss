@@ -1,0 +1,63 @@
+:host { display: block; }
+
+$green: #43a047;
+
+.months {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  user-select: none;
+
+  &.paintable { touch-action: none; } // drag-painting instead of scrolling on touch devices
+}
+
+.month h4 {
+  margin: 0 0 8px;
+  font: var(--mat-sys-title-small);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.weekday {
+  text-align: center;
+  font-size: 0.7rem;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.day {
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  font: inherit;
+  font-size: 0.8rem;
+  background: var(--mat-sys-surface-container-high);
+  color: var(--mat-sys-on-surface);
+  cursor: pointer;
+  transition: background-color 80ms ease;
+
+  &:focus-visible { outline: 2px solid var(--mat-sys-primary); outline-offset: 1px; }
+  &.today { font-weight: 700; box-shadow: inset 0 0 0 1px var(--mat-sys-outline); }
+  &.disabled { opacity: 0.35; cursor: default; }
+
+  // mine
+  &.yes { background: $green; color: #fff; }
+  &.maybe { background: repeating-linear-gradient(45deg, #fdd835 0 5px, #fbc02d 5px 10px); color: #1f1f1f; }
+
+  // group heatmap
+  &[data-level='1'] { background: color-mix(in srgb, #{$green} 25%, var(--mat-sys-surface-container-high)); }
+  &[data-level='2'] { background: color-mix(in srgb, #{$green} 50%, var(--mat-sys-surface-container-high)); }
+  &[data-level='3'] { background: color-mix(in srgb, #{$green} 75%, var(--mat-sys-surface-container-high)); color: #fff; }
+  &[data-level='4'] { background: $green; color: #fff; }
+
+  &.in-window { outline: 2px solid var(--mat-sys-tertiary); outline-offset: -2px; }
+}
+
+.months:not(.paintable) .day { cursor: default; }
+
+.empty { color: var(--mat-sys-on-surface-variant); }

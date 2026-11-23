@@ -22,6 +22,8 @@ import { InViewportDirective } from '../../directives/in-viewport.directive';
 import { HomeListStore } from './home-list.store';
 import { HomeMapViewComponent } from './home-map-view/home-map-view.component';
 import { ActiveMemoryBannerComponent } from '@components/active-memory-banner/active-memory-banner.component';
+import { LiveMemoryService } from '@services/live-memory.service';
+import { LiveMemory } from '@models/livePlan.model';
 
 /** 12 is divisible by 2, 3 and 4, so every full page fills complete rows. */
 const PAGE_SIZE = 12;
@@ -66,7 +68,8 @@ export class HomeComponent {
   private readonly store = inject(HomeListStore);
   /** mat-sidenav-content provides CdkScrollable – it is the real scroll container. */
   private readonly scroller = inject(CdkScrollable, { optional: true });
-
+  private readonly liveService = inject(LiveMemoryService);
+  protected readonly activeMemories = signal<LiveMemory[]>([]);
   protected readonly userId = String(this.userService.getLoggedInUserId() ?? '');
 
   /** Non-null only when returning via browser back/forward with a valid snapshot. */
@@ -119,8 +122,6 @@ export class HomeComponent {
   protected readonly isFirstRun = computed(() => this.isEmpty() && !this.hasSearch());
   protected readonly sortLabel = computed(() => (this.sortAscending() ? 'Oldest first' : 'Newest first'));
 
-  /** Memories that are running right now (usually one). Loaded once, independent of the grid. */
-  protected readonly activeMemories = signal<PlannedMemory[]>([]);
   private readonly activeLoaded = signal(false);
 
 
@@ -160,13 +161,12 @@ export class HomeComponent {
     let restoring = this.snapshot !== null;
     let isFirstQuery = true;
 
-    this.memoryService
-      .getMemoriesPage(this.userId, { ascending: false, page: 0, pageSize: 3, filter: 'active' })
+    this.liveService
+      .getLive()
       .pipe(
-        map((response) => response.data ?? []),
         catchError((error) => {
-          console.error('Error loading active memories:', error);
-          return of([] as PlannedMemory[]);
+          console.error('Error loading live memories:', error);
+          return of([] as LiveMemory[]);
         }),
         takeUntilDestroyed(),
       )

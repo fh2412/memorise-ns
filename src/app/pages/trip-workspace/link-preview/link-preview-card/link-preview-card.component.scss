@@ -1,0 +1,66 @@
+:host { display: block; min-width: 0; }
+
+.lp {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(0 0 0 / 0.15);
+  border-radius: 8px;
+  background: rgb(255 255 255 / 0.6);
+  color: inherit;
+  text-decoration: none;
+
+  &:hover { background: rgb(255 255 255 / 0.85); }
+  &:focus-visible { outline: 2px solid #6750a4; outline-offset: 1px; }
+}
+
+.lp-image {
+  width: 100%;
+  aspect-ratio: 1.91 / 1;
+  object-fit: cover;
+  display: block;
+  background: rgb(0 0 0 / 0.06);
+}
+
+.lp-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  min-width: 0;
+}
+
+.lp-site {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.65;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lp-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.lp-desc {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Compact: image as a small thumbnail on the left
+:host(.compact) {
+  .lp { flex-direction: row; align-items: stretch; }
+  .lp-image { width: 64px; aspect-ratio: auto; flex-shrink: 0; }
+}

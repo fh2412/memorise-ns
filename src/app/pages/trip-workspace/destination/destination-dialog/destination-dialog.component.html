@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Change destination' : 'Set destination' }}</h2>
+
+<form (submit)="$event.preventDefault(); save()">
+  <mat-dialog-content class="destination-dialog">
+    <label class="field">
+      <span>Where are you going?</span>
+      <input type="text" [attr.maxlength]="maxLabel" placeholder="Lake Garda, Somewhere in Tuscany…"
+             [value]="label()" (input)="label.set($any($event.target).value)" />
+    </label>
+
+    <section class="pin">
+      @if (location(); as loc) {
+        <mat-icon class="pin-icon">place</mat-icon>
+        <span class="pin-text">{{ pinLabel() }}</span>
+        <button mat-button type="button" (click)="pick()">Change</button>
+        <button mat-button type="button" (click)="removePin()">Remove pin</button>
+      } @else {
+        <mat-icon class="pin-icon muted">location_off</mat-icon>
+        <span class="pin-text muted">No map pin yet. You can add it later.</span>
+        <button mat-stroked-button type="button" (click)="pick()">
+          <mat-icon>add_location_alt</mat-icon> Pick on map
+        </button>
+      }
+    </section>
+
+    @if (fromPoll && labelChanged()) {
+      <p class="hint"><mat-icon>info</mat-icon> This destination came from a poll. After renaming it,
+        reopening that poll won't remove it any more.</p>
+    }
+
+    @if (error(); as err) { <p class="error" role="alert">{{ err }}</p> }
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    @if (isEdit) {
+      <button mat-button type="button" class="remove" [class.armed]="confirmRemove()" [disabled]="saving()"
+              (click)="remove()">
+        <mat-icon>{{ confirmRemove() ? 'delete_forever' : 'wrong_location' }}</mat-icon>
+        {{ confirmRemove() ? 'Click again to remove' : 'Remove' }}
+      </button>
+    }
+    <span class="spacer"></span>
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit" [disabled]="saving() || !label().trim()">
+      {{ saving() ? 'Saving…' : 'Save' }}
+    </button>
+  </mat-dialog-actions>
+</form>

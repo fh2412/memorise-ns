@@ -1,0 +1,110 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Edit expense' : 'Add expense' }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()">
+  <mat-dialog-content class="expense-dialog">
+    <mat-form-field appearance="outline">
+      <mat-label>What was it?</mat-label>
+      <input matInput formControlName="title" maxlength="200" placeholder="Dinner at the harbour" />
+      @if (form.controls.title.hasError('required')) { <mat-error>Please name the expense</mat-error> }
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="amount">
+        <mat-label>Amount</mat-label>
+        <input matInput formControlName="amount" inputmode="decimal" placeholder="0.00" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="currency">
+        <mat-label>Currency</mat-label>
+        <mat-select formControlName="currency">
+          @for (c of currencies; track c) { <mat-option [value]="c">{{ c }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="grow">
+        <mat-label>Paid by</mat-label>
+        <mat-select formControlName="paidBy">
+          @for (p of people; track p.key) {
+            <mat-option [value]="p.key">
+              {{ nameOf(p) }}@if (p.isPlaceholder) { <span class="muted"> (not registered)</span> }
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="date">
+        <mat-label>Date</mat-label>
+        <input matInput type="date" formControlName="spentOn" />
+      </mat-form-field>
+    </div>
+
+    <mat-button-toggle-group class="categories" formControlName="category" aria-label="Category">
+      @for (c of categories; track c.key) {
+        <mat-button-toggle [value]="c.key" [title]="c.label"><mat-icon>{{ c.icon }}</mat-icon></mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+
+    <section class="split">
+      <div class="split-head">
+        <h3>Split</h3>
+        <mat-button-toggle-group [value]="splitMode()" (change)="splitMode.set($event.value)" aria-label="Split mode">
+          <mat-button-toggle value="equal">Equally</mat-button-toggle>
+          <mat-button-toggle value="custom">Custom amounts</mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+
+      @if (splitMode() === 'equal') {
+        <div class="split-actions">
+          <button mat-button type="button" (click)="selectAll(true)">Everyone</button>
+          <button mat-button type="button" (click)="selectAll(false)">Nobody</button>
+          @if (perPerson(); as pp) { <span class="muted">≈ {{ pp }} each</span> }
+        </div>
+        <ul class="people">
+          @for (p of people; track p.key) {
+            <li>
+              <mat-checkbox [checked]="selected().has(p.key)" (change)="togglePerson(p.key)">
+                {{ nameOf(p) }}
+                @if (p.isPlaceholder) { <span class="muted">(not registered)</span> }
+                @if (!p.isCurrent) { <span class="muted">(left the crew)</span> }
+              </mat-checkbox>
+            </li>
+          }
+        </ul>
+      } @else {
+        <ul class="people custom">
+          @for (p of people; track p.key) {
+            <li>
+              <span class="name">{{ nameOf(p) }}</span>
+              <input class="share-input" inputmode="decimal" placeholder="0.00" [attr.aria-label]="'Share of ' + p.name"
+                     [value]="custom()[p.key]" (input)="setCustom(p.key, $any($event.target).value)" />
+            </li>
+          }
+        </ul>
+        <p class="remaining" [class.ok]="customRemaining() === 0">
+          @if (customRemaining() === 0) { Shares add up. }
+          @else if (customRemaining() > 0) { {{ money(customRemaining(), currencyValue()) }} left to assign }
+          @else { {{ money(-customRemaining(), currencyValue()) }} too much }
+        </p>
+      }
+    </section>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Notes (optional)</mat-label>
+      <textarea matInput formControlName="notes" rows="2"></textarea>
+    </mat-form-field>
+
+    @if (formError(); as err) { <p class="form-error" role="alert">{{ err }}</p> }
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    @if (isEdit && canDelete) {
+      <button mat-button type="button" class="delete" [class.armed]="confirmDelete()" (click)="remove()">
+        <mat-icon>{{ confirmDelete() ? 'delete_forever' : 'delete' }}</mat-icon>
+        {{ confirmDelete() ? 'Click again to delete' : 'Delete' }}
+      </button>
+    }
+    <span class="spacer"></span>
+    <button mat-button type="button" mat-dialog-close>Cancel</button>
+    <button mat-flat-button type="submit" [disabled]="saving()">{{ saving() ? 'Saving…' : isEdit ? 'Save' : 'Add' }}</button>
+  </mat-dialog-actions>
+</form>

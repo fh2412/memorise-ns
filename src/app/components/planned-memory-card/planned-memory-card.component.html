@@ -23,9 +23,8 @@
       @if (isEditing()) {
       <div class="inline-edit-form" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()"
         (keypress)="$event.stopPropagation()" (keyup)="$event.stopPropagation()" tabindex="0">
-        <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()"
-          (keyup.escape)="cancelEdit()" (blur)="saveEdit()" placeholder="Name your adventure..."
-          class="title-input" />
+        <input #titleInput type="text" [(ngModel)]="editValue" (keyup.enter)="saveEdit()" (keyup.escape)="cancelEdit()"
+          (blur)="saveEdit()" placeholder="Name your adventure..." class="title-input" />
       </div>
       } @else {
       <h4 class="card-title" [title]="displayTitle()">{{ displayTitle() }}</h4>
@@ -33,6 +32,9 @@
     </div>
 
     <div class="card-meta">
+      @if (isLive()) {
+      <span class="live-chip"><span class="dot" aria-hidden="true"></span>Live</span>
+      }
       <mat-icon class="meta-icon">calendar_today</mat-icon>
       <span class="meta-text">
         @if (plan().memory_date) {
@@ -44,6 +46,10 @@
         Dates TBD
         }
       </span>
+      @if (plan().destination_label) {
+      <mat-icon class="meta-icon">place</mat-icon>
+      <span class="meta-text">{{ plan().destination_label }}</span>
+      }
     </div>
 
     <div class="card-footer">
@@ -71,6 +77,6 @@
       </div>
       }
     </div>
-
+    <app-plan-progress-summary [progress]="plan().progress" class="progress-bar" />
   </div>
 </div>

@@ -1,0 +1,119 @@
+@if (store.isLoading() && !store.ledger()) {
+  <p class="muted center">Loading expenses…</p>
+} @else if (store.ledger(); as l) {
+  <section class="summary">
+    <div class="my-balance" [class.pos]="(store.myNet() ?? 0) > 0" [class.neg]="(store.myNet() ?? 0) < 0">
+      <span class="label">{{ myBalance().label }}</span>
+      <strong>{{ myBalance().amount }}</strong>
+      @if (l.balances.totalConverted !== null && l.expenses.length) {
+        <span class="muted">Total spent {{ money(l.balances.totalConverted, l.currency.base) }}</span>
+      }
+    </div>
+    <button mat-flat-button type="button" (click)="openAdd()"><mat-icon>add</mat-icon> Add expense</button>
+  </section>
+
+  @if (store.missingRates().length) {
+    <div class="warning" role="status">
+      <mat-icon>currency_exchange</mat-icon>
+      <span>Balances need an exchange rate for {{ store.missingRates().join(', ') }}.</span>
+      @if (store.isOwner()) {
+        <button mat-button type="button" (click)="toggleCurrency()">Set rates</button>
+      } @else {
+        <span class="muted">The plan owner sets it.</span>
+      }
+    </div>
+  }
+
+  @if (store.balanceRows().length && l.expenses.length) {
+    <details class="balances">
+      <summary>Everyone's balance</summary>
+      <ul>
+        @for (r of store.balanceRows(); track r.participant.key) {
+          <li>
+            <span>
+              {{ r.isMe ? 'You' : r.participant.name }}
+              @if (r.participant.isPlaceholder) { <small class="muted">(not registered)</small> }
+              @if (!r.participant.isCurrent) { <small class="muted">(left)</small> }
+            </span>
+            <span [class.pos]="r.net > 0" [class.neg]="r.net < 0">{{ signed(r.net, l.currency.base) }}</span>
+          </li>
+        }
+      </ul>
+      <p class="muted hint">Who pays whom is calculated in the wrap-up after the trip.</p>
+    </details>
+  }
+
+  @if (store.suggestions().length) {
+    <section class="suggestions">
+      <h3>From your bookings</h3>
+      @for (s of store.suggestions(); track s.item_id) {
+        <div class="suggestion">
+          <mat-icon>{{ kindIcon(s) }}</mat-icon>
+          <span class="s-text">
+            <strong>{{ s.title }}</strong>
+            <small>{{ money(s.price_cents, s.currency) }} · paid by {{ name(s.paid_by) }} · split between everyone</small>
+          </span>
+          <button mat-stroked-button type="button" [disabled]="busy()" (click)="addFromBooking(s)">Add</button>
+        </div>
+      }
+    </section>
+  }
+
+  @if (store.isOwner()) {
+    <button mat-button type="button" class="currency-toggle" (click)="toggleCurrency()">
+      <mat-icon>currency_exchange</mat-icon> Settlement currency: {{ l.currency.base }}
+    </button>
+    @if (showCurrency()) {
+      <section class="currency-editor">
+        <label class="field">
+          <span>Settle in</span>
+          <select [value]="baseDraft()" (change)="baseDraft.set($any($event.target).value)">
+            @for (c of currencyOptions(); track c) { <option [value]="c">{{ c }}</option> }
+          </select>
+        </label>
+        @for (cur of rateCurrencies(); track cur) {
+          <label class="field">
+            <span>1 {{ cur }} =</span>
+            <input inputmode="decimal" placeholder="0.0000" [value]="rateDrafts()[cur]"
+                   (input)="setRate(cur, $any($event.target).value)" />
+            <span>{{ baseDraft() }}</span>
+          </label>
+        } @empty {
+          <p class="muted">All expenses are in {{ baseDraft() }}, no rates needed.</p>
+        }
+        @if (currencyError(); as err) { <p class="error" role="alert">{{ err }}</p> }
+        <div class="editor-actions">
+          <button mat-button type="button" (click)="showCurrency.set(false)">Cancel</button>
+          <button mat-flat-button type="button" [disabled]="busy()" (click)="saveCurrency()">Save</button>
+        </div>
+      </section>
+    }
+  }
+
+  @for (g of groups(); track g.day) {
+    <h3 class="day">{{ g.label }}</h3>
+    <ul class="expense-list">
+      @for (row of g.rows; track row.e.expense_id) {
+        <li>
+          <button type="button" class="expense" [class.readonly]="!row.canEdit" (click)="openEdit(row.e)"
+                  [attr.aria-label]="row.e.title + ', ' + money(row.e.amount_cents, row.e.currency)">
+            <span class="cat"><mat-icon>{{ row.icon }}</mat-icon></span>
+            <span class="e-text">
+              <strong>{{ row.e.title }}</strong>
+              <small>{{ row.payer }} paid · {{ row.splitLabel }}</small>
+            </span>
+            <span class="e-amount">
+              <strong>{{ money(row.e.amount_cents, row.e.currency) }}</strong>
+              @if (row.mine !== null) { <small>your share {{ money(row.mine, row.e.currency) }}</small> }
+            </span>
+          </button>
+        </li>
+      }
+    </ul>
+  } @empty {
+    <div class="empty">
+      <mat-icon>receipt_long</mat-icon>
+      <p>No expenses yet. Add the first one!</p>
+    </div>
+  }
+}

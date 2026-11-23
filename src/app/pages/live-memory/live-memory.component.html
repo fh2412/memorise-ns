@@ -1,0 +1,195 @@
+@if (isLoading()) {
+<app-loading-spinner />
+} @else if (plan(); as p) {
+<div class="live-page">
+  <header class="live-header">
+    <app-back-button [isIcon]="true" />
+    <div class="heading">
+      <div class="status">
+        @if (phase() === 'live') {
+        <span class="live-chip"><span class="dot" aria-hidden="true"></span>Live</span>
+        } @else {
+        <span class="phase-chip">{{ phaseLabel() }}</span>
+        }
+        @if (day(); as d) { <span>Day {{ d.day }} of {{ d.total }}</span> }
+      </div>
+      <h1>{{ p.title || 'Untitled trip' }}</h1>
+      <p class="sub">
+        {{ dateLabel() }}
+        @if (destination(); as d) {
+        ·
+        @if (isOwner()) {
+        <button type="button" class="dest-link" (click)="openDestinationDialog()">
+          <mat-icon>{{ d.has_coordinates ? 'place' : 'location_off' }}</mat-icon>{{ d.label }}
+        </button>
+        @if (!d.has_coordinates) {
+        <button type="button" class="dest-link pin" (click)="pinDestination()">
+          <mat-icon>add_location_alt</mat-icon>Pick on map
+        </button>
+        }
+        } @else {
+        {{ d.label }}
+        }
+        } @else if (isOwner()) {
+        · <button type="button" class="dest-link" (click)="openDestinationDialog()">
+          <mat-icon>add_location</mat-icon>Where to?
+        </button>
+        }
+      </p>
+    </div>
+    <a mat-icon-button [routerLink]="['/plans/trip-workspace', memoryId]" matTooltip="Open plan board"
+      aria-label="Open plan board">
+      <mat-icon>dashboard</mat-icon>
+    </a>
+  </header>
+
+  <mat-tab-group class="live-tabs" mat-stretch-tabs animationDuration="0ms" [selectedIndex]="tab()"
+    (selectedIndexChange)="tab.set($event)">
+
+    <!-- TODAY -->
+    <mat-tab label="Today">
+      <div class="pane">
+        <section class="tiles">
+          <button type="button" class="tile" (click)="tab.set(Tab.Expenses)">
+            <mat-icon>account_balance_wallet</mat-icon>
+            <span class="tile-label">{{ balance().label }}</span>
+            <strong [class.pos]="(expenses.myNet() ?? 0) > 0" [class.neg]="(expenses.myNet() ?? 0) < 0">
+              {{ balance().amount }}
+            </strong>
+          </button>
+          <button type="button" class="tile" (click)="tab.set(Tab.Polls)">
+            <mat-icon>how_to_vote</mat-icon>
+            <span class="tile-label">Open polls</span>
+            <strong>{{ openPolls().length }}@if (unvoted()) { <small> · {{ unvoted() }} need your vote</small>
+              }</strong>
+          </button>
+        </section>
+
+        <div class="quick-actions">
+          <button mat-flat-button type="button" (click)="openExpense()"><mat-icon>add_card</mat-icon> Add
+            expense</button>
+          <button mat-stroked-button type="button" (click)="openQuickPoll()"><mat-icon>bolt</mat-icon> Quick
+            poll</button>
+          <button mat-stroked-button type="button" (click)="tab.set(Tab.Photos)"><mat-icon>add_a_photo</mat-icon>
+            Photos</button>
+        </div>
+
+        <h2>Today's plan</h2>
+        @for (ev of todayEvents(); track ev.key) {
+        <div class="event-row">
+          <span class="time">{{ ev.time }}</span>
+          <mat-icon>{{ ev.icon }}</mat-icon>
+          <span class="event-text"><strong>{{ ev.label }}</strong> · {{ ev.item.title }}</span>
+        </div>
+        } @empty {
+        <p class="muted">Nothing booked for today. Enjoy the day!</p>
+        }
+
+        @if (openPolls().length) {
+        <h2>Vote now</h2>
+        <div class="card-list">
+          @for (item of openPolls(); track item.item_id) {
+          <app-plan-item-card [item]="item" [canDelete]="board.canDelete()(item)" (toggleDone)="board.toggleDone(item)"
+            (edit)="editItem(item)" (remove)="board.remove(item.item_id)" (promote)="promote(item)" />
+          }
+        </div>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- POLLS -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <span [matBadge]="unvoted()" [matBadgeHidden]="!unvoted()" matBadgeOverlap="false"
+          matBadgeSize="small">Polls</span>
+      </ng-template>
+      <div class="pane">
+        <div class="quick-actions">
+          <button mat-flat-button type="button" (click)="openQuickPoll()"><mat-icon>bolt</mat-icon> Quick poll</button>
+          <button mat-stroked-button type="button" (click)="openPollDialog({ mode: 'create' })">
+            <mat-icon>how_to_vote</mat-icon> Detailed poll
+          </button>
+        </div>
+
+        <div class="card-list">
+          @for (item of openPolls(); track item.item_id) {
+          <app-plan-item-card [item]="item" [canDelete]="board.canDelete()(item)" (toggleDone)="board.toggleDone(item)"
+            (edit)="editItem(item)" (remove)="board.remove(item.item_id)" (promote)="promote(item)" />
+          } @empty {
+          <p class="muted">No open polls. Start one when the group can't decide!</p>
+          }
+        </div>
+
+        @if (otherPolls().length) {
+        <h2>Closed &amp; decided</h2>
+        <div class="card-list">
+          @for (item of otherPolls(); track item.item_id) {
+          <app-plan-item-card [item]="item" [canDelete]="board.canDelete()(item)" (toggleDone)="board.toggleDone(item)"
+            (edit)="editItem(item)" (remove)="board.remove(item.item_id)" (promote)="promote(item)" />
+          }
+        </div>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- EXPENSES -->
+    <mat-tab label="Expenses">
+      <div class="pane"><app-expenses-panel /></div>
+    </mat-tab>
+
+    <!-- PLAN -->
+    <mat-tab label="Plan">
+      <div class="pane">
+        <a mat-stroked-button class="board-link" [routerLink]="['/plans/trip-workspace', memoryId]">
+          <mat-icon>dashboard</mat-icon> Open the full plan board
+        </a>
+
+        <h2>Bookings</h2>
+        <div class="card-list">
+          @for (item of bookings(); track item.item_id) {
+          <app-plan-item-card [item]="item" [canDelete]="board.canDelete()(item)" (toggleDone)="board.toggleDone(item)"
+            (edit)="editItem(item)" (remove)="board.remove(item.item_id)" (promote)="promote(item)" />
+          } @empty {
+          <p class="muted">No bookings on the board.</p>
+          }
+        </div>
+
+        @if (otherItems().length) {
+        <h2>Notes, ideas &amp; to-dos</h2>
+        <div class="card-list">
+          @for (item of otherItems(); track item.item_id) {
+          <app-plan-item-card [item]="item" [canDelete]="board.canDelete()(item)" (toggleDone)="board.toggleDone(item)"
+            (edit)="editItem(item)" (remove)="board.remove(item.item_id)" (promote)="promote(item)" />
+          }
+        </div>
+        }
+      </div>
+    </mat-tab>
+
+    <!-- PHOTOS -->
+    <mat-tab label="Photos">
+      <div class="pane">
+        <app-memory-add-photos [memoryId]="memoryId" [navigateAfterUpload]="false"
+          (uploadStarted)="onUploadStarted($event)" />
+        <a mat-button class="board-link" [routerLink]="['/memory', memoryId]">
+          <mat-icon>photo_library</mat-icon> See all photos
+        </a>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+@if (board.openThreadId(); as threadId) {
+<div class="thread-overlay" (click)="board.openThreadId.set(null)" aria-hidden="true"></div>
+<aside class="thread-sheet" role="dialog" aria-label="Comments">
+  <app-plan-comments-panel [itemId]="threadId" (closed)="board.openThreadId.set(null)" />
+</aside>
+}
+} @else {
+<section class="state">
+  <mat-icon>error_outline</mat-icon>
+  <h2>This trip couldn't be loaded</h2>
+  <p>You may not be part of its crew, or your connection dropped.</p>
+  <a mat-stroked-button routerLink="/home">Back to home</a>
+</section>
+}

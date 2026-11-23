@@ -1,11 +1,13 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { MatIcon } from "@angular/material/icon";
-import { PlannedMemory } from '@models/memoryInterface.model';
 import { MemoryService } from '@services/memory.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '@services/userService';
 import { PlannedMemoryCardComponent } from "@components/planned-memory-card/planned-memory-card.component";
+import { PlanSummary } from '@models/planSummary.model';
+
+const PHASE_RANK: Record<string, number> = { live: 0, wrapping_up: 1 };
 
 @Component({
   selector: 'app-plans',
@@ -14,13 +16,12 @@ import { PlannedMemoryCardComponent } from "@components/planned-memory-card/plan
   styleUrl: './plans.component.scss',
 })
 export class PlansComponent implements OnInit {
-
   private userService = inject(UserService);
   private router = inject(Router);
   private memoryService = inject(MemoryService);
 
   isLoading = false;
-  plannedMemories = signal<PlannedMemory[]>([]);
+  plannedMemories = signal<PlanSummary[]>([]);
   loggedInUserId: string | null = null;
 
 
@@ -34,35 +35,20 @@ export class PlansComponent implements OnInit {
   }
 
   private async loadMemoriesPage(): Promise<void> {
-    /*if (this.isSearchActive) {
-      // If search is active, filter from cached results
-      this.filterFromCache();
-      return;
-    }*/
-
     this.isLoading = true;
-
-    if (this.loggedInUserId) {
-      try {
-        const result = await firstValueFrom(
-          this.memoryService.getUserPlannedMemories(
-            this.loggedInUserId,
-          )
-        );
-
-        this.plannedMemories.set(result);
-        console.log(this.plannedMemories);
-      } catch (error) {
-        console.error('Error loading planned memories:', error);
-      } finally {
-        this.isLoading = false;
-      }
+    try {
+      const plans = await firstValueFrom(this.memoryService.getMyPlans());
+      this.plannedMemories.set([...plans].sort((a, b) => (PHASE_RANK[a.phase] ?? 2) - (PHASE_RANK[b.phase] ?? 2)));
+    } catch (error) {
+      console.error('Error loading planned memories:', error);
+    } finally {
+      this.isLoading = false;
     }
   }
 
   handleTitleUpdate(event: { memoryId: string; title: string }) {
     // 1. Optimistically update local state so the UI feels instant
-    this.plannedMemories.update(memories => 
+    this.plannedMemories.update(memories =>
       memories.map(m => m.memory_id === event.memoryId ? { ...m, title: event.title } : m)
     );
 

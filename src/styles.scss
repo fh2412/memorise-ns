@@ -32,48 +32,52 @@ html {
 :host {
   &[data-theme='dark'] {
     color-scheme: dark;
-    body{
+
+    body {
       background-color: #0a0a0a;
     }
-    @include mat.theme-overrides((
-        background: #0a0a0a,
+
+    @include mat.theme-overrides((background: #0a0a0a,
       ));
   }
 
   &[data-theme='light'] {
     color-scheme: light;
-    body{
+
+    body {
       background-color: #ffffff;
     }
-    @include mat.theme-overrides((
-        background: #ffffff,
+
+    @include mat.theme-overrides((background: #ffffff,
       ));
   }
 
-    &[data-theme='system'] {
+  &[data-theme='system'] {
     // Default to light
     color-scheme: light;
-    body{
+
+    body {
       background-color: #ffffff;
     }
-    @include mat.theme-overrides((
-        background: #ffffff,
+
+    @include mat.theme-overrides((background: #ffffff,
       ));
-    
+
     // Override for dark mode
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;
-      body{
-      background-color: #0a0a0a;
-    }
-      @include mat.theme-overrides((
-          background: #0a0a0a,
+
+      body {
+        background-color: #0a0a0a;
+      }
+
+      @include mat.theme-overrides((background: #0a0a0a,
         ));
     }
   }
 
 
-  @include mat.snack-bar-overrides((container-shape: 24px,));
+  @include mat.snack-bar-overrides((container-shape: 24px, ));
 }
 
 
@@ -102,7 +106,7 @@ mat-card {
 }
 
 .gm-ui-hover-effect {
-  span{
+  span {
     background-color: var(--mat-sys-on-surface);
     opacity: 1;
   }
@@ -110,4 +114,31 @@ mat-card {
 
 .gm-style .gm-style-iw-c {
   background-color: var(--mat-sys-surface);
+}
+
+.reaction-menu .mat-mdc-menu-content {
+  padding: 4px;
+}
+
+.reaction-picker {
+  display: flex;
+  gap: 2px;
+
+  button {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.1s ease;
+
+    &:hover,
+    &:focus-visible {
+      background: var(--mat-sys-surface-container-highest);
+      transform: scale(1.15);
+      outline: none;
+    }
+  }
 }

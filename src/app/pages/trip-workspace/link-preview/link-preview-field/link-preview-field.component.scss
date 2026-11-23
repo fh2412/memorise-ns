@@ -1,0 +1,16 @@
+:host { display: block; margin: -8px 0 12px; }
+
+app-link-preview-card { max-width: 420px; }
+
+.lp-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-surface-variant);
+
+  &.error { color: var(--mat-sys-error); }
+}
+
+.use-price { margin-top: 4px; }

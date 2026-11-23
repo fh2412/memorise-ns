@@ -1,0 +1,25 @@
+<div aria-live="polite">
+  @switch (state()) {
+    @case ('loading') {
+      <p class="lp-status">
+        <mat-progress-spinner mode="indeterminate" diameter="16" /> Loading preview…
+      </p>
+    }
+    @case ('ok') {
+      @if (preview(); as p) {
+        <app-link-preview-card [preview]="p" [url]="url().trim()" />
+        @if (priceLabel(); as price) {
+          <button mat-button type="button" class="use-price" (click)="applyPrice()">
+            <mat-icon>sell</mat-icon> Use price from the page ({{ price }})
+          </button>
+        }
+      }
+    }
+    @case ('none') {
+      <p class="lp-status">No preview available for this page. The link still works.</p>
+    }
+    @case ('error') {
+      <p class="lp-status error">{{ message() }}</p>
+    }
+  }
+</div>

@@ -1,8 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Storage } from '@angular/fire/storage';
 import { forkJoin, map, Observable, of, tap } from 'rxjs';
-import { Memory, MemoryJoinResponse, MemoryMapData, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
+import { Memory, MemoryJoinResponse, MemoryPageQuery, MemorySearchData, PaginatedMemoryResponse, PlannedMemory, ShareLinkResponse, ValidateTokenResponse } from '../models/memoryInterface.model';
 import { CrewMember, Friend, MemoryDetailFriend } from '../models/userInterface.model';
 import { AddPlaceholdersPayload, DeleteStandardResponse, InsertStandardResult, UpdateStandardResponse } from '../models/api-responses.model';
 import { environment } from '../../environments/environment';
@@ -11,6 +10,8 @@ import { CreateUploadSessionRequest, UploadSessionResponse, RegisterPhotoRequest
 import { CreateMemoryRequest, CreateMemoryResult } from '@models/memory-create.model';
 import { MemoryPhoto } from '@models/memory-photo.model';
 import { DeletePhotosResult, MemoryPlaceholder, UpdateMemoryRequest, UpdateMemoryResult } from '@models/memory-edit.model';
+import { PlanSummary } from '@models/planSummary.model';
+import { todayIso } from '@models/livePlan.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,6 @@ export class MemoryService {
   private http = inject(HttpClient);
 
   private apiUrl = `${environment.apiUrl}`; // Replace with your API endpoint
-  private storage = inject(Storage);
 
   private readonly _listVersion = signal(0);
   readonly listVersion = this._listVersion.asReadonly();
@@ -52,11 +52,12 @@ export class MemoryService {
     });
   }
 
-  getUserPlannedMemories(loggedInUserId: string): Observable<PlannedMemory[]> {
-    return this.http.get<PlannedMemory[]>(`${this.apiUrl}/memories/planned/${loggedInUserId}`, {
-    });
+  getMyPlans(today = todayIso()): Observable<PlanSummary[]> {
+    return this.http
+      .get<PlanSummary[]>(`${this.apiUrl}/plans`, { params: { today } })
+      .pipe(map(list => list.map(p => ({ ...p, memory_id: String(p.memory_id) }))));
   }
-
+  
   getMemoryToPlan(memoryId: string): Observable<PlannedMemory> {
     return this.http.get<PlannedMemory>(`${this.apiUrl}/memories/planning/${memoryId}`, {
     });
@@ -180,7 +181,7 @@ export class MemoryService {
     // Diffs for Placeholders
     const addedPlaceholders = Array.from(newPlaceholders.entries())
       .filter(([id]) => !oldPlaceholders.has(id))
-      .map(([_, member]) => member);
+      .map(([, member]) => member);
 
     const removedPlaceholderIds = Array.from(oldPlaceholders.keys()).filter(id => !newPlaceholders.has(id));
 
@@ -255,6 +256,12 @@ export class MemoryService {
     return this.http
       .put<{ coverPhotoId: string }>(`${this.apiUrl}/memories/${memoryId}/cover`, { photoId })
       .pipe(this.invalidateOnSuccess());
+  }
+
+  updateMemoryDates(memoryId: string, startDate: string | null, endDate: string | null) {
+    return this.http.patch<{ memoryId: number; startDate: string | null; endDate: string | null; changed: boolean }>(
+      `${this.apiUrl}/memories/${memoryId}/dates`, { startDate, endDate },
+    );
   }
 
   invalidateMemoryList(): void {

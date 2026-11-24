@@ -10,19 +10,10 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: 220px;
   overflow: hidden;
   border-radius: 28px;
   color: var(--banner-fg);
   background: var(--mat-sys-surface-container);
-
-  @media (min-width: 600px) {
-    min-height: 260px;
-  }
-
-  @media (min-width: 1200px) {
-    min-height: 300px;
-  }
 
   // Same recipe as the memory cards: a surface-coloured scrim keeps text
   // readable on any photo, in light and dark mode.
